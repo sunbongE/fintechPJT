@@ -1,0 +1,67 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.3'
+	id 'io.spring.dependency-management' version '1.1.4'
+	id 'com.diffplug.spotless' version '6.16.0'
+}
+
+group = 'com.orange'
+version = '0.0.1-SNAPSHOT'
+
+// build시 plain.jar 생성안함.
+jar {
+	enabled = false
+}
+
+java {
+	sourceCompatibility = '17'
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// jwt
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+	// 소셜로그인
+	//implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	// Redis
+//	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// Swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+// Code convention 관련
+spotless {
+	java {
+		target("**/*.java")
+		targetExclude("**/SecurityConfig.java", "**/SwaggerConfiguration.java", "**/generated/**")
+		googleJavaFormat().aosp()  // 구글 자바 포맷 적용
+		importOrder()  // import 순서 정의
+		removeUnusedImports()   // 사용하지 않는 import 제거
+		trimTrailingWhitespace()   // 공백 제거
+		endWithNewline()  // 끝부분 New Line 처리
+	}
+}
