@@ -1,6 +1,6 @@
-package com.orange.fintech.entity;
+package com.orange.fintech.member.entity;
 
-import com.orange.fintech.api.dto.JoinDto;
+import com.orange.fintech.auth.dto.JoinDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +16,7 @@ public class Member {
     @Id
     @Column(unique = true)
     private String email;
+
     private String name;
     private String profileImage; // 프로필 이미지 경로 + 이름.???? 아직 모름
     private String password;
@@ -24,8 +25,7 @@ public class Member {
     @ColumnDefault("'ROLE_USER'")
     private Roles role;
 
-    public Member() {
-    }
+    public Member() {}
 
     public Member(JoinDto joinDto) {
         this.email = joinDto.getEmail();

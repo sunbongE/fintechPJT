@@ -1,4 +1,4 @@
-package com.orange.fintech.api.controller;
+package com.orange.fintech.auth.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
