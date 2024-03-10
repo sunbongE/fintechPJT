@@ -1,6 +1,6 @@
 package com.orange.fintech.auth.service;
 
-import com.orange.fintech.auth.common.CustumUserDetails;
+import com.orange.fintech.auth.dto.CustomUserDetails;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         Member memberData = memberRepository.findByEmail(username);
         if (memberData != null) {
-            return new CustumUserDetails(memberData);
+            return new CustomUserDetails(memberData);
         }
         return null;
     }

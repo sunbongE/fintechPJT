@@ -33,4 +33,15 @@ public class Member {
         this.profileImage = joinDto.getProfileImage();
         this.password = joinDto.getPassword();
     }
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", profileImage='" + profileImage + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                '}';
+    }
 }
