@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 @Slf4j
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
@@ -39,7 +40,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        log.info("member : {} ",member.toString());
+        log.info("member : {} ", member.toString());
         log.info("** getUsername 실행");
         return member.getEmail();
     }

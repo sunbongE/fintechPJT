@@ -36,12 +36,21 @@ public class Member {
 
     @Override
     public String toString() {
-        return "Member{" +
-                "email='" + email + '\'' +
-                ", name='" + name + '\'' +
-                ", profileImage='" + profileImage + '\'' +
-                ", password='" + password + '\'' +
-                ", role=" + role +
-                '}';
+        return "Member{"
+                + "email='"
+                + email
+                + '\''
+                + ", name='"
+                + name
+                + '\''
+                + ", profileImage='"
+                + profileImage
+                + '\''
+                + ", password='"
+                + password
+                + '\''
+                + ", role="
+                + role
+                + '}';
     }
 }
