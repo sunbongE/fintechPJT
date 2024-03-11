@@ -11,6 +11,9 @@ class _MySpendedState extends State<MySpended> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("ㅎㅇㅎㅇ"),
+      ),
       body: Text('MySpended'),
     );
   }

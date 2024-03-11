@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:front/components/Navbar.dart';
 import 'package:front/screen/GroupMain.dart';
 import 'package:front/screen/MainPage.dart';
 import 'package:front/screen/MyPage.dart';
@@ -13,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var _index = 0;
+  int _index = 0;
 
   List<Widget> _pages = [
     MainPage(),
@@ -22,50 +21,34 @@ class _HomeScreenState extends State<HomeScreen> {
     MyPage(),
   ];
 
+  void onTapNavItem(int idx) {
+    setState(() {
+      _index = idx;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: _pages[_index],
-        bottomNavigationBar: BottomNavigationBar(
-          selectedIconTheme: IconThemeData(
-            color: Color(0xffFF9E44),
-          ),
-          selectedLabelStyle: TextStyle(
-            color: Color(0xffFF9E44),
-          ),
-          currentIndex: _index,
-          onTap: (value) {
-            setState(() {
-              _index = value;
-            });
-          },
+    return Scaffold(
+      body: _pages[_index],
+      bottomNavigationBar: Theme(
+        data: ThemeData(
+          // 애니메이션 효과 없애는 부분
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
+        child: BottomNavigationBar(
           items: [
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.home,
-                  color: Color(0xff636E72),
-                ),
-                label: '나의 여행'),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.group,
-                  color: Color(0xff636E72),
-                ),
-                label: '그룹'),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.poll,
-                  color: Color(0xff636E72),
-                ),
-                label: '내 소비내역'),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.account_circle,
-                  color: Color(0xff636E72),
-                ),
-                label: '나의 여행'),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: '나의 여행'),
+            BottomNavigationBarItem(icon: Icon(Icons.group), label: '그룹'),
+            BottomNavigationBarItem(icon: Icon(Icons.poll), label: '내 소비내역'),
+            BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: '마이페이지'),
           ],
+          selectedIconTheme: IconThemeData(color: Color(0xffFF9E44)),
+          selectedItemColor: Color(0xffFF9E44),
+          currentIndex: _index,
+          onTap: onTapNavItem,
+          type: BottomNavigationBarType.fixed, // 선택 안된 메뉴들도 보이게
         ),
       ),
     );
