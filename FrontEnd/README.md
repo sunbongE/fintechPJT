@@ -1,16 +1,17 @@
 # front
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- screen
+  - 스크린 전체에 해당되는 위젯들을 모아두는 폴더
+  - 가장 큰 구조
+  - 리액트의 pages 폴더와 같음
+- components
+  - 스크린을 구성하는 데 공통으로 사용될 만한 요소의 위젯들을 모아두는 폴더
+  - 리액트의 components 폴더와 같음
+  - 하위 모델(위젯)들을 import 해와서, 보여줌
+- model
+  - 모델(위젯)들을 따로 모아두는 폴더
+  - 사용법
+- const
+  - 상수들을 모아두는 폴더(보통 color)
+- assets
+  - **css(style) 폴더** 입니다. 제발.. 여기서 작성해서 model에 가져다 쓰세요.. 제발 제발 제발!@!!!!@!@#!@#!@@!@!!@!@!@!@!@!@
