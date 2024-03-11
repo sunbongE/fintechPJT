@@ -1,4 +1,4 @@
-package com.orange.fintech.api.controller;
+package com.orange.fintech.auth.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/main")
+@RequestMapping("/api/v1/admin")
 @RequiredArgsConstructor
-public class MainController {
+public class AdminController {
 
-    @GetMapping("/")
-    public ResponseEntity<?> mainP() {
-        return ResponseEntity.ok("** mainP 실행");
+    @GetMapping()
+    public ResponseEntity<?> auth() {
+        return ResponseEntity.ok("** admin Controller **");
     }
 }

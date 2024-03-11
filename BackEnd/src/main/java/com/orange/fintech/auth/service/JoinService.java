@@ -1,8 +1,8 @@
-package com.orange.fintech.api.service;
+package com.orange.fintech.auth.service;
 
-import com.orange.fintech.api.dto.JoinDto;
-import com.orange.fintech.api.repository.MemberRepository;
-import com.orange.fintech.entity.Member;
+import com.orange.fintech.auth.dto.JoinDto;
+import com.orange.fintech.member.entity.Member;
+import com.orange.fintech.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,25 +16,23 @@ public class JoinService {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public boolean joinProcess(JoinDto dto){
+    public boolean joinProcess(JoinDto dto) {
         String email = dto.getEmail();
-//        String name = dto.getName();
-//        String profileImage = dto.getProfileImage();
+        //        String name = dto.getName();
+        //        String profileImage = dto.getProfileImage();
         // 비밀번호 암호화.
         String password = dto.getPassword();
         dto.setPassword(bCryptPasswordEncoder.encode(password));
 
         Boolean isExist = memberRepository.existsByEmail(email);
 
-        if(isExist){ // 이미 회원가입 한 이메일인 경우.
+        if (isExist) { // 이미 회원가입 한 이메일인 경우.
             return false;
         }
 
         Member data = new Member(dto);
         memberRepository.save(data);
 
-
         return true;
     }
-
 }
