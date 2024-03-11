@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:front/screen/HomeScreen.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:front/screen/LogIn.dart';
+import 'package:front/routes.dart';
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -30,8 +31,9 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: isLogin ? HomeScreen() : LogIn(),
-      // home: HomeScreen(),
+      routes: Routes.routes,
+      // home: isLogin ? HomeScreen() : LogIn(),
+      home: HomeScreen(),
     );
   }
 }
