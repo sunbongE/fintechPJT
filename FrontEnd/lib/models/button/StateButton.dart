@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:front/const/colors/Colors.dart';
 
-class Button extends StatefulWidget {
+//여행중일때
+class TravelingButton extends StatefulWidget {
   final String btnText;
+
   final VoidCallback? onPressed;
 
-  const Button({
+  const TravelingButton({
     required this.btnText,
     this.onPressed,
     Key? key,
   }) : super(key: key);
 
   @override
-  State<Button> createState() => _ButtonState();
+  State<TravelingButton> createState() => _ButtonState();
 }
 
-class _ButtonState extends State<Button> {
+class _ButtonState extends State<TravelingButton> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
@@ -36,8 +38,10 @@ class _ButtonState extends State<Button> {
         style: TextStyle(
           color: Colors.white,
           fontSize: 20,
+          fontWeight: FontWeight.bold,
         ),
       ),
+
     );
   }
 }

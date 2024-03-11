@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:front/components/groups/GroupList.dart';
 import 'package:front/screen/HomeScreen.dart';
+import 'package:front/models/button/GroupAddButton.dart';
 import 'package:front/screen/MainPage.dart';
 import 'package:front/routes.dart';
 
@@ -27,13 +28,18 @@ class GroupMain extends StatelessWidget {
             ),
           ],
         ),
-        body: Container(
-          child: Center(
-            child: GroupList(
-
-
+        body: Column(
+          children: [
+            Expanded(
+              child: Container(
+                child: Center(
+                  child: GroupList(),
+                ),
+              ),
             ),
-          ),
+            GroupAddButton(
+            ),
+          ],
         ),
       ),
     );

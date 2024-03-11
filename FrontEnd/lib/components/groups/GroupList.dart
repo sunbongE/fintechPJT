@@ -2,69 +2,69 @@ import "package:flutter/material.dart";
 import 'package:front/models/button/StateButton.dart';
 import 'package:front/const/colors/Colors.dart';
 
-List<String> items = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
-List<String> itemContents = [
-  'Item 1 Contents',
-  'Item 2 Contents',
-  'Item 3 Contents',
-  'Item 4 Contents'
-];
 
 class GroupList extends StatelessWidget {
   const GroupList({Key? key}) : super(key: key);
-
   Widget build(BuildContext context) {
     return ListView(
-      itemCount: items.length,
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(20.0),
       children: [
-        ListTile(
-          dense:false,
-          horizontalTitleGap: 10,
-          title: Text(
-            '오늘의 날짜',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-            ),
-          ),
-          subtitle: Row(
-            children: [
-              Expanded(
-                  child: Text(
-                '긔염둥이들',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                ),
-              ))
-            ],
-          ),
-          leading: Padding(
-            padding: const EdgeInsets.all(8.0),
-          ),
-          trailing: Button(
-            btnText: '여행중',
-          ),
-          tileColor: TRAVELING,
+        Card(
+          margin: EdgeInsets.all(10.0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          onTap: () {},
-        ),
-        ListTile(
-          horizontalTitleGap: 10,
-          title: Text(
-            '오늘의 날짜',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 13,
+          color: TRAVELING,
+          child: ListTile(
+            horizontalTitleGap: 10,
+            title: Text(
+              '오늘의 날짜',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+              ),
             ),
+            subtitle: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '긔염둥이들',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            leading: Padding(
+              padding: EdgeInsets.all(8.0),
+            ),
+            trailing: TravelingButton(
+              btnText: '여행중',
+            ),
+            onTap: () {},
           ),
-          subtitle: Row(
-            children: [
-              Expanded(
+        ),
+        Card(
+          margin: EdgeInsets.all(10.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          color: COMPLETE_COLOR,
+          child: ListTile(
+            horizontalTitleGap: 10,
+            title: Text(
+              '오늘의 날짜',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+              ),
+            ),
+            subtitle: Row(
+              children: [
+                Expanded(
                   child: Text(
                     '오렌지',
                     style: TextStyle(
@@ -72,20 +72,21 @@ class GroupList extends StatelessWidget {
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),
-                  ))
-            ],
+                  ),
+                ),
+              ],
+            ),
+            leading: Padding(
+              padding: EdgeInsets.all(8.0),
+            ),
+            trailing: TravelingButton(
+              btnText: '정산중',
+            ),
+
+            onTap: () {
+
+            },
           ),
-          leading: Padding(
-            padding: const EdgeInsets.all(8.0),
-          ),
-          trailing: Button(
-            btnText: '정산중',
-          ),
-          tileColor: COMPLETE_COLOR,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          onTap: () {},
         ),
       ],
     );
