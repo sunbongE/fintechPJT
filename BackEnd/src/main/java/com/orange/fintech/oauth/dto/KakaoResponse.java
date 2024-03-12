@@ -10,7 +10,7 @@ public class KakaoResponse implements OAuth2Response {
 
     public KakaoResponse(Map<String, Object> attribute) {
         log.info("카카오에서 받은 데이터 형식 : {}", attribute);
-        this.attribute = (Map<String, Object>) attribute.get("properties");
+        this.attribute = (Map<String, Object>) attribute;
     }
 
     @Override
@@ -20,12 +20,15 @@ public class KakaoResponse implements OAuth2Response {
 
     @Override
     public String getProviderId() {
+        log.info("attribute.get(\"id\").toString() : {}", attribute.get("id").toString());
         return attribute.get("id").toString();
     }
 
     @Override
     public String getEmail() {
-        return attribute.get("account_email").toString();
+
+//        return attribute.get("kakao_account").get("account_email").toString();
+        return "";
     }
 
     @Override
