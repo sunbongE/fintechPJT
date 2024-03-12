@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:front/screen/HomeScreen.dart';
 import 'package:front/screen/GroupMain.dart';
-import 'package:front/screen/GroupAdd.dart';
+import 'package:front/screen/groupscreens/GroupAdd.dart';
 
 class Routes {
   Routes._();
@@ -15,7 +15,7 @@ class Routes {
   static final routes = <String, WidgetBuilder>{
     home: (BuildContext context) => HomeScreen(),
     groupmain: (BuildContext context) => GroupMain(),
-    groupadd: (BuildContext context) => GroupAdd(),
+    // groupadd: (BuildContext context) => GroupAdd(),
 
     // myspended: (BuildContext context) => MySpended(),
     // mypage: (BuildContext context) => MyPage(),

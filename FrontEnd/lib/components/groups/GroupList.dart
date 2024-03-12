@@ -1,96 +1,68 @@
 import "package:flutter/material.dart";
 import 'package:front/models/button/StateButton.dart';
 import 'package:front/const/colors/Colors.dart';
+import 'package:front/screen/GroupMain.dart'; // Group 클래스를 import
+import 'package:front/screen/groupscreens/GroupAdd.dart'; // Group 클래스를 import
 
+//백에서 group정보 받아오면 여기에 넣기
+class Group {
+  // final String startDate;
+  // final String endDate;
+  final String title;
+  final String description;
 
-class GroupList extends StatelessWidget {
-  const GroupList({Key? key}) : super(key: key);
+  Group({required this.title, required this.description,
+    // required this.startDate, required this.endDate,
+  });
+}
+
+class GroupList extends StatefulWidget {
+  // const GroupList({Key? key}) : super(key: key);
+
+  @override
+  State<GroupList> createState() => _GroupListState();
+}
+
+class _GroupListState  extends State<GroupList> {
+  String title = "";
+  String description = "";
+  // String startDate = "";
+  // String endDate = "";
+
+  List<Group> groups = [];
+
+  void navigateToGroupAdd() async {
+    Group newGroup = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => GroupAdd()),
+    );
+    if (newGroup != null) {
+      setState(() {
+        groups.add(newGroup);
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.all(20.0),
-      children: [
-        Card(
-          margin: EdgeInsets.all(10.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          color: TRAVELING,
-          child: ListTile(
-            horizontalTitleGap: 10,
-            title: Text(
-              '오늘의 날짜',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 13,
-              ),
-            ),
-            subtitle: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    '긔염둥이들',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            leading: Padding(
-              padding: EdgeInsets.all(8.0),
-            ),
-            trailing: TravelingButton(
-              btnText: '여행중',
-            ),
-            onTap: () {},
-          ),
-        ),
-        Card(
-          margin: EdgeInsets.all(10.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          color: COMPLETE_COLOR,
-          child: ListTile(
-            horizontalTitleGap: 10,
-            title: Text(
-              '오늘의 날짜',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 13,
-              ),
-            ),
-            subtitle: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    '오렌지',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            leading: Padding(
-              padding: EdgeInsets.all(8.0),
-            ),
-            trailing: TravelingButton(
-              btnText: '정산중',
-            ),
-
-            onTap: () {
-
-            },
-          ),
-        ),
-      ],
+    return Scaffold(
+      body: ListView.builder(
+        itemCount: groups.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(groups[index].title),
+            subtitle: Text(groups[index].description),
+          );
+        },
+      ),
+      floatingActionButton: ElevatedButton(
+        onPressed: navigateToGroupAdd,
+        child: Icon(Icons.add),
+      ),
     );
   }
+}
+
 
 //back에서 groupNames를 받아오기
 // final List<String> groupNames; // 그룹 이름을 담은 리스트
@@ -111,4 +83,4 @@ class GroupList extends StatelessWidget {
 //     },
 //   );
 // }
-}
+// }
