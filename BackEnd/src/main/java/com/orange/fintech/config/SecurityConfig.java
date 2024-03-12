@@ -91,12 +91,13 @@ public class SecurityConfig {
                                 .userService(customOAuth2UserService))
                         .successHandler(customSuccessHandler)
                 );
+
         http
                 .addFilterAfter(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/login/**", "/", "/join/**", "/api/v1/auth/**").permitAll()
+                        .requestMatchers("/", "/login/**", "/swagger-ui/**", "/join/**", "/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/user/**").hasRole("USER")
                         .anyRequest().authenticated());
