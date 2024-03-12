@@ -14,6 +14,14 @@ import org.hibernate.annotations.DynamicInsert;
 public class Member {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int memberId;
+
+    private String bank_token;
+
+    private String  pin;
+
+
     @Column(unique = true)
     private String email;
 
