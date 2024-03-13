@@ -10,9 +10,7 @@ import lombok.Setter;
 @Setter
 public class ReceiptDetailMember {
 
-    @EmbeddedId
-    private ReceiptDetailMemberPK receiptDetailMemberPK;
+    @EmbeddedId private ReceiptDetailMemberPK receiptDetailMemberPK;
 
     private int amountDue;
-
 }

@@ -33,4 +33,9 @@ public class JoinController {
                     .body(BaseResponseBody.of(500, "Server Error"));
         }
     }
+
+    @GetMapping("/test")
+    public ResponseEntity<?> test(){
+        return ResponseEntity.ok("test msg");
+    }
 }

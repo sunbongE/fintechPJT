@@ -9,9 +9,7 @@ import lombok.Setter;
 @Setter
 public class TransactionMember {
 
-    @EmbeddedId
-    private TransactionMemberPK transactionMemberPK;
+    @EmbeddedId private TransactionMemberPK transactionMemberPK;
 
     private int totalAmount;
-
 }

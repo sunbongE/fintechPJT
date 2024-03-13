@@ -3,20 +3,17 @@ package com.orange.fintech.transaction.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 @DynamicInsert
-//@DynamicUpdate
+// @DynamicUpdate
 public class Receipt {
 
     @Id
@@ -27,21 +24,20 @@ public class Receipt {
     @JoinColumn(name = "transaction_id")
     private Transaction transaction;
 
-    @NotNull
-    private String businessName;
+    @NotNull private String businessName;
+
+    @NotNull private String location;
 
     @NotNull
-    private String location;
-
-    @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd HHmmss", timezone = "Asia/Seoul")
+    @JsonFormat(
+            shape = JsonFormat.Shape.STRING,
+            pattern = "yyyyMMdd HHmmss",
+            timezone = "Asia/Seoul")
     private LocalDateTime dateTime;
 
-    @NotNull
-    private int totalPrice;
+    @NotNull private int totalPrice;
 
-    @NotNull
-    private int approvalAmount;
+    @NotNull private int approvalAmount;
 
     private long authNumber;
 
@@ -52,5 +48,4 @@ public class Receipt {
     @NotNull
     @ColumnDefault("true")
     private Boolean visibility;
-
 }

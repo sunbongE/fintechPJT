@@ -30,7 +30,5 @@ public class CalculateResult {
     @JoinColumn(name = "receive_member_id")
     private Member receiveMember;
 
-    @NotNull
-    private long amount;
-
+    @NotNull private long amount;
 }

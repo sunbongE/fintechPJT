@@ -10,8 +10,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Setter
 public class GroupMember {
 
-    @EmbeddedId
-    private GroupMemberPK groupMemberPK;
+    @EmbeddedId private GroupMemberPK groupMemberPK;
 
     @ColumnDefault("true")
     Boolean state;

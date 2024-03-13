@@ -4,9 +4,8 @@ import com.orange.fintech.member.entity.Member;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.*;
-
 import java.io.Serializable;
+import lombok.*;
 
 @Embeddable
 @Getter
