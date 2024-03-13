@@ -13,6 +13,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,28 +27,33 @@ class _LoginState extends State<Login> {
           SizedBox(
             height: 100,
           ),
-          Center(
-            child: IconButton(
-              onPressed: () async {
-                bool loginSuccess = await SocialKakao();
-                if (loginSuccess) {
-                  Provider.of<IsLogin>(context, listen: false).loginState();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ServiceIntro()),
-                  );
-                }
-              },
-              icon: Image.asset(
-                "assets/images/kakao_login_btn.png",
-                width: 500,
-              ),
-              style: ButtonStyle(
-                overlayColor: MaterialStateColor.resolveWith(
-                    (states) => Colors.transparent),
-              ),
-            ),
-          ),
+          _isLoading
+              ? CircularProgressIndicator()
+              : Center(
+                  child: IconButton(
+                    onPressed: () async {
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      bool loginSuccess = await SocialKakao();
+                      if (loginSuccess) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ServiceIntro()),
+                        );
+                      }
+                    },
+                    icon: Image.asset(
+                      "assets/images/kakao_login_btn.png",
+                      width: 500,
+                    ),
+                    style: ButtonStyle(
+                      overlayColor: MaterialStateColor.resolveWith(
+                          (states) => Colors.transparent),
+                    ),
+                  ),
+                ),
         ],
       ),
     );
