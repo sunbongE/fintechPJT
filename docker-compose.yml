@@ -1,0 +1,18 @@
+version: '3.3'
+
+services:
+  back:
+    container_name: back
+    image: taehopark/myname-back
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - jenkins-network
+
+networks:
+  jenkins-network:
+    external: true
