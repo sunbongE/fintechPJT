@@ -31,7 +31,7 @@ pipeline {
                     steps {
                         script {
                             sh "ls -al"
-                            sh "docker compose -p yeojung build --no-cache backend"
+                            sh "docker compose -p yeojung build --no-cache back"
                         }
                     }
                 }
