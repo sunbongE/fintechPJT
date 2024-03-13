@@ -2,49 +2,10 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('Hello') {
             steps {
-                // Git 저장소에서 소스 코드를 가져옵니다.
-                git 'https://lab.ssafy.com/s10-fintech-finance-sub2/S10P22C203.git'
-            }
-
-        }
-
-        stage('Build') {
-            steps {
-                // Maven을 사용하여 Spring Boot 프로젝트를 빌드합니다.
-                sh './gradlew clean build'
+                echo 'Hello World'
             }
         }
-
-        stage('Test') {
-                steps {
-                    // 빌드된 애플리케이션을 테스트합니다.
-                    sh './gradlew test'
-                }
-            }
-
-            stage('Deploy') {
-                steps {
-                    // 여기서는 간단히 빌드된 JAR 파일을 로컬 환경에 배포합니다.
-                    // 실제 배포 환경에 맞게 수정해야 합니다.
-                    sh 'cp build/libs/fintech-0.0.1-SNAPSHOT.jar /path/to/deployment/directory'
-                }
-            }
-        }
-
-        post {
-                always {
-                    // 항상 수행되는 작업, 예를 들어, 클린업 작업 등을 여기에 추가할 수 있습니다.
-                    echo '빌드 프로세스 완료.'
-                }
-                success {
-                    // 빌드가 성공적으로 완료되었을 때 수행되는 작업
-                    echo '성공적으로 빌드 및 배포되었습니다.'
-                }
-                failure {
-                    // 빌드 실패 시 수행되는 작업
-                    echo '빌드 또는 배포에 실패하였습니다.'
-                }
-            }
+    }
 }
