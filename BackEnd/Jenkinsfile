@@ -8,12 +8,27 @@ pipeline {
                 // Git 저장소에서 소스 코드를 가져옵니다.
                 git 'https://lab.ssafy.com/s10-fintech-finance-sub2/S10P22C203.git'
             }
-        }
+            post {
+                    failure {
+                        echo 'Checkout 실패~~~'
+                    }
+                    success {
+                        echo '성공적으로 Git 저장소에서 소스 코드를 가져옵니다.'
+                    }
+            }
 
         stage('Build') {
             steps {
                 // Maven을 사용하여 Spring Boot 프로젝트를 빌드합니다.
                 sh './gradlew clean build'
+                post {
+                        failure {
+                            echo 'Build 실패~~~'
+                        }
+                        success {
+                            echo 'Build 성공!!!'
+                        }
+                    }
             }
         }
 
