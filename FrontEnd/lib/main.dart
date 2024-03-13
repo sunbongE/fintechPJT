@@ -13,7 +13,7 @@ Future<void> main() async {
     nativeAppKey: '67ca4770ad20679139010583e0a57684',
     javaScriptAppKey: '506a7e7288e569efa8b05d06206ac60a',
   );
-  print("키 해시: " + await KakaoSdk.origin);
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => IsLogin(),
@@ -30,19 +30,23 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final isLoginValue = IsLogin();
+  Widget _initialScreen = CircularProgressIndicator();
 
   @override
-  // 앱 시작 시 로그인 상태와 사용자 정보를 불러오기
   void initState() {
     super.initState();
-    isLoginValue.loadLoginState().then((_) {
-      if (isLoginValue.isLogin) {
-        UserInfo.loadUserInfo();
-      }
+    _loadInitialScreen();
+  }
+
+  Future<void> _loadInitialScreen() async {
+    await UserInfo.loadUserInfo();
+    setState(() {
+      // _initialScreen = UserInfo.name != null ? HomeScreen() : Login();
+      _initialScreen = UserInfo.name != null ? Login() : Login();
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     // status bar 투명하게, 글씨 검정
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -50,13 +54,11 @@ class _MyAppState extends State<MyApp> {
       statusBarIconBrightness: Brightness.dark,
     ));
 
-    final isLoginProvider = Provider.of<IsLogin>(context);
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: Routes.routes,
-      home: isLoginProvider.isLogin ? HomeScreen() : Login(),
-      // home: HomeScreen(),
+      // home: isLoginProvider.isLogin ? HomeScreen() : Login(),
+      home: _initialScreen,
     );
   }
 }
