@@ -1,14 +1,14 @@
-//package com.orange.fintech.auth.controller;
+// package com.orange.fintech.auth.controller;
 //
-//import org.springframework.stereotype.Controller;
-//import org.springframework.web.bind.annotation.GetMapping;
+// import org.springframework.stereotype.Controller;
+// import org.springframework.web.bind.annotation.GetMapping;
 //
-//@Controller("/my")
-//public class MyController {
+// @Controller("/my")
+// public class MyController {
 //
 //    @GetMapping()
 //    public String myPage() {
 //        System.out.println("myPage 호출");
 //        return "my";
 //    }
-//}
+// }

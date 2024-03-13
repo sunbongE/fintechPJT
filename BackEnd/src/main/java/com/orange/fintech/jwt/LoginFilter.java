@@ -1,21 +1,21 @@
-//package com.orange.fintech.jwt;
+// package com.orange.fintech.jwt;
 //
-//import com.orange.fintech.auth.dto.CustomUserDetails;
-//import jakarta.servlet.FilterChain;
-//import jakarta.servlet.http.HttpServletRequest;
-//import jakarta.servlet.http.HttpServletResponse;
-//import java.util.Collection;
-//import java.util.Iterator;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.security.authentication.AuthenticationManager;
-//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.core.AuthenticationException;
-//import org.springframework.security.core.GrantedAuthority;
-//import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+// import com.orange.fintech.auth.dto.CustomUserDetails;
+// import jakarta.servlet.FilterChain;
+// import jakarta.servlet.http.HttpServletRequest;
+// import jakarta.servlet.http.HttpServletResponse;
+// import java.util.Collection;
+// import java.util.Iterator;
+// import lombok.extern.slf4j.Slf4j;
+// import org.springframework.security.authentication.AuthenticationManager;
+// import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+// import org.springframework.security.core.Authentication;
+// import org.springframework.security.core.AuthenticationException;
+// import org.springframework.security.core.GrantedAuthority;
+// import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 //
-//@Slf4j
-//public class LoginFilter extends UsernamePasswordAuthenticationFilter {
+// @Slf4j
+// public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 //
 //    private final AuthenticationManager authenticationManager;
 //    private final JWTUtil jwtUtil;
@@ -77,4 +77,4 @@
 //            AuthenticationException failed) {
 //        response.setStatus(401);
 //    }
-//}
+// }

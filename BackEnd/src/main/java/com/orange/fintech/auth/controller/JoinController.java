@@ -35,7 +35,7 @@ public class JoinController {
     }
 
     @GetMapping("/test")
-    public ResponseEntity<?> test(){
+    public ResponseEntity<?> test() {
         return ResponseEntity.ok("test msg");
     }
 }

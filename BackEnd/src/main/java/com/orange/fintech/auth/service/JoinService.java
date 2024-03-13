@@ -4,7 +4,6 @@ import com.orange.fintech.auth.dto.JoinDto;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class JoinService {
 
     private final MemberRepository memberRepository;
-//    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    //    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public boolean joinProcess(JoinDto dto) {
         String email = dto.getEmail();
@@ -22,7 +21,7 @@ public class JoinService {
         //        String profileImage = dto.getProfileImage();
         // 비밀번호 암호화.
         String password = dto.getPassword();
-//        dto.setPassword(bCryptPasswordEncoder.encode(password));
+        //        dto.setPassword(bCryptPasswordEncoder.encode(password));
 
         Boolean isExist = memberRepository.existsByEmail(email);
 

@@ -1,7 +1,7 @@
 package com.orange.fintech.jwt;
 
-//import com.orange.fintech.oauth.dto.CustomOAuth2User;
-//import com.orange.fintech.oauth.dto.MemberDto;
+// import com.orange.fintech.oauth.dto.CustomOAuth2User;
+// import com.orange.fintech.oauth.dto.MemberDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
@@ -72,19 +69,19 @@ public class JWTFilter extends OncePerRequestFilter {
         String role = jwtUtil.getRole(token);
 
         // MemberDto 생성하여 값 set
-//        MemberDto memberDto = new MemberDto();
-//        memberDto.setEmail(email);
-//        memberDto.setRole(role);
-//
-//        // UserDetails에 회원 정보 객체 담기
-//        CustomOAuth2User customOAuth2User = new CustomOAuth2User(memberDto);
-//
-//        // 스프링 시큐리티 인증 토큰 생성
-//        Authentication authToken =
-//                new UsernamePasswordAuthenticationToken(
-//                        customOAuth2User, null, customOAuth2User.getAuthorities());
-//        // 세션에 사용자 등록
-//        SecurityContextHolder.getContext().setAuthentication(authToken);
+        //        MemberDto memberDto = new MemberDto();
+        //        memberDto.setEmail(email);
+        //        memberDto.setRole(role);
+        //
+        //        // UserDetails에 회원 정보 객체 담기
+        //        CustomOAuth2User customOAuth2User = new CustomOAuth2User(memberDto);
+        //
+        //        // 스프링 시큐리티 인증 토큰 생성
+        //        Authentication authToken =
+        //                new UsernamePasswordAuthenticationToken(
+        //                        customOAuth2User, null, customOAuth2User.getAuthorities());
+        //        // 세션에 사용자 등록
+        //        SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
     }

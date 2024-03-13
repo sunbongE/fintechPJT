@@ -1,29 +1,30 @@
-//package com.orange.fintech.oauth.service;
+// package com.orange.fintech.oauth.service;
 //
-//import com.orange.fintech.member.entity.Member;
-//import com.orange.fintech.member.entity.Roles;
-//import com.orange.fintech.member.repository.MemberRepository;
-//import com.orange.fintech.oauth.dto.CustomOAuth2User;
-//import com.orange.fintech.oauth.dto.KakaoResponse;
-//import com.orange.fintech.oauth.dto.MemberDto;
-//import com.orange.fintech.oauth.dto.OAuth2Response;
-//import lombok.RequiredArgsConstructor;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-//import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-//import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-//import org.springframework.security.oauth2.core.user.OAuth2User;
-//import org.springframework.stereotype.Service;
+// import com.orange.fintech.member.entity.Member;
+// import com.orange.fintech.member.entity.Roles;
+// import com.orange.fintech.member.repository.MemberRepository;
+// import com.orange.fintech.oauth.dto.CustomOAuth2User;
+// import com.orange.fintech.oauth.dto.KakaoResponse;
+// import com.orange.fintech.oauth.dto.MemberDto;
+// import com.orange.fintech.oauth.dto.OAuth2Response;
+// import lombok.RequiredArgsConstructor;
+// import lombok.extern.slf4j.Slf4j;
+// import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+// import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+// import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+// import org.springframework.security.oauth2.core.user.OAuth2User;
+// import org.springframework.stereotype.Service;
 //
-//@Slf4j
-//@Service
-//@RequiredArgsConstructor
-//public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+// @Slf4j
+// @Service
+// @RequiredArgsConstructor
+// public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 //
 //    private final MemberRepository memberRepository;
 //
 //    @Override
-//    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+//    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException
+// {
 //
 //        OAuth2User oAuth2User = super.loadUser(userRequest);
 //        log.info("oAuth2User : {}", oAuth2User);
@@ -70,4 +71,4 @@
 //            return new CustomOAuth2User(memberDto);
 //        }
 //    }
-//}
+// }

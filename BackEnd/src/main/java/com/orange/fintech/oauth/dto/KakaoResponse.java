@@ -1,10 +1,10 @@
-//package com.orange.fintech.oauth.dto;
+// package com.orange.fintech.oauth.dto;
 //
-//import java.util.Map;
-//import lombok.extern.slf4j.Slf4j;
+// import java.util.Map;
+// import lombok.extern.slf4j.Slf4j;
 //
-//@Slf4j
-//public class KakaoResponse implements OAuth2Response {
+// @Slf4j
+// public class KakaoResponse implements OAuth2Response {
 //
 //    private final Map<String, Object> attribute;
 //    private final Map<String, Object> properties;
@@ -45,4 +45,4 @@
 //    public String getName() {
 //        return kakao_account.get("name").toString();
 //    }
-//}
+// }

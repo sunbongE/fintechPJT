@@ -1,6 +1,6 @@
-//package com.orange.fintech.oauth.dto;
+// package com.orange.fintech.oauth.dto;
 //
-//public interface OAuth2Response {
+// public interface OAuth2Response {
 //    // 제공자 (Ex. naver, google, ...)
 //    String getProvider();
 //
@@ -13,4 +13,4 @@
 //    String getprofileImage();
 //    // 사용자 실명 (설정한 이름)
 //    String getName();
-//}
+// }

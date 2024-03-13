@@ -1,12 +1,12 @@
-//package com.orange.fintech.oauth.dto;
+// package com.orange.fintech.oauth.dto;
 //
-//import java.util.ArrayList;
-//import java.util.Collection;
-//import java.util.Map;
-//import org.springframework.security.core.GrantedAuthority;
-//import org.springframework.security.oauth2.core.user.OAuth2User;
+// import java.util.ArrayList;
+// import java.util.Collection;
+// import java.util.Map;
+// import org.springframework.security.core.GrantedAuthority;
+// import org.springframework.security.oauth2.core.user.OAuth2User;
 //
-//public class CustomOAuth2User implements OAuth2User {
+// public class CustomOAuth2User implements OAuth2User {
 //
 //    private final MemberDto memberDto;
 //
@@ -48,4 +48,4 @@
 //
 //        return memberDto.getUsername();
 //    }
-//}
+// }
