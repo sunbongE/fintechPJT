@@ -9,17 +9,45 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                checkout scm
                 // Git 저장소에서 소스 코드를 가져옵니다.
-                git 'https://lab.ssafy.com/s10-fintech-finance-sub2/S10P22C203.git'
+                //git 'https://lab.ssafy.com/s10-fintech-finance-sub2/S10P22C203.git'
             }
         }
+        stage('Setup Environment') {
+                    steps {
+                        dir("${env.WORKSPACE}/BackEnd") {
+                            script {
+                                sh "ls . -al"
+                                sh "chmod +x ./gradlew"
+                            }
+                        }
+                    }
+                }
 
-        stage('Build') {
-            steps {
-                // Gradle을 사용하여 Spring Boot 프로젝트를 빌드합니다.
-                sh './gradlew clean build'
-            }
-        }
+        stage("Build") {
+                    steps {
+                        script {
+                            sh "ls -al"
+                            component.each { entry ->
+                                if (entry.value) {
+                                    sh "docker compose -p yeojung build --no-cache ${entry.key.toLowerCase()}"
+                                }
+                            }
+                        }
+                    }
+                }
+        stage("Login") {
+                    steps {
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'Docker-Hub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD']]) {
+                            sh """
+                                set +x
+                                echo $DOCKER_USER_PASSWORD | docker login -u $DOCKER_USER_ID --password-stdin
+                                set -x
+                            """
+                        }
+                    }
+                }
 
 //         stage('Test') {
 //             steps {
