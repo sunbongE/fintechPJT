@@ -7,6 +7,7 @@ pipeline {
                 // Git 저장소에서 소스 코드를 가져옵니다.
                 git 'https://lab.ssafy.com/s10-fintech-finance-sub2/S10P22C203.git'
             }
+
         }
 
         stage('Build') {
