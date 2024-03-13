@@ -29,11 +29,7 @@ pipeline {
                     steps {
                         script {
                             sh "ls -al"
-                            component.each { entry ->
-                                if (entry.value) {
-                                    sh "docker compose -p yeojung build --no-cache ${entry.key.toLowerCase()}"
-                                }
-                            }
+                            sh "docker compose -p yeojung build --no-cache ${entry.key.toLowerCase()}"
                         }
                     }
                 }
