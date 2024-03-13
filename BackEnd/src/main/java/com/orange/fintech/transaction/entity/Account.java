@@ -20,8 +20,7 @@ public class Account {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @NotNull
-    private int balance;
+    @NotNull private int balance;
 
     @ColumnDefault("false")
     private Boolean isPrimaryAccount;

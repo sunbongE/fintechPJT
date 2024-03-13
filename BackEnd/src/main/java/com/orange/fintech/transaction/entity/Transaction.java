@@ -5,14 +5,13 @@ import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.member.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -39,8 +38,7 @@ public class Transaction {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @NotNull
-    private int transactionUniqueNo;
+    @NotNull private int transactionUniqueNo;
 
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd", timezone = "Asia/Seoul")
@@ -58,11 +56,9 @@ public class Transaction {
     @Column(length = 10)
     private String transactionTypeName;
 
-    @NotNull
-    private long transactionBalance;
+    @NotNull private long transactionBalance;
 
-    @NotNull
-    private long transactionAfterBalance;
+    @NotNull private long transactionAfterBalance;
 
     @NotNull
     @Column(length = 20)
@@ -75,5 +71,4 @@ public class Transaction {
 
     @ColumnDefault("false")
     private boolean receiptEnrolled;
-
 }

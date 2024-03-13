@@ -1,21 +1,18 @@
 package com.orange.fintech.group.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.ColumnDefault;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
-//@DynamicInsert
-//@DynamicUpdate
+// @DynamicInsert
+// @DynamicUpdate
 public class Group {
 
     @Id
@@ -40,5 +37,4 @@ public class Group {
     @NotNull
     @ColumnDefault("false")
     private Boolean isCalculateDone = false;
-
 }
