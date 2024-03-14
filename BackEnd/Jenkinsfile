@@ -1,11 +1,59 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_IMAGE = 'openjdk:17-jdk'
+        CONTAINER_NAME = 'back'
+    }
+
     stages {
-        stage('Hello') {
+        stage('Checkout') {
             steps {
-                echo 'Hello World'
+                // Git 저장소에서 소스 코드를 가져옵니다.
+                git 'https://lab.ssafy.com/s10-fintech-finance-sub2/S10P22C203.git'
             }
+        }
+
+        stage('Build') {
+            steps {
+                // Gradle을 사용하여 Spring Boot 프로젝트를 빌드합니다.
+                sh './gradlew clean build'
+            }
+        }
+
+//         stage('Test') {
+//             steps {
+//                 // 빌드된 애플리케이션을 테스트합니다.
+//                 sh './gradlew test'
+//             }
+//         }
+
+        stage('Deploy') {
+            steps {
+                // Docker 컨테이너를 빌드하고 실행합니다.
+                script {
+                    docker.build("$DOCKER_IMAGE")
+                    docker.withRegistry('','dockerhub_credentials') {
+                        dockerImage.push('latest')
+                    }
+                    docker.run("-p 8080:8080 --name $CONTAINER_NAME -d $DOCKER_IMAGE")
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // 항상 수행되는 작업, 예를 들어, 클린업 작업 등을 여기에 추가할 수 있습니다.
+            echo '빌드 프로세스 완료.'
+        }
+        success {
+            // 빌드가 성공적으로 완료되었을 때 수행되는 작업
+            echo '성공적으로 빌드 및 배포되었습니다.'
+        }
+        failure {
+            // 빌드 실패 시 수행되는 작업
+            echo '빌드 또는 배포에 실패하였습니다.'
         }
     }
 }
