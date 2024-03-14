@@ -21,7 +21,6 @@ pipeline {
                                 sh "ls . -al"
                                 sh "chmod +x ./gradlew"
                                 sh "./gradlew clean build"
-
                             }
                         }
                     }
@@ -53,6 +52,22 @@ pipeline {
 //                 sh './gradlew test'
 //             }
 //         }
+        stage("Tag and Push") {
+                    steps {
+                        script {
+                            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'Docker-Hub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD']]) {
+                                                                    sh "docker push ${DOCKER_USER_ID}/myname-${var.toLowerCase()}"
+                                                                }
+                        }
+                    }
+                }
+        stage('Prune old images') {
+                    steps {
+                        script {
+                            sh "docker system prune --filter until=1h"
+                        }
+                    }
+                }
 
         stage('Deploy') {
             steps {
