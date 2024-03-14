@@ -58,18 +58,7 @@ pipeline {
                         }
                     }
                 }
-//         stage('Deploy') {
-//             steps {
-//                 // Docker 컨테이너를 빌드하고 실행합니다.
-//                 script {
-//                     docker.build("$DOCKER_IMAGE")
-//                     docker.withRegistry('','dockerhub_credentials') {
-//                         dockerImage.push('latest')
-//                     }
-//                     docker.run("-p 8080:8080 --name $CONTAINER_NAME -d $DOCKER_IMAGE")
-//                 }
-//             }
-//         }
+
         stage('Pull') {
                 steps {
                     script {
