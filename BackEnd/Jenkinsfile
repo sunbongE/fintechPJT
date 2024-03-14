@@ -1,3 +1,7 @@
+def component = [
+//         front: false,
+        back: true,
+]
 pipeline {
     agent any
 
