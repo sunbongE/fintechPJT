@@ -15,15 +15,12 @@ import org.springframework.context.annotation.Configuration;
                         version = "v1.0.0"))
 @Configuration
 @RequiredArgsConstructor
-public class SwaggerConfiguration {
+public class SwaggerConfig {
 
     @Bean
     public GroupedOpenApi customTestOpenAPi() {
         String[] paths = {"/**"};
 
-        return GroupedOpenApi.builder()
-                .group("Team Orange에서 사용하는 도메인에 대한 API")
-                .pathsToMatch(paths)
-                .build();
+        return GroupedOpenApi.builder().group("API 1.0.0").pathsToMatch(paths).build();
     }
 }
