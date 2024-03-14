@@ -5,10 +5,10 @@ def component = [
 pipeline {
     agent any
 
-    environment {
-        DOCKER_IMAGE = 'openjdk:17-jdk'
-        CONTAINER_NAME = 'back'
-    }
+//     environment {
+//         DOCKER_IMAGE = 'openjdk:17-jdk'
+//         CONTAINER_NAME = 'back'
+//     }
 
     stages {
         stage('Checkout') {
