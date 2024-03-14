@@ -14,17 +14,17 @@ pipeline {
                 //git 'https://lab.ssafy.com/s10-fintech-finance-sub2/S10P22C203.git'
             }
         }
-        stage('Setup Environment') {
-                    steps {
-                        dir("${env.WORKSPACE}/BackEnd") {
-                            script {
-                                sh "ls . -al"
-                                sh "chmod +x ./gradlew"
-                                sh "./gradlew clean build"
-                            }
-                        }
-                    }
-                }
+//         stage('Setup Environment') {
+//                     steps {
+//                         dir("${env.WORKSPACE}/BackEnd") {
+//                             script {
+//                                 sh "ls . -al"
+//                                 sh "chmod +x ./gradlew"
+//                                 sh "./gradlew clean build"
+//                             }
+//                         }
+//                     }
+//                 }
 
         stage("Build") {
                     steps {
