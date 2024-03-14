@@ -1,6 +1,7 @@
 package com.orange.fintech.group.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.orange.fintech.common.NotificationType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -35,12 +36,6 @@ public class GroupNotification {
             pattern = "yyyyMMdd HHmmss",
             timezone = "Asia/Seoul")
     private LocalDateTime time;
-
-    public enum NotificationType {
-        TYPE_A,
-        TYPE_B,
-        TYPE_C
-    }
 
     @NotNull
     @Enumerated(EnumType.STRING)

@@ -20,6 +20,6 @@ public class ReceiptDetailMemberPK implements Serializable {
     private ReceiptDetail receiptDetail;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "email")
     private Member member;
 }

@@ -1,6 +1,7 @@
 package com.orange.fintech.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.orange.fintech.common.NotificationType;
 import com.orange.fintech.group.entity.Group;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +19,7 @@ public class IndividualNotification {
     private int individualNotificationId;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "email")
     private Member member;
 
     @NotNull
@@ -40,12 +41,6 @@ public class IndividualNotification {
             pattern = "yyyyMMdd HHmmss",
             timezone = "Asia/Seoul")
     private LocalDateTime time;
-
-    public enum NotificationType {
-        TYPE_A,
-        TYPE_B,
-        TYPE_C
-    }
 
     @NotNull
     @Enumerated(EnumType.STRING)

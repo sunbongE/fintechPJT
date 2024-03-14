@@ -20,6 +20,6 @@ public class TransactionMemberPK implements Serializable {
     private Transaction transaction;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "email")
     private Member member;
 }

@@ -17,7 +17,7 @@ public class Account {
     private int accountNo;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "email")
     private Member member;
 
     @NotNull private int balance;
