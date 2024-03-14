@@ -1,4 +1,4 @@
-package com.orange.fintech.transaction.entity;
+package com.orange.fintech.payment.entity;
 
 import com.orange.fintech.member.entity.Member;
 import jakarta.persistence.Embeddable;
@@ -13,11 +13,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class TransactionMemberPK implements Serializable {
+public class ReceiptDetailMemberPK implements Serializable {
 
     @ManyToOne
-    @JoinColumn(name = "transaction_id")
-    private Transaction transaction;
+    @JoinColumn(name = "receipt_detail_id")
+    private ReceiptDetail receiptDetail;
 
     @ManyToOne
     @JoinColumn(name = "email")

@@ -1,4 +1,4 @@
-package com.orange.fintech.transaction.entity;
+package com.orange.fintech.payment.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;

@@ -1,6 +1,5 @@
-package com.orange.fintech.transaction.entity;
+package com.orange.fintech.member.entity;
 
-import com.orange.fintech.member.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
