@@ -1,10 +1,14 @@
+def component = [
+//         front: false,
+        back: true,
+]
 pipeline {
     agent any
 
-    environment {
-        DOCKER_IMAGE = 'openjdk:17-jdk'
-        CONTAINER_NAME = 'back'
-    }
+//     environment {
+//         DOCKER_IMAGE = 'openjdk:17-jdk'
+//         CONTAINER_NAME = 'back'
+//     }
 
     stages {
         stage('Checkout') {
@@ -14,19 +18,6 @@ pipeline {
                 //git 'https://lab.ssafy.com/s10-fintech-finance-sub2/S10P22C203.git'
             }
         }
-        stage('Setup Environment') {
-                    steps {
-                        dir("${env.WORKSPACE}/BackEnd") {
-                            script {
-                                sh "ls . -al"
-                                sh "chmod +x ./gradlew"
-                                sh "./gradlew clean build"
-
-                            }
-                        }
-                    }
-                }
-
         stage("Build") {
                     steps {
                         script {
@@ -46,40 +37,74 @@ pipeline {
                         }
                     }
                 }
-
-//         stage('Test') {
-//             steps {
-//                 // 빌드된 애플리케이션을 테스트합니다.
-//                 sh './gradlew test'
-//             }
-//         }
-
-        stage('Deploy') {
-            steps {
-                // Docker 컨테이너를 빌드하고 실행합니다.
-                script {
-                    docker.build("$DOCKER_IMAGE")
-                    docker.withRegistry('','dockerhub_credentials') {
-                        dockerImage.push('latest')
+        stage("Tag and Push") {
+                    steps {
+                        script {
+                            component.each { entry ->
+                                if (entry.value && entry.key != "redis") {
+                                    def var = entry.key
+                                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'Docker-Hub', usernameVariable: 'DOCKER_USER_ID', passwordVariable: 'DOCKER_USER_PASSWORD']]) {
+                                        sh "docker push ${DOCKER_USER_ID}/yeojung-${var.toLowerCase()}"
+                                    }
+                                }
+                            }
+                        }
                     }
-                    docker.run("-p 8080:8080 --name $CONTAINER_NAME -d $DOCKER_IMAGE")
+                }
+        stage('Prune old images') {
+                    steps {
+                        script {
+                            sh "docker system prune --filter until=1h"
+                        }
+                    }
+                }
+
+        stage('Pull') {
+                steps {
+                    script {
+                        component.each { entry ->
+                            if (entry.value && entry.key != "redis") {
+                                def var = entry.key
+                                sh "docker compose -p yeojung pull ${var.toLowerCase()}"
+                            }
+                        }
+                    }
                 }
             }
-        }
+
+    stage('Up') {
+                steps {
+                    script {
+                        component.each { entry ->
+                            if (entry.value) {
+                                def var = entry.key
+                                try {
+                                    sh "docker compose -p yeojung up -d ${var.toLowerCase()}"
+                                } catch (Exception e) {
+                                    // 'docker compose up -d' 명령이 실패한 경우
+                                    echo "Failed to up. Starting 'docker compose start'..."
+                                    sh "docker compose -p yeojung restart ${var.toLowerCase()}"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
     }
 
-    post {
-        always {
-            // 항상 수행되는 작업, 예를 들어, 클린업 작업 등을 여기에 추가할 수 있습니다.
-            echo '빌드 프로세스 완료.'
-        }
-        success {
-            // 빌드가 성공적으로 완료되었을 때 수행되는 작업
-            echo '성공적으로 빌드 및 배포되었습니다.'
-        }
-        failure {
-            // 빌드 실패 시 수행되는 작업
-            echo '빌드 또는 배포에 실패하였습니다.'
-        }
+        post {
+            always {
+                // 항상 수행되는 작업, 예를 들어, 클린업 작업 등을 여기에 추가할 수 있습니다.
+                echo '빌드 프로세스 완료.'
+            }
+            success {
+                // 빌드가 성공적으로 완료되었을 때 수행되는 작업
+                echo '성공적으로 빌드 및 배포되었습니다.'
+            }
+            failure {
+                // 빌드 실패 시 수행되는 작업
+                echo '빌드 또는 배포에 실패하였습니다.'
+            }
+
     }
 }
