@@ -3,13 +3,12 @@ package com.orange.fintech.auth.controller;
 import com.orange.fintech.auth.dto.JoinDto;
 import com.orange.fintech.auth.service.JoinService;
 import com.orange.fintech.common.BaseResponseBody;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @Slf4j
 @RestController
