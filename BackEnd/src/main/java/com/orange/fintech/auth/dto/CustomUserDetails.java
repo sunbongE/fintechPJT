@@ -35,14 +35,14 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getPassword() {
 
-        return member.getPassword();
+        return "null";
     }
 
     @Override
     public String getUsername() {
         log.info("member : {} ", member.toString());
         log.info("** getUsername 실행");
-        return member.getEmail();
+        return member.getKakaoId();
     }
 
     @Override

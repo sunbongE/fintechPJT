@@ -14,19 +14,24 @@ import org.hibernate.annotations.DynamicInsert;
 @Table(name = "member")
 public class Member {
 
-    @Id private String email; // 회원 검색에 사용.
+    @Id
+    @Column(unique = true)
+    private String kakaoId;
+
+    @Column(unique = true)
+    private String email; // 회원 검색에 사용.
 
     private String name; // 회원명
 
     private String profileImage; // 프로필 이미지 경로 + 이름.???? 아직 모름
+    private String thumbnailImage; // 프로필 이미지 경로 + 이름.???? 아직 모름
 
     private String pin;
 
+    private String fcmToken;
+
+    @Column(unique = true)
     private String userKey; // ssafy_Bank 서비스를 이용하는데 사용될 키.
-
-    private String username; // 실습용
-
-    private String password; // 삭제 예정.
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'ROLE_USER'")
@@ -38,7 +43,6 @@ public class Member {
         this.email = joinDto.getEmail();
         this.name = joinDto.getName();
         this.profileImage = joinDto.getProfileImage();
-        this.password = joinDto.getPassword();
     }
 
     @Override
@@ -52,9 +56,6 @@ public class Member {
                 + '\''
                 + ", profileImage='"
                 + profileImage
-                + '\''
-                + ", password='"
-                + password
                 + '\''
                 + ", role="
                 + role

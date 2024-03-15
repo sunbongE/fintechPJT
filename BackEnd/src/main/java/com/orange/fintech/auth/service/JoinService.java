@@ -23,7 +23,7 @@ public class JoinService {
         String password = dto.getPassword();
         //        dto.setPassword(bCryptPasswordEncoder.encode(password));
 
-        Boolean isExist = memberRepository.existsByEmail(email);
+        Boolean isExist = memberRepository.existsByKakaoId(email);
 
         if (isExist) { // 이미 회원가입 한 이메일인 경우.
             return false;
