@@ -16,7 +16,7 @@ import lombok.*;
 public class GroupMemberPK implements Serializable {
 
     @ManyToOne
-    @JoinColumn(name = "email")
+    @JoinColumn(name = "kakao_id")
     private Member member;
 
     @ManyToOne

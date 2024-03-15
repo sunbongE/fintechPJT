@@ -22,12 +22,12 @@ public class CalculateResult {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "send_member_id")
+    @JoinColumn(name = "send_kakao_id")
     private Member sendMember;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "receive_member_id")
+    @JoinColumn(name = "receive_kakao_id")
     private Member receiveMember;
 
     @NotNull private long amount;

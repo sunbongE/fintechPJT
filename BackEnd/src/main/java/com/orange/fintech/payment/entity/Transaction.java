@@ -36,7 +36,7 @@ public class Transaction {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "email")
+    @JoinColumn(name = "kakao_id")
     private Member member;
 
     @NotNull private int transactionUniqueNo;
