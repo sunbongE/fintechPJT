@@ -19,7 +19,7 @@ public class IndividualNotification {
     private int individualNotificationId;
 
     @ManyToOne
-    @JoinColumn(name = "email")
+    @JoinColumn(name = "kakao_id")
     private Member member;
 
     @NotNull
