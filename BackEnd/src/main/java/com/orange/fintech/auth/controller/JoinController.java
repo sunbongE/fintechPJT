@@ -20,6 +20,8 @@ public class JoinController {
 
     @PostMapping("/join")
     public ResponseEntity<?> joinProcess(@RequestBody JoinDto dto) {
+        log.info("**join Controller 호출");
+        log.info("dto :{}",dto);
         try {
 
             if (joinService.joinProcess(dto)) {
