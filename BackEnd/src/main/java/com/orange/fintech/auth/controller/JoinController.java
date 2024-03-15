@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -32,6 +34,14 @@ public class JoinController {
             return ResponseEntity.internalServerError()
                     .body(BaseResponseBody.of(500, "Server Error"));
         }
+    }
+
+    @PostMapping("/jointest")
+    public ResponseEntity<?> joinProcess(@RequestBody Map<String, Object> requestObject) {
+        System.out.println("requestObject");
+        System.out.println(requestObject);
+
+        return ResponseEntity.ok(BaseResponseBody.of(200, "Receive Success"));
     }
 
     @GetMapping("/test")
