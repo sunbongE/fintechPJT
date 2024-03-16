@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/const/colors/Colors.dart';
 
 class Button extends StatefulWidget {
@@ -23,8 +24,8 @@ class _ButtonState extends State<Button> {
       style: ElevatedButton.styleFrom(
         backgroundColor: BUTTON_COLOR,
         minimumSize: Size(
-          298,
-          66,
+          298.w,
+          66.h,
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
@@ -35,7 +36,7 @@ class _ButtonState extends State<Button> {
       child: Text(widget.btnText,
         style: TextStyle(
           color: Colors.white,
-          fontSize: 20,
+          fontSize: 20.sp,
         ),
       ),
     );

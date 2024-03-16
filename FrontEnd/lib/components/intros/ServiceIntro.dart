@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/intros/CreatePwPage.dart';
 import 'package:front/components/intros/IntroBox.dart';
-import 'package:front/providers/store.dart';
 
 class ServiceIntro extends StatefulWidget {
-  const ServiceIntro({super.key});
+  final int selectedIndex;
+
+  const ServiceIntro({super.key, this.selectedIndex = 0});
 
   @override
   State<ServiceIntro> createState() => _ServiceIntroState();
@@ -37,6 +39,16 @@ class _ServiceIntroState extends State<ServiceIntro> {
   final int stopIdex = 1;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.selectedIndex != 0) {
+        _pageController.jumpToPage(widget.selectedIndex);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -59,8 +71,8 @@ class _ServiceIntroState extends State<ServiceIntro> {
                 children: [
                   Image.asset(
                     "assets/images/introIcon$index.png",
-                    width: 403.05,
-                    height: 476.49,
+                    width: 403.05.w,
+                    height: 476.49.h,
                   ),
                   IntroBox(
                     title: introInfo[index]['title'],
@@ -74,9 +86,11 @@ class _ServiceIntroState extends State<ServiceIntro> {
                         );
                       } else if (index == stopIdex) {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CreatePwPage()));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CreatePwPage(),
+                          ),
+                        );
                       }
                     },
                   ),

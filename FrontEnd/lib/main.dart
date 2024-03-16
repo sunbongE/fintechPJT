@@ -6,6 +6,7 @@ import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 import 'package:front/screen/LogIn.dart';
 import 'package:front/routes.dart';
 import "package:front/providers/store.dart";
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,6 +14,8 @@ Future<void> main() async {
     nativeAppKey: '67ca4770ad20679139010583e0a57684',
     javaScriptAppKey: '506a7e7288e569efa8b05d06206ac60a',
   );
+
+  print("키 해시: " + await KakaoSdk.origin);
 
   runApp(
     ChangeNotifierProvider(
@@ -41,24 +44,24 @@ class _MyAppState extends State<MyApp> {
   Future<void> _loadInitialScreen() async {
     await UserInfo.loadUserInfo();
     setState(() {
-      // _initialScreen = UserInfo.name != null ? HomeScreen() : Login();
       _initialScreen = UserInfo.name != null ? Login() : Login();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // status bar 투명하게, 글씨 검정
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
     ));
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      routes: Routes.routes,
-      // home: isLoginProvider.isLogin ? HomeScreen() : Login(),
-      home: _initialScreen,
+    return ScreenUtilInit(
+      designSize: Size(430, 932),
+      builder: (_ , child) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        routes: Routes.routes,
+        home: _initialScreen,
+      ),
     );
   }
 }

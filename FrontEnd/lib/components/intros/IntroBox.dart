@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/models/button/Button.dart';
 
 class IntroBox extends StatefulWidget {
@@ -23,8 +24,8 @@ class _IntroBoxState extends State<IntroBox> {
   Widget build(BuildContext context) {
 
     return Container(
-      width: 350,
-      height: 350,
+      width: 350.w,
+      height: 350.h,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -39,11 +40,11 @@ class _IntroBoxState extends State<IntroBox> {
               children: [
                 Text(widget.title,
                     style:
-                        TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+                        TextStyle(fontSize: 30.sp, fontWeight: FontWeight.bold)),
                 SizedBox(
-                  height: 22,
+                  height: 22.h,
                 ),
-                Text(widget.desc, style: TextStyle(fontSize: 16)),
+                Text(widget.desc, style: TextStyle(fontSize: 16.sp)),
               ],
             ),
           ),
