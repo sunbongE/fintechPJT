@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:front/providers/store.dart';
+import 'package:front/repository/common.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 Future<bool> SocialKakao() async {
@@ -10,6 +11,7 @@ Future<bool> SocialKakao() async {
       await UserApi.instance.loginWithKakaoTalk();
       User user = await UserApi.instance.me();
       UserInfo.updateUserInfo(user);
+      // await postUserInfo(user);
       return true;
     } catch (error) {
       print('카카오톡으로 로그인 실패 $error');
@@ -24,6 +26,7 @@ Future<bool> SocialKakao() async {
         await UserApi.instance.loginWithKakaoAccount();
         User user = await UserApi.instance.me();
         UserInfo.updateUserInfo(user);
+        // await postUserInfo(user);
         return true;
       } catch (error) {
         print('카카오계정으로 로그인 실패 $error');
@@ -35,6 +38,7 @@ Future<bool> SocialKakao() async {
       await UserApi.instance.loginWithKakaoAccount();
       User user = await UserApi.instance.me();
       UserInfo.updateUserInfo(user);
+      // await postUserInfo(user);
       return true;
     } catch (error) {
       print('카카오계정으로 로그인 실패 $error');

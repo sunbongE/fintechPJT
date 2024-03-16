@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 
 // Provider를 사용하기 위해서는 ChangeNotifier를 사용해서 클래스를 생성
 // 로그인
@@ -63,5 +64,25 @@ class UserInfo {
     email = await storage.read(key: 'email');
     thumbnail_image_url = await storage.read(key: 'thumbnail_image_url');
     profile_image_url = await storage.read(key: 'profile_image_url');
+  }
+}
+
+// 6자리 핀번호를 입력받은 비밀번호
+class PassWord {
+  static final storage = new FlutterSecureStorage();
+
+  static String? password;
+
+  static void updatePassWord(String? pw) {
+    password = pw;
+    savePassWord();
+  }
+
+  static Future<void> savePassWord() async {
+    await storage.write(key: 'password', value: password);
+  }
+
+  static Future<void> loadUserInfo() async {
+    password = await storage.read(key: 'password');
   }
 }
