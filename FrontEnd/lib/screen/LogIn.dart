@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:front/components/intros/ServiceIntro.dart';
 import 'package:front/components/login/SocialKakao.dart';
+import 'package:front/main.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/store.dart';
@@ -42,7 +43,13 @@ class _LoginState extends State<Login> {
                           MaterialPageRoute(
                               builder: (context) => ServiceIntro()),
                         );
-                      }
+                      } else {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                            builder: (context) => Login()),
+                        );
+                      };
                     },
                     icon: Image.asset(
                       "assets/images/kakao_login_btn.png",

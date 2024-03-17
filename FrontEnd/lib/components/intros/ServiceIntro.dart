@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/intros/CreatePwPage.dart';
 import 'package:front/components/intros/IntroBox.dart';
+import 'package:front/screen/HomeScreen.dart';
+
+import '../../providers/store.dart';
 
 class ServiceIntro extends StatefulWidget {
   final int selectedIndex;
@@ -50,53 +53,64 @@ class _ServiceIntroState extends State<ServiceIntro> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: AssetImage("assets/images/Service Intro_1.png"),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: AssetImage("assets/images/Service Intro_1.png"),
+          ),
         ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: SafeArea(
-          top: true,
-          bottom: false,
-          child: PageView.builder(
-            controller: _pageController,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: introInfo.length,
-            itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  Image.asset(
-                    "assets/images/introIcon$index.png",
-                    width: 403.05.w,
-                    height: 476.49.h,
-                  ),
-                  IntroBox(
-                    title: introInfo[index]['title'],
-                    desc: introInfo[index]['desc'],
-                    onNext: () {
-                      if (index < stopIdex) {
-                        _pageController.animateToPage(
-                          index + 1,
-                          duration: Duration(milliseconds: 400),
-                          curve: Curves.easeInOut,
-                        );
-                      } else if (index == stopIdex) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CreatePwPage(),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ],
-              );
-            },
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: SafeArea(
+            top: true,
+            bottom: false,
+            child: PageView.builder(
+              controller: _pageController,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: introInfo.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    Image.asset(
+                      "assets/images/introIcon$index.png",
+                      width: 403.05.w,
+                      height: 476.49.h,
+                    ),
+                    IntroBox(
+                      title: introInfo[index]['title'],
+                      desc: introInfo[index]['desc'],
+                      onNext: () {
+                        if (index < stopIdex) {
+                          _pageController.animateToPage(
+                            index + 1,
+                            duration: Duration(milliseconds: 400),
+                            curve: Curves.easeInOut,
+                          );
+                        } else if (index == stopIdex) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CreatePwPage(),
+                            ),
+                          );
+                        } else {
+                          UserManager().updateLoginState(true);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HomeScreen(),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),

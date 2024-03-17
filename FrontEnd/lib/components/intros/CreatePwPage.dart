@@ -6,6 +6,8 @@ import 'package:front/models/FlutterToastMsg.dart';
 import 'package:front/components/intros/KeyBoardBoard.dart';
 import 'package:front/components/intros/ShowPassWord.dart';
 import 'package:front/components/selectbank/SelectBank.dart';
+import 'package:front/models/button/ButtonSlideAnimation.dart';
+import 'package:front/repository/api/ApiLogin.dart';
 import 'package:local_auth/local_auth.dart';
 import '../../providers/store.dart';
 
@@ -86,58 +88,41 @@ class _CreatePwPageState extends State<CreatePwPage> {
       FlutterToastMsg(authenticated
           ? "생체 인증이 등록되었습니다."
           : "생체 인증이 등록되지 않았습니다.\n다음에 다시 등록해주세요.");
-      PassWord.updatePassWord(_confirmPassWord);
-
-      // pw api 보내기
-
-      Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => SelectBank(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            var begin = Offset(1.0, 0.0);
-            var end = Offset.zero;
-            var curve = Curves.ease;
-            var tween =
-                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-            var offsetAnimation = animation.drive(tween);
-
-            return SlideTransition(
-              position: offsetAnimation,
-              child: child,
-            );
-          },
-          transitionDuration: Duration(milliseconds: 300),
-        ),
-      );
+      UserManager().saveUserInfo(newPassword:_confirmPassWord);
+      // api 요청
+      // postPassWord(_confirmPassWord);
+      buttonSlideAnimation(context, SelectBank());
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 100.h),
-        child: Container(
-          child: PageView(
-            controller: _pageController,
-            physics: NeverScrollableScrollPhysics(),
-            children: [
-              buildPasswordPage(
-                "여정에서 사용할\n비밀번호를 설정하세요",
-                "숫자 6자리",
-                1,
-                _passWord,
-                _updatePassword,
-              ),
-              buildPasswordPage(
-                "비밀번호를\n한 번 더 입력해주세요",
-                "숫자 6자리",
-                2,
-                _confirmPassWord,
-                _updateConfirmPassWord,
-              ),
-            ],
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: Padding(
+          padding: EdgeInsets.fromLTRB(0, 100.h, 0, 0),
+          child: Container(
+            child: PageView(
+              controller: _pageController,
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                buildPasswordPage(
+                  "여정에서 사용할\n비밀번호를 설정하세요",
+                  "숫자 6자리",
+                  1,
+                  _passWord,
+                  _updatePassword,
+                ),
+                buildPasswordPage(
+                  "비밀번호를\n한 번 더 입력해주세요",
+                  "숫자 6자리",
+                  2,
+                  _confirmPassWord,
+                  _updateConfirmPassWord,
+                ),
+              ],
+            ),
           ),
         ),
       ),
