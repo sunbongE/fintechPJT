@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:front/components/selectbank/SelectBank.dart';
 import 'package:provider/provider.dart';
 import 'package:front/screen/HomeScreen.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
@@ -14,12 +15,13 @@ Future<void> main() async {
     nativeAppKey: '67ca4770ad20679139010583e0a57684',
     javaScriptAppKey: '506a7e7288e569efa8b05d06206ac60a',
   );
+  await UserManager().loadUserInfo();
 
   print("키 해시: " + await KakaoSdk.origin);
 
   runApp(
     ChangeNotifierProvider(
-      create: (context) => IsLogin(),
+      create: (context) => UserManager(),
       child: MyApp(),
     ),
   );
@@ -33,23 +35,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Widget _initialScreen = CircularProgressIndicator();
-
   @override
   void initState() {
     super.initState();
-    _loadInitialScreen();
-  }
-
-  Future<void> _loadInitialScreen() async {
-    await UserInfo.loadUserInfo();
-    setState(() {
-      _initialScreen = UserInfo.name != null ? Login() : Login();
-    });
   }
 
   @override
   Widget build(BuildContext context) {
+
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
@@ -57,10 +50,14 @@ class _MyAppState extends State<MyApp> {
 
     return ScreenUtilInit(
       designSize: Size(430, 932),
-      builder: (_ , child) => MaterialApp(
+      builder: (_, child) => MaterialApp(
         debugShowCheckedModeBanner: false,
         routes: Routes.routes,
-        home: _initialScreen,
+        home: Consumer<UserManager>(
+          builder: (context, userManager, child) {
+            return userManager.isLogin ? HomeScreen() : Login();
+          },
+        ),
       ),
     );
   }

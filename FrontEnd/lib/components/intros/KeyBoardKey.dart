@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/const/colors/Colors.dart';
 
 class KeyBoardKey extends StatefulWidget {
@@ -41,10 +42,10 @@ class _KeyBoardKeyState extends State<KeyBoardKey> {
       content = SizedBox();
     } else {
       content = Padding(
-        padding: const EdgeInsets.symmetric(vertical: 18),
+        padding: EdgeInsets.symmetric(vertical: 18.h),
         child: Text(
           widget.label,
-          style: TextStyle(fontSize: 40, color: textColor),
+          style: TextStyle(fontSize: 40.sp, color: textColor),
         ),
       );
     }
