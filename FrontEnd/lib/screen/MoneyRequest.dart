@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/button/ButtonMiddle.dart';
 import 'package:front/components/groups/GroupList.dart';
 
@@ -18,15 +19,15 @@ class MoneyRequest extends StatefulWidget {
 
 final List<dynamic> rawData = [
   {"장소": "초돈2", "금액": 78000, "날짜": "2024-05-01", "정산올림": true, "영수증존재": true},
-  {"장소": "초돈3", "금액": 20000, "날짜": "2024-05-01", "정산올림": false, "영수증존재": true},
-  {"장소": "초돈4", "금액": 30000, "날짜": "2024-05-01", "정산올림": true, "영수증존재": true},
+  {"장소": "초돈3", "금액": 20000, "날짜": "2024-05-01", "정산올림": false, "영수증존재": false},
+  {"장소": "초돈4", "금액": 30000, "날짜": "2024-05-01", "정산올림": true, "영수증존재": false},
   {"장소": "초돈5", "금액": 50000, "날짜": "2024-05-01", "정산올림": false, "영수증존재": true},
+  {"장소": "초돈5", "금액": 50000, "날짜": "2024-05-01", "정산올림": false, "영수증존재": false},
+  {"장소": "초돈5", "금액": 50000, "날짜": "2024-05-01", "정산올림": false, "영수증존재": false},
   {"장소": "초돈5", "금액": 50000, "날짜": "2024-05-01", "정산올림": false, "영수증존재": true},
+  {"장소": "초돈5", "금액": 50000, "날짜": "2024-05-01", "정산올림": false, "영수증존재": false},
   {"장소": "초돈5", "금액": 50000, "날짜": "2024-05-01", "정산올림": false, "영수증존재": true},
-  {"장소": "초돈5", "금액": 50000, "날짜": "2024-05-01", "정산올림": false, "영수증존재": true},
-  {"장소": "초돈5", "금액": 50000, "날짜": "2024-05-01", "정산올림": false, "영수증존재": true},
-  {"장소": "초돈5", "금액": 50000, "날짜": "2024-05-01", "정산올림": false, "영수증존재": true},
-  {"장소": "초돈5", "금액": 50000, "날짜": "2024-05-01", "정산올림": false, "영수증존재": true},
+  {"장소": "초돈5", "금액": 50000, "날짜": "2024-05-01", "정산올림": false, "영수증존재": false},
   {"장소": "초돈5", "금액": 50000, "날짜": "2024-05-01", "정산올림": false, "영수증존재": true},
   {"장소": "초돈5", "금액": 50000, "날짜": "2024-05-01", "정산올림": false, "영수증존재": true},
 ];
@@ -53,18 +54,20 @@ class _MoneyRequestState extends State<MoneyRequest> {
           children: [
             Column(
               children: [
+                Padding(padding: EdgeInsets.symmetric(vertical: 2.w)),
                 Text('정산할 항목들을 선택해주세요'),
-                Padding(padding: EdgeInsets.all(5)),
+                Padding(padding: EdgeInsets.symmetric(vertical: 5.w)),
                 Row(
                   children: [
                     ButtonMiddle(btnText: '영수증 일괄 등록',onPressed: (){print('object');},),
-                    Padding(padding: EdgeInsets.all(10)),
+                    Padding(padding: EdgeInsets.symmetric(horizontal: 5.w)),
                     ButtonMiddle(btnText: '현금 계산 추가',onPressed: (){print('object');},),
                   ],
                 ),
+                Padding(padding: EdgeInsets.symmetric(vertical: 5.w)),
                 Expanded(
                   // ListView를 Expanded로 감싸기
-                    child: SizedBox(width:368, child:MoneyRequestList(expenses: expenses),),
+                    child: SizedBox(width:368.w, child:MoneyRequestList(expenses: expenses),),
                 ),
 
               ],
