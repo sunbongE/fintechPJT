@@ -34,6 +34,7 @@ public class TransactionRepositorySupport {
                                         qTransaction.transactionBalance,
                                         qTransaction.transactionAfterBalance,
                                         qTransaction.transactionSummary,
+                                        qTransactionDetail.group.groupId,
                                         qTransactionDetail.memo,
                                         qTransactionDetail.receiptEnrolled))
                         .from(qTransaction)
@@ -46,10 +47,10 @@ public class TransactionRepositorySupport {
                                         .member
                                         .eq(member)
                                         .and(
-                                                qTransaction
+                                                qTransactionDetail
                                                         .group
                                                         .eq(group)
-                                                        .or(qTransaction.group.isNull())))
+                                                        .or(qTransactionDetail.group.isNull())))
                         .fetch();
 
         log.info("Member {}", member);

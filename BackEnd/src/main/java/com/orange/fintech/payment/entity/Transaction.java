@@ -1,7 +1,6 @@
 package com.orange.fintech.payment.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.member.entity.Account;
 import com.orange.fintech.member.entity.Member;
 import jakarta.persistence.*;
@@ -22,9 +21,9 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int transactionId;
 
-    @ManyToOne
-    @JoinColumn(name = "group_id")
-    private Group group;
+    //    @ManyToOne
+    //    @JoinColumn(name = "group_id")
+    //    private Group group;
 
     @NotNull
     @ManyToOne
