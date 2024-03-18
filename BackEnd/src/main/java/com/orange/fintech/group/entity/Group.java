@@ -37,4 +37,24 @@ public class Group {
     @NotNull
     @ColumnDefault("false")
     private Boolean isCalculateDone = false;
+
+    @Override
+    public String toString() {
+        return "Group{"
+                + "groupId="
+                + groupId
+                + ", groupName='"
+                + groupName
+                + '\''
+                + ", startDate="
+                + startDate
+                + ", endDate="
+                + endDate
+                + ", theme='"
+                + theme
+                + '\''
+                + ", isCalculateDone="
+                + isCalculateDone
+                + '}';
+    }
 }

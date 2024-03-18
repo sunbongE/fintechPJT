@@ -48,7 +48,10 @@ public class Member {
     @Override
     public String toString() {
         return "Member{"
-                + "email='"
+                + "kakaoId='"
+                + kakaoId
+                + '\''
+                + ", email='"
                 + email
                 + '\''
                 + ", name='"
@@ -56,6 +59,18 @@ public class Member {
                 + '\''
                 + ", profileImage='"
                 + profileImage
+                + '\''
+                + ", thumbnailImage='"
+                + thumbnailImage
+                + '\''
+                + ", pin='"
+                + pin
+                + '\''
+                + ", fcmToken='"
+                + fcmToken
+                + '\''
+                + ", userKey='"
+                + userKey
                 + '\''
                 + ", role="
                 + role
