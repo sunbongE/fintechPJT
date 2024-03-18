@@ -10,15 +10,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Getter
 @Setter
-@DynamicInsert
-@DynamicUpdate
+// @DynamicInsert
+// @DynamicUpdate
 public class Transaction {
 
     @Id
@@ -39,7 +36,8 @@ public class Transaction {
     @JoinColumn(name = "kakao_id")
     private Member member;
 
-    @NotNull private int transactionUniqueNo;
+    //    @Column(nullable = true)
+    private Integer transactionUniqueNo;
 
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd", timezone = "Asia/Seoul")
@@ -49,27 +47,17 @@ public class Transaction {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HHmmss", timezone = "Asia/Seoul")
     private LocalTime transactionTime;
 
-    @NotNull
     @Column(length = 5)
     private String transactionType;
 
-    @NotNull
     @Column(length = 10)
     private String transactionTypeName;
 
-    @NotNull private long transactionBalance;
+    private Long transactionBalance;
 
-    @NotNull private long transactionAfterBalance;
+    private Long transactionAfterBalance;
 
     @NotNull
     @Column(length = 20)
     private String transactionSummary;
-
-    @Column(length = 20)
-    private String memo;
-
-    private int remainder;
-
-    @ColumnDefault("false")
-    private boolean receiptEnrolled;
 }
