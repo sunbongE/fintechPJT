@@ -79,6 +79,22 @@ class UserManager with ChangeNotifier {
     notifyListeners();
   }
 
+  // 로그아웃 시 storage 초기화
+  Future<void> clearUserInfo() async {
+    name = null;
+    email = null;
+    thumbnailImageUrl = null;
+    profileImageUrl = null;
+    jwtToken = null;
+    password = null;
+    selectedBank = null;
+    selectedAccount = null;
+    _isLogin = false;
+    await storage.deleteAll();
+
+    notifyListeners();
+  }
+
   // 로그인 상태 변경
   void updateLoginState(bool loginState) async {
     _isLogin = loginState;

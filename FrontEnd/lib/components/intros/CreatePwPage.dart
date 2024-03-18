@@ -9,6 +9,7 @@ import 'package:front/components/selectbank/SelectBank.dart';
 import 'package:front/models/button/ButtonSlideAnimation.dart';
 import 'package:front/repository/api/ApiLogin.dart';
 import 'package:local_auth/local_auth.dart';
+import '../../models/Biometrics.dart';
 import '../../providers/store.dart';
 
 class CreatePwPage extends StatefulWidget {
@@ -49,7 +50,14 @@ class _CreatePwPageState extends State<CreatePwPage> {
 
     if (_confirmPassWord.length == 6) {
       if (_confirmPassWord == _passWord) {
-        await _checkBiometrics();
+        bool? authenticated = await CheckBiometrics();
+        if (authenticated == true) {
+          FlutterToastMsg("생체 인증이 등록되었습니다.");
+        } else {
+          FlutterToastMsg("생체 인증이 등록되지 않았습니다.\n다음에 다시 등록해주세요.");
+        }
+        UserManager().saveUserInfo(newPassword: _confirmPassWord);
+        buttonSlideAnimation(context, SelectBank());
       } else {
         FlutterToastMsg("비밀번호가 일치하지 않습니다.\n다시 입력해주세요.");
         setState(() {
@@ -62,36 +70,6 @@ class _CreatePwPageState extends State<CreatePwPage> {
           curve: Curves.easeInOut,
         );
       }
-    }
-  }
-
-  // 생체인증
-  Future<void> _checkBiometrics() async {
-    bool canCheckBiometrics = false;
-    try {
-      canCheckBiometrics = await auth.canCheckBiometrics;
-    } on PlatformException catch (e) {
-      print(e);
-    }
-    if (!canCheckBiometrics) {
-      FlutterToastMsg("생체 인증을 지원하지 않는 기기입니다.");
-    } else {
-      bool authenticated = false;
-      try {
-        authenticated = await auth.authenticate(
-          localizedReason: '생체 인증을 진행해 주세요',
-          options: const AuthenticationOptions(biometricOnly: true),
-        );
-      } on PlatformException catch (e) {
-        print(e);
-      }
-      FlutterToastMsg(authenticated
-          ? "생체 인증이 등록되었습니다."
-          : "생체 인증이 등록되지 않았습니다.\n다음에 다시 등록해주세요.");
-      UserManager().saveUserInfo(newPassword:_confirmPassWord);
-      // api 요청
-      // postPassWord(_confirmPassWord);
-      buttonSlideAnimation(context, SelectBank());
     }
   }
 

@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:front/components/mypage/MyInfo.dart';
+import '../components/mypage/MyAccount.dart';
+import '../components/mypage/ProfileChange.dart';
+import '../components/mypage/ProfileChangeBtn.dart';
+import '../models/button/ButtonSlideAnimation.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({super.key});
@@ -10,9 +16,25 @@ class MyPage extends StatefulWidget {
 class _MyPageState extends State<MyPage> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Text('MyPage'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "마이페이지",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.sp),
+        ),
+      ),
+      body: Column(
+        children: [
+          MyInfo(),
+          ProfileChangeBtn(
+            buttonText: '프로필 수정',
+            onPressed: () => buttonSlideAnimation(
+              context,
+              ProfileChange(),
+            ),
+          ),
+          MyAccount(),
+        ],
       ),
     );
   }
