@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:front/models/Expense.dart';
 
+import '../../screen/MoneyRequests/MoneyRequestDetail.dart';
 import 'MoneyRequestItem.dart'; // Expense 모델 import
 
 class MoneyRequestList extends StatelessWidget {
@@ -12,7 +13,15 @@ class MoneyRequestList extends StatelessWidget {
     return ListView.builder(
       itemCount: expenses.length,
       itemBuilder: (context, index) {
-        return MoneyRequestItem(expense: expenses[index]);
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MoneyRequestDetail(expense: expenses[index])),
+            );
+          },
+          child: MoneyRequestItem(expense: expenses[index]),
+        );
       },
     );
   }

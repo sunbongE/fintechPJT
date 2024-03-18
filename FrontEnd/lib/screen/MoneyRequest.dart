@@ -2,16 +2,15 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:front/components/button/ButtonMiddle.dart';
+import 'package:front/components/button/SizedButton.dart';
 import 'package:front/components/groups/GroupList.dart';
+import 'package:front/screen/HomeScreen.dart';
 
 import '../components/moneyrequests/MoneyRequestList.dart';
 import '../models/Expense.dart';
 
 class MoneyRequest extends StatefulWidget {
   const MoneyRequest({super.key});
-
-
 
   @override
   State<MoneyRequest> createState() => _MoneyRequestState();
@@ -35,14 +34,15 @@ final List<dynamic> rawData = [
 class _MoneyRequestState extends State<MoneyRequest> {
   @override
   Widget build(BuildContext context) {
-
-    List<Expense> expenses = rawData.map((data) => Expense(
-      place: data['장소'],
-      amount: data['금액'],
-      date: data['날짜'],
-      isSettled: data['정산올림'],
-      isReceipt: data['영수증존재'],
-    )).toList();
+    List<Expense> expenses = rawData
+        .map((data) => Expense(
+              place: data['장소'],
+              amount: data['금액'],
+              date: data['날짜'],
+              isSettled: data['정산올림'],
+              isReceipt: data['영수증존재'],
+            ))
+        .toList();
 
     return SafeArea(
       child: Scaffold(
@@ -59,21 +59,36 @@ class _MoneyRequestState extends State<MoneyRequest> {
                 Padding(padding: EdgeInsets.symmetric(vertical: 5.w)),
                 Row(
                   children: [
-                    ButtonMiddle(btnText: '영수증 일괄 등록',onPressed: (){print('object');},),
+                    SizedButton(
+                      btnText: '영수증 일괄 등록',
+                      onPressed: () {
+                        print('object');
+                      },
+                    ),
                     Padding(padding: EdgeInsets.symmetric(horizontal: 5.w)),
-                    ButtonMiddle(btnText: '현금 계산 추가',onPressed: (){print('object');},),
+                    SizedButton(
+                      btnText: '현금 계산 추가',
+                      onPressed: () {
+                        print('object');
+                      },
+                    ),
                   ],
                 ),
                 Padding(padding: EdgeInsets.symmetric(vertical: 5.w)),
                 Expanded(
                   // ListView를 Expanded로 감싸기
-                    child: SizedBox(width:368.w, child:MoneyRequestList(expenses: expenses),),
+                  child: SizedBox(
+                    width: 368.w,
+                    height: 594.h,
+                    child: MoneyRequestList(expenses: expenses),
+                  ),
                 ),
-
+                Padding(padding: EdgeInsets.symmetric(vertical: 20.w)),
               ],
             ),
           ],
         ),
+        //bottomNavigationBar: HomeScreen(),지금 네비바가 따로 안나와 있나???
       ),
     );
   }
