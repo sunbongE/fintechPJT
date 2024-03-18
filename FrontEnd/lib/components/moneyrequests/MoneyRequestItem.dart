@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/button/Toggle.dart';
 import 'package:front/models/Expense.dart';
+import 'package:intl/intl.dart';
 
 class MoneyRequestItem extends StatefulWidget {
   final Expense expense;
+  final bool isToggle;
 
-  MoneyRequestItem({Key? key, required this.expense}) : super(key: key);
+  MoneyRequestItem({Key? key, required this.expense, this.isToggle = true}) : super(key: key);
 
   @override
   _MoneyRequestItemState createState() => _MoneyRequestItemState();
@@ -21,7 +23,6 @@ class _MoneyRequestItemState extends State<MoneyRequestItem> {
     if (widget.expense.isReceipt)
       iconColor = Colors.green;
     isSettled = widget.expense.isSettled;
-    print(isSettled);
 
     return Container(
       width: 368.w,
@@ -55,11 +56,12 @@ class _MoneyRequestItemState extends State<MoneyRequestItem> {
               ),
             ),
 
-            Text('${widget.expense.amount}원',
+            Text('${NumberFormat('#,###').format(widget.expense.amount)}원',
                 style: TextStyle(
                   fontSize: 18.sp,
                 )),
             SizedBox(width: 4.w),
+            if (widget.isToggle)
             Toggle(
               initialValue: isSettled,
               onToggle: (value) {
