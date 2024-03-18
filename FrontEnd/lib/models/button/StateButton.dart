@@ -34,14 +34,14 @@ class _ButtonState extends State<TravelingButton> {
           ),
         ),
       ),
-      child: Text(widget.btnText,
+      child: Text(
+        widget.btnText,
         style: TextStyle(
           color: Colors.white,
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
       ),
-
     );
   }
 }

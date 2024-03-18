@@ -38,16 +38,16 @@ class _LoginState extends State<Login> {
                       });
                       bool loginSuccess = await SocialKakao();
                       if (loginSuccess) {
-                        Navigator.pushReplacement(
+                        Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => ServiceIntro()),
+                          MaterialPageRoute(builder: (context) => ServiceIntro()),
+                              (Route<dynamic> route) => false,
                         );
                       } else {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                            builder: (context) => Login()),
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => Login()),
+                              (Route<dynamic> route) => false,
                         );
                       };
                     },

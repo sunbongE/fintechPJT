@@ -98,11 +98,11 @@ class _ServiceIntroState extends State<ServiceIntro> {
                           );
                         } else {
                           UserManager().updateLoginState(true);
-                          Navigator.push(
+                          Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => HomeScreen(),
-                            ),
+                                builder: (context) => HomeScreen()),
+                            (Route<dynamic> route) => false,
                           );
                         }
                       },
