@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:front/components/groups/GroupList.dart';
+import 'package:front/screen/groupscreens/GroupDetail.dart';
 import 'package:front/screen/groupscreens/GroupModify.dart';
+
+import '../../models/Group.dart';
 
 
 class GroupDetail2 extends StatelessWidget {
@@ -25,7 +28,7 @@ class GroupDetail2 extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => GroupModify(group: group),
+                      builder: (context) => GroupDetail(group: group),
                     ),
                   );                },
                 child: Text('그룹 정보 수정'),

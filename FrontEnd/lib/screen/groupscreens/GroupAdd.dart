@@ -7,6 +7,8 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 import 'package:flutter/services.dart';
 
+import '../../models/Group.dart';
+
 class GroupAdd extends StatefulWidget {
   @override
   _GroupAddState createState() => _GroupAddState();
@@ -61,7 +63,7 @@ class _GroupAddState extends State<GroupAdd> {
       startDate: _startDateText.toString(),
       endDate: _endDateText.toString(),
       //처음에 그룹 만들때는 0으로, 이후 자동으로 Group에서 오늘 날짜가 지나면 1로 변경하도록
-      groupState: false,
+      groupState: false, groupMembers: [],
     );
     Navigator.pop(context, newGroup);
 

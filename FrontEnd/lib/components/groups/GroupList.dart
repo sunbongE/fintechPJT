@@ -3,33 +3,24 @@ import 'package:front/const/colors/Colors.dart';
 import 'package:front/screen/groupscreens/GroupAdd.dart'; // Group 클래스를 import
 import 'package:front/screen/groupscreens/GroupDetail.dart';
 
-//백에서 group정보 받아오면 여기에 넣기
-class Group {
-  String title;
-  String description;
-  String startDate;
-  String endDate;
-  bool groupState;
+import '../../models/Group.dart';
 
-  Group({
-    required this.title,
-    required this.description,
-    required this.startDate,
-    required this.endDate,
-    required this.groupState,
-  });
-}
+//백에서 group정보 받아오면 여기에 넣기
 
 class GroupList extends StatefulWidget {
+  final List<Group> groups;
+  //final List<Group> groups;
+  const GroupList({Key? key, required this.groups}) : super(key: key);
 
-  static List<Group> getGroups(BuildContext context) {
-    final _GroupListState state = context.findAncestorStateOfType<_GroupListState>()!;
-    return state.groups;
-  }
-  static void setGroups(BuildContext context, List<Group> updatedGroup) {
-    final _GroupListState state = context.findAncestorStateOfType<_GroupListState>()!;
-      state.groups = updatedGroup;
-  }
+
+  // static List<Group> getGroups(BuildContext context) {
+  //   final _GroupListState state = context.findAncestorStateOfType<_GroupListState>()!;
+  //   return state.groups;
+  // }
+  // static void setGroups(BuildContext context, List<Group> updatedGroup) {
+  //   final _GroupListState state = context.findAncestorStateOfType<_GroupListState>()!;
+  //     state.groups = updatedGroup;
+  // }
 
 
   @override
@@ -37,13 +28,8 @@ class GroupList extends StatefulWidget {
 }
 
 class _GroupListState extends State<GroupList> {
-  String title = "";
-  String description = "";
-  String startDate = ""; // 시작 날짜를 저장할 변수
-  String endDate = ""; // 종료 날짜를 저장할 변수
-  bool groupState = false;
 
-  List<Group> groups = [];
+  //List<Group> groups = [];
 
   void navigateToGroupAdd() async {
     Group newGroup = await Navigator.push(
@@ -52,7 +38,7 @@ class _GroupListState extends State<GroupList> {
     );
     if (newGroup != null) {
       setState(() {
-        groups.add(newGroup);
+        widget.groups.add(newGroup);
       });
     }
   }
@@ -68,26 +54,26 @@ class _GroupListState extends State<GroupList> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView.builder(
-        itemCount: groups.length,
+        itemCount: widget.groups.length,
         itemBuilder: (context, index) {
           DateTime today = DateTime.now();
-          DateTime endDateParsed = DateTime.parse(groups[index].endDate);
-          if (today.isAfter(endDateParsed)) {
-            groups[index].groupState = true;
-          }
+          DateTime endDateParsed = DateTime.parse(widget.groups[index].endDate);
+          // if (today.isAfter(endDateParsed)) { 지연-임의로 지움
+          //   groups[index].groupState = true;
+          // }
           return Card(
             margin: EdgeInsets.all(10.0),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
             ),
 
-            color: groups[index].groupState == true ? COMPLETE_COLOR : TRAVELING,
+            color: widget.groups[index].groupState == true ? COMPLETE_COLOR : TRAVELING,
             child: ListTile(
               onTap: () {
-                navigateToGroupDetail(groups[index]);
+                navigateToGroupDetail(widget.groups[index]);
               },
               title: Text(
-                groups[index].title,
+                widget.groups[index].title,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 13,
@@ -96,12 +82,12 @@ class _GroupListState extends State<GroupList> {
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(groups[index].description),
-                  Text('Start Date: ${groups[index].startDate}'),
-                  Text('End Date: ${groups[index].endDate}'),
+                  Text(widget.groups[index].description),
+                  Text('Start Date: ${widget.groups[index].startDate}'),
+                  Text('End Date: ${widget.groups[index].endDate}'),
                 ],
               ),
-              trailing: groups[index].groupState == true
+              trailing: widget.groups[index].groupState == true
                   ? Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: 10,
