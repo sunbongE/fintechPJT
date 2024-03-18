@@ -10,7 +10,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
 
-    List<Transaction> findByMemberAndGroupOrMemberAndGroupIsNull(
-            Member member, Group group, Member member2);
-    //    List<Transaction> findByGroupIsNullOrGroupAndMember(Member member, Group group);
 }
