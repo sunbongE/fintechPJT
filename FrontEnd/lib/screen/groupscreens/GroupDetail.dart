@@ -3,6 +3,8 @@ import 'package:front/components/groups/GroupList.dart';
 import 'package:front/screen/groupscreens/GroupDetail2.dart';
 import 'package:front/const/colors/Colors.dart';
 
+import '../../models/Group.dart';
+
 class GroupDetail extends StatelessWidget {
   final Group group;
 
@@ -47,6 +49,24 @@ class GroupDetail extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              //Text(group.groupMembers.map((member) => member.name).join(', ')),
+              Center(
+                child: Container(
+                  height: 100, // Card의 세로 크기를 지정
+                  child: ListView(
+                    scrollDirection: Axis.horizontal, // 가로 스크롤 설정
+                    children: group.groupMembers.map((member) => Card(
+                      child: Container(
+                        width: 100, // Card의 가로 크기를 지정
+                        child: Center(
+                          child: Text(member.name),
+                        ),
+                      ),
+                    )).toList(),
+                  ),
+                ),
+              ),
+
               // 정산하기 버튼
               ElevatedButton(
                 onPressed: () {},
