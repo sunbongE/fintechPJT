@@ -20,9 +20,6 @@ public class TransactionDto {
     @Schema(name = "transaction id", example = "1")
     private Integer transactionId;
 
-    @Schema(name = "group id", example = "1")
-    private Integer groupId;
-
     private Integer transactionUniqueNo;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd", timezone = "Asia/Seoul")
@@ -40,6 +37,9 @@ public class TransactionDto {
     private Long transactionAfterBalance;
 
     private String transactionSummary;
+
+    @Schema(name = "group id", example = "1")
+    private Integer groupId;
 
     @Schema(name = "memo", example = "memo")
     private String memo;

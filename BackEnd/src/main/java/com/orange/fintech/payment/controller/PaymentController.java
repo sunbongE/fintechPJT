@@ -35,12 +35,13 @@ public class PaymentController {
     @Operation(summary = "내 결제 내역 조회", description = "<strong>그룹 아이디</strong>로 내 결제 내역을 조회한다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "404", description = "사용자 정보 없음"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<? extends List<TransactionDto>> getMyTransactionList(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId) {
 
-        //TODO: Member, Group 값 변경 필요
+        // TODO: Member, Group 값 변경 필요
         List<TransactionDto> list = paymentService.getMyTransaction(new Member(), new Group());
         //        Member member = memberRepository.findById("").get();
         //        Group group = groupRepository.findById(groupId).get();
@@ -49,5 +50,26 @@ public class PaymentController {
 
         log.info("list.size {}", list.size());
         return ResponseEntity.status(200).body(list);
+    }
+
+    @PutMapping("/{paymentId}")
+    @Operation(
+            summary = "정산 내역에 포함하기 / 제외하기",
+            description = "<strong>paymentId</strong>로 정산 내역 포함 여부를 설정한다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> modifyPaymentsList(
+            @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
+            @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId) {
+
+        if (paymentService.changeContainStatus(paymentId, groupId)) {
+
+            return ResponseEntity.status(200).body(null);
+        } else {
+            return ResponseEntity.status(404).body(null);
+        }
     }
 }

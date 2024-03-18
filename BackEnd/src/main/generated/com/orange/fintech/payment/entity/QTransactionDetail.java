@@ -22,6 +22,8 @@ public class QTransactionDetail extends EntityPathBase<TransactionDetail> {
 
     public static final QTransactionDetail transactionDetail = new QTransactionDetail("transactionDetail");
 
+    public final com.orange.fintech.group.entity.QGroup group;
+
     public final StringPath memo = createString("memo");
 
     public final BooleanPath receiptEnrolled = createBoolean("receiptEnrolled");
@@ -29,6 +31,8 @@ public class QTransactionDetail extends EntityPathBase<TransactionDetail> {
     public final NumberPath<Integer> remainder = createNumber("remainder", Integer.class);
 
     public final QTransaction transaction;
+
+    public final NumberPath<Integer> transaction_id = createNumber("transaction_id", Integer.class);
 
     public QTransactionDetail(String variable) {
         this(TransactionDetail.class, forVariable(variable), INITS);
@@ -48,6 +52,7 @@ public class QTransactionDetail extends EntityPathBase<TransactionDetail> {
 
     public QTransactionDetail(Class<? extends TransactionDetail> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.group = inits.isInitialized("group") ? new com.orange.fintech.group.entity.QGroup(forProperty("group")) : null;
         this.transaction = inits.isInitialized("transaction") ? new QTransaction(forProperty("transaction"), inits.get("transaction")) : null;
     }
 

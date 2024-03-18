@@ -8,4 +8,6 @@ import java.util.List;
 public interface PaymentService {
 
     List<TransactionDto> getMyTransaction(Member member, Group group);
+
+    boolean changeContainStatus(int transactionId, int groupId);
 }
