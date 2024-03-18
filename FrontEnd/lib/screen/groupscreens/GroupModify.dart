@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:front/components/groups/GroupList.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:front/const/colors/Colors.dart';
-import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 import 'package:flutter/services.dart';
 
-class GroupAdd extends StatefulWidget {
+class GroupModify extends StatefulWidget {
+  final Group group;
+
+  GroupModify({required this.group});
+
   @override
-  _GroupAddState createState() => _GroupAddState();
+  _GroupModifyState createState() => _GroupModifyState();
 }
 
-class _GroupAddState extends State<GroupAdd> {
+class _GroupModifyState extends State<GroupModify> {
   TextEditingController _titleController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   DateTime? _focusedDay = DateTime.now();
@@ -21,12 +24,17 @@ class _GroupAddState extends State<GroupAdd> {
   DateTime? _rangeEnd;
   String? _startDateText;
   String? _endDateText;
-  bool groupState = false;
 
   @override
   void initState() {
     super.initState();
     _selectedDay = _focusedDay;
+    _titleController.text = widget.group.title;
+    _descriptionController.text = widget.group.description;
+    _startDateText = widget.group.startDate;
+    _endDateText = widget.group.endDate;
+    _rangeStart = DateTime.parse(widget.group.startDate);
+    _rangeEnd = DateTime.parse(widget.group.endDate);
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
@@ -46,7 +54,8 @@ class _GroupAddState extends State<GroupAdd> {
       _rangeEnd = end;
     });
   }
-  void _saveGroup() {
+
+  void _modifyGroup() {
     String startDateText = _rangeStart?.toString().split(' ')[0] ?? '';
     String endDateText = _rangeEnd?.toString().split(' ')[0] ?? '';
 
@@ -55,72 +64,29 @@ class _GroupAddState extends State<GroupAdd> {
       _endDateText = endDateText;
     });
 
-    Group newGroup = Group(
+    Group modifiedGroup = Group(
       title: _titleController.text,
       description: _descriptionController.text,
       startDate: _startDateText.toString(),
       endDate: _endDateText.toString(),
-      //처음에 그룹 만들때는 0으로, 이후 자동으로 Group에서 오늘 날짜가 지나면 1로 변경하도록
-      groupState: false,
+      groupState: widget.group.groupState,
     );
-    Navigator.pop(context, newGroup);
 
-    // 모달창 띄우기
-    // showDialog(
-    //   context: context,
-    //   builder: (BuildContext context) {
-    //     return AlertDialog(
-    //       title: Text('그룹을 만드셨네요!'),
-    //       content: Text('링크를 공유해서 친구들을 초대해보세요'),
-    //       actions: [
-    //         ElevatedButton(
-    //           onPressed: () {
-    //             // 모달창 닫기
-    //             Navigator.pop(context, newGroup);
-    //             // 카카오톡 공유 함수 호출
-    //             // _kakaoShare();
-    //           },
-    //           child: Text('공유하기'),
-    //         ),
-    //       ],
-    //     );
-    //   },
-    // );
+    List<Group> groups = GroupList.getGroups(context);
+    int index = groups.indexOf(widget.group);
+    if (index != -1) {
+      groups[index] = modifiedGroup;
+    }
+    // GroupList.setGroups(context, groups); // 그룹 목록 업데이트
+
+    Navigator.pop(context, modifiedGroup);
   }
-
-
-  // void _kakaoShare() {
-  //   bool isKakaoTalkSharingAvailable = await ShareClient.instance.isKakaoTalkSharingAvailable();
-  //
-  //   if (isKakaoTalkSharingAvailable) {
-  //     print('카카오톡으로 공유 가능');
-  //   } else {
-  //     print('카카오톡 미설치: 웹 공유 기능 사용 권장');
-  //   }
-  //   // 카카오링크 SDK 초기화
-  //   // KakaoContext.clientId = "애플리케이션 키";
-  //
-  //   // 카카오링크 메시지 생성
-  //   // var template = TextTemplate(
-  //   //   text: "링크를 공유해서 친구들을 초대해보세요",
-  //   //   link: Link(
-  //   //     webUrl: "https://example.com", // 공유할 링크 주소
-  //   //   ),
-  //   // );
-  //
-  //   // 카카오링크 메시지 전송
-  //   // KakaoLink.instance
-  //   //     .sendDefaultTemplate(template)
-  //   //     .then((value) => print("카카오톡 메시지 전송 완료"))
-  //   //     .catchError((error) => print("카카오톡 메시지 전송 실패: $error"));
-  // }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('그룹 추가하기'),
+        title: Text('그룹 수정하기'),
       ),
       body: SafeArea(
         child: Padding(
@@ -202,8 +168,8 @@ class _GroupAddState extends State<GroupAdd> {
 
               SizedBox(height: 16.0),
               ElevatedButton(
-                  onPressed: _saveGroup,
-                  child: Text('저장')
+                  onPressed: _modifyGroup,
+                  child: Text('수정완료')
               ),
             ],
           ),

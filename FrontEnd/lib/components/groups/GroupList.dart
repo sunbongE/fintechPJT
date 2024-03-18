@@ -1,33 +1,47 @@
 import "package:flutter/material.dart";
-import 'package:front/models/button/StateButton.dart';
 import 'package:front/const/colors/Colors.dart';
-import 'package:front/screen/GroupMain.dart'; // Group 클래스를 import
 import 'package:front/screen/groupscreens/GroupAdd.dart'; // Group 클래스를 import
+import 'package:front/screen/groupscreens/GroupDetail.dart';
 
 //백에서 group정보 받아오면 여기에 넣기
 class Group {
-  // final String startDate;
-  // final String endDate;
-  final String title;
-  final String description;
+  String title;
+  String description;
+  String startDate;
+  String endDate;
+  bool groupState;
 
-  Group({required this.title, required this.description,
-    // required this.startDate, required this.endDate,
+  Group({
+    required this.title,
+    required this.description,
+    required this.startDate,
+    required this.endDate,
+    required this.groupState,
   });
 }
 
 class GroupList extends StatefulWidget {
-  // const GroupList({Key? key}) : super(key: key);
+
+  static List<Group> getGroups(BuildContext context) {
+    final _GroupListState state = context.findAncestorStateOfType<_GroupListState>()!;
+    return state.groups;
+  }
+  static void setGroups(BuildContext context, List<Group> updatedGroup) {
+    final _GroupListState state = context.findAncestorStateOfType<_GroupListState>()!;
+      state.groups = updatedGroup;
+  }
+
 
   @override
   State<GroupList> createState() => _GroupListState();
 }
 
-class _GroupListState  extends State<GroupList> {
+class _GroupListState extends State<GroupList> {
   String title = "";
   String description = "";
-  // String startDate = "";
-  // String endDate = "";
+  String startDate = ""; // 시작 날짜를 저장할 변수
+  String endDate = ""; // 종료 날짜를 저장할 변수
+  bool groupState = false;
 
   List<Group> groups = [];
 
@@ -43,15 +57,86 @@ class _GroupListState  extends State<GroupList> {
     }
   }
 
+  void navigateToGroupDetail(Group group) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => GroupDetail(group: group)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView.builder(
         itemCount: groups.length,
         itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(groups[index].title),
-            subtitle: Text(groups[index].description),
+          DateTime today = DateTime.now();
+          DateTime endDateParsed = DateTime.parse(groups[index].endDate);
+          if (today.isAfter(endDateParsed)) {
+            groups[index].groupState = true;
+          }
+          return Card(
+            margin: EdgeInsets.all(10.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+
+            color: groups[index].groupState == true ? COMPLETE_COLOR : TRAVELING,
+            child: ListTile(
+              onTap: () {
+                navigateToGroupDetail(groups[index]);
+              },
+              title: Text(
+                groups[index].title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 13,
+                ),
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(groups[index].description),
+                  Text('Start Date: ${groups[index].startDate}'),
+                  Text('End Date: ${groups[index].endDate}'),
+                ],
+              ),
+              trailing: groups[index].groupState == true
+                  ? Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: STATE_COLOR,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  '정산중',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
+              )
+                  : Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: STATE_COLOR,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  '여행중',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ),
           );
         },
       ),
@@ -62,25 +147,3 @@ class _GroupListState  extends State<GroupList> {
     );
   }
 }
-
-
-//back에서 groupNames를 받아오기
-// final List<String> groupNames; // 그룹 이름을 담은 리스트
-//
-// const GroupList({Key? key, required this.groupNames}) : super(key: key);
-//
-// Widget build(BuildContext context) {
-//   return ListView.builder(
-//     itemCount: groupNames.length, // 그룹 개수에 따라 리스트 아이템 개수를 동적으로 설정
-//     itemBuilder: (context, index) {
-//       final groupName = groupNames[index];
-//       return ListTile(
-//         title: Text(groupName),
-//         onTap: () {
-//           // 각 그룹을 클릭했을 때의 동작을 정의할 수 있습니다.
-//         },
-//       );
-//     },
-//   );
-// }
-// }
