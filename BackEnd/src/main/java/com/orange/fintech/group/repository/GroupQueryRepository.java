@@ -26,7 +26,8 @@ public class GroupQueryRepository {
 //        QGroup group = QGroup.group; static으로 등록하여 사용함.
 //        QGroupMember groupMember = QGroupMember.groupMember;
 
-        kakaoId = "3388366548";
+//        kakaoId = "3388366548";
+        kakaoId = "123123123";
 
         return queryFactory
                 .select(Projections.bean(Group.class, group.groupId, group.groupName, group.startDate, group.endDate))
