@@ -32,6 +32,7 @@ class _PassWordCertificationState extends State<PassWordCertification> {
         confirmPassWord = userManager.password;
       });
     });
+
   }
 
   // 비밀번호 입력
@@ -59,6 +60,8 @@ class _PassWordCertificationState extends State<PassWordCertification> {
 
   @override
   Widget build(BuildContext context) {
+    print("비밀번호: "+ confirmPassWord!);
+    print("비밀번호입력: "+ passWord!);
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.fromLTRB(0, 100.h, 0, 0),

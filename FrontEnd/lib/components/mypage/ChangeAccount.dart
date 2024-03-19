@@ -5,6 +5,7 @@ import 'package:front/models/button/Button.dart';
 import 'package:front/models/button/ButtonSlideAnimation.dart';
 import 'package:front/providers/store.dart';
 import 'package:front/repository/api/ApiLogin.dart';
+import 'package:front/screen/HomeScreen.dart';
 import 'package:front/screen/MyPage.dart';
 
 import '../../models/Biometrics.dart';
@@ -157,8 +158,11 @@ class _ChangeAccountState extends State<ChangeAccount> {
                                                 widget.selectedBank,
                                             newSelectedAccount: selectAccount,
                                           );
-                                          Navigator.of(context).popUntil(
-                                              (route) => route.isFirst);
+                                          Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => HomeScreen(initialIndex: 3)),
+                                                (Route<dynamic> route) => false,
+                                          );
                                         },
                                       ),
                                     );

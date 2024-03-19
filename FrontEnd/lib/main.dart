@@ -9,6 +9,9 @@ import 'package:front/routes.dart';
 import "package:front/providers/store.dart";
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'models/Biometrics.dart';
+import 'models/PassWordCertification.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   KakaoSdk.init(
@@ -35,14 +38,21 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  Future<bool>? _authenticationFuture;
+
   @override
   void initState() {
     super.initState();
+    _authenticationFuture = _authenticate();
+  }
+
+  Future<bool> _authenticate() async {
+    bool? authenticated = await CheckBiometrics();
+    return authenticated ?? false;
   }
 
   @override
   Widget build(BuildContext context) {
-
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
@@ -55,7 +65,25 @@ class _MyAppState extends State<MyApp> {
         routes: Routes.routes,
         home: Consumer<UserManager>(
           builder: (context, userManager, child) {
-            return userManager.isLogin ? HomeScreen() : Login();
+            if (userManager.isLogin) {
+              return FutureBuilder<bool>(
+                future: _authenticationFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.data == true) {
+                    return HomeScreen();
+                  } else {
+                    return PassWordCertification(onSuccess: () {
+                      Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (_) => HomeScreen()));
+                    });
+                  }
+                },
+              );
+            } else {
+              return Login();
+            }
           },
         ),
       ),
