@@ -37,6 +37,7 @@ class _LoginState extends State<Login> {
                         _isLoading = true;
                       });
                       bool loginSuccess = await SocialKakao();
+                      print(loginSuccess);
                       if (loginSuccess) {
                         Navigator.pushAndRemoveUntil(
                           context,

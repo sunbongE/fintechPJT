@@ -43,7 +43,7 @@ class _MyInfoState extends State<MyInfo> {
           );
         } else {
           return Padding(
-            padding: EdgeInsets.all(30.w),
+            padding: EdgeInsets.fromLTRB(30.w, 10.h, 30.w, 10.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -54,8 +54,8 @@ class _MyInfoState extends State<MyInfo> {
                       borderRadius: BorderRadius.circular(100),
                       child: Image.network(
                         "${userManager.thumbnailImageUrl}",
-                        width: 100.w,
-                        height: 100.h,
+                        width: 75.w,
+                        height: 75.h,
                         fit: BoxFit.cover,
                       ),
                     ),

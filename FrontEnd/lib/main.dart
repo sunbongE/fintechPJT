@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:front/components/selectbank/SelectBank.dart';
 import 'package:provider/provider.dart';
 import 'package:front/screen/HomeScreen.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
@@ -8,7 +7,6 @@ import 'package:front/screen/LogIn.dart';
 import 'package:front/routes.dart';
 import "package:front/providers/store.dart";
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'models/Biometrics.dart';
 import 'models/PassWordCertification.dart';
 
@@ -43,7 +41,9 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _authenticationFuture = _authenticate();
+    if (Provider.of<UserManager>(context, listen: false).isLogin) {
+      _authenticationFuture = _authenticate();
+    }
   }
 
   Future<bool> _authenticate() async {
@@ -65,25 +65,25 @@ class _MyAppState extends State<MyApp> {
         routes: Routes.routes,
         home: Consumer<UserManager>(
           builder: (context, userManager, child) {
-            if (userManager.isLogin) {
-              return FutureBuilder<bool>(
-                future: _authenticationFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
-                  } else if (snapshot.data == true) {
-                    return HomeScreen();
-                  } else {
-                    return PassWordCertification(onSuccess: () {
-                      Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (_) => HomeScreen()));
-                    });
-                  }
-                },
-              );
-            } else {
+            if (!userManager.isLogin) {
               return Login();
             }
+
+            return FutureBuilder<bool>(
+              future: _authenticationFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.data == true) {
+                  return HomeScreen();
+                } else {
+                  return PassWordCertification(onSuccess: () {
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (_) => HomeScreen()));
+                  });
+                }
+              },
+            );
           },
         ),
       ),

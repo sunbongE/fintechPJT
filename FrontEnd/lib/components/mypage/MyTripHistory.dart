@@ -14,7 +14,7 @@ class _MyTripHistoryState extends State<MyTripHistory> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(30.w),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -31,6 +31,7 @@ class _MyTripHistoryState extends State<MyTripHistory> {
               style: TextStyle(
                 fontSize: 20.sp,
                 color: Colors.black,
+                fontWeight: FontWeight.bold
               ),
             ),
           ),
