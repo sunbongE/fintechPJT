@@ -1,17 +1,20 @@
 package com.orange.fintech.group.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.orange.fintech.group.dto.GroupCreateDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
 @Setter
-// @DynamicInsert
+@DynamicInsert
+@Table(name = "trip_group")
 // @DynamicUpdate
 public class Group {
 
@@ -36,7 +39,16 @@ public class Group {
 
     @NotNull
     @ColumnDefault("false")
-    private Boolean isCalculateDone = false;
+    private Boolean isCalculateDone;
+
+    public Group(GroupCreateDto dto) {
+        this.groupName = dto.getGroupName();
+        this.startDate = dto.getStartDate();
+        this.endDate = dto.getEndDate();
+        this.theme = dto.getTheme();
+    }
+
+    public Group() {}
 
     @Override
     public String toString() {
