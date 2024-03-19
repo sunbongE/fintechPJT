@@ -34,12 +34,15 @@ public class Group {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate endDate;
 
-    @Column(length = 5)
+    @Column(length = 50)
     private String theme;
 
     @NotNull
     @ColumnDefault("false")
     private Boolean isCalculateDone;
+
+    //    @OneToMany(mappedBy = "groupMemberPK", cascade = CascadeType.REMOVE)
+    //    private List<GroupMember> groupMembers;
 
     public Group(GroupCreateDto dto) {
         this.groupName = dto.getGroupName();
