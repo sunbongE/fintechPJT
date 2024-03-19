@@ -41,7 +41,7 @@ public class RedisServiceImpl implements RedisService {
     public boolean delete(String key) {
         try {
             redisTemplate.delete(key);
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
 
             return false;

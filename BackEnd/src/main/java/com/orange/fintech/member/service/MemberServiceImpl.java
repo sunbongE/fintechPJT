@@ -7,26 +7,21 @@ import com.orange.fintech.member.repository.AccountRepository;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.oauth.dto.MemberSearchResponseDto;
 import com.orange.fintech.redis.service.RedisService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class MemberServiceImpl implements MemberService {
-    @Autowired
-    MemberRepository memberRepository;
+    @Autowired MemberRepository memberRepository;
 
-    @Autowired
-    AccountRepository accountRepository;
+    @Autowired AccountRepository accountRepository;
 
-    @Autowired
-    RedisService redisService;
+    @Autowired RedisService redisService;
 
-    @Autowired
-    JWTUtil jWTUtil;
+    @Autowired JWTUtil jWTUtil;
 
-    //그룹원 검색 응답
+    // 그룹원 검색 응답
     @Override
     public MemberSearchResponseDto findByEmail(String email) {
         Member member = memberRepository.findByEmail(email);
@@ -62,5 +57,4 @@ public class MemberServiceImpl implements MemberService {
 
         return redisService.delete(id);
     }
-
 }

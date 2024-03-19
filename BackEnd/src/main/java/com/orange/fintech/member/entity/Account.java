@@ -24,6 +24,5 @@ public class Account {
     @ColumnDefault("false")
     private Boolean isPrimaryAccount;
 
-    @NotNull
-    private String institutionCode;
+    @NotNull private String institutionCode;
 }

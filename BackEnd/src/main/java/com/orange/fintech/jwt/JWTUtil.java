@@ -81,7 +81,7 @@ public class JWTUtil {
 
         return Jwts.builder()
                 .claim("name", name)
-                //TODO: Parameter email 지우기
+                // TODO: Parameter email 지우기
                 .claim("kakaoId", kakaoId)
                 //                .subject(kakaoId)
                 .issuedAt(new Date(System.currentTimeMillis()))
