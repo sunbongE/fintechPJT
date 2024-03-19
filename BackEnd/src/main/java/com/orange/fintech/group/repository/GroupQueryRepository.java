@@ -20,11 +20,7 @@ public class GroupQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     public List<Group> findAllMyGroup(String kakaoId) {
-        //        QGroup group = QGroup.group; static으로 등록하여 사용함.
-        //        QGroupMember groupMember = QGroupMember.groupMember;
-
-        //        kakaoId = "3388366548";
-        kakaoId = "123123123";
+        kakaoId = "3388366548";
 
         return queryFactory
                 .select(

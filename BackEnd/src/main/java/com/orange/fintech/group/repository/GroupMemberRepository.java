@@ -10,4 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GroupMemberRepository extends JpaRepository<GroupMember, GroupMemberPK> {
     List<GroupMember> findByGroupMemberPKMemberAndStateIsTrue(Member member);
+
+    @Override
+    boolean existsById(GroupMemberPK groupMemberPK);
 }
