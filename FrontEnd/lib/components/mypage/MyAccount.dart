@@ -18,7 +18,9 @@ class _MyAccountState extends State<MyAccount> {
   @override
   void initState() {
     super.initState();
-    loadUserInfo();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadUserInfo();
+    });
   }
 
   Future<void> loadUserInfo() async {
