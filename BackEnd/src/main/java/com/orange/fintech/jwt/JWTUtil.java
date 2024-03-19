@@ -21,6 +21,22 @@ public class JWTUtil {
     }
 
     /**
+     * 토큰에서 카카오 아이디(식별자)를 추출하여 리턴한다.
+     *
+     * @param token
+     * @return
+     */
+    // TODO: 테스트 필요
+    public String getKakaoId(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("kakaoId", String.class);
+    }
+
+    /**
      * 토큰에서 이메일(식별자) 추출하여 리턴한다.
      *
      * @param token
@@ -61,12 +77,26 @@ public class JWTUtil {
                 .before(new Date());
     }
 
-    public String createJwt(String username, String role, Long expiredMs) {
+    public String createAccessToken(String name, String email, String kakaoId, Long expiredMs) {
 
         return Jwts.builder()
-                .claim("email", username)
-                .claim("role", role)
-                .subject(username)
+                .claim("name", name)
+                //TODO: Parameter email 지우기
+                .claim("kakaoId", kakaoId)
+                //                .subject(kakaoId)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + expiredMs))
+                .signWith(secretKey)
+                .compact();
+    }
+
+    public String createRefreshToken(String name, String email, String kakaoId, Long expiredMs) {
+
+        return Jwts.builder()
+                .claim("name", name)
+                .claim("email", email)
+                .claim("kakaoId", kakaoId)
+                //                .subject(kakaoId)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)
