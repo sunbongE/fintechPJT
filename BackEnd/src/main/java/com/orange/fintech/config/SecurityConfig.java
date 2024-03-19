@@ -92,7 +92,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/","/swagger-resources/**", "/v3/api-docs/**","/api/v1/groups", "/swagger-ui/**", "/api/v1/auth/**").permitAll()
+                        .requestMatchers("/","/swagger-resources/**", "/v3/api-docs/**","/api/v1/groups/**", "/swagger-ui/**", "/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/user/**").hasRole("USER")
                         .anyRequest().authenticated());

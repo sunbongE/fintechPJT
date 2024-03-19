@@ -8,4 +8,8 @@ public interface GroupService {
     boolean createGroup(GroupCreateDto dto);
 
     List<Group> findGroups(String memberId);
+
+    Group getGroup(int groupId);
+
+    boolean check(String memberId, int groupId);
 }
