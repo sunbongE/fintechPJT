@@ -29,6 +29,7 @@ class _ChangeBankState extends State<ChangeBank> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         title: Text("계좌 변경"),
       ),
       body: Padding(

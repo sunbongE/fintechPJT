@@ -37,8 +37,10 @@ class _PassWordCertificationState extends State<PassWordCertification> {
 
   // 비밀번호 입력
   void UpdatePassword(String val) {
+    if (!mounted) return;
+
     setState(
-      () {
+          () {
         if (val.length <= 6) {
           passWord = val;
           if (passWord.length == 6) {
@@ -46,11 +48,10 @@ class _PassWordCertificationState extends State<PassWordCertification> {
               widget.onSuccess();
             } else {
               FlutterToastMsg("비밀번호가 일치하지 않습니다.\n다시 입력해주세요.");
-              setState(() {
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => PassWordCertification(onSuccess: widget.onSuccess)),
-                );
-              });
+              if (!mounted) return;
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => PassWordCertification(onSuccess: widget.onSuccess)),
+              );
             }
           }
         }

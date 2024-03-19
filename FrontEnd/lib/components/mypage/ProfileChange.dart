@@ -44,6 +44,7 @@ class _ProfileChangeState extends State<ProfileChange> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         title: Text(
           "프로필 수정",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.sp),

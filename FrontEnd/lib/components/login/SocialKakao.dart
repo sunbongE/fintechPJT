@@ -113,7 +113,7 @@ Future<bool> SocialKakao() async {
         newEmail: user.kakaoAccount?.email,
         newThumbnailImageUrl: user.kakaoAccount?.profile?.thumbnailImageUrl,
         newProfileImageUrl: user.kakaoAccount?.profile?.profileImageUrl,
-        newJwtToken: jwtToken,
+        // newJwtToken: jwtToken,
       );
       return true;
     } catch (error) {
@@ -129,22 +129,22 @@ Future<bool> SocialKakao() async {
         await UserApi.instance.loginWithKakaoAccount();
         User user = await UserApi.instance.me();
         // String? jwtToken = await postUserInfo(user);
-        var dio = Dio();
-        dio.options.headers['Content-Type'] = 'application/json';
-        Response response = await dio
-            .post('http://${YOUR_IP}:8080/api/v1/auth/join', data: user);
-        print('response');
-        print(response);
-        String jwtToken = response.headers['Authorization']!.first;
-        print('jwtToken 2');
-        print(jwtToken);
+        // var dio = Dio();
+        // dio.options.headers['Content-Type'] = 'application/json';
+        // Response response = await dio
+        //     .post('http://${YOUR_IP}:8080/api/v1/auth/join', data: user);
+        // print('response');
+        // print(response);
+        // String jwtToken = response.headers['Authorization']!.first;
+        // print('jwtToken 2');
+        // print(jwtToken);
 
         UserManager().saveUserInfo(
           newName: user.kakaoAccount?.name,
           newEmail: user.kakaoAccount?.email,
           newThumbnailImageUrl: user.kakaoAccount?.profile?.thumbnailImageUrl,
           newProfileImageUrl: user.kakaoAccount?.profile?.profileImageUrl,
-          newJwtToken: jwtToken,
+          // newJwtToken: jwtToken,
         );
         return true;
       } catch (error) {
@@ -156,22 +156,22 @@ Future<bool> SocialKakao() async {
     try {
       await UserApi.instance.loginWithKakaoAccount();
       User user = await UserApi.instance.me();
-      var dio = Dio();
-      dio.options.headers['Content-Type'] = 'application/json';
-      Response response =
-          await dio.post('http://${YOUR_IP}:8080/api/v1/auth/join', data: user);
-      print('response');
-      print(response);
-      String jwtToken = response.headers['Authorization']!.first;
-      print('jwtToken 3');
-      print(jwtToken);
+      // var dio = Dio();
+      // dio.options.headers['Content-Type'] = 'application/json';
+      // Response response =
+      //     await dio.post('http://${YOUR_IP}:8080/api/v1/auth/join', data: user);
+      // print('response');
+      // print(response);
+      // String jwtToken = response.headers['Authorization']!.first;
+      // print('jwtToken 3');
+      // print(jwtToken);
 
       UserManager().saveUserInfo(
         newName: user.kakaoAccount?.name,
         newEmail: user.kakaoAccount?.email,
         newThumbnailImageUrl: user.kakaoAccount?.profile?.thumbnailImageUrl,
         newProfileImageUrl: user.kakaoAccount?.profile?.profileImageUrl,
-        newJwtToken: jwtToken,
+        // newJwtToken: jwtToken,
       );
       return true;
     } catch (error) {

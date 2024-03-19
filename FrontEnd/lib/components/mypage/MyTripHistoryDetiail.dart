@@ -13,6 +13,7 @@ class _MyTripHistoryDetailState extends State<MyTripHistoryDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         title: Text(
           '나의 여정 기록',
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.sp),
