@@ -1,6 +1,7 @@
 package com.orange.fintech.group.service.serviceImpl;
 
 import com.orange.fintech.group.dto.GroupCreateDto;
+import com.orange.fintech.group.dto.ModifyGroupDto;
 import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.group.entity.GroupMemberPK;
 import com.orange.fintech.group.repository.GroupMemberRepository;
@@ -58,5 +59,34 @@ public class GroupServiceImpl implements GroupService {
         groupMemberPK.setMember(member);
 
         return groupMemberRepository.existsById(groupMemberPK);
+    }
+
+    @Override
+    public Group modifyGroup(int groupId, ModifyGroupDto dto) {
+
+        // 바꿀 데이터 가져오기.
+        Optional<Group> opGroup = groupRepository.findById(groupId);
+        Group changeGroup = new Group();
+
+        if (opGroup.isPresent()) {
+            changeGroup = opGroup.get();
+            changeGroup.setGroupName(dto.getGroupName());
+            changeGroup.setTheme(dto.getTheme());
+            changeGroup.setStartDate(dto.getStartDate());
+            changeGroup.setEndDate(dto.getEndDate());
+            groupRepository.save(changeGroup);
+        }
+
+        return changeGroup;
+    }
+
+    @Override
+    public boolean deleteGroup(int groupId) {
+        Group group = groupRepository.findById(groupId).get();
+        if (group.getIsCalculateDone()) {
+            groupRepository.deleteById(groupId);
+            return true;
+        }
+        return false;
     }
 }
