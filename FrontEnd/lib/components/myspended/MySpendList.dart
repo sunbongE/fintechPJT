@@ -4,6 +4,9 @@ import 'package:front/components/myspended/MySpendItem.dart';
 import 'package:front/const/colors/Colors.dart';
 import 'package:intl/intl.dart';
 
+import '../../models/CustomDivider.dart';
+import '../../models/button/ButtonSlideAnimation.dart';
+
 class MySpendList extends StatefulWidget {
   const MySpendList({super.key});
 
@@ -15,12 +18,7 @@ class _MySpendListState extends State<MySpendList> {
   List<Map<String, dynamic>>? getMySpended = [
     {
       "transactionDate": "2024-03-20",
-      "transactionTime": {
-        "hour": 18,
-        "minute": 29,
-        "second": 20,
-        "nano": 0
-      },
+      "transactionTime": {"hour": 18, "minute": 29, "second": 20, "nano": 0},
       "store_name": "초돈8",
       "location": "광주광역시 광산구 장덕동 1437",
       "cost": 6543000,
@@ -30,12 +28,7 @@ class _MySpendListState extends State<MySpendList> {
     },
     {
       "transactionDate": "2024-03-20",
-      "transactionTime": {
-        "hour": 18,
-        "minute": 29,
-        "second": 20,
-        "nano": 0
-      },
+      "transactionTime": {"hour": 18, "minute": 29, "second": 20, "nano": 0},
       "store_name": "초돈7",
       "location": "경기도 수원시 영통구 영통로 290번길 25",
       "cost": 865400,
@@ -44,12 +37,7 @@ class _MySpendListState extends State<MySpendList> {
     },
     {
       "transactionDate": "2024-03-20",
-      "transactionTime": {
-        "hour": 18,
-        "minute": 29,
-        "second": 20,
-        "nano": 0
-      },
+      "transactionTime": {"hour": 18, "minute": 29, "second": 20, "nano": 0},
       "store_name": "초돈6",
       "location": "전라남도 무안군 삼향읍 대죽동로 40",
       "cost": 145300,
@@ -59,12 +47,7 @@ class _MySpendListState extends State<MySpendList> {
     },
     {
       "transactionDate": "2024-03-20",
-      "transactionTime": {
-        "hour": 18,
-        "minute": 29,
-        "second": 20,
-        "nano": 0
-      },
+      "transactionTime": {"hour": 18, "minute": 29, "second": 20, "nano": 0},
       "store_name": "초돈5",
       "location": "서울특별시 양천구 목동동로 10",
       "cost": 112300,
@@ -74,12 +57,7 @@ class _MySpendListState extends State<MySpendList> {
     },
     {
       "transactionDate": "2024-03-20",
-      "transactionTime": {
-        "hour": 18,
-        "minute": 29,
-        "second": 20,
-        "nano": 0
-      },
+      "transactionTime": {"hour": 18, "minute": 29, "second": 20, "nano": 0},
       "store_name": "초돈4",
       "location": "광주광역시 광산구 장신로19번안길 5-2",
       "cost": 1400,
@@ -89,12 +67,7 @@ class _MySpendListState extends State<MySpendList> {
     },
     {
       "transactionDate": "2024-03-20",
-      "transactionTime": {
-        "hour": 18,
-        "minute": 29,
-        "second": 20,
-        "nano": 0
-      },
+      "transactionTime": {"hour": 18, "minute": 29, "second": 20, "nano": 0},
       "store_name": "초돈3",
       "location": "서울특별시 구로구 중앙로 121",
       "cost": 185400,
@@ -113,11 +86,9 @@ class _MySpendListState extends State<MySpendList> {
         children: getMySpended!
             .map((spend) => InkWell(
                   onTap: () {
-                    Navigator.push(
+                    buttonSlideAnimation(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => MySpendItem(spend: spend),
-                      ),
+                      MySpendItem(spend: spend),
                     );
                   },
                   child: Column(
@@ -158,13 +129,7 @@ class _MySpendListState extends State<MySpendList> {
                           ),
                         ),
                       ),
-                      Divider(
-                        color: GREY_COLOR,
-                        height: 0,
-                        thickness: 1.sp,
-                        indent: 20.w,
-                        endIndent: 20.w,
-                      ),
+                      CustomDivider(),
                     ],
                   ),
                 ))

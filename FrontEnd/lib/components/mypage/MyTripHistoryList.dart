@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:front/components/groups/GroupCard.dart';
 import 'package:front/components/mypage/MyTripHistoryDetail.dart';
-
-import '../../const/colors/Colors.dart';
+import '../../entities/Group.dart';
+import '../../models/button/ButtonSlideAnimation.dart';
 
 class MyTripHistoryList extends StatefulWidget {
   const MyTripHistoryList({super.key});
@@ -42,8 +43,8 @@ class _MyTripHistoryListState extends State<MyTripHistoryList> {
       {
         "title": "고1칭구칭긔",
         "description": "온천",
-        "startDate": "2024-04-04",
-        "endDate": "2024-04-06",
+        "startDate": "2024-03-15",
+        "endDate": "2024-03-22",
         "groupState": true,
         "groupMember": [
           {
@@ -67,18 +68,19 @@ class _MyTripHistoryListState extends State<MyTripHistoryList> {
     ]
   };
 
-  void navigateToGroupDetail(Map<String, dynamic> groupData) {
-    Navigator.push(
+  void navigateToGroupDetail(Group groupData) {
+    buttonSlideAnimation(
       context,
-      MaterialPageRoute(
-        builder: (context) => MyTripHistoryDetail(groupData: groupData),
-      ),
+      MyTripHistoryDetail(groupData: groupData),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    List<dynamic> groups = rawData['groups'];
+    List<Group> groups = rawData['groups']
+        .map<Group>((groupJson) => Group.fromJson(groupJson))
+        .toList();
+
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
@@ -88,35 +90,15 @@ class _MyTripHistoryListState extends State<MyTripHistoryList> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(30.w),
+        padding: EdgeInsets.all(10.w),
         child: ListView.builder(
           itemCount: groups.length,
           itemBuilder: (context, index) {
-            // 컴포넌트 받아오기
-            return Card(
-              margin: EdgeInsets.all(10.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              color: COMPLETE_COLOR,
-              child: ListTile(
-                onTap: () => navigateToGroupDetail(groups[index]),
-                title: Text(
-                  groups[index]['title'],
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 13.sp,
-                  ),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(groups[index]['description']),
-                    Text('시작일: ${groups[index]['startDate']}'),
-                    Text('종료일: ${groups[index]['endDate']}'),
-                  ],
-                ),
-              ),
+            return GroupCard(
+              group: groups[index],
+              onTap: () {
+                navigateToGroupDetail(groups[index]);
+              },
             );
           },
         ),

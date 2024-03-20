@@ -3,9 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/mypage/MyTripHistoryGroupDetail.dart';
 import 'package:front/components/myspended/MySpendList.dart';
 import '../../const/colors/Colors.dart';
+import '../../entities/Group.dart';
 
 class MyTripHistoryDetail extends StatefulWidget {
-  final Map<String, dynamic> groupData;
+  final Group groupData;
 
   const MyTripHistoryDetail({required this.groupData, super.key});
 
@@ -20,7 +21,7 @@ class _MyTripHistoryDetailState extends State<MyTripHistoryDetail> {
       appBar: AppBar(
         scrolledUnderElevation: 0,
         title: Text(
-          widget.groupData['title'],
+          widget.groupData.title,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.sp),
         ),
         backgroundColor: BG_COLOR,
@@ -35,9 +36,9 @@ class _MyTripHistoryDetailState extends State<MyTripHistoryDetail> {
                 color: BG_COLOR,
               ),
               child: MyTripHistoryGroupDetail(
-                startDate: widget.groupData['startDate'],
-                endDate: widget.groupData['endDate'],
-                description: widget.groupData['description'],
+                startDate: widget.groupData.startDate,
+                endDate: widget.groupData.endDate,
+                description: widget.groupData.description,
               ),
             ),
             MySpendList(),
