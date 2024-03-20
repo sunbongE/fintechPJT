@@ -14,13 +14,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "거래내역", description = "거래내역 Dto")
+@Schema(description = "거래내역 Dto")
 public class TransactionDto {
 
-    @Schema(name = "transaction id", example = "1")
     private Integer transactionId;
-
-    private Integer transactionUniqueNo;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd", timezone = "Asia/Seoul")
     private LocalDate transactionDate;
@@ -38,13 +35,13 @@ public class TransactionDto {
 
     private String transactionSummary;
 
-    @Schema(name = "group id", example = "1")
+    @Schema(example = "1")
     private Integer groupId;
 
-    @Schema(name = "memo", example = "memo")
+    @Schema(example = "memo")
     private String memo;
 
-    @Schema(name = "영수증 등록 여부", example = "false")
+    @Schema(example = "false")
     private boolean receiptEnrolled;
 
     @Override
@@ -54,8 +51,6 @@ public class TransactionDto {
                 + transactionId
                 + ", groupId="
                 + groupId
-                + ", transactionUniqueNo="
-                + transactionUniqueNo
                 + ", transactionDate="
                 + transactionDate
                 + ", transactionTime="
