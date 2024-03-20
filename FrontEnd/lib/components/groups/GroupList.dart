@@ -4,7 +4,7 @@ import 'package:front/screen/groupscreens/GroupAdd.dart'; // Group 클래스를 
 import 'package:front/screen/groupscreens/GroupItem.dart';
 import 'package:front/components/groups/GroupCard.dart';
 
-import '../../models/Group.dart';
+import '../../entities/Group.dart';
 
 //백에서 group정보 받아오면 여기에 넣기
 

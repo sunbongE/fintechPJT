@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:front/components/groups/GroupList.dart';
 import 'package:front/screen/groupscreens/GroupDetail.dart';
 
-import '../models/Group.dart';
+import '../entities/Group.dart';
 
 
 class GroupMain extends StatefulWidget {

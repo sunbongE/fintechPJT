@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../models/Group.dart';
+import '../../entities/Group.dart';
 
 class GroupDecription extends StatelessWidget {
   final Group group;

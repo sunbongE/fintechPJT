@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../models/Group.dart';
+import '../../entities/Group.dart';
 import 'package:front/components/groups/GroupDecription.dart';
 import 'package:front/components/groups/MyGroupRequest.dart';
 

@@ -6,7 +6,7 @@ import 'package:front/components/groups/GroupNoCal.dart';
 import 'package:front/models/button/Button.dart';
 import 'package:front/screen/groupscreens/GroupDetail.dart';
 import 'package:front/const/colors/Colors.dart';
-import '../../models/Group.dart';
+import '../../entities/Group.dart';
 import 'package:email_validator/email_validator.dart';
 
 // fetchMemberInfo 함수의 더미 데이터 구현
