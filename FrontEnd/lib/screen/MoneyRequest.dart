@@ -128,6 +128,7 @@ class _MoneyRequestState extends State<MoneyRequest> {
       child: Scaffold(
         appBar: AppBar(
           title: Text("내 정산 요청"),
+          scrolledUnderElevation: 0,
         ),
         body: Row(
           mainAxisAlignment: MainAxisAlignment.center,

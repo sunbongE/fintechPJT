@@ -11,7 +11,6 @@ class MoneyRequestList extends StatefulWidget {
   _MoneyRequestListState createState() => _MoneyRequestListState();
 }
 
-// 상태 관리 클래스
 class _MoneyRequestListState extends State<MoneyRequestList> {
   @override
   void initState() {
@@ -23,7 +22,15 @@ class _MoneyRequestListState extends State<MoneyRequestList> {
     return ListView.builder(
       itemCount: widget.expenses.length,
       itemBuilder: (context, index) {
-        return MoneyRequestItem(expense: widget.expenses[index]);
+        return Column(
+          children: [
+            MoneyRequestItem(expense: widget.expenses[index]),
+            Container(
+              height: 1.0,
+              color: Colors.grey.shade300,
+            ),
+          ],
+        );
       },
     );
   }

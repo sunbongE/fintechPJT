@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/moneyrequests/MoneyRequestItem.dart';
 import 'package:front/entities/Expense.dart';
 
+import '../../components/moneyrequests/MoneyRequestDetailBottom.dart';
+import '../../const/colors/Colors.dart';
 import '../../models/button/SizedButton.dart';
 import '../../models/button/Toggle.dart';
 import '../../components/moneyrequests/RequestMemberList.dart';
@@ -70,7 +72,21 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.expense.place), // 예시로 제목을 AppBar에 표시
+        title: Text(widget.expense.place),
+        scrolledUnderElevation: 0,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: SizedButton(
+              btnText: '수정',
+              size: ButtonSize.xs,
+              borderRadius: 10,
+              onPressed: () {
+                print('수정버튼누름');
+              },
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -87,15 +103,6 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
                 //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('${request.memo}'),
-                  Spacer(),
-                  SizedButton(
-                    btnText: '메모',
-                    size: ButtonSize.s,
-                    borderRadius: 10,
-                    onPressed: () {
-                      print('메모추가버튼누름');
-                    },
-                  ),
                 ],
               ),
             ),
@@ -104,14 +111,19 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
               // ListView를 Expanded로 감싸기
               child: SizedBox(
                 //width: 368.w,
-                height: 594.h,
+                height: 400.h,
                 child: RequestMemberList(
                   requestDetail: request,
                   allSettledCallback: updateIsSettledStates,
                 ),
               ),
             ),
-            Padding(padding: EdgeInsets.symmetric(vertical: 20.w)),
+            Padding(padding: EdgeInsets.symmetric(vertical: 10.w)),
+            MoneyRequestDetailBottom(
+              amount: widget.expense.amount,
+              textColor: TEXT_COLOR, // TEXT_COLOR는 해당 색상 값으로 정의되어 있어야 합니다.
+            ),
+            Padding(padding: EdgeInsets.symmetric(vertical: 10.w)),
           ],
         ),
       ),

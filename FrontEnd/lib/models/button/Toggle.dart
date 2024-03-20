@@ -43,12 +43,7 @@ class _ToggleState extends State<Toggle> {
         inactiveTrackColor: Colors.black54,
         inactiveThumbColor: Colors.white,
         value: isSettled,
-        onChanged: (value) {
-          setState(() {
-            isSettled = value;
-            widget.onToggle(value);
-          });
-        },
+        onChanged: widget.onToggle,
       ),
     );
   }

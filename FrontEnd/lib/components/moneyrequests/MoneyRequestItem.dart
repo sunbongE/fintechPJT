@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:front/components/moneyrequests/ReceiptIcon.dart';
 import 'package:front/models/button/Toggle.dart';
 import 'package:front/entities/Expense.dart';
 import 'package:intl/intl.dart';
@@ -29,8 +31,6 @@ class _MoneyRequestItemState extends State<MoneyRequestItem> {
 
   @override
   Widget build(BuildContext context) {
-    var iconColor = Colors.grey;
-    if (widget.expense.isReceipt) iconColor = Colors.green;
 
     return InkWell(
       onTap: () {
@@ -53,21 +53,19 @@ class _MoneyRequestItemState extends State<MoneyRequestItem> {
           elevation: 0,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(
-                Icons.attach_money,
-                size: 44,
-                color: iconColor,
-              ),
+              ReseiptIcon(isReceipt: widget.expense.isReceipt,),
               SizedBox(width: 8.w),
               Expanded(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(widget.expense.place,
                         style: TextStyle(
                           fontSize: 14.sp,
+                          fontWeight: FontWeight.bold,
                         )),
                     SizedBox(height: 4.h),
                     Text('날짜: ${widget.expense.date}',
