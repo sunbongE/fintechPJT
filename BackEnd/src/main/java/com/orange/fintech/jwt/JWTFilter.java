@@ -20,9 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
+@Component
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
     @Autowired private final JWTUtil jwtUtil;
@@ -32,7 +34,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Autowired CustomUserDetailsService customUserDetailsService;
 
-    @Autowired MemberRepository memberRepository;
+    @Autowired private final MemberRepository memberRepository;
 
     @Autowired RedisService redisService;
 

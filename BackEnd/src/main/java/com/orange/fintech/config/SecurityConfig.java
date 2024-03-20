@@ -5,7 +5,11 @@ import com.orange.fintech.jwt.JWTFilter;
 import com.orange.fintech.jwt.JWTUtil;
 //import com.orange.fintech.oauth.handler.CustomSuccessHandler;
 //import com.orange.fintech.oauth.service.CustomOAuth2UserService;
+import com.orange.fintech.jwt.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,19 +27,19 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import java.util.Collections;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
 
-//    private final CustomOAuth2UserService customOAuth2UserService;
+    private final JWTFilter jwtFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JWTUtil jwtUtil;
-//    private final CustomSuccessHandler customSuccessHandler;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
-
-        this.jwtUtil = jwtUtil;
-//        this.customOAuth2UserService = customOAuth2UserService;
-//        this.customSuccessHandler = customSuccessHandler;
-    }
+//    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,AuthenticationConfiguration authenticationConfiguration, JWTFilter jwtFilter, JWTUtil jwtUtil) {
+//        this.jwtFilter = jwtFilter;
+//        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+//        this.jwtUtil = jwtUtil;
+//    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -103,7 +107,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         //JWTFilter 추가
         http
-                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
