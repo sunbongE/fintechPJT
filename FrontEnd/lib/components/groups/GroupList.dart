@@ -58,9 +58,9 @@ class _GroupListState extends State<GroupList> {
         itemBuilder: (context, index) {
           DateTime today = DateTime.now();
           DateTime endDateParsed = DateTime.parse(widget.groups[index].endDate);
-          // if (today.isAfter(endDateParsed)) { 지연-임의로 지움
-          //   groups[index].groupState = true;
-          // }
+          if (today.isAfter(endDateParsed)) {
+            widget.groups[index].groupState = true;
+          }
           return Card(
             margin: EdgeInsets.all(10.0),
             shape: RoundedRectangleBorder(
@@ -83,8 +83,8 @@ class _GroupListState extends State<GroupList> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(widget.groups[index].description),
-                  Text('Start Date: ${widget.groups[index].startDate}'),
-                  Text('End Date: ${widget.groups[index].endDate}'),
+                  Text('시작일: ${widget.groups[index].startDate}'),
+                  Text('종료일: ${widget.groups[index].endDate}'),
                 ],
               ),
               trailing: widget.groups[index].groupState == true
