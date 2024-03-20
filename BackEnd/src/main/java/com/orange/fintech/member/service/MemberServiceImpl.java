@@ -50,11 +50,24 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean logout(String accessToken) {
-        System.out.println("accessToken");
-        System.out.println(accessToken);
-
         String id = jWTUtil.getKakaoId(accessToken);
 
         return redisService.delete(id);
+    }
+
+    @Override
+    public boolean updatePin(String kakaoId, String pin) {
+        Member member = findByKakaoId(kakaoId);
+        member.setPin(pin);
+
+        try {
+            memberRepository.save(member);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return false;
+        }
+
+        return true;
     }
 }

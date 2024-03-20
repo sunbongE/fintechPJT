@@ -1,6 +1,7 @@
 package com.orange.fintech.member.controller;
 
 import com.orange.fintech.auth.dto.CustomUserDetails;
+import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.member.entity.Account;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.service.MemberService;
@@ -8,19 +9,20 @@ import com.orange.fintech.oauth.dto.MemberSearchResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
+@Tag(name = "Member", description = "회원 API")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/members")
 public class MemberController {
 
@@ -64,5 +66,23 @@ public class MemberController {
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("일치하는 유저 정보 없음");
+    }
+
+    @PostMapping("/pin")
+    @Operation(summary = "핀 번호 등록", description = "앱에서 사용할 핀 번호를 등록한다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "정상 등록"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> registerPin(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody String pin) {
+        String kakaoId = customUserDetails.getUsername();
+
+        if (memberService.updatePin(kakaoId, pin)) {
+            return ResponseEntity.ok(BaseResponseBody.of(200, "Pin 번호 수정 완료"));
+        }
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(BaseResponseBody.of(500, "Pin 번호 수정 중 오류 발생"));
     }
 }

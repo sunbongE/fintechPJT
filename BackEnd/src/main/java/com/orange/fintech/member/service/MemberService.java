@@ -13,4 +13,6 @@ public interface MemberService {
     Member findByKakaoId(String id);
 
     boolean logout(String accessToken);
+
+    boolean updatePin(String kakaoId, String pin);
 }
