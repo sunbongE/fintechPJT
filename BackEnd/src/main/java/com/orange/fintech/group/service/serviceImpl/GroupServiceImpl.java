@@ -103,6 +103,7 @@ public class GroupServiceImpl implements GroupService {
         return false;
     }
 
+
     @Override
     public boolean joinGroup(int groupId, String memberId) {
         Group group = new Group();
@@ -110,7 +111,7 @@ public class GroupServiceImpl implements GroupService {
         Member member = new Member();
         member.setKakaoId(memberId);
 
-        GroupMemberPK groupMemberPK = new GroupMemberPK(member,group);
+        GroupMemberPK groupMemberPK = new GroupMemberPK(member, group);
 
         GroupMember data = new GroupMember();
         data.setGroupMemberPK(groupMemberPK);

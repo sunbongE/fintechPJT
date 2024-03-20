@@ -1,32 +1,32 @@
-//package com.orange.fintech.jwt;
+// package com.orange.fintech.jwt;
 //
 //// import com.orange.fintech.oauth.dto.CustomOAuth2User;
 //// import com.orange.fintech.oauth.dto.MemberDto;
-//import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+// import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 //
-//import com.orange.fintech.auth.dto.CustomUserDetails;
-//import com.orange.fintech.auth.service.CustomUserDetailsService;
-//import com.orange.fintech.member.entity.Member;
-//import com.orange.fintech.member.repository.MemberRepository;
-//import com.orange.fintech.redis.service.RedisService;
-//import jakarta.servlet.FilterChain;
-//import jakarta.servlet.ServletException;
-//import jakarta.servlet.http.HttpServletRequest;
-//import jakarta.servlet.http.HttpServletResponse;
-//import java.io.IOException;
-//import lombok.RequiredArgsConstructor;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.stereotype.Component;
-//import org.springframework.web.filter.OncePerRequestFilter;
+// import com.orange.fintech.auth.dto.CustomUserDetails;
+// import com.orange.fintech.auth.service.CustomUserDetailsService;
+// import com.orange.fintech.member.entity.Member;
+// import com.orange.fintech.member.repository.MemberRepository;
+// import com.orange.fintech.redis.service.RedisService;
+// import jakarta.servlet.FilterChain;
+// import jakarta.servlet.ServletException;
+// import jakarta.servlet.http.HttpServletRequest;
+// import jakarta.servlet.http.HttpServletResponse;
+// import java.io.IOException;
+// import lombok.RequiredArgsConstructor;
+// import lombok.extern.slf4j.Slf4j;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+// import org.springframework.security.core.Authentication;
+// import org.springframework.security.core.context.SecurityContextHolder;
+// import org.springframework.stereotype.Component;
+// import org.springframework.web.filter.OncePerRequestFilter;
 //
-//@Slf4j
-//@Component
-//@RequiredArgsConstructor
-//public class JWTFilter extends OncePerRequestFilter {
+// @Slf4j
+// @Component
+// @RequiredArgsConstructor
+// public class JWTFilter extends OncePerRequestFilter {
 //    @Autowired private final JWTUtil jwtUtil;
 //
 //    //    @Autowired
@@ -83,7 +83,8 @@
 //            //UserDetails에 회원 정보 객체 담기
 //            CustomUserDetails customUserDetails = new CustomUserDetails(member);
 //            //스프링 시큐리티 인증 토큰 생성
-//            Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+//            Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails,
+// null, customUserDetails.getAuthorities());
 //            //세션에 사용자 등록
 //            SecurityContextHolder.getContext().setAuthentication(authToken);
 //        }
@@ -112,7 +113,8 @@
 //            CustomUserDetails customUserDetails = new CustomUserDetails(member);
 //
 //            //스프링 시큐리티 인증 토큰 생성
-//            Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+//            Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails,
+// null, customUserDetails.getAuthorities());
 //
 //            //세션에 사용자 등록
 //            SecurityContextHolder.getContext().setAuthentication(authToken);
@@ -187,4 +189,4 @@
 //    filterChain.doFilter(request, response);
 //    */
 //    //    }
-//}
+// }

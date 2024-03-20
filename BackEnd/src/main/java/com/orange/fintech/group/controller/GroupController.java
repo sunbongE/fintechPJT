@@ -82,8 +82,7 @@ public class GroupController {
 
         try {
 
-            // 회원이 선택한 그룹의 존재여부와 포함되어(권한)있는지 확인.
-            if (!groupService.check(memberId, groupId)) {
+            if (!isExistMember(memberId, groupId)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
             }
@@ -114,8 +113,7 @@ public class GroupController {
         //        String memberId = "3388366548";
 
         try {
-            // 회원이 선택한 그룹의 존재여부와 포함되어(권한)있는지 확인.
-            if (!groupService.check(memberId, groupId)) {
+            if (!isExistMember(memberId, groupId)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
             }
@@ -142,8 +140,7 @@ public class GroupController {
         String memberId = principal.getName();
 
         try {
-            // 회원이 선택한 그룹의 존재여부와 포함되어(권한)있는지 확인.
-            if (!groupService.check(memberId, groupId)) {
+            if (!isExistMember(memberId, groupId)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
             }
@@ -163,12 +160,11 @@ public class GroupController {
         }
     }
 
-
-    @GetMapping("/{groupId}/invite")
+    @PostMapping("/{groupId}/invite")
     @Operation(summary = "그룹 참가", description = "링크를 클릭한 회원은 그룹에 초대됩니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "성공"),
-            @ApiResponse(responseCode = "500", description = "서버 오류")
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> joinGroup(@PathVariable("groupId") int groupId, Principal principal) {
         log.info("** joinGroup -> principal :{}", principal.getName());
@@ -176,18 +172,59 @@ public class GroupController {
 
         try {
 
-            boolean result = groupService.joinGroup(groupId,memberId);
+            boolean result = groupService.joinGroup(groupId, memberId);
 
-            if(!result){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponseBody.of(400,"여행 그룹에 참여할 수 없습니다."));
+            if (!result) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(BaseResponseBody.of(400, "여행 그룹에 참여할 수 없습니다."));
             }
 
-            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200,"여행 그룹에 참여했습니다."));
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(BaseResponseBody.of(200, "여행 그룹에 참여했습니다."));
 
         } catch (Exception e) {
             log.info(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
+    }
+
+    // Todo : 이거 구현해야함.======================================================
+    @GetMapping("/{groupId}/members")
+    @Operation(summary = "그룹원 조회", description = "그룹에 포함된 유저를 받아온다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> findGroupMembers(
+            @PathVariable("groupId") int groupId, Principal principal) {
+        log.info("** findGroupMembers -> principal :{}", principal.getName());
+        String memberId = principal.getName();
+
+        try {
+
+            if (!isExistMember(memberId, groupId)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
+            }
+            //            List<Member> result = groupService.findGroupMembers(groupId,memberId);
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(BaseResponseBody.of(200, "여행 그룹에 참여했습니다."));
+
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(BaseResponseBody.of(500, "서버 오류"));
+        }
+    }
+
+    public boolean isExistMember(String memberId, int groupId) {
+
+        // 회원이 선택한 그룹의 존재여부와 포함되어(권한)있는지 확인.
+        if (!groupService.check(memberId, groupId)) {
+            return false;
+        }
+        return true;
     }
 }
