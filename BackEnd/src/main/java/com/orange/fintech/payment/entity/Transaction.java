@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -33,6 +35,7 @@ public class Transaction {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "kakao_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
     //    @Column(nullable = true)

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -17,6 +19,7 @@ public class ReceiptDetail {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "receipt_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Receipt receipt;
 
     @Column(length = 25)

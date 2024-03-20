@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -18,6 +20,7 @@ public class TransactionDetail {
     @MapsId
     @OneToOne
     @JoinColumn(name = "transaction_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Transaction transaction;
 
     @ManyToOne
