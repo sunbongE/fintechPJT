@@ -1,6 +1,7 @@
 package com.orange.fintech.group.service.serviceImpl;
 
 import com.orange.fintech.group.dto.GroupCreateDto;
+import com.orange.fintech.group.dto.GroupMembersDto;
 import com.orange.fintech.group.dto.ModifyGroupDto;
 import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.group.entity.GroupMember;
@@ -118,5 +119,11 @@ public class GroupServiceImpl implements GroupService {
 
         GroupMember groupMember = groupMemberRepository.save(data);
         return true;
+    }
+
+    @Override
+    public List<GroupMembersDto> findGroupMembers(int groupId, String memberId) {
+        List<GroupMembersDto> result = groupQueryRepository.findGroupMembers(groupId,memberId);
+        return result;
     }
 }

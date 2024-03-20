@@ -1,6 +1,7 @@
 package com.orange.fintech.group.service;
 
 import com.orange.fintech.group.dto.GroupCreateDto;
+import com.orange.fintech.group.dto.GroupMembersDto;
 import com.orange.fintech.group.dto.ModifyGroupDto;
 import com.orange.fintech.group.entity.Group;
 import java.util.List;
@@ -19,4 +20,6 @@ public interface GroupService {
     boolean leaveGroup(int groupId, String memberId);
 
     boolean joinGroup(int groupId, String memberId);
+
+    List<GroupMembersDto> findGroupMembers(int groupId, String memberId);
 }

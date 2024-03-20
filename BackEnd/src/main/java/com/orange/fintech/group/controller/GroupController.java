@@ -2,6 +2,7 @@ package com.orange.fintech.group.controller;
 
 import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.group.dto.GroupCreateDto;
+import com.orange.fintech.group.dto.GroupMembersDto;
 import com.orange.fintech.group.dto.ModifyGroupDto;
 import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.group.service.GroupService;
@@ -202,15 +203,15 @@ public class GroupController {
         String memberId = principal.getName();
 
         try {
-
             if (!isExistMember(memberId, groupId)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
             }
-            //            List<Member> result = groupService.findGroupMembers(groupId,memberId);
+
+            List<GroupMembersDto> result = groupService.findGroupMembers(groupId,memberId);
 
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(BaseResponseBody.of(200, "여행 그룹에 참여했습니다."));
+                    .body(result);
 
         } catch (Exception e) {
             log.info(e.getMessage());
@@ -219,6 +220,14 @@ public class GroupController {
         }
     }
 
+
+    /**
+     * 회원이 그룹에 포함되어있는지 확인하거나
+     * 그룹이 존재하는지 확인한다.
+     * @param memberId
+     * @param groupId
+     * @return
+     */
     public boolean isExistMember(String memberId, int groupId) {
 
         // 회원이 선택한 그룹의 존재여부와 포함되어(권한)있는지 확인.
