@@ -11,6 +11,7 @@ import com.orange.fintech.payment.repository.TransactionDetailRepository;
 import com.orange.fintech.payment.repository.TransactionRepository;
 import com.orange.fintech.payment.repository.TransactionRepositorySupport;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,5 +77,14 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         return false;
+    }
+
+    @Override
+    public void memo(int transactionId, String memo) throws NoSuchElementException {
+        TransactionDetail transactionDetail =
+                transactionDetailRepository.findById(transactionId).get();
+
+        transactionDetail.setMemo(memo);
+        transactionDetailRepository.save(transactionDetail);
     }
 }

@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,5 +72,26 @@ public class PaymentController {
         } else {
             return ResponseEntity.status(404).body(null);
         }
+    }
+
+    @PutMapping("/{paymentId}/memo")
+    @Operation(summary = "결제 내역에 메모", description = "<strong>paymentId</strong>로 정산 내역에 메모를 한다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> memo(
+            @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
+            @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
+            @RequestBody String memo) {
+
+        try {
+            paymentService.memo(paymentId, memo);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(404).body("");
+        }
+
+        return ResponseEntity.status(200).body(null);
     }
 }
