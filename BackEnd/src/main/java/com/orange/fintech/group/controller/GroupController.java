@@ -6,6 +6,7 @@ import com.orange.fintech.group.dto.GroupMembersDto;
 import com.orange.fintech.group.dto.ModifyGroupDto;
 import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.group.service.GroupService;
+import com.orange.fintech.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -40,7 +41,7 @@ public class GroupController {
             groupService.createGroup(dto);
             return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "성공"));
         } catch (Exception e) {
-            log.info(e.getMessage());
+            //            log.info(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
@@ -53,8 +54,8 @@ public class GroupController {
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> findGroups(Principal principal) {
-        log.info("** principal :{}", principal.getName());
-        log.info("** findGroups 호출~~~!!!");
+        //        log.info("** principal :{}", principal.getName());
+        //        log.info("** findGroups 호출~~~!!!");
         String memberId = principal.getName();
         //        String memberId = "3388366548";
 
@@ -63,7 +64,7 @@ public class GroupController {
 
             return ResponseEntity.status(HttpStatus.OK).body(groups);
         } catch (Exception e) {
-            log.info(e.getMessage());
+            //            log.info(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
@@ -76,7 +77,7 @@ public class GroupController {
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> getGroup(@PathVariable("groupId") int groupId, Principal principal) {
-        log.info("** principal :{}", principal.getName());
+        //        log.info("** principal :{}", principal.getName());
         String memberId = principal.getName();
 
         //        String memberId = "3388366548";
@@ -92,7 +93,7 @@ public class GroupController {
 
             return ResponseEntity.status(HttpStatus.OK).body(group);
         } catch (Exception e) {
-            log.info(e.getMessage());
+            //            log.info(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
@@ -108,7 +109,7 @@ public class GroupController {
             @PathVariable("groupId") int groupId,
             @RequestBody @Valid ModifyGroupDto dto,
             Principal principal) {
-        log.info("** principal :{}", principal.getName());
+        //        log.info("** principal :{}", principal.getName());
         String memberId = principal.getName();
 
         //        String memberId = "3388366548";
@@ -123,7 +124,7 @@ public class GroupController {
 
             return ResponseEntity.status(HttpStatus.OK).body(group);
         } catch (Exception e) {
-            log.info(e.getMessage());
+            //            log.info(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
@@ -137,7 +138,7 @@ public class GroupController {
     })
     public ResponseEntity<BaseResponseBody> leaveGroup(
             @PathVariable("groupId") int groupId, Principal principal) {
-        log.info("** principal :{}", principal.getName());
+        //        log.info("** principal :{}", principal.getName());
         String memberId = principal.getName();
 
         try {
@@ -155,7 +156,7 @@ public class GroupController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(BaseResponseBody.of(400, "정산이 완료되지 않아 나가기가 제한됩니다. 정산완료하기 누르세요!"));
         } catch (Exception e) {
-            log.info(e.getMessage());
+            //            log.info(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
@@ -168,7 +169,7 @@ public class GroupController {
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> joinGroup(@PathVariable("groupId") int groupId, Principal principal) {
-        log.info("** joinGroup -> principal :{}", principal.getName());
+        //        log.info("** joinGroup -> principal :{}", principal.getName());
         String memberId = principal.getName();
 
         try {
@@ -184,7 +185,7 @@ public class GroupController {
                     .body(BaseResponseBody.of(200, "여행 그룹에 참여했습니다."));
 
         } catch (Exception e) {
-            log.info(e.getMessage());
+            //            log.info(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
@@ -199,7 +200,7 @@ public class GroupController {
     })
     public ResponseEntity<?> findGroupMembers(
             @PathVariable("groupId") int groupId, Principal principal) {
-        log.info("** findGroupMembers -> principal :{}", principal.getName());
+        //        log.info("** findGroupMembers -> principal :{}", principal.getName());
         String memberId = principal.getName();
 
         try {
@@ -208,12 +209,134 @@ public class GroupController {
                         .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
             }
 
-            List<GroupMembersDto> result = groupService.findGroupMembers(groupId, memberId);
+            List<GroupMembersDto> result = groupService.findGroupMembers(groupId);
 
             return ResponseEntity.status(HttpStatus.OK).body(result);
 
         } catch (Exception e) {
-            log.info(e.getMessage());
+            //            log.info(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(BaseResponseBody.of(500, "서버 오류"));
+        }
+    }
+
+    @PutMapping("/{groupId}/firstcall")
+    @Operation(summary = "정산 내역 요청 및 취소", description = "정산 요청을 하여 회원의 상태가 변경된다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<BaseResponseBody> firstcall(
+            @PathVariable("groupId") int groupId, Principal principal) {
+        //                log.info("** firstcall -> principal :{}", principal.getName());
+        String memberId = principal.getName();
+
+        try {
+            if (!isExistMember(memberId, groupId)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
+            }
+
+            boolean result = groupService.firstcall(groupId, memberId);
+            if (result) {
+                return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "성공"));
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(BaseResponseBody.of(400, "실패"));
+            }
+
+        } catch (Exception e) {
+            //            log.info(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(BaseResponseBody.of(500, "서버 오류"));
+        }
+    }
+
+    @PutMapping("/{groupId}/secondcall")
+    @Operation(summary = "정산 내역 요청 및 취소", description = "정산 요청을 하여 회원의 상태가 변경된다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<BaseResponseBody> secondcall(
+            @PathVariable("groupId") int groupId, Principal principal) {
+        //                log.info("** secondcall -> principal :{}", principal.getName());
+        String memberId = principal.getName();
+
+        try {
+            if (!isExistMember(memberId, groupId)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
+            }
+
+            boolean result = groupService.secondcall(groupId, memberId);
+            if (result) {
+                return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "성공"));
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(BaseResponseBody.of(400, "실패"));
+            }
+
+        } catch (Exception e) {
+            //            log.info(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(BaseResponseBody.of(500, "서버 오류"));
+        }
+    }
+    @GetMapping("/{groupId}/members/firstcall")
+    @Operation(summary = "그룹에서 정산 요청 하기를 누른 사람 목록", description = "그룹에서 정산 요청 하기를 누른 사람 목록을 확인할 수 있다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> firstcallMembers(
+            @PathVariable("groupId") int groupId, Principal principal) {
+        //                log.info("** secondcall -> principal :{}", principal.getName());
+        String memberId = principal.getName();
+
+        try {
+            if (!isExistMember(memberId, groupId)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
+            }
+
+            List<GroupMembersDto> result = groupService.firstcallMembers(groupId);
+
+            if(result.size()==0) return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200,"정산 요청한 사람이 없음"));
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+
+
+        } catch (Exception e) {
+            //            log.info(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(BaseResponseBody.of(500, "서버 오류"));
+        }
+    }
+    @GetMapping("/{groupId}/members/secondcall")
+    @Operation(summary = "그룹에서 정산 요청 하기를 누른 사람 목록", description = "그룹에서 정산 요청 하기를 누른 사람 목록을 확인할 수 있다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> secondcallMembers(
+            @PathVariable("groupId") int groupId, Principal principal) {
+        //                log.info("** secondcall -> principal :{}", principal.getName());
+        String memberId = principal.getName();
+
+        try {
+            if (!isExistMember(memberId, groupId)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
+            }
+
+            List<GroupMembersDto> result = groupService.secondcallMembers(groupId);
+
+            if(result.size()==0) return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200,"정산을 한 사람이 없음"));
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+
+
+        } catch (Exception e) {
+            //            log.info(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
