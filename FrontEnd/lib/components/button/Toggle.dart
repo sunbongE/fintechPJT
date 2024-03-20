@@ -38,6 +38,8 @@ class _ToggleState extends State<Toggle> {
       scale: _calculateScale(targetSwitchWidth, defaultSwitchWidth),
       child: Switch(
         activeColor: BUTTON_COLOR,
+        inactiveTrackColor: Colors.black54,
+        inactiveThumbColor: Colors.white,
         value: isSettled,
         onChanged: (value) {
           setState(() {

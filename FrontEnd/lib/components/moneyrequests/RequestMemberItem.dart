@@ -3,33 +3,55 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import '../../const/colors/Colors.dart';
 import '../../models/RequestMember.dart';
-import '../button/Toggle.dart';
 
-// StatefulWidget으로 클래스 선언
 class RequestMemberItem extends StatefulWidget {
   final RequestMember member;
-  final bool isSettled;
-  final ValueChanged<bool> onToggle;
+  final bool isSettledState;
+  final Function(bool) onSettledChanged;
 
   const RequestMemberItem({
     Key? key,
     required this.member,
-    required this.isSettled,
-    required this.onToggle,
+    required this.isSettledState,
+    required this.onSettledChanged,
   }) : super(key: key);
 
   @override
   _RequestMemberItemState createState() => _RequestMemberItemState();
 }
 
-// 상태 관리를 위한 _RequestMemberItemState 클래스
 class _RequestMemberItemState extends State<RequestMemberItem> {
+  late bool isSettledState;
+
+  @override
+  void initState() {
+    super.initState();
+    isSettledState = widget.isSettledState;
+  }
+
+  void toggleSettled(bool value) {
+    widget.onSettledChanged(value);
+    setState(() {
+      isSettledState = value;
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant RequestMemberItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isSettledState != widget.isSettledState) {
+      setState(() {
+        isSettledState = widget.isSettledState;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: ClipOval(
         child: SizedBox(
-          width: 60,//여기에 반응형 적용하면 원이 찌그러짐
+          width: 60, //여기에 반응형 적용하면 원이 찌그러짐
           height: 60,
           child: Image.network(widget.member.profileUrl, fit: BoxFit.cover),
         ),
@@ -48,9 +70,14 @@ class _RequestMemberItemState extends State<RequestMemberItem> {
           fontSize: 18.sp,
         ),
       ),
-      trailing: Toggle(
-        initialValue: widget.isSettled,
-        onToggle: widget.onToggle,
+      trailing: Switch(
+        value: isSettledState,
+        activeColor: BUTTON_COLOR,
+        inactiveTrackColor: Colors.black54,
+        inactiveThumbColor: Colors.white,
+        onChanged: (bool value) {
+          toggleSettled(value);
+        },
       ),
     );
   }

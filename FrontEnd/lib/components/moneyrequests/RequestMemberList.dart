@@ -8,16 +8,46 @@ import 'RequestMemberItem.dart';
 
 class RequestMemberList extends StatefulWidget {
   final RequestDetail requestDetail;
+  final Function(bool) allSettledCallback;
 
-  const RequestMemberList({Key? key, required this.requestDetail})
-      : super(key: key);
+  const RequestMemberList({
+    Key? key,
+    required this.requestDetail,
+    required this.allSettledCallback,
+  }) : super(key: key);
 
   @override
   _RequestMemberListState createState() => _RequestMemberListState();
 }
 
 class _RequestMemberListState extends State<RequestMemberList> {
-  bool isSettled = false;
+  late List<bool> isSettledStates;
+  bool allSettled = false;
+  int settledMembersCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    isSettledStates =
+        widget.requestDetail.members.map((m) => m.isSettled).toList();
+    settledMembersCount =
+        widget.requestDetail.members.where((m) => m.isSettled).length;
+  }
+
+  void updateAllSettled() {
+    settledMembersCount = isSettledStates.where((element) => element).length;
+    allSettled = isSettledStates.any((element) => element);
+    widget.allSettledCallback(allSettled);
+  }
+
+  // 전체 선택/해제 기능
+  void toggleAll(bool value) {
+    setState(() {
+      isSettledStates = List<bool>.filled(isSettledStates.length, value);
+      print('isSettledStates: $isSettledStates');
+      updateAllSettled();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,17 +65,14 @@ class _RequestMemberListState extends State<RequestMemberList> {
                 ),
               ),
               Text(' | '),
-              Text('${widget.requestDetail.members
-                  .where((member) => member.isSettled)
-                  .length}명'),
+              Text('$settledMembersCount명'),
               Spacer(),
               SizedButton(
                 btnText: '전체선택',
                 size: ButtonSize.s,
                 borderRadius: 10,
                 onPressed: () {
-                  print('토글 전체 선택 해제 버튼');
-                  // 상태 변경이 필요한 로직 추가
+                  toggleAll(true);
                 },
               ),
             ],
@@ -59,10 +86,13 @@ class _RequestMemberListState extends State<RequestMemberList> {
               final member = widget.requestDetail.members[index];
               return RequestMemberItem(
                 member: member,
-                isSettled: member.isSettled, // 여기서는 멤버별 결제 상태를 사용해야 할 것 같아요.
-                onToggle: (value) {
-                  // 여기서 멤버별 결제 상태를 업데이트하는 로직을 추가하세요.
-                  // 예를 들어, setState를 사용하여 상태를 변경할 수 있습니다.
+                isSettledState: isSettledStates[index],
+                onSettledChanged: (bool value) {
+                  setState(() {
+                    isSettledStates[index] = value;
+                    print('isSettledStates: $isSettledStates');
+                    updateAllSettled();
+                  });
                 },
               );
             },
