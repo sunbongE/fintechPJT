@@ -1,5 +1,6 @@
 package com.orange.fintech.payment.controller;
 
+import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.payment.dto.TransactionDto;
 import com.orange.fintech.payment.service.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,7 +14,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/groups/{groupId}/payments")
 public class PaymentController {
 
-    @Autowired private final PaymentService paymentService;
+    private final PaymentService paymentService;
 
     @GetMapping("/my")
     @Operation(summary = "내 결제 내역 조회", description = "<strong>그룹 아이디</strong>로 내 결제 내역을 조회한다.")
@@ -55,20 +55,20 @@ public class PaymentController {
         @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    public ResponseEntity<?> modifyPaymentsList(
+    public ResponseEntity<? extends BaseResponseBody> modifyPaymentsList(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
             @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
             Principal principal) {
 
         if (!paymentService.isMyTransaction(principal.getName(), paymentId)) {
-            return ResponseEntity.status(403).body("FORBIDDEN");
+            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "FORBIDDEN"));
         }
 
         if (paymentService.changeContainStatus(paymentId, groupId)) {
 
-            return ResponseEntity.status(200).body("OK");
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "OK"));
         } else {
-            return ResponseEntity.status(404).body("NOT_FOUND");
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "NOT_FOUND"));
         }
     }
 
@@ -80,22 +80,22 @@ public class PaymentController {
         @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    public ResponseEntity<?> memo(
+    public ResponseEntity<? extends BaseResponseBody> memo(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
             @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
             @RequestBody String memo,
             Principal principal) {
 
         if (!paymentService.isMyTransaction(principal.getName(), paymentId)) {
-            return ResponseEntity.status(403).body("FORBIDDEN");
+            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "FORBIDDEN"));
         }
 
         try {
             paymentService.memo(paymentId, memo);
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(404).body("NOT_FOUND");
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "NOT_FOUND"));
         }
 
-        return ResponseEntity.status(200).body("OK");
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "OK"));
     }
 }
