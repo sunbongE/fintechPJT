@@ -1,5 +1,6 @@
 package com.orange.fintech.group.repository;
 
+import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.group.entity.GroupMember;
 import com.orange.fintech.group.entity.GroupMemberPK;
 import com.orange.fintech.member.entity.Member;
@@ -13,4 +14,6 @@ public interface GroupMemberRepository extends JpaRepository<GroupMember, GroupM
 
     @Override
     boolean existsById(GroupMemberPK groupMemberPK);
+
+    int countByGroupMemberPKGroup(Group group);
 }

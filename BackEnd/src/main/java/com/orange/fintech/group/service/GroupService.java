@@ -16,5 +16,5 @@ public interface GroupService {
 
     Group modifyGroup(int groupId, ModifyGroupDto dto);
 
-    boolean leaveGroup(int groupId);
+    boolean leaveGroup(int groupId, String memberId);
 }
