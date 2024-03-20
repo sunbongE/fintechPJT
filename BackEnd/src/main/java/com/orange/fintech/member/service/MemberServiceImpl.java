@@ -70,4 +70,21 @@ public class MemberServiceImpl implements MemberService {
 
         return true;
     }
+
+    @Override
+    public boolean deleteUser(String kakaoId) {
+        try {
+            // 1. Member 테이블에서 레코드 삭제
+            memberRepository.deleteById(kakaoId);
+
+            // 2. Redis에서 Refresh token 삭제
+            redisService.delete(kakaoId);
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return false;
+        }
+    }
 }
