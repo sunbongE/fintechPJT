@@ -12,14 +12,14 @@ import org.hibernate.annotations.ColumnDefault;
 public class Account {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int accountNo;
+    @Column(length = 20)
+    private String accountNo;
 
     @ManyToOne
     @JoinColumn(name = "kakao_id")
     private Member member;
 
-    @NotNull private int balance;
+    @NotNull private Long balance;
 
     @ColumnDefault("false")
     private Boolean isPrimaryAccount;
