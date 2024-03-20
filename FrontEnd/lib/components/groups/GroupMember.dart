@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front/const/colors/Colors.dart';
-import '../../models/Group.dart';
+import '../../entities/Group.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:email_validator/email_validator.dart';
 

@@ -9,7 +9,7 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 import 'package:flutter/services.dart';
 
-import '../../models/Group.dart';
+import '../../entities/Group.dart';
 
 class GroupAdd extends StatefulWidget {
   @override

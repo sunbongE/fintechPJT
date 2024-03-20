@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:front/components/groups/StateContainer.dart';
 import 'package:front/const/colors/Colors.dart';
-import '../../models/Group.dart';
+import '../../entities/Group.dart';
 
 class GroupCard extends StatelessWidget {
   final Group group;
