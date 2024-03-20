@@ -10,8 +10,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+
 import java.security.Principal;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,8 +32,8 @@ public class GroupController {
     @PostMapping()
     @Operation(summary = "그룹 생성", description = "그룹을 생성한다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> createGroup(@RequestBody @Valid GroupCreateDto dto) {
 
@@ -48,14 +50,14 @@ public class GroupController {
     @GetMapping()
     @Operation(summary = "내가 포함된 그룹 목록 조회", description = "내가 포함된 그룹 목록을 조회한다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> findGroups(Principal principal) {
         log.info("** principal :{}", principal.getName());
         log.info("** findGroups 호출~~~!!!");
-        //        String memberId = principal.getName();
-        String memberId = "3388366548";
+        String memberId = principal.getName();
+//        String memberId = "3388366548";
 
         try {
             List<Group> groups = groupService.findGroups(memberId);
@@ -71,14 +73,14 @@ public class GroupController {
     @GetMapping("/{groupId}")
     @Operation(summary = "그룹 상세 조회", description = "사용자가 선택한 그룹을 상세 조회한다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> getGroup(@PathVariable("groupId") int groupId, Principal principal) {
-        //        log.info("** principal :{}", principal.getName());
-        //        String memberId = principal.getName();
+        log.info("** principal :{}", principal.getName());
+        String memberId = principal.getName();
 
-        String memberId = "3388366548";
+//        String memberId = "3388366548";
 
         try {
 
@@ -101,17 +103,17 @@ public class GroupController {
     @PutMapping("/{groupId}")
     @Operation(summary = "그룹 수정", description = "그룹명, 테마, 여행기간 등을 수정할 수 있다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> modifyGroup(
             @PathVariable("groupId") int groupId,
             @RequestBody @Valid ModifyGroupDto dto,
             Principal principal) {
-        //        log.info("** principal :{}", principal.getName());
-        //        String memberId = principal.getName();
+        log.info("** principal :{}", principal.getName());
+        String memberId = principal.getName();
 
-        String memberId = "3388366548";
+//        String memberId = "3388366548";
 
         try {
             // 회원이 선택한 그룹의 존재여부와 포함되어(권한)있는지 확인.
@@ -133,14 +135,12 @@ public class GroupController {
     @PostMapping("/{groupId}")
     @Operation(summary = "그룹 나가기", description = "그룹을 나갈 수 있습니다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    public ResponseEntity<?> leaveGroup(@PathVariable("groupId") int groupId, Principal principal) {
-        //        log.info("** principal :{}", principal.getName());
-        //                String memberId = principal.getName();
-
-        String memberId = "3388366548";
+    public ResponseEntity<BaseResponseBody> leaveGroup(@PathVariable("groupId") int groupId, Principal principal) {
+        log.info("** principal :{}", principal.getName());
+        String memberId = principal.getName();
 
         try {
             // 회원이 선택한 그룹의 존재여부와 포함되어(권한)있는지 확인.
@@ -149,13 +149,13 @@ public class GroupController {
                         .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
             }
 
-            boolean result = groupService.leaveGroup(groupId);
+            boolean result = groupService.leaveGroup(groupId,memberId);
 
             if (result) {
-                return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "삭제 성공"));
+                return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "방을 나갔습니다."));
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(BaseResponseBody.of(400, "정산이 완료되지 않아 제한됩니다."));
+                    .body(BaseResponseBody.of(400, "정산이 완료되지 않아 나가기가 제한됩니다. 정산완료하기 누르세요!"));
         } catch (Exception e) {
             log.info(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

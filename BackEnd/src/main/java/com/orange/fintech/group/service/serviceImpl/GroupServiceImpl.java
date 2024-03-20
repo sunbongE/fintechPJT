@@ -3,6 +3,7 @@ package com.orange.fintech.group.service.serviceImpl;
 import com.orange.fintech.group.dto.GroupCreateDto;
 import com.orange.fintech.group.dto.ModifyGroupDto;
 import com.orange.fintech.group.entity.Group;
+import com.orange.fintech.group.entity.GroupMember;
 import com.orange.fintech.group.entity.GroupMemberPK;
 import com.orange.fintech.group.repository.GroupMemberRepository;
 import com.orange.fintech.group.repository.GroupQueryRepository;
@@ -80,11 +81,21 @@ public class GroupServiceImpl implements GroupService {
         return changeGroup;
     }
 
+    /**
+     * 그룹이 정산이 완료되었거나, 인원이 한명인 경우는 바로 나가기 가능.
+     * @param groupId
+     * @param memberId
+     * @return
+     */
     @Override
-    public boolean leaveGroup(int groupId) {
+    public boolean leaveGroup(int groupId, String memberId) {
         Group group = groupRepository.findById(groupId).get();
-        if (group.getIsCalculateDone()) {
-            groupRepository.deleteById(groupId);
+        if (group.getIsCalculateDone() || groupMemberRepository.countByGroupMemberPKGroup(group) == 1) {
+            Member member = memberRepository.findById(memberId).get();
+            GroupMemberPK groupMemberPK = new GroupMemberPK(member,group);
+            GroupMember groupMember = groupMemberRepository.findById(groupMemberPK).get();
+            groupMember.setState(false);
+            groupMemberRepository.save(groupMember);
             return true;
         }
         return false;
