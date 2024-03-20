@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front/components/groups/GroupList.dart';
-import 'package:front/screen/groupscreens/GroupDetail2.dart';
+import 'package:front/screen/groupscreens/GroupDetail.dart';
 
 import '../models/Group.dart';
 

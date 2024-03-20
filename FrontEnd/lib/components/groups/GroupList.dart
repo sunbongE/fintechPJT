@@ -1,7 +1,8 @@
 import "package:flutter/material.dart";
 import 'package:front/const/colors/Colors.dart';
 import 'package:front/screen/groupscreens/GroupAdd.dart'; // Group 클래스를 import
-import 'package:front/screen/groupscreens/GroupDetail.dart';
+import 'package:front/screen/groupscreens/GroupItem.dart';
+import 'package:front/components/groups/GroupCard.dart';
 
 import '../../models/Group.dart';
 
@@ -56,76 +57,15 @@ class _GroupListState extends State<GroupList> {
       body: ListView.builder(
         itemCount: widget.groups.length,
         itemBuilder: (context, index) {
-          DateTime today = DateTime.now();
-          DateTime endDateParsed = DateTime.parse(widget.groups[index].endDate);
-          if (today.isAfter(endDateParsed)) {
-            widget.groups[index].groupState = true;
-          }
-          return Card(
-            margin: EdgeInsets.all(10.0),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-
-            color: widget.groups[index].groupState == true ? COMPLETE_COLOR : TRAVELING,
-            child: ListTile(
-              onTap: () {
-                navigateToGroupDetail(widget.groups[index]);
-              },
-              title: Text(
-                widget.groups[index].title,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 13,
-                ),
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(widget.groups[index].description),
-                  Text('시작일: ${widget.groups[index].startDate}'),
-                  Text('종료일: ${widget.groups[index].endDate}'),
-                ],
-              ),
-              trailing: widget.groups[index].groupState == true
-                  ? Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
-                decoration: BoxDecoration(
-                  color: STATE_COLOR,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  '정산중',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
-                ),
-              )
-                  : Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
-                decoration: BoxDecoration(
-                  color: STATE_COLOR,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  '여행중',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-            ),
+          return GroupCard(
+            group: widget.groups[index],
+            onTap: () {
+              navigateToGroupDetail(widget.groups[index]);
+            },
           );
         },
       ),
+
       floatingActionButton: ElevatedButton(
         onPressed: navigateToGroupAdd,
         child: Icon(Icons.add),
