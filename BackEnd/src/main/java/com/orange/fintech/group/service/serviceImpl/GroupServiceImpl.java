@@ -34,8 +34,8 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<Group> findGroups(String memberId) {
-        Member member = memberRepository.findByKakaoId(memberId);
-        log.info("member : {} ", member);
+        //        Member member = memberRepository.findByKakaoId(memberId);
+        //        log.info("member : {} ", member);
         //        return groupMemberRepository.findByGroupMemberPKMemberAndStateIsTrue(member);
         return groupQueryRepository.findAllMyGroup(memberId);
     }
@@ -81,7 +81,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public boolean deleteGroup(int groupId) {
+    public boolean leaveGroup(int groupId) {
         Group group = groupRepository.findById(groupId).get();
         if (group.getIsCalculateDone()) {
             groupRepository.deleteById(groupId);

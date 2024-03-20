@@ -52,7 +52,8 @@ public class GroupController {
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> findGroups(Principal principal) {
-        //        log.info("** principal :{}", principal.getName());
+        log.info("** principal :{}", principal.getName());
+        log.info("** findGroups 호출~~~!!!");
         //        String memberId = principal.getName();
         String memberId = "3388366548";
 
@@ -129,16 +130,15 @@ public class GroupController {
         }
     }
 
-    @DeleteMapping("/{groupId}")
-    @Operation(summary = "그룹 삭제", description = "그룹을 삭제할 수 있습니다.")
+    @PostMapping("/{groupId}")
+    @Operation(summary = "그룹 나가기", description = "그룹을 나갈 수 있습니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "성공"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    public ResponseEntity<?> deleteGroup(
-            @PathVariable("groupId") int groupId, Principal principal) {
+    public ResponseEntity<?> leaveGroup(@PathVariable("groupId") int groupId, Principal principal) {
         //        log.info("** principal :{}", principal.getName());
-        //        String memberId = principal.getName();
+        //                String memberId = principal.getName();
 
         String memberId = "3388366548";
 
@@ -149,7 +149,8 @@ public class GroupController {
                         .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
             }
 
-            boolean result = groupService.deleteGroup(groupId);
+            boolean result = groupService.leaveGroup(groupId);
+
             if (result) {
                 return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "삭제 성공"));
             }
