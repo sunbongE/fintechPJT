@@ -52,6 +52,8 @@ dependencies:
   image_picker: ^1.0.7
   permission_handler: ^11.3.0
 
+  email_validator: ^2.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

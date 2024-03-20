@@ -5,7 +5,7 @@ class Group {
   final String description;
   final String startDate;
   final String endDate;
-  final bool groupState;
+  bool? groupState;
   final List<GroupMember> groupMembers;
 
   Group({

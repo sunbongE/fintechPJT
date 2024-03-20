@@ -15,8 +15,8 @@ class GroupAdd extends StatefulWidget {
 }
 
 class _GroupAddState extends State<GroupAdd> {
-  TextEditingController _titleController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
   DateTime? _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   DateTime? _rangeStart;
@@ -25,17 +25,16 @@ class _GroupAddState extends State<GroupAdd> {
   String? _endDateText;
   bool groupState = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _selectedDay = _focusedDay;
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _selectedDay = _focusedDay;
+  // }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
       setState(() {
         _selectedDay = selectedDay;
-        _focusedDay = focusedDay;
       });
     }
   }
@@ -43,7 +42,7 @@ class _GroupAddState extends State<GroupAdd> {
   void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
     setState(() {
       _selectedDay = null;
-      _focusedDay = focusedDay;
+      _focusedDay = start ?? _selectedDay;
       _rangeStart = start;
       _rangeEnd = end;
     });
@@ -62,8 +61,9 @@ class _GroupAddState extends State<GroupAdd> {
       description: _descriptionController.text,
       startDate: _startDateText.toString(),
       endDate: _endDateText.toString(),
-      //처음에 그룹 만들때는 0으로, 이후 자동으로 Group에서 오늘 날짜가 지나면 1로 변경하도록
-      groupState: false, groupMembers: [],
+      groupState: false,
+      //처음 만들때는 나를 포함하도록 코드 수정
+      groupMembers: [],
     );
     Navigator.pop(context, newGroup);
 
@@ -122,6 +122,7 @@ class _GroupAddState extends State<GroupAdd> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         title: Text('그룹 추가하기'),
       ),
       body: SafeArea(
