@@ -164,7 +164,7 @@ public class GroupController {
     }
 
 
-    @GetMapping("/{groupId}/link")
+    @GetMapping("/{groupId}/invite")
     @Operation(summary = "그룹 참가", description = "링크를 클릭한 회원은 그룹에 초대됩니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
