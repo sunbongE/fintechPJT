@@ -208,10 +208,9 @@ public class GroupController {
                         .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
             }
 
-            List<GroupMembersDto> result = groupService.findGroupMembers(groupId,memberId);
+            List<GroupMembersDto> result = groupService.findGroupMembers(groupId, memberId);
 
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(result);
+            return ResponseEntity.status(HttpStatus.OK).body(result);
 
         } catch (Exception e) {
             log.info(e.getMessage());
@@ -220,10 +219,9 @@ public class GroupController {
         }
     }
 
-
     /**
-     * 회원이 그룹에 포함되어있는지 확인하거나
-     * 그룹이 존재하는지 확인한다.
+     * 회원이 그룹에 포함되어있는지 확인하거나 그룹이 존재하는지 확인한다.
+     *
      * @param memberId
      * @param groupId
      * @return

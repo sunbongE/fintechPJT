@@ -6,12 +6,8 @@ import static com.orange.fintech.member.entity.QMember.*;
 
 import com.orange.fintech.group.dto.GroupMembersDto;
 import com.orange.fintech.group.entity.Group;
-import com.orange.fintech.member.entity.Member;
-import com.orange.fintech.member.entity.QMember;
 import com.orange.fintech.member.repository.MemberRepository;
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -54,16 +50,19 @@ public class GroupQueryRepository {
 
     public List<GroupMembersDto> findGroupMembers(int groupId, String memberId) {
 
-        List<GroupMembersDto> groupList = queryFactory
-                .select(
-                        Projections.bean(
-                                GroupMembersDto.class,
-                                member.kakaoId, member.name, member.thumbnailImage))
-                .from(member)
-                .leftJoin(groupMember)
-                .on(groupMember.groupMemberPK.member.kakaoId.eq(member.kakaoId))
-                .where(groupMember.groupMemberPK.group.groupId.eq(groupId))
-                .fetch();
+        List<GroupMembersDto> groupList =
+                queryFactory
+                        .select(
+                                Projections.bean(
+                                        GroupMembersDto.class,
+                                        member.kakaoId,
+                                        member.name,
+                                        member.thumbnailImage))
+                        .from(member)
+                        .leftJoin(groupMember)
+                        .on(groupMember.groupMemberPK.member.kakaoId.eq(member.kakaoId))
+                        .where(groupMember.groupMemberPK.group.groupId.eq(groupId))
+                        .fetch();
         return groupList;
     }
 }
