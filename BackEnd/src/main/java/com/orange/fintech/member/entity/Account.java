@@ -1,5 +1,6 @@
 package com.orange.fintech.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -15,6 +16,7 @@ public class Account {
     @Column(length = 20)
     private String accountNo;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "kakao_id")
     private Member member;
@@ -25,4 +27,22 @@ public class Account {
     private Boolean isPrimaryAccount;
 
     @NotNull private String institutionCode;
+
+    @Override
+    public String toString() {
+        return "Account{"
+                + "accountNo='"
+                + accountNo
+                + '\''
+                + ", member="
+                + member
+                + ", balance="
+                + balance
+                + ", isPrimaryAccount="
+                + isPrimaryAccount
+                + ", institutionCode='"
+                + institutionCode
+                + '\''
+                + '}';
+    }
 }
