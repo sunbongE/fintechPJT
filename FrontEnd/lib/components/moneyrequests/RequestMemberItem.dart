@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import '../../const/colors/Colors.dart';
-import '../../models/RequestMember.dart';
+import '../../entities/RequestMember.dart';
 
 class RequestMemberItem extends StatefulWidget {
   final RequestMember member;

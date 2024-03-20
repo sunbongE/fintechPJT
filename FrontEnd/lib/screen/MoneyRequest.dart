@@ -2,12 +2,12 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:front/components/button/SizedButton.dart';
+import 'package:front/models/button/SizedButton.dart';
 import 'package:front/components/groups/GroupList.dart';
 import 'package:front/screen/HomeScreen.dart';
 
 import '../components/moneyrequests/MoneyRequestList.dart';
-import '../models/Expense.dart';
+import '../entities/Expense.dart';
 
 class MoneyRequest extends StatefulWidget {
   const MoneyRequest({super.key});
