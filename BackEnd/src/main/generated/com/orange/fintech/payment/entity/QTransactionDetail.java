@@ -32,7 +32,7 @@ public class QTransactionDetail extends EntityPathBase<TransactionDetail> {
 
     public final QTransaction transaction;
 
-    public final NumberPath<Integer> transaction_id = createNumber("transaction_id", Integer.class);
+    public final NumberPath<Integer> transactionId = createNumber("transactionId", Integer.class);
 
     public QTransactionDetail(String variable) {
         this(TransactionDetail.class, forVariable(variable), INITS);

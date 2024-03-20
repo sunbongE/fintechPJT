@@ -9,12 +9,14 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
 @Setter
+@ToString
 // @DynamicInsert
 // @DynamicUpdate
 public class Transaction {
@@ -22,10 +24,6 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int transactionId;
-
-    //    @ManyToOne
-    //    @JoinColumn(name = "group_id")
-    //    private Group group;
 
     @NotNull
     @ManyToOne
@@ -38,7 +36,6 @@ public class Transaction {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
-    //    @Column(nullable = true)
     private Integer transactionUniqueNo;
 
     @NotNull
