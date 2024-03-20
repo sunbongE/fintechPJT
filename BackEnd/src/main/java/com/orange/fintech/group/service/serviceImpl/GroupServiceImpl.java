@@ -125,4 +125,24 @@ public class GroupServiceImpl implements GroupService {
         List<GroupMembersDto> result = groupQueryRepository.findGroupMembers(groupId, memberId);
         return result;
     }
+
+    @Override
+    public boolean firstcall(int groupId, String memberId) {
+
+        Group group = new Group();
+        Member member = new Member();
+        group.setGroupId(groupId);
+        member.setKakaoId(memberId);
+
+        GroupMemberPK groupMemberPK = new GroupMemberPK(member, group);
+        Optional<GroupMember> Optarget = groupMemberRepository.findById(groupMemberPK);
+        if (Optarget.isEmpty()) return false;
+
+        GroupMember target = Optarget.get();
+        target.setFistCallDone(!target.getFistCallDone());
+
+        groupMemberRepository.save(target);
+
+        return true;
+    }
 }

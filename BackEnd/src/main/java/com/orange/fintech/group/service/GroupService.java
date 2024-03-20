@@ -22,4 +22,6 @@ public interface GroupService {
     boolean joinGroup(int groupId, String memberId);
 
     List<GroupMembersDto> findGroupMembers(int groupId, String memberId);
+
+    boolean firstcall(int groupId, String memberId);
 }
