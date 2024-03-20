@@ -54,27 +54,6 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("일치하는 계좌 정보 없음");
     }
 
-    @PostMapping("/account")
-    @Operation(summary = "계좌 정보 추가", description = "<string>회원 본인의 <strong>계좌 정보</strong>를 추가한다.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "정상 저장"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
-    })
-    public ResponseEntity<?> insertAccount(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails, Account account) {
-        // TODO: SSAFY API로 계좌 만들어야 할 듯
-        String kakaoId = customUserDetails.getUsername();
-
-        Member member = memberService.findByKakaoId(kakaoId);
-
-        if (accountService.insertAccount(kakaoId, account)) {
-            return ResponseEntity.ok(BaseResponseBody.of(200, "계좌 정보 추가 성공"));
-        }
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(BaseResponseBody.of(500, "Pin 번호 수정 중 오류 발생"));
-    }
-
     @PutMapping("/account")
     @Operation(
             summary = "계좌 정보 수정 (주 계좌 설정)",
@@ -130,5 +109,23 @@ public class MemberController {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(BaseResponseBody.of(500, "Pin 번호 수정 중 오류 발생"));
+    }
+
+    @DeleteMapping()
+    @Operation(summary = "회원 탈퇴", description = "")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "정상 탈퇴"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> withdraw(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        String kakaoId = customUserDetails.getUsername();
+
+        if (memberService.deleteUser(kakaoId)) {
+            return ResponseEntity.ok(BaseResponseBody.of(200, "정상적으로 탈퇴되었습니다."));
+        }
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(BaseResponseBody.of(500, "탈퇴 중 오류 발생"));
     }
 }

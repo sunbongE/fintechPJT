@@ -15,4 +15,6 @@ public interface MemberService {
     boolean logout(String accessToken);
 
     boolean updatePin(String kakaoId, String pin);
+
+    boolean deleteUser(String kakaoId);
 }
