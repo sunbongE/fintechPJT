@@ -1,6 +1,6 @@
 package com.orange.fintech.config;
 
-import com.orange.fintech.jwt.JWTFilter;
+//import com.orange.fintech.jwt.JWTFilter;
 import com.orange.fintech.jwt.JWTUtil;
 import com.orange.fintech.jwt.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +25,7 @@ import java.util.Collections;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final JWTFilter jwtFilter;
+//    private final JWTFilter jwtFilter;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JWTUtil jwtUtil;
 
@@ -71,15 +71,6 @@ public class SecurityConfig {
 
         http
                 .httpBasic((auth) -> auth.disable());
-
-        //oauth2
-//        http
-//                .oauth2Login((oauth2) -> oauth2
-//                        .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
-//                                .userService(customOAuth2UserService))
-//                        .successHandler(customSuccessHandler)
-//                );
-
 
 
         http

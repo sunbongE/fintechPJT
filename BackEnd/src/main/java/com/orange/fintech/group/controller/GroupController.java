@@ -162,4 +162,32 @@ public class GroupController {
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
     }
+
+
+    @GetMapping("/{groupId}/link")
+    @Operation(summary = "그룹 참가", description = "링크를 클릭한 회원은 그룹에 초대됩니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> joinGroup(@PathVariable("groupId") int groupId, Principal principal) {
+        log.info("** joinGroup -> principal :{}", principal.getName());
+        String memberId = principal.getName();
+
+        try {
+
+            boolean result = groupService.joinGroup(groupId,memberId);
+
+            if(!result){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponseBody.of(400,"여행 그룹에 참여할 수 없습니다."));
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200,"여행 그룹에 참여했습니다."));
+
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(BaseResponseBody.of(500, "서버 오류"));
+        }
+    }
 }
