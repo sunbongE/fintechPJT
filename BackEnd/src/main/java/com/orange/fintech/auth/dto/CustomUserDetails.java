@@ -40,8 +40,8 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        log.info("member : {} ", member.toString());
-        log.info("** getUsername 실행");
+        //        log.info("member : {} ", member.toString());
+        //        log.info("** getUsername 실행");
         return member.getKakaoId();
     }
 

@@ -15,26 +15,23 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
 
-        Info info =  new Info()
-                .title("Team Orange API")
-                .description("Spring Boot로 개발하는 RESTful API 명세서 입니다.")
-                .version("1.0.0");
+        Info info =
+                new Info()
+                        .title("Team Orange API")
+                        .description("Spring Boot로 개발하는 RESTful API 명세서 입니다.")
+                        .version("1.0.0");
 
-        SecurityScheme securityScheme = new SecurityScheme()
-                .type(SecurityScheme.Type.APIKEY)
-                .in(SecurityScheme.In.HEADER)
-                .name("Authorization");
+        SecurityScheme securityScheme =
+                new SecurityScheme()
+                        .type(SecurityScheme.Type.APIKEY)
+                        .in(SecurityScheme.In.HEADER)
+                        .name("Authorization");
 
-        Components components = new Components()
-                .addSecuritySchemes(
-                        "Bearer Token", securityScheme);
+        Components components = new Components().addSecuritySchemes("Bearer Token", securityScheme);
 
         SecurityRequirement securityRequirement = new SecurityRequirement().addList("Bearer Token");
 
-        return new OpenAPI()
-                .info(info)
-                .components(components)
-                .addSecurityItem(securityRequirement);
+        return new OpenAPI().info(info).components(components).addSecurityItem(securityRequirement);
     }
 
     @Bean
@@ -43,5 +40,4 @@ public class SwaggerConfig {
 
         return GroupedOpenApi.builder().group("API 1.0.0").pathsToMatch(paths).build();
     }
-
 }
