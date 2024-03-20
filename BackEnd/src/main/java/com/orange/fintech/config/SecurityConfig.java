@@ -1,14 +1,9 @@
 package com.orange.fintech.config;
 
-//import com.orange.fintech.jwt.JWTFilter;
 import com.orange.fintech.jwt.JWTFilter;
 import com.orange.fintech.jwt.JWTUtil;
-//import com.orange.fintech.oauth.handler.CustomSuccessHandler;
-//import com.orange.fintech.oauth.service.CustomOAuth2UserService;
 import com.orange.fintech.jwt.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +13,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -34,12 +28,6 @@ public class SecurityConfig {
     private final JWTFilter jwtFilter;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JWTUtil jwtUtil;
-
-//    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,AuthenticationConfiguration authenticationConfiguration, JWTFilter jwtFilter, JWTUtil jwtUtil) {
-//        this.jwtFilter = jwtFilter;
-//        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-//        this.jwtUtil = jwtUtil;
-//    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -98,7 +86,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/","/swagger-resources/**", "/v3/api-docs/**","/api/v1/groups/**", "/swagger-ui/**", "/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/user/**").hasRole("USER")
+                        .requestMatchers("/api/v1/user/**", "/api/v1/members/**").hasRole("USER")
                         .anyRequest().authenticated());
 
 
