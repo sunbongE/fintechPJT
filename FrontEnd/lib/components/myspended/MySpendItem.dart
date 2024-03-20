@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:front/components/myspended/MySpendMap.dart';
+import 'package:front/components/myspended/ShowReciptBtn.dart';
 import 'package:front/const/colors/Colors.dart';
 import 'package:front/providers/store.dart';
 import 'package:intl/intl.dart';
+import '../../models/CustomDivider.dart';
 
 class MySpendItem extends StatefulWidget {
   final Map<String, dynamic>? spend;
@@ -22,7 +25,9 @@ class _MySpendItemState extends State<MySpendItem> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.spend?['store_name']),
+        scrolledUnderElevation: 0,
+        title: Text(widget.spend?['store_name'],
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.sp)),
       ),
       body: Padding(
         padding: EdgeInsets.all(30.w),
@@ -35,11 +40,11 @@ class _MySpendItemState extends State<MySpendItem> {
                   children: [
                     Text(
                       "거래시간",
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 16.sp),
                     ),
                     Text(
                       '${widget.spend?['transactionDate']} ${widget.spend?['transactionTime']['hour']}:${widget.spend?['transactionTime']['minute']}:${widget.spend?['transactionTime']['second']}',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 16.sp),
                     ),
                   ],
                 ),
@@ -51,12 +56,12 @@ class _MySpendItemState extends State<MySpendItem> {
                   children: [
                     Text(
                       "거래금액",
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 16.sp),
                     ),
                     Text(
                       '${NumberFormat('#,###').format(widget.spend?['cost'])}원',
                       style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 20.sp,
                           fontWeight: FontWeight.bold,
                           color: TEXT_COLOR),
                     ),
@@ -70,14 +75,24 @@ class _MySpendItemState extends State<MySpendItem> {
                   children: [
                     Text(
                       "결재자",
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 16.sp),
                     ),
                     Text(
                       '${userManager.name}',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 16.sp),
                     ),
                   ],
                 ),
+                SizedBox(
+                  height: 50.h,
+                ),
+                CustomDivider(),
+                ShowReciptBtn(),
+                CustomDivider(),
+                SizedBox(
+                  height: 10.h,
+                ),
+                MySpendMap(location: widget.spend?['location']),
               ],
             ),
           ],
