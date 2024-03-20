@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:front/models/Expense.dart';
+import 'MoneyRequestItem.dart';
 
-import '../../screen/MoneyRequests/MoneyRequestDetail.dart';
-import 'MoneyRequestItem.dart'; // Expense 모델 import
-
-class MoneyRequestList extends StatelessWidget {
+class MoneyRequestList extends StatefulWidget {
   final List<Expense> expenses;
 
-  MoneyRequestList({Key? key, required this.expenses}) : super(key: key){print(expenses.length);}
+  MoneyRequestList({Key? key, required this.expenses}) : super(key: key);
+
   @override
+  _MoneyRequestListState createState() => _MoneyRequestListState();
+}
+
+// 상태 관리 클래스
+class _MoneyRequestListState extends State<MoneyRequestList> {
+  @override
+  void initState() {
+    super.initState();
+    print(widget.expenses.length);
+  }
+
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: expenses.length,
+      itemCount: widget.expenses.length,
       itemBuilder: (context, index) {
-        return InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MoneyRequestDetail(expense: expenses[index])),
-            );
-          },
-          child: MoneyRequestItem(expense: expenses[index]),
-        );
+        return MoneyRequestItem(expense: widget.expenses[index]);
       },
     );
   }

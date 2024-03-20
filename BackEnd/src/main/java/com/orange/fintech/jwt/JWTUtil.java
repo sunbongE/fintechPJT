@@ -77,28 +77,24 @@ public class JWTUtil {
                 .before(new Date());
     }
 
-    public String createAccessToken(String name, String email, String kakaoId, Long expiredMs) {
+    public String createAccessToken(String name, String kakaoId, Date date) {
 
         return Jwts.builder()
                 .claim("name", name)
-                // TODO: Parameter email 지우기
                 .claim("kakaoId", kakaoId)
-                //                .subject(kakaoId)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiredMs))
+                .expiration(date)
                 .signWith(secretKey)
                 .compact();
     }
 
-    public String createRefreshToken(String name, String email, String kakaoId, Long expiredMs) {
+    public String createRefreshToken(String name, String kakaoId, Date date) {
 
         return Jwts.builder()
                 .claim("name", name)
-                .claim("email", email)
                 .claim("kakaoId", kakaoId)
-                //                .subject(kakaoId)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiredMs))
+                .expiration(date)
                 .signWith(secretKey)
                 .compact();
     }

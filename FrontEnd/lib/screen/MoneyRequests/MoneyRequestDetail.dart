@@ -2,18 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/moneyrequests/MoneyRequestItem.dart';
 import 'package:front/models/Expense.dart';
-import 'package:intl/intl.dart';
 
 import '../../components/button/SizedButton.dart';
 import '../../components/button/Toggle.dart';
 import '../../components/moneyrequests/RequestMemberList.dart';
-import '../../const/colors/Colors.dart';
 import '../../models/RequestDetail.dart';
 
-class MoneyRequestDetail extends StatelessWidget {
+class MoneyRequestDetail extends StatefulWidget {
+  final Function onSuccess;
   final Expense expense;
 
-  const MoneyRequestDetail({Key? key, required this.expense}) : super(key: key);
+  const MoneyRequestDetail(
+      {Key? key, required this.expense, required this.onSuccess})
+      : super(key: key);
+
+  @override
+  _MoneyRequestDetailState createState() => _MoneyRequestDetailState();
+}
+
+class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
+  late bool isSettledStates;
+
+  @override
+  void initState() {
+    super.initState();
+    isSettledStates = widget.expense.isSettled;
+  }
+
+  void updateIsSettledStates(bool newStates) {
+    setState(() {
+      isSettledStates = newStates;
+      widget.onSuccess(isSettledStates);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +70,7 @@ class MoneyRequestDetail extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(expense.place), // 예시로 제목을 AppBar에 표시
+        title: Text(widget.expense.place), // 예시로 제목을 AppBar에 표시
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -57,7 +78,7 @@ class MoneyRequestDetail extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             MoneyRequestItem(
-              expense: expense,
+              expense: widget.expense,
               isToggle: false,
             ),
             SizedBox(
@@ -84,7 +105,10 @@ class MoneyRequestDetail extends StatelessWidget {
               child: SizedBox(
                 //width: 368.w,
                 height: 594.h,
-                child: RequestMemberList(requestDetail: request,),
+                child: RequestMemberList(
+                  requestDetail: request,
+                  allSettledCallback: updateIsSettledStates,
+                ),
               ),
             ),
             Padding(padding: EdgeInsets.symmetric(vertical: 20.w)),
