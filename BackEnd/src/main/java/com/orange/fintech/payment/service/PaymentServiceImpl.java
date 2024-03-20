@@ -5,29 +5,85 @@ import com.orange.fintech.group.repository.GroupRepository;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.payment.dto.TransactionDto;
-import com.orange.fintech.payment.entity.Transaction;
-import com.orange.fintech.payment.entity.TransactionDetail;
-import com.orange.fintech.payment.repository.TransactionDetailRepository;
-import com.orange.fintech.payment.repository.TransactionRepository;
-import com.orange.fintech.payment.repository.TransactionRepositorySupport;
+import com.orange.fintech.payment.dto.TransactionPostReq;
+import com.orange.fintech.payment.entity.*;
+import com.orange.fintech.payment.repository.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
+@Transactional
 @Service
+@RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
-    @Autowired private TransactionRepository transactionRepository;
-    @Autowired private TransactionRepositorySupport transactionRepositorySupport;
-    @Autowired private TransactionDetailRepository transactionDetailRepository;
+    private final MemberRepository memberRepository;
+    private final GroupRepository groupRepository;
 
-    @Autowired private MemberRepository memberRepository;
+    private final TransactionRepository transactionRepository;
+    private final TransactionRepositorySupport transactionRepositorySupport;
+    private final TransactionDetailRepository transactionDetailRepository;
+    private final TransactionMemberRepository transactionMemberRepository;
 
-    @Autowired private GroupRepository groupRepository;
+    private final ReceiptRepository receiptRepository;
+
+    @Override
+    public boolean addTransaction(int groupId, TransactionPostReq req) {
+        // 거래내역 추가
+        log.info("거래내역 추가 시작");
+        Transaction transaction = new Transaction();
+        transaction.setTransactionDate(req.getTransactionDate());
+        transaction.setTransactionTime(req.getTransactionTime());
+        transaction.setTransactionBalance(req.getTransactionBalance());
+        transaction.setTransactionSummary(req.getTransactionSummary());
+        // transaction.setTransactionType("");
+        // transaction.setTransactionTypeName("");
+        transactionRepository.save(transaction);
+        log.info("거래내역 추가 끝");
+
+        saveTransactionDetail(groupId, transaction, req);
+
+        saveReceipt(transaction, req);
+
+        return false;
+    }
+
+    public void saveTransactionDetail(
+            int groupId, Transaction transaction, TransactionPostReq req) {
+        log.info("saveTransactionDetail 시작");
+        TransactionDetail transactionDetail = new TransactionDetail();
+
+        transactionDetail.setTransactionId(transaction.getTransactionId());
+        //        transactionDetail.setTransaction(transaction);
+
+        transactionDetail.setGroup(groupRepository.findById(groupId).get());
+        transactionDetail.setRemainder(req.getRemainder());
+        //        transactionDetail.setReceiptEnrolled(false);
+
+        log.info("saveTransactionDetail {}", transactionDetail);
+
+        transactionDetailRepository.save(transactionDetail);
+        log.info("saveTransactionDetail 끝");
+    }
+
+    public void saveReceipt(Transaction transaction, TransactionPostReq req) {
+        log.info("saveReceipt 시작");
+        Receipt receipt = new Receipt();
+        receipt.setTransaction(transaction);
+        receipt.setTotalPrice(Math.toIntExact(req.getTransactionBalance()));
+        receipt.setApprovalAmount(Math.toIntExact(req.getTransactionBalance()));
+        receipt.setLocation(req.getLocation());
+        receipt.setDateTime(LocalDateTime.of(req.getTransactionDate(), req.getTransactionTime()));
+        receipt.setBusinessName(req.getTransactionSummary());
+        receiptRepository.save(receipt);
+        log.info("saveReceipt 끝");
+    }
 
     @Override
     public List<TransactionDto> getMyTransaction(String memberId, int groupId) {
@@ -60,8 +116,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         if (transaction.isPresent()) {
             log.info("transaction present");
-            Optional<TransactionDetail> td =
-                    transactionDetailRepository.findById(transaction.get().getTransactionId());
+            Optional<TransactionDetail> td = transactionDetailRepository.findById(transactionId);
 
             if (td.isPresent()) {
                 log.info("transaction detail present");
@@ -90,5 +145,18 @@ public class PaymentServiceImpl implements PaymentService {
 
         transactionDetail.setMemo(memo);
         transactionDetailRepository.save(transactionDetail);
+    }
+
+    @Override
+    public void addTransactionMember(String memberId, int transactionId, int amount) {
+        TransactionMemberPK pk = new TransactionMemberPK();
+        pk.setTransaction(transactionRepository.findById(transactionId).get());
+        pk.setMember(memberRepository.findById(memberId).get());
+
+        TransactionMember transactionMember = new TransactionMember();
+        transactionMember.setTransactionMemberPK(pk);
+        transactionMember.setTotalAmount(amount);
+
+        transactionMemberRepository.save(transactionMember);
     }
 }

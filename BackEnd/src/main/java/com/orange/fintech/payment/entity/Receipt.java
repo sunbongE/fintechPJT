@@ -6,14 +6,13 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.*;
 
 @Entity
 @Getter
 @Setter
 @DynamicInsert
-// @DynamicUpdate
+@DynamicUpdate
 public class Receipt {
 
     @Id
@@ -22,6 +21,7 @@ public class Receipt {
 
     @OneToOne
     @JoinColumn(name = "transaction_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Transaction transaction;
 
     @NotNull private String businessName;
@@ -31,7 +31,7 @@ public class Receipt {
     @NotNull
     @JsonFormat(
             shape = JsonFormat.Shape.STRING,
-            pattern = "yyyyMMdd HHmmss",
+            pattern = "yyyy-MM-dd HH:mm:ss",
             timezone = "Asia/Seoul")
     private LocalDateTime dateTime;
 
@@ -41,9 +41,9 @@ public class Receipt {
 
     private long authNumber;
 
-    private double latitude;
+    //    private double latitude;
 
-    private double longitude;
+    //    private double longitude;
 
     @NotNull
     @ColumnDefault("true")

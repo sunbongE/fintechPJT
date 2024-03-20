@@ -39,9 +39,7 @@ public class TransactionRepositorySupport {
                                         qTransactionDetail.receiptEnrolled))
                         .from(qTransaction)
                         .leftJoin(qTransactionDetail)
-                        .on(
-                                qTransaction.transactionId.eq(
-                                        qTransactionDetail.transaction.transactionId))
+                        .on(qTransaction.transactionId.eq(qTransactionDetail.transactionId))
                         .where(
                                 qTransaction
                                         .member
