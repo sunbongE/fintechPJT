@@ -30,24 +30,28 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired private GroupRepository groupRepository;
 
     @Override
-    public List<TransactionDto> getMyTransaction(Member member, Group group) {
+    public List<TransactionDto> getMyTransaction(String memberId, int groupId) {
         log.info("getMyTransaction start");
 
-        // TODO: 아래 코드 삭제
-        member = new Member();
-        member.setEmail("email@email");
-        member.setKakaoId("klsjd");
-        memberRepository.save(member);
-
-        group = new Group();
-        groupRepository.save(group);
-        // TODO: 여기까지 ----------
+        Member member = memberRepository.findById(memberId).get();
+        Group group = groupRepository.findById(groupId).get();
 
         List<TransactionDto> list =
                 transactionRepositorySupport.getTransactionByMemberAndGroup(member, group);
         log.info("getMyTransaction end ");
 
         return list;
+    }
+
+    @Override
+    public boolean isMyTransaction(String memberId, int transactionId) {
+        Transaction transaction = transactionRepository.findById(transactionId).get();
+
+        if (transaction.getMember().getKakaoId().equals(memberId)) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
