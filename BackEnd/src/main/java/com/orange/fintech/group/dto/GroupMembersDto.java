@@ -12,5 +12,4 @@ public class GroupMembersDto {
     String name;
     String kakaoId;
     String thumbnailImage;
-
 }

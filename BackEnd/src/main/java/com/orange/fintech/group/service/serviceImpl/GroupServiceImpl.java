@@ -104,7 +104,6 @@ public class GroupServiceImpl implements GroupService {
         return false;
     }
 
-
     @Override
     public boolean joinGroup(int groupId, String memberId) {
         Group group = new Group();
@@ -123,7 +122,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<GroupMembersDto> findGroupMembers(int groupId, String memberId) {
-        List<GroupMembersDto> result = groupQueryRepository.findGroupMembers(groupId,memberId);
+        List<GroupMembersDto> result = groupQueryRepository.findGroupMembers(groupId, memberId);
         return result;
     }
 }
