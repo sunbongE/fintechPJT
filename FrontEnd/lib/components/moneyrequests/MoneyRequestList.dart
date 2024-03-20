@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:front/models/Expense.dart';
+import 'package:front/entities/Expense.dart';
 import 'MoneyRequestItem.dart';
 
 class MoneyRequestList extends StatefulWidget {

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../const/colors/Colors.dart';
-
+/*
+* 토글 버튼 로직 수정중이라 사용하지 말아주세요ㅠ -지연
+* */
 class Toggle extends StatefulWidget {
   final bool initialValue;
   final ValueChanged<bool> onToggle;

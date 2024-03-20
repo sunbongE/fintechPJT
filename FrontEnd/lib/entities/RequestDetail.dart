@@ -1,4 +1,4 @@
-import 'package:front/models/RequestMember.dart';
+import 'package:front/entities/RequestMember.dart';
 
 class RequestDetail {
   final String place;

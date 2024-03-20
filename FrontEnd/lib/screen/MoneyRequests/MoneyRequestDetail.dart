@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/moneyrequests/MoneyRequestItem.dart';
-import 'package:front/models/Expense.dart';
+import 'package:front/entities/Expense.dart';
 
-import '../../components/button/SizedButton.dart';
-import '../../components/button/Toggle.dart';
+import '../../models/button/SizedButton.dart';
+import '../../models/button/Toggle.dart';
 import '../../components/moneyrequests/RequestMemberList.dart';
-import '../../models/RequestDetail.dart';
+import '../../entities/RequestDetail.dart';
 
 class MoneyRequestDetail extends StatefulWidget {
   final Function onSuccess;

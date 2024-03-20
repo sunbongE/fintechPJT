@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:front/components/button/Toggle.dart';
-import 'package:front/models/Expense.dart';
+import 'package:front/models/button/Toggle.dart';
+import 'package:front/entities/Expense.dart';
 import 'package:intl/intl.dart';
 
 import '../../const/colors/Colors.dart';
