@@ -51,7 +51,7 @@ class _RequestMemberItemState extends State<RequestMemberItem> {
     return ListTile(
       leading: ClipOval(
         child: SizedBox(
-          width: 60, //여기에 반응형 적용하면 원이 찌그러짐
+          width: 60,
           height: 60,
           child: Image.network(widget.member.profileUrl, fit: BoxFit.cover),
         ),
