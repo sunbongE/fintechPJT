@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:front/components/mypage/MyTripHistoryDetiail.dart';
+import 'package:front/components/mypage/MyTripHistoryList.dart';
 import '../../models/button/ButtonSlideAnimation.dart';
 
 class MyTripHistory extends StatefulWidget {
@@ -11,6 +11,7 @@ class MyTripHistory extends StatefulWidget {
 }
 
 class _MyTripHistoryState extends State<MyTripHistory> {
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -21,18 +22,27 @@ class _MyTripHistoryState extends State<MyTripHistory> {
           TextButton(
             onPressed: () => buttonSlideAnimation(
               context,
-              MyTripHistoryDetail(),
+              MyTripHistoryList(),
             ),
             style: ButtonStyle(
               alignment: Alignment.centerLeft,
             ),
-            child: Text(
-              "나의 여정 기록",
-              style: TextStyle(
-                fontSize: 20.sp,
-                color: Colors.black,
-                fontWeight: FontWeight.bold
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "나의 여정 기록",
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Icon(
+                  Icons.chevron_right,
+                  color: Colors.black,
+                ),
+              ],
             ),
           ),
         ],

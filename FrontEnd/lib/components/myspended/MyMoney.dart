@@ -14,6 +14,7 @@ class MyMoney extends StatefulWidget {
 }
 
 class _MyMoneyState extends State<MyMoney> {
+  // 현재 잔액 불러오는 api
   int myMoneyAmount = 32733;
 
   @override

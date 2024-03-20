@@ -13,14 +13,95 @@ class MySpendList extends StatefulWidget {
 
 class _MySpendListState extends State<MySpendList> {
   List<Map<String, dynamic>>? getMySpended = [
-    {"date": "2024-02-08", "store_name": "초돈8", 'cost': 6543000},
-    {"date": "2024-02-07", "store_name": "초돈7", 'cost': 865400},
-    {"date": "2024-02-06", "store_name": "초돈6", 'cost': 145300},
-    {"date": "2024-02-05", "store_name": "초돈5", 'cost': 112300},
-    {"date": "2024-02-04", "store_name": "초돈4", 'cost': 1400},
-    {"date": "2024-02-03", "store_name": "초돈3", 'cost': 185400},
-    {"date": "2024-02-02", "store_name": "초돈2", 'cost': 30000},
-    {"date": "2024-02-01", "store_name": "초돈1", 'cost': 155400},
+    {
+      "transactionDate": "2024-03-20",
+      "transactionTime": {
+        "hour": 18,
+        "minute": 29,
+        "second": 20,
+        "nano": 0
+      },
+      "store_name": "초돈8",
+      "location": "광주광역시 광산구 장덕동 1437",
+      "cost": 6543000,
+      "receipt": true,
+      "details": "고기, 맥주",
+      "participants": ["이영희", "박민수"]
+    },
+    {
+      "transactionDate": "2024-03-20",
+      "transactionTime": {
+        "hour": 18,
+        "minute": 29,
+        "second": 20,
+        "nano": 0
+      },
+      "store_name": "초돈7",
+      "location": "경기도 수원시 영통구 영통로 290번길 25",
+      "cost": 865400,
+      "receipt": false,
+      "participants": ["이영희", "박민수"]
+    },
+    {
+      "transactionDate": "2024-03-20",
+      "transactionTime": {
+        "hour": 18,
+        "minute": 29,
+        "second": 20,
+        "nano": 0
+      },
+      "store_name": "초돈6",
+      "location": "전라남도 무안군 삼향읍 대죽동로 40",
+      "cost": 145300,
+      "receipt": false,
+      "details": "고기, 소주",
+      "participants": ["이영희", "박민수"]
+    },
+    {
+      "transactionDate": "2024-03-20",
+      "transactionTime": {
+        "hour": 18,
+        "minute": 29,
+        "second": 20,
+        "nano": 0
+      },
+      "store_name": "초돈5",
+      "location": "서울특별시 양천구 목동동로 10",
+      "cost": 112300,
+      "receipt": true,
+      "details": "고기, 김치찌개",
+      "participants": ["이영희", "박민수"]
+    },
+    {
+      "transactionDate": "2024-03-20",
+      "transactionTime": {
+        "hour": 18,
+        "minute": 29,
+        "second": 20,
+        "nano": 0
+      },
+      "store_name": "초돈4",
+      "location": "광주광역시 광산구 장신로19번안길 5-2",
+      "cost": 1400,
+      "receipt": true,
+      "details": "고기, 맥주",
+      "participants": ["이영희", "박민수"]
+    },
+    {
+      "transactionDate": "2024-03-20",
+      "transactionTime": {
+        "hour": 18,
+        "minute": 29,
+        "second": 20,
+        "nano": 0
+      },
+      "store_name": "초돈3",
+      "location": "서울특별시 구로구 중앙로 121",
+      "cost": 185400,
+      "receipt": true,
+      "details": "고기, 맥주",
+      "participants": ["이영희", "박민수"]
+    },
   ];
 
   @override
@@ -30,49 +111,51 @@ class _MySpendListState extends State<MySpendList> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: getMySpended!
-            .map((spend) => GestureDetector(
+            .map((spend) => InkWell(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MySpendItem(spendDetail: spend),
+                        builder: (context) => MySpendItem(spend: spend),
                       ),
                     );
                   },
                   child: Column(
                     children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(
-                          10.w,
-                          30.h,
-                          10.w,
-                          30.h,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  '${DateFormat('MM.dd').format(DateTime.parse(spend['date']))}',
-                                  style: TextStyle(fontSize: 13.sp),
-                                ),
-                                SizedBox(width: 25.w),
-                                Text(
-                                  spend['store_name'],
-                                  style: TextStyle(fontSize: 20.sp),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              '-${NumberFormat('#,###').format(spend['cost'])}원',
-                              style: TextStyle(
-                                fontSize: 20.sp,
-                                fontWeight: FontWeight.bold,
-                                color: TEXT_COLOR,
+                      Container(
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            10.w,
+                            30.h,
+                            10.w,
+                            30.h,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    '${DateFormat('MM.dd').format(DateTime.parse(spend['transactionDate']))}',
+                                    style: TextStyle(fontSize: 13.sp),
+                                  ),
+                                  SizedBox(width: 25.w),
+                                  Text(
+                                    spend['store_name'],
+                                    style: TextStyle(fontSize: 20.sp),
+                                  ),
+                                ],
                               ),
-                            )
-                          ],
+                              Text(
+                                '-${NumberFormat('#,###').format(spend['cost'])}원',
+                                style: TextStyle(
+                                  fontSize: 20.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: TEXT_COLOR,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                       Divider(

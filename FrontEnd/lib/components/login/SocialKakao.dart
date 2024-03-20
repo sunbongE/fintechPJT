@@ -156,6 +156,7 @@ Future<bool> SocialKakao() async {
     try {
       await UserApi.instance.loginWithKakaoAccount();
       User user = await UserApi.instance.me();
+      // String? jwtToken = await postUserInfo(user);
       // var dio = Dio();
       // dio.options.headers['Content-Type'] = 'application/json';
       // Response response =
