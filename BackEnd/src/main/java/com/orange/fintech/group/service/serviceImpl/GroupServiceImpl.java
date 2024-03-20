@@ -121,8 +121,8 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<GroupMembersDto> findGroupMembers(int groupId, String memberId) {
-        List<GroupMembersDto> result = groupQueryRepository.findGroupMembers(groupId, memberId);
+    public List<GroupMembersDto> findGroupMembers(int groupId) {
+        List<GroupMembersDto> result = groupQueryRepository.findGroupMembers(groupId);
         return result;
     }
 
@@ -144,5 +144,39 @@ public class GroupServiceImpl implements GroupService {
         groupMemberRepository.save(target);
 
         return true;
+    }
+
+    @Override
+    public boolean secondcall(int groupId, String memberId) {
+        Group group = new Group();
+        Member member = new Member();
+        group.setGroupId(groupId);
+        member.setKakaoId(memberId);
+
+        GroupMemberPK groupMemberPK = new GroupMemberPK(member, group);
+        Optional<GroupMember> Optarget = groupMemberRepository.findById(groupMemberPK);
+        if (Optarget.isEmpty()) return false;
+
+        GroupMember target = Optarget.get();
+
+        if(!target.getFistCallDone()) return false;
+
+        target.setSecondCallDone(!target.getSecondCallDone());
+
+        groupMemberRepository.save(target);
+
+        return true;
+    }
+
+    @Override
+    public List<GroupMembersDto> firstcallMembers(int groupId) {
+        List<GroupMembersDto> result = groupQueryRepository.firstcallMembers(groupId);
+        return result;
+    }
+
+    @Override
+    public List<GroupMembersDto> secondcallMembers(int groupId) {
+        List<GroupMembersDto> result = groupQueryRepository.secondcallMembers(groupId);
+        return result;
     }
 }
