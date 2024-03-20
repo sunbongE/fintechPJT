@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "107816385127",
+    "project_id": "yeojung-3d522",
+    "storage_bucket": "yeojung-3d522.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:107816385127:android:2f6bfd4220f44f812672c2",
+        "android_client_info": {
+          "package_name": "com.example.front"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGDHnJR6colN-3Pwa1iId9CnsBAQcx1sc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

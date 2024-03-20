@@ -9,6 +9,8 @@ import "package:front/providers/store.dart";
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'models/Biometrics.dart';
 import 'models/PassWordCertification.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,6 +19,9 @@ Future<void> main() async {
     javaScriptAppKey: '506a7e7288e569efa8b05d06206ac60a',
   );
   await UserManager().loadUserInfo();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   print("키 해시: " + await KakaoSdk.origin);
 
