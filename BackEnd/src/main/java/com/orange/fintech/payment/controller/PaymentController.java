@@ -102,8 +102,8 @@ public class PaymentController {
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "OK"));
     }
 
-    @PostMapping("/{paymentId}/cash")
-    @Operation(summary = "현금 결제 내역 추가", description = "<strong>paymentId</strong>로 현금 결제 내역을 추가한다.")
+    @PostMapping("/cash")
+    @Operation(summary = "현금 결제 내역 추가", description = "<strong>groupId</strong>로 현금 결제 내역을 추가한다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "성공"),
         @ApiResponse(responseCode = "403", description = "권한 없음"),
@@ -112,12 +112,28 @@ public class PaymentController {
     })
     public ResponseEntity<? extends BaseResponseBody> addCash(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
-            @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
             @RequestBody TransactionPostReq addTransactionDto,
             Principal principal) {
         log.info("addCash 시작");
         log.info("addTransactionDto {}", addTransactionDto);
         paymentService.addTransaction(groupId, addTransactionDto);
+
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "OK"));
+    }
+
+    @GetMapping("/{paymentId}")
+    @Operation(summary = "결제 내역 상세보기", description = "<strong>paymentId</strong>로 결제 내역 상세보기 한다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "403", description = "권한 없음"),
+        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<? extends BaseResponseBody> getTransactionDetail(
+            @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
+            @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
+            Principal principal) {
+        log.info("getTransactionDetail 시작");
 
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "OK"));
     }

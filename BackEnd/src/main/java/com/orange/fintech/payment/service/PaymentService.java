@@ -1,6 +1,7 @@
 package com.orange.fintech.payment.service;
 
 import com.orange.fintech.payment.dto.TransactionDto;
+import com.orange.fintech.payment.dto.TransactionMemberDto;
 import com.orange.fintech.payment.dto.TransactionPostReq;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -17,5 +18,5 @@ public interface PaymentService {
 
     void memo(int transactionId, String memo) throws NoSuchElementException;
 
-    void addTransactionMember(String memberId, int transactionId, int amount);
+    void addTransactionMember(int transactionId, TransactionMemberDto dto);
 }
