@@ -1,13 +1,20 @@
 package com.orange.fintech.group.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.orange.fintech.auth.dto.CustomUserDetails;
 import com.orange.fintech.common.BaseResponseBody;
+import com.orange.fintech.common.exception.BigFileException;
+import com.orange.fintech.common.exception.NotValidExtensionException;
 import com.orange.fintech.group.dto.GroupCalculateResultDto;
 import com.orange.fintech.group.dto.GroupCreateDto;
 import com.orange.fintech.group.dto.GroupMembersDto;
 import com.orange.fintech.group.dto.ModifyGroupDto;
 import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.group.service.GroupService;
+import com.orange.fintech.util.ReceiptOcrService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,9 +23,13 @@ import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "Group", description = "그룹 API")
 @Slf4j
@@ -28,6 +39,8 @@ import org.springframework.web.bind.annotation.*;
 public class GroupController {
 
     private final GroupService groupService;
+
+    @Autowired private final ReceiptOcrService receiptOcrService;
 
     @PostMapping()
     @Operation(summary = "그룹 생성", description = "그룹을 생성한다.")
@@ -381,5 +394,37 @@ public class GroupController {
             return false;
         }
         return true;
+    }
+
+    @PostMapping(
+            value = "/{groupId}/payments/{paymentId}/singlereceipt",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "영수증 단건 등록", description = "영수증 1개를 업로드한다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "정상 등록"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> uploadSingleReceipt(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
+            @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
+            @RequestPart(value = "file", required = true) MultipartFile receiptImage) {
+
+        try {
+            JsonNode singleResponse = receiptOcrService.singleRequest(receiptImage);
+
+            return ResponseEntity.status(HttpStatus.OK).body(singleResponse);
+        } catch (BigFileException e) {
+            return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+                    .body(BaseResponseBody.of(413, "업로드한 파일의 용량이 20MB 이상입니다."));
+        } catch (NotValidExtensionException e) {
+            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                    .body(
+                            BaseResponseBody.of(
+                                    415, "지원하는 확장자가 아닙니다. 지원하는 이미지 형식: jpg, jpeg, png, pdf, tiff"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(BaseResponseBody.of(500, "서버 오류"));
+        }
     }
 }
