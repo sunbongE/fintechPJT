@@ -9,7 +9,6 @@ import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +61,7 @@ public class GroupQueryRepository {
                                         member.thumbnailImage))
                         .from(member)
                         .leftJoin(groupMember)
-                        .on(groupMember.groupMemberPK.member.kakaoId.eq(member.kakaoId))
+                        .on(groupMember.groupMemberPK.member.eq(member))
                         .where(groupMember.groupMemberPK.group.groupId.eq(groupId))
                         .fetch();
         return groupList;
@@ -71,20 +70,21 @@ public class GroupQueryRepository {
     public List<GroupMembersDto> firstcallMembers(int groupId) {
         List<GroupMembersDto> result = new ArrayList<>();
 
-        result = queryFactory
-                .select(Projections.bean(
-                        GroupMembersDto.class,
-                        member.kakaoId,
-                        member.name,
-                        member.thumbnailImage))
-                .from(member)
-                .leftJoin(groupMember)
-                .on(groupMember.groupMemberPK.member.kakaoId.eq(member.kakaoId))
-                .where(
-                        groupMember.groupMemberPK.group.groupId.eq(groupId),
-                        groupMember.fistCallDone.eq(true)
-                )
-                .fetch();
+        result =
+                queryFactory
+                        .select(
+                                Projections.bean(
+                                        GroupMembersDto.class,
+                                        member.kakaoId,
+                                        member.name,
+                                        member.thumbnailImage))
+                        .from(member)
+                        .leftJoin(groupMember)
+                        .on(groupMember.groupMemberPK.member.kakaoId.eq(member.kakaoId))
+                        .where(
+                                groupMember.groupMemberPK.group.groupId.eq(groupId),
+                                groupMember.fistCallDone.eq(true))
+                        .fetch();
 
         return result;
     }
@@ -92,20 +92,21 @@ public class GroupQueryRepository {
     public List<GroupMembersDto> secondcallMembers(int groupId) {
         List<GroupMembersDto> result = new ArrayList<>();
 
-        result = queryFactory
-                .select(Projections.bean(
-                        GroupMembersDto.class,
-                        member.kakaoId,
-                        member.name,
-                        member.thumbnailImage))
-                .from(member)
-                .leftJoin(groupMember)
-                .on(groupMember.groupMemberPK.member.kakaoId.eq(member.kakaoId))
-                .where(
-                        groupMember.groupMemberPK.group.groupId.eq(groupId),
-                        groupMember.secondCallDone.eq(true)
-                )
-                .fetch();
+        result =
+                queryFactory
+                        .select(
+                                Projections.bean(
+                                        GroupMembersDto.class,
+                                        member.kakaoId,
+                                        member.name,
+                                        member.thumbnailImage))
+                        .from(member)
+                        .leftJoin(groupMember)
+                        .on(groupMember.groupMemberPK.member.kakaoId.eq(member.kakaoId))
+                        .where(
+                                groupMember.groupMemberPK.group.groupId.eq(groupId),
+                                groupMember.secondCallDone.eq(true))
+                        .fetch();
 
         return result;
     }

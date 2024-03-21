@@ -41,9 +41,6 @@ public class Group {
     @ColumnDefault("false")
     private Boolean isCalculateDone;
 
-    //    @OneToMany(mappedBy = "groupMemberPK", cascade = CascadeType.REMOVE)
-    //    private List<GroupMember> groupMembers;
-
     public Group(GroupCreateDto dto) {
         this.groupName = dto.getGroupName();
         this.startDate = dto.getStartDate();

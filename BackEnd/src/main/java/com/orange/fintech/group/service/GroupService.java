@@ -1,5 +1,6 @@
 package com.orange.fintech.group.service;
 
+import com.orange.fintech.group.dto.GroupCalculateResultDto;
 import com.orange.fintech.group.dto.GroupCreateDto;
 import com.orange.fintech.group.dto.GroupMembersDto;
 import com.orange.fintech.group.dto.ModifyGroupDto;
@@ -30,4 +31,6 @@ public interface GroupService {
     List<GroupMembersDto> firstcallMembers(int groupId);
 
     List<GroupMembersDto> secondcallMembers(int groupId);
+
+    List<GroupCalculateResultDto> getCalculateResult(int groupId);
 }

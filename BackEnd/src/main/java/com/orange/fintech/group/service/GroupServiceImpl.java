@@ -1,17 +1,20 @@
-package com.orange.fintech.group.service.serviceImpl;
+package com.orange.fintech.group.service;
 
+import com.orange.fintech.group.dto.GroupCalculateResultDto;
 import com.orange.fintech.group.dto.GroupCreateDto;
 import com.orange.fintech.group.dto.GroupMembersDto;
 import com.orange.fintech.group.dto.ModifyGroupDto;
+import com.orange.fintech.group.entity.CalculateResult;
 import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.group.entity.GroupMember;
 import com.orange.fintech.group.entity.GroupMemberPK;
+import com.orange.fintech.group.repository.CalculateResultRepository;
 import com.orange.fintech.group.repository.GroupMemberRepository;
 import com.orange.fintech.group.repository.GroupQueryRepository;
 import com.orange.fintech.group.repository.GroupRepository;
-import com.orange.fintech.group.service.GroupService;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ public class GroupServiceImpl implements GroupService {
     private final GroupMemberRepository groupMemberRepository;
     private final MemberRepository memberRepository;
     private final GroupQueryRepository groupQueryRepository;
+    private final CalculateResultRepository calculateResultRepository;
 
     @Override
     public boolean createGroup(GroupCreateDto dto) {
@@ -159,7 +163,7 @@ public class GroupServiceImpl implements GroupService {
 
         GroupMember target = Optarget.get();
 
-        if(!target.getFistCallDone()) return false;
+        if (!target.getFistCallDone()) return false;
 
         target.setSecondCallDone(!target.getSecondCallDone());
 
@@ -177,6 +181,32 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<GroupMembersDto> secondcallMembers(int groupId) {
         List<GroupMembersDto> result = groupQueryRepository.secondcallMembers(groupId);
+        return result;
+    }
+
+    @Override
+    public List<GroupCalculateResultDto> getCalculateResult(int groupId) {
+        log.info("Impl호출~~~~~~~");
+        List<CalculateResult> calculateResultList = new ArrayList<>();
+        log.info("그룹 찾기 호출");
+        Optional<Group> OpGroup = groupRepository.findById(groupId);
+        log.info("=====================================================");
+
+        if (OpGroup.isEmpty()) return null;
+        Group group = OpGroup.get();
+        log.info("결과들 조회 호출====");
+        calculateResultList = calculateResultRepository.findAllByGroup(group);
+        log.info("=====================================================");
+
+        List<GroupCalculateResultDto> result = new ArrayList<>();
+
+        for (CalculateResult calculateResult : calculateResultList) {
+            log.info("DB조회가 되나..?");
+            GroupCalculateResultDto data = new GroupCalculateResultDto(calculateResult);
+            result.add(data);
+        }
+
+        log.info("result : {}", result.toString());
         return result;
     }
 }
