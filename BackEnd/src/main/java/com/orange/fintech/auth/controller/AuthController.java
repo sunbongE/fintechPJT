@@ -52,4 +52,10 @@ public class AuthController {
 
         return ResponseEntity.ok(BaseResponseBody.of(500, "로그아웃 실패"));
     }
+
+    @GetMapping("/test")
+    public ResponseEntity<?> test() {
+
+        return ResponseEntity.ok(BaseResponseBody.of(200, "연결댐"));
+    }
 }
