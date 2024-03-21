@@ -1,6 +1,9 @@
 package com.orange.fintech.payment.service;
 
+import com.orange.fintech.group.dto.GroupMembersDto;
 import com.orange.fintech.group.entity.Group;
+import com.orange.fintech.group.repository.GroupMemberRepository;
+import com.orange.fintech.group.repository.GroupQueryRepository;
 import com.orange.fintech.group.repository.GroupRepository;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
@@ -31,8 +34,10 @@ public class PaymentServiceImpl implements PaymentService {
     private final TransactionQueryRepository transactionQueryRepository;
     private final TransactionDetailRepository transactionDetailRepository;
     private final TransactionMemberRepository transactionMemberRepository;
-
     private final ReceiptRepository receiptRepository;
+
+    private final GroupQueryRepository groupQueryRepository;
+    private final GroupMemberRepository groupMemberRepository;
 
     @Override
     public boolean addTransaction(String memberId, int groupId, AddCashTransactionReq req) {
@@ -145,36 +150,86 @@ public class PaymentServiceImpl implements PaymentService {
         return false;
     }
 
+    // SINYEONG: 거래내역에 추가하면 GROUP에 포함된 모든 인원이 TRANSACTION_MEMBER에 할당되고
+    // 금액 계산 되어야 함
     @Override
     public boolean changeContainStatus(int transactionId, int groupId) {
-        Optional<Transaction> transaction = transactionRepository.findById(transactionId);
+        Optional<Transaction> transactionOp = transactionRepository.findById(transactionId);
 
-        if (transaction.isPresent()) {
-            log.info("transaction present");
+        if (transactionOp.isPresent()) {
+            log.info("transactionOp present");
+            Transaction transaction = transactionOp.get();
             Optional<TransactionDetail> td = transactionDetailRepository.findById(transactionId);
 
             if (td.isPresent()) {
-                log.info("transaction detail present");
+                log.info("transactionOp detail present");
                 log.info("td.get().getGroup() {}", td.get().getGroup());
 
+                TransactionDetail transactionDetail = td.get();
+
+                // 포함하기
                 if (td.get().getGroup() == null) {
-                    td.get().setGroup(groupRepository.findById(groupId).get());
-                } else {
-                    td.get().setGroup(null);
+                    Group group = groupRepository.findById(groupId).get();
+
+                    // 포함하기
+                    transactionDetail.setGroup(group);
+
+                    // transactionMember 설정
+                    int headCount = groupMemberRepository.countByGroupMemberPKGroup(group);
+                    int individualAmount =
+                            Math.toIntExact(transaction.getTransactionBalance()) / headCount;
+
+                    log.info("individualAmount: {}", individualAmount);
+
+                    for (GroupMembersDto groupMember :
+                            groupQueryRepository.findGroupMembers(groupId)) {
+                        TransactionMember tm = new TransactionMember();
+                        TransactionMemberPK pk =
+                                new TransactionMemberPK(
+                                        transaction,
+                                        memberRepository.findById(groupMember.getKakaoId()).get());
+                        tm.setTransactionMemberPK(pk);
+                        tm.setIsLock(false);
+                        tm.setTotalAmount(individualAmount);
+                        transactionMemberRepository.save(tm);
+                    }
+
+                    transactionDetail.setRemainder(
+                            Math.toIntExact(transaction.getTransactionBalance()) % headCount);
+                }
+                // 제외하기
+                else {
+                    // transactionMember 낼 금액 0으로 설정
+                    for (GroupMembersDto groupMember :
+                            groupQueryRepository.findGroupMembers(groupId)) {
+                        TransactionMember transactionMember = new TransactionMember();
+                        TransactionMemberPK pk =
+                                new TransactionMemberPK(
+                                        transaction,
+                                        memberRepository.findById(groupMember.getKakaoId()).get());
+                        transactionMember.setTransactionMemberPK(pk);
+                        transactionMember.setIsLock(false);
+                        transactionMember.setTotalAmount(0);
+                        transactionMemberRepository.save(transactionMember);
+                    }
+
+                    transactionDetail.setRemainder(0);
+                    transactionDetail.setGroup(null);
                 }
 
-                transactionDetailRepository.save(td.get());
+                transactionDetailRepository.save(transactionDetail);
                 return true;
             }
         } else {
-            log.info("transaction not present");
+            log.info("transactionOp not present");
         }
 
         return false;
     }
 
     @Override
-    public void editTransactionDetail(int transactionId, TransactionEditReq req) throws NoSuchElementException {
+    public void editTransactionDetail(int transactionId, TransactionEditReq req)
+            throws NoSuchElementException {
         TransactionDetail transactionDetail =
                 transactionDetailRepository.findById(transactionId).get();
 
@@ -194,7 +249,6 @@ public class PaymentServiceImpl implements PaymentService {
             tm.setTotalAmount(dto.getTotalAmount());
             tm.setIsLock(dto.isLock());
         }
-
     }
 
     @Override
