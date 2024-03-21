@@ -28,7 +28,9 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @GetMapping("/my")
-    @Operation(summary = "내 결제 내역 조회", description = "<strong>그룹 아이디</strong>로 내 결제 내역을 조회한다.")
+    @Operation(
+            summary = "그룹 내에서 내 결제 내역 조회",
+            description = "<strong>그룹 아이디</strong>로 내 결제 내역을 조회한다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "성공"),
         @ApiResponse(responseCode = "404", description = "사용자 정보 없음"),
