@@ -4,10 +4,7 @@ import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.group.repository.GroupRepository;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
-import com.orange.fintech.payment.dto.TransactionDetailRes;
-import com.orange.fintech.payment.dto.TransactionDto;
-import com.orange.fintech.payment.dto.TransactionMemberDto;
-import com.orange.fintech.payment.dto.TransactionPostReq;
+import com.orange.fintech.payment.dto.*;
 import com.orange.fintech.payment.entity.*;
 import com.orange.fintech.payment.repository.*;
 import java.time.LocalDate;
@@ -23,8 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
-@Transactional
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
@@ -38,7 +35,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final ReceiptRepository receiptRepository;
 
     @Override
-    public boolean addTransaction(String memberId, int groupId, TransactionPostReq req) {
+    public boolean addTransaction(String memberId, int groupId, AddCashTransactionReq req) {
         log.info("거래내역 추가 시작");
         Transaction transaction = new Transaction();
         transaction.setTransactionDate(req.getTransactionDate());
@@ -87,7 +84,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     public void saveTransactionDetail(
-            int groupId, Transaction transaction, TransactionPostReq req) {
+            int groupId, Transaction transaction, AddCashTransactionReq req) {
         log.info("saveTransactionDetail 시작");
         TransactionDetail transactionDetail = new TransactionDetail();
 
@@ -102,7 +99,7 @@ public class PaymentServiceImpl implements PaymentService {
         log.info("saveTransactionDetail 끝");
     }
 
-    public void saveReceipt(Transaction transaction, TransactionPostReq req) {
+    public void saveReceipt(Transaction transaction, AddCashTransactionReq req) {
         log.info("saveReceipt 시작");
         Receipt receipt = new Receipt();
         receipt.setTransaction(transaction);
@@ -177,12 +174,27 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void memo(int transactionId, String memo) throws NoSuchElementException {
+    public void editTransactionDetail(int transactionId, TransactionEditReq req) throws NoSuchElementException {
         TransactionDetail transactionDetail =
                 transactionDetailRepository.findById(transactionId).get();
 
-        transactionDetail.setMemo(memo);
+        transactionDetail.setMemo(req.getMemo());
         transactionDetailRepository.save(transactionDetail);
+
+        Transaction transaction = transactionDetail.getTransaction();
+
+        for (TransactionMemberDto dto : req.getMemberList()) {
+            Member member = memberRepository.findById(dto.getMemberId()).get();
+
+            TransactionMemberPK pk = new TransactionMemberPK();
+            pk.setTransaction(transaction);
+            pk.setMember(member);
+
+            TransactionMember tm = transactionMemberRepository.findById(pk).get();
+            tm.setTotalAmount(dto.getTotalAmount());
+            tm.setIsLock(dto.isLock());
+        }
+
     }
 
     @Override
