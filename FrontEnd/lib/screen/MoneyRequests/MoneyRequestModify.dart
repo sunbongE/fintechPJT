@@ -1,47 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/moneyrequests/MoneyRequestItem.dart';
+import 'package:front/components/moneyrequests/RequestMemoInputField.dart';
 import 'package:front/entities/Expense.dart';
-import 'package:front/screen/MoneyRequests/MoneyRequestModify.dart';
 
 import '../../components/moneyrequests/MoneyRequestDetailBottom.dart';
+import '../../components/moneyrequests/RequestModifyList.dart';
 import '../../const/colors/Colors.dart';
-import '../../models/button/ButtonSlideAnimation.dart';
 import '../../models/button/SizedButton.dart';
 import '../../models/button/Toggle.dart';
 import '../../components/moneyrequests/RequestMemberList.dart';
 import '../../entities/RequestDetail.dart';
+import '../../utils/RequestModifyUtil.dart';
 
-class MoneyRequestDetail extends StatefulWidget {
-  final Function onSuccess;
+class MoneyRequestModify extends StatefulWidget {
   final Expense expense;
 
-  const MoneyRequestDetail(
-      {Key? key, required this.expense, required this.onSuccess})
-      : super(key: key);
+  const MoneyRequestModify({Key? key, required this.expense}) : super(key: key);
 
   @override
-  _MoneyRequestDetailState createState() => _MoneyRequestDetailState();
+  _MoneyRequestModifyState createState() => _MoneyRequestModifyState();
 }
 
-class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
+class _MoneyRequestModifyState extends State<MoneyRequestModify> {
   late bool isSettledStates;
+  late TextEditingController memoController;
+  late RequestDetail request;
+  late List<int> personalRequestAmount;
+  late List<bool> isLockedList;
+  late int remainderAmount;
 
   @override
   void initState() {
     super.initState();
-    isSettledStates = widget.expense.isSettled;
-  }
-
-  void updateIsSettledStates(bool newStates) {
-    setState(() {
-      isSettledStates = newStates;
-      widget.onSuccess(isSettledStates);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+    memoController = TextEditingController(
+      text: widget.expense.memo.toString(),
+    );
     final Map<String, dynamic> rawData = {
       "장소": "초돈2",
       "금액": 78000,
@@ -70,25 +64,34 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
         }
       ]
     };
-    final request = RequestDetail.fromJson(rawData);
+    request = RequestDetail.fromJson(rawData);
+    personalRequestAmount =
+        request.members.map((member) => member.amount).toList();
+    remainderAmount = 5; //백엔드에서 받아오는 값으로 바뀔 때는 생길 예정
+    isLockedList = List<bool>.filled(request.members.length, false);
+  }
 
+  @override
+  void dispose() {
+    memoController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.expense.transactionSummary),
+        title: Text('정산 수정하기'),
         scrolledUnderElevation: 0,
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: SizedButton(
-              btnText: '수정',
+              btnText: '완료',
               size: ButtonSize.xs,
               borderRadius: 10,
-              onPressed: () => buttonSlideAnimation(
-                context,
-                MoneyRequestModify(
-                  expense: widget.expense,
-                ),
-              ),
+              enable: isModifyButtonEnabled(
+                  request.amount, personalRequestAmount, remainderAmount),
             ),
           ),
         ],
@@ -102,28 +105,41 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
               expense: widget.expense,
               isToggle: false,
             ),
-            SizedBox(
-              width: 343.w,
-              child: Row(
-                children: [
-                  Text('${request.memo}'),
-                ],
-              ),
+            Row(
+              children: [
+                Padding(padding: EdgeInsets.symmetric(horizontal: 10.w)),
+                Text('메모:'),
+                Padding(padding: EdgeInsets.symmetric(horizontal: 5.w)),
+                SizedBox(
+                    width: 250.w,
+                    child: RequestMemoInputField(
+                        controller: memoController,
+                        onSubmitted: (String value) {})),
+              ],
             ),
-            Padding(padding: EdgeInsets.symmetric(vertical: 5.w)),
+            Padding(padding: EdgeInsets.symmetric(vertical: 5.h)),
             Expanded(
               child: SizedBox(
-                //width: 368.w,
                 height: 400.h,
-                child: RequestMemberList(
+                child: RequestModifyList(
                   requestDetail: request,
-                  allSettledCallback: updateIsSettledStates,
+                  requestAmount: personalRequestAmount,
+                  isLockedList: (List<bool> value) {
+                    setState(() {
+                      isLockedList = value;
+                    });
+                  },
+                  personalAmounts: (List<int> value) {
+                    setState(() {
+                      personalRequestAmount = value;
+                    });
+                  },
                 ),
               ),
             ),
             Padding(padding: EdgeInsets.symmetric(vertical: 10.w)),
             MoneyRequestDetailBottom(
-              amount: widget.expense.transactionBalance,
+              amount: remainderAmount,
             ),
             Padding(padding: EdgeInsets.symmetric(vertical: 10.w)),
           ],

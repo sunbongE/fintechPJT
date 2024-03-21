@@ -16,112 +16,79 @@ class MoneyRequest extends StatefulWidget {
   State<MoneyRequest> createState() => _MoneyRequestState();
 }
 
-final Map<String, dynamic> rawData = {
-  "거래목록": [
-    {
-      "거래번호": 1,
-      "장소": "초돈2",
-      "금액": 78000,
-      "날짜": "2024-05-01",
-      "정산올림": true,
-      "영수증존재": true
-    },
-    {
-      "거래번호": 2,
-      "장소": "초돈3",
-      "금액": 20000,
-      "날짜": "2024-05-01",
-      "정산올림": false,
-      "영수증존재": false
-    },
-    {
-      "거래번호": 3,
-      "장소": "초돈4",
-      "금액": 30000,
-      "날짜": "2024-05-01",
-      "정산올림": true,
-      "영수증존재": false
-    },
-    {
-      "거래번호": 4,
-      "장소": "초돈5",
-      "금액": 50000,
-      "날짜": "2024-05-01",
-      "정산올림": false,
-      "영수증존재": true
-    },
-    {
-      "거래번호": 5,
-      "장소": "초돈5",
-      "금액": 50000,
-      "날짜": "2024-05-01",
-      "정산올림": false,
-      "영수증존재": false
-    },
-    {
-      "거래번호": 6,
-      "장소": "초돈5",
-      "금액": 50000,
-      "날짜": "2024-05-01",
-      "정산올림": false,
-      "영수증존재": false
-    },
-    {
-      "거래번호": 7,
-      "장소": "초돈5",
-      "금액": 50000,
-      "날짜": "2024-05-01",
-      "정산올림": false,
-      "영수증존재": true
-    },
-    {
-      "거래번호": 8,
-      "장소": "초돈5",
-      "금액": 50000,
-      "날짜": "2024-05-01",
-      "정산올림": false,
-      "영수증존재": false
-    },
-    {
-      "거래번호": 9,
-      "장소": "초돈5",
-      "금액": 50000,
-      "날짜": "2024-05-01",
-      "정산올림": false,
-      "영수증존재": true
-    },
-    {
-      "거래번호": 10,
-      "장소": "초돈5",
-      "금액": 50000,
-      "날짜": "2024-05-01",
-      "정산올림": false,
-      "영수증존재": false
-    },
-    {
-      "거래번호": 11,
-      "장소": "초돈5",
-      "금액": 50000,
-      "날짜": "2024-05-01",
-      "정산올림": false,
-      "영수증존재": true
-    },
-    {
-      "거래번호": 12,
-      "장소": "초돈5",
-      "금액": 50000,
-      "날짜": "2024-05-01",
-      "정산올림": false,
-      "영수증존재": true
-    },
-  ]
-};
+final List <dynamic> rawData = [
+  {
+    "transactionId": 1,
+    "transactionDate": "20240311",
+    "transactionTime": "132226",
+    "transactionType": null,
+    "transactionTypeName": "입금",
+    "transactionBalance": 100000,
+    "transactionAfterBalance": 100000000000,
+    "transactionSummary": "입금합니다",
+    "groupId": 1,
+    "memo": "\"string\"",
+    "receiptEnrolled": false
+  },
+  {
+    "transactionId": 2,
+    "transactionDate": "20240311",
+    "transactionTime": "132226",
+    "transactionType": null,
+    "transactionTypeName": "입금",
+    "transactionBalance": 1000,
+    "transactionAfterBalance": 100000000000,
+    "transactionSummary": "입금합니다",
+    "groupId": null,
+    "memo": "메모22",
+    "receiptEnrolled": false
+  },
+  {
+    "transactionId": 3,
+    "transactionDate": "20240311",
+    "transactionTime": "132226",
+    "transactionType": null,
+    "transactionTypeName": "입금",
+    "transactionBalance": 1000,
+    "transactionAfterBalance": 100000000000,
+    "transactionSummary": "입금합니다",
+    "groupId": null,
+    "memo": "\"string\"",
+    "receiptEnrolled": false
+  },
+  {
+    "transactionId": 4,
+    "transactionDate": "20240311",
+    "transactionTime": "132226",
+    "transactionType": null,
+    "transactionTypeName": "입금",
+    "transactionBalance": 1000,
+    "transactionAfterBalance": 100000000000,
+    "transactionSummary": "입금합니다",
+    "groupId": null,
+    "memo": "\"string\"",
+    "receiptEnrolled": false
+  },
+  {
+    "transactionId": 5,
+    "transactionDate": "20240311",
+    "transactionTime": "132226",
+    "transactionType": null,
+    "transactionTypeName": "입금",
+    "transactionBalance": 10000,
+    "transactionAfterBalance": 100000000000,
+    "transactionSummary": "입금합니다",
+    "groupId": null,
+    "memo": "\"string\"",
+    "receiptEnrolled": false
+  }
+  ];
 
 class _MoneyRequestState extends State<MoneyRequest> {
   @override
   Widget build(BuildContext context) {
-    List<Expense> expenses = (rawData['거래목록'] as List<dynamic>)
-        .map((json) => Expense.fromJson(json))
+    List<Expense> expenses =
+        rawData.map((json) => Expense.fromJson(json))
         .toList();
 
     return SafeArea(

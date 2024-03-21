@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:front/const/colors/Colors.dart';
 
-class MoneyRequestDetailBottom extends StatelessWidget {
+class MoneyRequestDetailBottom extends StatefulWidget {
   final int amount;
-  final Color textColor;
 
-  MoneyRequestDetailBottom({required this.amount, required this.textColor});
+  MoneyRequestDetailBottom({
+    required this.amount,
+  });
+
+  @override
+  _MoneyRequestDetailBottomState createState() =>
+      _MoneyRequestDetailBottomState();
+}
+
+class _MoneyRequestDetailBottomState extends State<MoneyRequestDetailBottom> {
+  late bool isSettledStates;
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +46,8 @@ class MoneyRequestDetailBottom extends StatelessWidget {
         Text('|'),
         Padding(padding: EdgeInsets.symmetric(horizontal: 3.h)),
         Text(
-          '$amount원',
-          style: TextStyle(color: textColor, fontSize: 14.sp),
+          '${widget.amount}원',
+          style: TextStyle(color: TEXT_COLOR, fontSize: 14.sp),
         ),
       ],
     );

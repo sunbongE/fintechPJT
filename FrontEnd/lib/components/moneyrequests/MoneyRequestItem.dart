@@ -31,7 +31,6 @@ class _MoneyRequestItemState extends State<MoneyRequestItem> {
 
   @override
   Widget build(BuildContext context) {
-
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -55,27 +54,41 @@ class _MoneyRequestItemState extends State<MoneyRequestItem> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              ReseiptIcon(isReceipt: widget.expense.isReceipt,),
+              ReseiptIcon(
+                isReceipt: widget.expense.receiptEnrolled,
+              ),
               SizedBox(width: 8.w),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.expense.place,
+                    Text(widget.expense.transactionSummary,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.bold,
                         )),
                     SizedBox(height: 4.h),
-                    Text('날짜: ${widget.expense.date}',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                        )),
+                    Row(
+                      children: [
+                        Text(formatDateString(widget.expense.transactionDate),
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                            )),
+                        Text(' '),
+                        Text(formatTimeString(widget.expense.transactionTime),
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                            )),
+                      ],
+                    ),
                   ],
                 ),
               ),
-              Text('${NumberFormat('#,###').format(widget.expense.amount)}원',
+              Text(
+                  '${NumberFormat('#,###').format(widget.expense.transactionBalance)}원',
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 18.sp,
                   )),
@@ -98,4 +111,18 @@ class _MoneyRequestItemState extends State<MoneyRequestItem> {
       ),
     );
   }
+}
+
+String formatDateString(String dateString) {
+  String year = dateString.substring(0, 4);
+  String month = dateString.substring(4, 6);
+  String day = dateString.substring(6, 8);
+  return "$year-$month-$day";
+}
+
+String formatTimeString(String timeString) {
+  String hour = timeString.substring(0, 2);
+  String minute = timeString.substring(2, 4);
+  String second = timeString.substring(4, 6);
+  return "$hour:$minute:$second";
 }
