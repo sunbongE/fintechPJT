@@ -96,15 +96,15 @@ Future<bool> SocialKakao() async {
       // String? jwtToken = await postUserInfo(user);
       // print('jwtToken 1');
       // print(jwtToken);
-      var dio = Dio();
-      dio.options.headers['Content-Type'] = 'application/json';
-      Response response =
-          await dio.post('http://${YOUR_IP}:8080/api/v1/auth/join', data: user);
-      print('response');
-      print(response);
-      String jwtToken = response.headers['Authorization']!.first;
-      print('jwtToken 1');
-      print(jwtToken);
+      // var dio = Dio();
+      // dio.options.headers['Content-Type'] = 'application/json';
+      // Response response =
+      //     await dio.post('http://${YOUR_IP}:8080/api/v1/auth/join', data: user);
+      // print('response');
+      // print(response);
+      // String jwtToken = response.headers['Authorization']!.first;
+      // print('jwtToken 1');
+      // print(jwtToken);
 
       // List<String>? jwtTokens = response.headers['Authorization'];
 

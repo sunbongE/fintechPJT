@@ -63,19 +63,18 @@ class _ProfileChangeState extends State<ProfileChange> {
                   child: Stack(
                     alignment: Alignment.bottomRight,
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
+                      ClipOval(
                         child: _image == null
                             ? Image.network(
                                 "${userManager.thumbnailImageUrl}",
                                 width: 100.w,
-                                height: 100.h,
+                                height: 100.w,
                                 fit: BoxFit.cover,
                               )
                             : Image.file(
                                 _image!,
                                 width: 100.w,
-                                height: 100.h,
+                                height: 100.w,
                                 fit: BoxFit.cover,
                               ),
                       ),

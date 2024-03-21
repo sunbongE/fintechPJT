@@ -57,7 +57,20 @@ class _KeyBoardKeyState extends State<KeyBoardKey> {
       },
       child: Container(
         alignment: Alignment.center,
-        child: content,
+        width: 90.w,
+        height: 90.h,
+        margin: EdgeInsets.all(8.w),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(10),
+            onTap: () {},
+            child: content,
+          ),
+        ),
       ),
     );
   }

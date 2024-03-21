@@ -22,6 +22,7 @@ class _MyPageState extends State<MyPage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text(

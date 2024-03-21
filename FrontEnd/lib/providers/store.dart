@@ -20,8 +20,7 @@ class UserManager with ChangeNotifier {
   String? selectedAccount;
 
   // 로그인 상태
-  bool _isLogin = false;
-  bool get isLogin => _isLogin;
+  bool? isLogin;
 
   static final UserManager _instance = UserManager._internal();
 
@@ -41,6 +40,8 @@ class UserManager with ChangeNotifier {
     String? newPassword,
     String? newSelectedBank,
     String? newSelectedAccount,
+    bool? newIsLogin,
+
   }) async {
     name = newName ?? name;
     email = newEmail ?? email;
@@ -50,6 +51,7 @@ class UserManager with ChangeNotifier {
     password = newPassword ?? password;
     selectedBank = newSelectedBank ?? selectedBank;
     selectedAccount = newSelectedAccount ?? selectedAccount;
+    isLogin = newIsLogin ?? isLogin;
 
     await storage.write(key: 'name', value: name);
     await storage.write(key: 'email', value: email);
@@ -59,6 +61,7 @@ class UserManager with ChangeNotifier {
     await storage.write(key: 'password', value: password);
     await storage.write(key: 'selectedBank', value: selectedBank);
     await storage.write(key: 'selectedAccount', value: selectedAccount);
+    await storage.write(key: 'isLogin', value: isLogin.toString());
 
     notifyListeners();
   }
@@ -73,8 +76,8 @@ class UserManager with ChangeNotifier {
     password = await storage.read(key: 'password');
     selectedBank = await storage.read(key: 'selectedBank');
     selectedAccount = await storage.read(key: 'selectedAccount');
-    String? isLoginString = await storage.read(key: 'isLogin');
-    _isLogin = isLoginString == 'true';
+    String? isLoginStr = await storage.read(key: 'isLogin');
+    isLogin = isLoginStr == 'true';
 
     notifyListeners();
   }
@@ -89,7 +92,7 @@ class UserManager with ChangeNotifier {
     password = null;
     selectedBank = null;
     selectedAccount = null;
-    _isLogin = false;
+    isLogin = false;
     await storage.deleteAll();
 
     notifyListeners();
@@ -97,7 +100,6 @@ class UserManager with ChangeNotifier {
 
   // 로그인 상태 변경
   void updateLoginState(bool loginState) async {
-    _isLogin = loginState;
     await storage.write(key: 'isLogin', value: loginState.toString());
     notifyListeners();
   }
