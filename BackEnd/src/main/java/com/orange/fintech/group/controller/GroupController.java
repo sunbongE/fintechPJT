@@ -35,10 +35,12 @@ public class GroupController {
         @ApiResponse(responseCode = "200", description = "성공"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    public ResponseEntity<?> createGroup(@RequestBody @Valid GroupCreateDto dto) {
+    public ResponseEntity<?> createGroup(
+            @RequestBody @Valid GroupCreateDto dto, Principal principal) {
 
         try {
-            groupService.createGroup(dto);
+            String memberId = principal.getName();
+            groupService.createGroup(dto, memberId);
             return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "성공"));
         } catch (Exception e) {
             log.info("[ERROR] :{}", e.getMessage());
