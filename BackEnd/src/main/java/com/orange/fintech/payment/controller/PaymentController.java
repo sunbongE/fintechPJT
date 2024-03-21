@@ -39,11 +39,13 @@ public class PaymentController {
     })
     public ResponseEntity<? extends List<TransactionDto>> getMyTransactionList(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
+            @Parameter(description = "페이지 번호(0부터 시작)") @RequestParam int page,
+            @Parameter(description = "페이지당 항목 수") @RequestParam int size,
             Principal principal) {
 
         String memberId = principal.getName();
 
-        List<TransactionDto> list = paymentService.getMyTransaction(memberId, groupId);
+        List<TransactionDto> list = paymentService.getMyTransaction(memberId, groupId, page, size);
 
         log.info("list.size {}", list.size());
         return ResponseEntity.status(200).body(list);
@@ -98,6 +100,7 @@ public class PaymentController {
         try {
             paymentService.memo(paymentId, memo);
         } catch (NoSuchElementException e) {
+            e.printStackTrace();
             return ResponseEntity.status(404).body(BaseResponseBody.of(404, "NOT_FOUND"));
         }
 
@@ -118,7 +121,7 @@ public class PaymentController {
             Principal principal) {
         log.info("addCash 시작");
         log.info("addTransactionDto {}", addTransactionDto);
-        paymentService.addTransaction(groupId, addTransactionDto);
+        paymentService.addTransaction(principal.getName(), groupId, addTransactionDto);
 
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "OK"));
     }
@@ -141,6 +144,34 @@ public class PaymentController {
 
             return ResponseEntity.status(200).body(transactionDetail);
         } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(404).body(null);
+        }
+    }
+
+    @GetMapping("")
+    @Operation(summary = "그룹 결제내역 조회", description = "<strong>groupId</strong>로 그룹의 결제 내역을 조회한다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "403", description = "권한 없음"),
+        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<? extends List<TransactionDto>> getGroupPayments(
+            @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
+            @Parameter(description = "페이지 번호(0부터 시작)") @RequestParam int page,
+            @Parameter(description = "페이지당 항목 수") @RequestParam int size,
+            @Parameter(description = "조건", example = "all || my") @RequestParam String option,
+            Principal principal) {
+
+        log.info("getGroupPayments start");
+        try {
+            List<TransactionDto> res =
+                    paymentService.getGroupTransaction(
+                            principal.getName(), groupId, page, size, option);
+            return ResponseEntity.status(200).body(res);
+        } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(404).body(null);
         }
     }
