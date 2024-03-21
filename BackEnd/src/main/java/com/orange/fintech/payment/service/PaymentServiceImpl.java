@@ -4,12 +4,16 @@ import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.group.repository.GroupRepository;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
+import com.orange.fintech.payment.dto.TransactionDetailRes;
 import com.orange.fintech.payment.dto.TransactionDto;
 import com.orange.fintech.payment.dto.TransactionMemberDto;
 import com.orange.fintech.payment.dto.TransactionPostReq;
 import com.orange.fintech.payment.entity.*;
 import com.orange.fintech.payment.repository.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -27,7 +31,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final MemberRepository memberRepository;
     private final GroupRepository groupRepository;
     private final TransactionRepository transactionRepository;
-    private final TransactionQueryRepository transactionRepositorySupport;
+    private final TransactionQueryRepository transactionQueryRepository;
     private final TransactionDetailRepository transactionDetailRepository;
     private final TransactionMemberRepository transactionMemberRepository;
 
@@ -43,6 +47,13 @@ public class PaymentServiceImpl implements PaymentService {
         transaction.setTransactionSummary(req.getTransactionSummary());
         // transaction.setTransactionType("");
         // transaction.setTransactionTypeName("");
+        if (req.getTransactionTime() != null && req.getTransactionDate() != null) {
+            transaction.setTransactionTime(req.getTransactionTime());
+            transaction.setTransactionDate(req.getTransactionDate());
+        } else {
+            transaction.setTransactionDate(LocalDate.now());
+            transaction.setTransactionTime(LocalTime.now());
+        }
         transactionRepository.save(transaction);
         log.info("거래내역 추가 끝");
 
@@ -51,10 +62,27 @@ public class PaymentServiceImpl implements PaymentService {
         saveReceipt(transaction, req);
 
         for (TransactionMemberDto tm : req.getMemberList()) {
-            addTransactionMember(groupId, tm);
+            addTransactionMember(transaction.getTransactionId(), tm);
         }
 
         return false;
+    }
+
+    @Override
+    public void addTransactionMember(int transactionId, TransactionMemberDto dto) {
+        TransactionMemberPK pk = new TransactionMemberPK();
+        pk.setTransaction(transactionRepository.findById(transactionId).get());
+        pk.setMember(memberRepository.findById(dto.getMemberId()).get());
+
+        TransactionMember transactionMember = new TransactionMember();
+        transactionMember.setTransactionMemberPK(pk);
+        transactionMember.setTotalAmount(dto.getTotalAmount());
+        //        transactionMember.setIsLock(dto.getIsLock());
+        transactionMember.setIsLock(dto.isLock());
+
+        transactionMemberRepository.save(transactionMember);
+
+        log.info("transactionMemberDto {}", dto);
     }
 
     public void saveTransactionDetail(
@@ -80,7 +108,13 @@ public class PaymentServiceImpl implements PaymentService {
         receipt.setTotalPrice(Math.toIntExact(req.getTransactionBalance()));
         receipt.setApprovalAmount(Math.toIntExact(req.getTransactionBalance()));
         receipt.setLocation(req.getLocation());
-        receipt.setDateTime(LocalDateTime.of(req.getTransactionDate(), req.getTransactionTime()));
+        if (transaction.getTransactionDate() != null && transaction.getTransactionTime() != null) {
+            receipt.setDateTime(
+                    LocalDateTime.of(
+                            transaction.getTransactionDate(), transaction.getTransactionTime()));
+        } else {
+            receipt.setDateTime(LocalDateTime.now());
+        }
         receipt.setBusinessName(req.getTransactionSummary());
         receiptRepository.save(receipt);
         log.info("saveReceipt 끝");
@@ -94,7 +128,7 @@ public class PaymentServiceImpl implements PaymentService {
         Group group = groupRepository.findById(groupId).get();
 
         List<TransactionDto> list =
-                transactionRepositorySupport.getTransactionByMemberAndGroup(member, group);
+                transactionQueryRepository.getTransactionByMemberAndGroup(member, group);
         log.info("getMyTransaction end ");
 
         return list;
@@ -149,19 +183,21 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void addTransactionMember(int transactionId, TransactionMemberDto dto) {
-        TransactionMemberPK pk = new TransactionMemberPK();
-        pk.setTransaction(transactionRepository.findById(transactionId).get());
-        pk.setMember(memberRepository.findById(dto.getMemberId()).get());
+    public TransactionDetailRes getTransactionDetail(int transactionId) {
+        TransactionDetailRes res = transactionQueryRepository.getTransactionDetail(transactionId);
 
-        TransactionMember transactionMember = new TransactionMember();
-        transactionMember.setTransactionMemberPK(pk);
-        transactionMember.setTotalAmount(dto.getTotalAmount());
-        //        transactionMember.setIsLock(dto.getIsLock());
-        transactionMember.setIsLock(dto.isLock());
+        Transaction transaction = transactionRepository.findById(transactionId).get();
+        List<TransactionMember> transactionMembers =
+                transactionMemberRepository.findByTransactionMemberPKTransaction(transaction);
+        log.info("transactionMember : {}", transactionMembers);
 
-        transactionMemberRepository.save(transactionMember);
+        List<TransactionMemberDto> list = new ArrayList<>();
+        for (TransactionMember m : transactionMembers) {
+            list.add(TransactionMemberDto.of(m));
+        }
 
-        log.info("transactionMemberDto {}", dto);
+        res.setMemberList(list);
+
+        return res;
     }
 }

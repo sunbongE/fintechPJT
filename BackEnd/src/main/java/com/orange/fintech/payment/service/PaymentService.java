@@ -1,5 +1,6 @@
 package com.orange.fintech.payment.service;
 
+import com.orange.fintech.payment.dto.TransactionDetailRes;
 import com.orange.fintech.payment.dto.TransactionDto;
 import com.orange.fintech.payment.dto.TransactionMemberDto;
 import com.orange.fintech.payment.dto.TransactionPostReq;
@@ -10,6 +11,8 @@ public interface PaymentService {
 
     boolean addTransaction(int groupId, TransactionPostReq addTransactionDto);
 
+    void addTransactionMember(int transactionId, TransactionMemberDto dto);
+
     List<TransactionDto> getMyTransaction(String memberId, int groupId);
 
     boolean isMyTransaction(String memberId, int transactionId);
@@ -18,5 +21,5 @@ public interface PaymentService {
 
     void memo(int transactionId, String memo) throws NoSuchElementException;
 
-    void addTransactionMember(int transactionId, TransactionMemberDto dto);
+    TransactionDetailRes getTransactionDetail(int transactionId);
 }
