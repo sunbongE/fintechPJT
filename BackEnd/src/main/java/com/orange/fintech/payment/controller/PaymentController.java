@@ -100,6 +100,7 @@ public class PaymentController {
         try {
             paymentService.memo(paymentId, memo);
         } catch (NoSuchElementException e) {
+            e.printStackTrace();
             return ResponseEntity.status(404).body(BaseResponseBody.of(404, "NOT_FOUND"));
         }
 
@@ -143,6 +144,7 @@ public class PaymentController {
 
             return ResponseEntity.status(200).body(transactionDetail);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(404).body(null);
         }
     }
@@ -155,14 +157,21 @@ public class PaymentController {
         @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    public ResponseEntity<TransactionDetailRes> getGroupPayments(
+    public ResponseEntity<? extends List<TransactionDto>> getGroupPayments(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
+            @Parameter(description = "페이지 번호(0부터 시작)") @RequestParam int page,
+            @Parameter(description = "페이지당 항목 수") @RequestParam int size,
+            @Parameter(description = "조건", example = "all || my") @RequestParam String option,
             Principal principal) {
 
+        log.info("getGroupPayments start");
         try {
-
-            return ResponseEntity.status(200).body(null);
+            List<TransactionDto> res =
+                    paymentService.getGroupTransaction(
+                            principal.getName(), groupId, page, size, option);
+            return ResponseEntity.status(200).body(res);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(404).body(null);
         }
     }

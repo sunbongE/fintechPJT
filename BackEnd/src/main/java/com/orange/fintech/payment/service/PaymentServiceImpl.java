@@ -205,7 +205,16 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<TransactionDto> getGroupTransaction(int groupId) {
-        return null;
+    public List<TransactionDto> getGroupTransaction(
+            String memgerId, int groupId, int page, int pageSize, String option) {
+
+        log.info("service -- getGroupTransaction, memberId {}", memgerId);
+
+        return transactionQueryRepository.getGroupTransaction(
+                groupRepository.findById(groupId).get(),
+                page,
+                pageSize,
+                option,
+                memberRepository.findById(memgerId).get());
     }
 }

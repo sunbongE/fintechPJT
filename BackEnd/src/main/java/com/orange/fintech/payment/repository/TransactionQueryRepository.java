@@ -2,6 +2,7 @@ package com.orange.fintech.payment.repository;
 
 import static com.orange.fintech.payment.entity.QTransaction.transaction;
 import static com.orange.fintech.payment.entity.QTransactionDetail.transactionDetail;
+import static com.orange.fintech.payment.entity.QTransactionMember.transactionMember;
 
 import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.member.entity.Member;
@@ -9,7 +10,9 @@ import com.orange.fintech.payment.dto.TransactionDetailRes;
 import com.orange.fintech.payment.dto.TransactionDto;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +25,13 @@ public class TransactionQueryRepository {
 
     @Autowired private JPAQueryFactory jpaQueryFactory;
 
+    OrderSpecifier<String> dateOrderSpecifier =
+            Expressions.stringPath("transaction.transactionDate").desc();
+    OrderSpecifier<String> timeOrderSpecifier =
+            Expressions.stringPath("transaction.transactionTime").desc();
+
     public List<TransactionDto> getMyTransactionByMemberAndGroup(
             Member member, Group group, int page, int pageSize) {
-        OrderSpecifier<String> dateOrderSpecifier =
-                Expressions.stringPath("transaction.transactionDate").desc();
-        OrderSpecifier<String> timeOrderSpecifier =
-                Expressions.stringPath("transaction.transactionTime").desc();
 
         List<TransactionDto> list =
                 jpaQueryFactory
@@ -97,24 +101,63 @@ public class TransactionQueryRepository {
         return res;
     }
 
-    //    public List<TransactionDto> getGroupTransaction() {
-    //        List<TransactionDto> res = jpaQueryFactory
-    //                .select(
-    //                        Projections.bean(
-    //                        TransactionDto.class,
-    //                        transaction.transactionId,
-    //                        transaction.transactionDate,
-    //                        transaction.transactionTime,
-    //                        transaction.transactionType,
-    //                        transaction.transactionTypeName,
-    //                        transaction.transactionBalance,
-    //                        transaction.transactionAfterBalance,
-    //                        transaction.transactionSummary,
-    //                        transactionDetail.receiptEnrolled))
-    //                .from(transaction)
-    //                .leftJoin(transactionDetail)
-    //                .on(transaction.transactionId.eq(transactionDetail.transactionId))
-    //                .where()
-    //
-    //    }
+    public List<TransactionDto> getGroupTransaction(
+            Group group, int page, int pageSize, String condition, Member member) {
+
+        log.info("queryRepository getGroupTransaction start");
+
+        BooleanExpression expression = null;
+        if ("my".equals(condition)) {
+            expression =
+                    transactionMember
+                            .transactionMemberPK
+                            .member
+                            .eq(member)
+                            .and(transactionMember.totalAmount.gt(0))
+                            .and(transactionDetail.group.eq(group));
+        } else {
+            expression = transactionDetail.group.eq(group);
+        }
+
+        JPAQuery<TransactionDto> from =
+                jpaQueryFactory
+                        .select(
+                                Projections.bean(
+                                        TransactionDto.class,
+                                        transaction.transactionId,
+                                        transaction.transactionDate,
+                                        transaction.transactionTime,
+                                        transaction.transactionType,
+                                        transaction.transactionTypeName,
+                                        transaction.transactionBalance,
+                                        transaction.transactionAfterBalance,
+                                        transaction.transactionSummary,
+                                        transactionDetail.receiptEnrolled))
+                        .from(transactionDetail);
+
+        List<TransactionDto> res =
+                joinIfMyOption(from, condition)
+                        .join(transaction)
+                        .on(transactionDetail.transaction.eq(transaction))
+                        .where(expression)
+                        .orderBy(dateOrderSpecifier, timeOrderSpecifier)
+                        .offset(pageSize * page)
+                        .limit(pageSize)
+                        .fetch();
+
+        log.info("getGroupTransaction: {}", res);
+        log.info("size: {}", res.size());
+
+        return res;
+    }
+
+    private <T> JPAQuery<T> joinIfMyOption(JPAQuery<T> selectQuery, String option) {
+        return "my".equals(option)
+                ? selectQuery
+                        .innerJoin(transactionMember)
+                        .on(
+                                transactionMember.transactionMemberPK.transaction.eq(
+                                        transactionDetail.transaction))
+                : selectQuery;
+    }
 }

@@ -23,5 +23,6 @@ public interface PaymentService {
 
     TransactionDetailRes getTransactionDetail(int transactionId);
 
-    List<TransactionDto> getGroupTransaction(int groupId);
+    List<TransactionDto> getGroupTransaction(
+            String memgerId, int groupId, int page, int pageSize, String option);
 }
