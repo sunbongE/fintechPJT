@@ -3,6 +3,7 @@ import 'dart:ui';
 const PRIMARY_COLOR = Color(0xffFF9E44);
 const BUTTON_COLOR = Color(0xffFF9E44);
 const TEXT_COLOR = Color(0xffE67E22);
+const RECEIPT_TEXT_COLOR = Color(0xff6D7278);
 const FOCUS_COLOR = Color(0xffAA682B);
 final RANGE_COLOR = Color(0xffFF9E44).withOpacity(0.6);
 final TRAVELING = Color(0xffFF6500).withOpacity(0.6);

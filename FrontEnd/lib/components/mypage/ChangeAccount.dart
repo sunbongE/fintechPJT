@@ -146,8 +146,7 @@ class _ChangeAccountState extends State<ChangeAccount> {
                                       newSelectedBank: widget.selectedBank,
                                       newSelectedAccount: selectAccount,
                                     );
-                                    Navigator.of(context).popUntil(
-                                            (route) => route.isFirst);
+                                    buttonSlideAnimationPushAndRemoveUntil(context, 3);
                                   } else {
                                     buttonSlideAnimation(
                                       context,
@@ -159,11 +158,7 @@ class _ChangeAccountState extends State<ChangeAccount> {
                                                 widget.selectedBank,
                                             newSelectedAccount: selectAccount,
                                           );
-                                          Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => HomeScreen(initialIndex: 3)),
-                                                (Route<dynamic> route) => false,
-                                          );
+                                          buttonSlideAnimationPushAndRemoveUntil(context, 3);
                                         },
                                       ),
                                     );

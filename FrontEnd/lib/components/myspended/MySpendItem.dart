@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/myspended/MySpendMap.dart';
-import 'package:front/components/myspended/ShowReciptBtn.dart';
+import 'package:front/components/myspended/ShowReceiptBtn.dart';
 import 'package:front/const/colors/Colors.dart';
 import 'package:front/providers/store.dart';
 import 'package:intl/intl.dart';
 import '../../models/CustomDivider.dart';
+import '../../screen/YjReceipt.dart';
 
 class MySpendItem extends StatefulWidget {
   final Map<String, dynamic>? spend;
@@ -26,7 +27,7 @@ class _MySpendItemState extends State<MySpendItem> {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        title: Text(widget.spend?['store_name'],
+        title: Text(widget.spend?['transactionSummary'],
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.sp)),
       ),
       body: Padding(
@@ -43,7 +44,7 @@ class _MySpendItemState extends State<MySpendItem> {
                       style: TextStyle(fontSize: 16.sp),
                     ),
                     Text(
-                      '${widget.spend?['transactionDate']} ${widget.spend?['transactionTime']['hour']}:${widget.spend?['transactionTime']['minute']}:${widget.spend?['transactionTime']['second']}',
+                      '${widget.spend?['transactionDate']} ${widget.spend?['transactionTime']}',
                       style: TextStyle(fontSize: 16.sp),
                     ),
                   ],
@@ -59,7 +60,7 @@ class _MySpendItemState extends State<MySpendItem> {
                       style: TextStyle(fontSize: 16.sp),
                     ),
                     Text(
-                      '${NumberFormat('#,###').format(widget.spend?['cost'])}원',
+                      '${NumberFormat('#,###').format(widget.spend?['transactionBalance'])}원',
                       style: TextStyle(
                           fontSize: 20.sp,
                           fontWeight: FontWeight.bold,
@@ -87,7 +88,23 @@ class _MySpendItemState extends State<MySpendItem> {
                   height: 50.h,
                 ),
                 CustomDivider(),
-                ShowReciptBtn(),
+                ShowReceiptBtn(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (BuildContext context) {
+                        return Container(
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          color: Colors.white,
+                          child: Center(
+                            child: YjReceipt(spend: widget.spend ?? {}),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
                 CustomDivider(),
                 SizedBox(
                   height: 10.h,

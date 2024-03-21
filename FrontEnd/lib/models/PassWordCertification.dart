@@ -20,65 +20,71 @@ class _PassWordCertificationState extends State<PassWordCertification> {
   PageController pageController = PageController();
   String passWord = '';
   String? confirmPassWord = '';
-  final LocalAuthentication auth = LocalAuthentication();
-  var userManager = UserManager();
+  bool isLoading = true;
 
-  // confirmPassWord에 기존 비밀번호 할당
+  final userManager = UserManager();
+
   @override
   void initState() {
     super.initState();
-    userManager.loadUserInfo().then((_) {
-      setState(() {
-        confirmPassWord = userManager.password;
-      });
-    });
-
+    loadUserInfo();
   }
 
-  // 비밀번호 입력
-  void UpdatePassword(String val) {
+  void loadUserInfo() async {
+    setState(() {
+      isLoading = true; // 로딩 시작
+    });
+    await userManager.loadUserInfo();
+    if (!mounted) return;
+    setState(() {
+      confirmPassWord = userManager.password;
+      isLoading = false; // 로딩 종료
+    });
+  }
+
+  void updatePassword(String val) {
     if (!mounted) return;
 
-    setState(
-          () {
-        if (val.length <= 6) {
-          passWord = val;
-          if (passWord.length == 6) {
-            if (userManager.password == passWord) {
-              widget.onSuccess();
-            } else {
-              FlutterToastMsg("비밀번호가 일치하지 않습니다.\n다시 입력해주세요.");
-              if (!mounted) return;
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => PassWordCertification(onSuccess: widget.onSuccess)),
-              );
-            }
+    setState(() {
+      if (val.length <= 6) {
+        passWord = val;
+        if (passWord.length == 6) {
+          if (userManager.password == passWord) {
+            widget.onSuccess();
+          } else {
+            FlutterToastMsg("비밀번호가 일치하지 않습니다.\n다시 입력해주세요.");
+            if (!mounted) return;
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                  builder: (context) =>
+                      PassWordCertification(onSuccess: widget.onSuccess)),
+            );
           }
         }
-      },
-    );
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    print("비밀번호: "+ confirmPassWord!);
-    print("비밀번호입력: "+ passWord!);
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.fromLTRB(0, 100.h, 0, 0),
         child: Container(
-          child: PageView(
-            controller: pageController,
-            physics: NeverScrollableScrollPhysics(),
-            children: [
-              buildPasswordPage(
-                "비밀번호를 입력하세요",
-                "숫자 6자리",
-                passWord,
-                UpdatePassword,
-              ),
-            ],
-          ),
+          child: isLoading
+              ? Center(child: CircularProgressIndicator())
+              : PageView(
+                  controller: pageController,
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    buildPasswordPage(
+                      "비밀번호를 입력하세요",
+                      "숫자 6자리",
+                      passWord,
+                      updatePassword,
+                    ),
+                  ],
+                ),
         ),
       ),
     );

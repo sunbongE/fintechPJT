@@ -18,19 +18,15 @@ class _MyAccountState extends State<MyAccount> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      loadUserInfo();
-    });
+    loadUserInfo();
   }
 
   Future<void> loadUserInfo() async {
     await userManager.loadUserInfo();
-    if (mounted) {
-      setState(() {
-        bank = userManager.selectedBank;
-        account = userManager.selectedAccount;
-      });
-    }
+    setState(() {
+      bank = userManager.selectedBank;
+      account = userManager.selectedAccount;
+    });
   }
 
   @override
@@ -40,21 +36,21 @@ class _MyAccountState extends State<MyAccount> {
       child: bank == null || account == null
           ? Center(child: CircularProgressIndicator())
           : Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "여정과 함께하고 있는 계좌",
-            style: TextStyle(fontSize: 20.sp),
-          ),
-          SizedBox(
-            height: 20.h,
-          ),
-          MyAccountItem(
-            selectedBank: bank,
-            selectedAccount: account,
-          ),
-        ],
-      ),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "여정과 함께하고 있는 계좌",
+                  style: TextStyle(fontSize: 20.sp),
+                ),
+                SizedBox(
+                  height: 20.h,
+                ),
+                MyAccountItem(
+                  selectedBank: bank,
+                  selectedAccount: account,
+                ),
+              ],
+            ),
     );
   }
 }
