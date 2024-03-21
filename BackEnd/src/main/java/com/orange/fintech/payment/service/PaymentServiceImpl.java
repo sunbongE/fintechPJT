@@ -5,6 +5,7 @@ import com.orange.fintech.group.repository.GroupRepository;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.payment.dto.TransactionDto;
+import com.orange.fintech.payment.dto.TransactionMemberDto;
 import com.orange.fintech.payment.dto.TransactionPostReq;
 import com.orange.fintech.payment.entity.*;
 import com.orange.fintech.payment.repository.*;
@@ -25,9 +26,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final MemberRepository memberRepository;
     private final GroupRepository groupRepository;
-
     private final TransactionRepository transactionRepository;
-    private final TransactionRepositorySupport transactionRepositorySupport;
+    private final TransactionQueryRepository transactionRepositorySupport;
     private final TransactionDetailRepository transactionDetailRepository;
     private final TransactionMemberRepository transactionMemberRepository;
 
@@ -35,7 +35,6 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public boolean addTransaction(int groupId, TransactionPostReq req) {
-        // 거래내역 추가
         log.info("거래내역 추가 시작");
         Transaction transaction = new Transaction();
         transaction.setTransactionDate(req.getTransactionDate());
@@ -51,6 +50,10 @@ public class PaymentServiceImpl implements PaymentService {
 
         saveReceipt(transaction, req);
 
+        for (TransactionMemberDto tm : req.getMemberList()) {
+            addTransactionMember(groupId, tm);
+        }
+
         return false;
     }
 
@@ -60,11 +63,9 @@ public class PaymentServiceImpl implements PaymentService {
         TransactionDetail transactionDetail = new TransactionDetail();
 
         transactionDetail.setTransactionId(transaction.getTransactionId());
-        //        transactionDetail.setTransaction(transaction);
-
         transactionDetail.setGroup(groupRepository.findById(groupId).get());
         transactionDetail.setRemainder(req.getRemainder());
-        //        transactionDetail.setReceiptEnrolled(false);
+        transactionDetail.setReceiptEnrolled(false);
 
         log.info("saveTransactionDetail {}", transactionDetail);
 
@@ -148,15 +149,19 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void addTransactionMember(String memberId, int transactionId, int amount) {
+    public void addTransactionMember(int transactionId, TransactionMemberDto dto) {
         TransactionMemberPK pk = new TransactionMemberPK();
         pk.setTransaction(transactionRepository.findById(transactionId).get());
-        pk.setMember(memberRepository.findById(memberId).get());
+        pk.setMember(memberRepository.findById(dto.getMemberId()).get());
 
         TransactionMember transactionMember = new TransactionMember();
         transactionMember.setTransactionMemberPK(pk);
-        transactionMember.setTotalAmount(amount);
+        transactionMember.setTotalAmount(dto.getTotalAmount());
+        //        transactionMember.setIsLock(dto.getIsLock());
+        transactionMember.setIsLock(dto.isLock());
 
         transactionMemberRepository.save(transactionMember);
+
+        log.info("transactionMemberDto {}", dto);
     }
 }

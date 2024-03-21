@@ -1,6 +1,7 @@
 package com.orange.fintech.payment.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,5 +12,7 @@ public class TransactionMember {
 
     @EmbeddedId private TransactionMemberPK transactionMemberPK;
 
-    private int totalAmount;
+    @NotNull private Integer totalAmount;
+
+    @NotNull private Boolean isLock;
 }

@@ -22,6 +22,8 @@ public class QTransactionMember extends EntityPathBase<TransactionMember> {
 
     public static final QTransactionMember transactionMember = new QTransactionMember("transactionMember");
 
+    public final BooleanPath isLock = createBoolean("isLock");
+
     public final NumberPath<Integer> totalAmount = createNumber("totalAmount", Integer.class);
 
     public final QTransactionMemberPK transactionMemberPK;
