@@ -51,7 +51,7 @@ public class PaymentController {
         return ResponseEntity.status(200).body(list);
     }
 
-    @PutMapping("/{paymentId}")
+    @PutMapping("/{paymentId}/include")
     @Operation(
             summary = "정산 내역에 포함하기 / 제외하기",
             description = "<strong>paymentId</strong>로 정산 내역 포함 여부를 설정한다.")
