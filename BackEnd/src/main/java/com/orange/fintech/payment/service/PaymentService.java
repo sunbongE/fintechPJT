@@ -1,15 +1,13 @@
 package com.orange.fintech.payment.service;
 
-import com.orange.fintech.payment.dto.TransactionDetailRes;
-import com.orange.fintech.payment.dto.TransactionDto;
-import com.orange.fintech.payment.dto.TransactionMemberDto;
-import com.orange.fintech.payment.dto.TransactionPostReq;
+import com.orange.fintech.payment.dto.*;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 
 public interface PaymentService {
 
-    boolean addTransaction(String memberId, int groupId, TransactionPostReq addTransactionDto);
+    boolean addTransaction(String memberId, int groupId, AddCashTransactionReq addTransactionDto);
 
     void addTransactionMember(int transactionId, TransactionMemberDto dto);
 
@@ -19,7 +17,7 @@ public interface PaymentService {
 
     boolean changeContainStatus(int transactionId, int groupId);
 
-    void memo(int transactionId, String memo) throws NoSuchElementException;
+    void editTransactionDetail(int transactionId, TransactionEditReq req) throws NoSuchElementException;
 
     TransactionDetailRes getTransactionDetail(int transactionId);
 

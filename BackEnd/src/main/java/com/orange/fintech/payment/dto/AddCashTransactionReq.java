@@ -15,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "현금 결제 내역 추가 Dto")
-public class TransactionPostReq {
+public class AddCashTransactionReq {
 
     @Schema(description = "제목", example = "초돈")
     private String transactionSummary;
