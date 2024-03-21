@@ -7,7 +7,9 @@ import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.payment.dto.TransactionDetailRes;
 import com.orange.fintech.payment.dto.TransactionDto;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +22,13 @@ public class TransactionQueryRepository {
 
     @Autowired private JPAQueryFactory jpaQueryFactory;
 
-    public List<TransactionDto> getTransactionByMemberAndGroup(Member member, Group group) {
+    public List<TransactionDto> getMyTransactionByMemberAndGroup(
+            Member member, Group group, int page, int pageSize) {
+        OrderSpecifier<String> dateOrderSpecifier =
+                Expressions.stringPath("transaction.transactionDate").desc();
+        OrderSpecifier<String> timeOrderSpecifier =
+                Expressions.stringPath("transaction.transactionTime").desc();
+
         List<TransactionDto> list =
                 jpaQueryFactory
                         .select(
@@ -35,7 +43,6 @@ public class TransactionQueryRepository {
                                         transaction.transactionAfterBalance,
                                         transaction.transactionSummary,
                                         transactionDetail.group.groupId,
-                                        //
                                         // transactionDetail.memo,
                                         transactionDetail.receiptEnrolled))
                         .from(transaction)
@@ -55,8 +62,12 @@ public class TransactionQueryRepository {
                                                         .transactionType
                                                         .eq("2")
                                                         .or(transaction.transactionType.isNull())))
+                        .orderBy(dateOrderSpecifier, timeOrderSpecifier)
+                        .offset(pageSize * page)
+                        .limit(pageSize)
                         .fetch();
 
+        log.info("pageSize: {}", pageSize);
         log.info("Member {}", member);
         log.info("Group {}", group);
         log.info("List {}", list.toArray());
@@ -85,4 +96,25 @@ public class TransactionQueryRepository {
 
         return res;
     }
+
+    //    public List<TransactionDto> getGroupTransaction() {
+    //        List<TransactionDto> res = jpaQueryFactory
+    //                .select(
+    //                        Projections.bean(
+    //                        TransactionDto.class,
+    //                        transaction.transactionId,
+    //                        transaction.transactionDate,
+    //                        transaction.transactionTime,
+    //                        transaction.transactionType,
+    //                        transaction.transactionTypeName,
+    //                        transaction.transactionBalance,
+    //                        transaction.transactionAfterBalance,
+    //                        transaction.transactionSummary,
+    //                        transactionDetail.receiptEnrolled))
+    //                .from(transaction)
+    //                .leftJoin(transactionDetail)
+    //                .on(transaction.transactionId.eq(transactionDetail.transactionId))
+    //                .where()
+    //
+    //    }
 }

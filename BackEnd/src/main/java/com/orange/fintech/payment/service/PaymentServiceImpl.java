@@ -38,13 +38,14 @@ public class PaymentServiceImpl implements PaymentService {
     private final ReceiptRepository receiptRepository;
 
     @Override
-    public boolean addTransaction(int groupId, TransactionPostReq req) {
+    public boolean addTransaction(String memberId, int groupId, TransactionPostReq req) {
         log.info("거래내역 추가 시작");
         Transaction transaction = new Transaction();
         transaction.setTransactionDate(req.getTransactionDate());
         transaction.setTransactionTime(req.getTransactionTime());
         transaction.setTransactionBalance(req.getTransactionBalance());
         transaction.setTransactionSummary(req.getTransactionSummary());
+        transaction.setMember(memberRepository.findById(memberId).get());
         // transaction.setTransactionType("");
         // transaction.setTransactionTypeName("");
         if (req.getTransactionTime() != null && req.getTransactionDate() != null) {
@@ -121,14 +122,16 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<TransactionDto> getMyTransaction(String memberId, int groupId) {
+    public List<TransactionDto> getMyTransaction(
+            String memberId, int groupId, int page, int pageSize) {
         log.info("getMyTransaction start");
 
         Member member = memberRepository.findById(memberId).get();
         Group group = groupRepository.findById(groupId).get();
 
         List<TransactionDto> list =
-                transactionQueryRepository.getTransactionByMemberAndGroup(member, group);
+                transactionQueryRepository.getMyTransactionByMemberAndGroup(
+                        member, group, page, pageSize);
         log.info("getMyTransaction end ");
 
         return list;
@@ -199,5 +202,10 @@ public class PaymentServiceImpl implements PaymentService {
         res.setMemberList(list);
 
         return res;
+    }
+
+    @Override
+    public List<TransactionDto> getGroupTransaction(int groupId) {
+        return null;
     }
 }

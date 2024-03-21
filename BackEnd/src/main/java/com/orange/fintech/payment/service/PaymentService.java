@@ -9,11 +9,11 @@ import java.util.NoSuchElementException;
 
 public interface PaymentService {
 
-    boolean addTransaction(int groupId, TransactionPostReq addTransactionDto);
+    boolean addTransaction(String memberId, int groupId, TransactionPostReq addTransactionDto);
 
     void addTransactionMember(int transactionId, TransactionMemberDto dto);
 
-    List<TransactionDto> getMyTransaction(String memberId, int groupId);
+    List<TransactionDto> getMyTransaction(String memberId, int groupId, int page, int pageSize);
 
     boolean isMyTransaction(String memberId, int transactionId);
 
@@ -22,4 +22,6 @@ public interface PaymentService {
     void memo(int transactionId, String memo) throws NoSuchElementException;
 
     TransactionDetailRes getTransactionDetail(int transactionId);
+
+    List<TransactionDto> getGroupTransaction(int groupId);
 }
