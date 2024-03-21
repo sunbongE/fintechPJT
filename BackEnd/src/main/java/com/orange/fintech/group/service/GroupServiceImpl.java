@@ -186,7 +186,7 @@ public class GroupServiceImpl implements GroupService {
         return result;
     }
 
-    // Todo : Dto를 만들 때 회원을 전부 조회하는 쿼리가 발생하고 필요 이상의 데이터를 조회하기 때문에 최적화를 고려할만 하다.
+    // Todo : Dto를 만들 때 회원을 전부 조회하는 쿼리가 발생하고 필요 이상의 데이터를 조회하기 때문에 최적화를 고려할만 하다. N+1문제
     @Override
     public List<GroupCalculateResultDto> getCalculateResult(int groupId) {
         List<CalculateResult> calculateResultList = new ArrayList<>();
@@ -199,6 +199,7 @@ public class GroupServiceImpl implements GroupService {
         List<GroupCalculateResultDto> result = new ArrayList<>();
 
         for (CalculateResult calculateResult : calculateResultList) {
+            log.info("DB 호출되나?");
             GroupCalculateResultDto data =
                     new GroupCalculateResultDto(calculateResult); // <=== 이부분.
             result.add(data);
