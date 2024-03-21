@@ -5,6 +5,7 @@ import static com.orange.fintech.payment.entity.QTransactionDetail.transactionDe
 
 import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.member.entity.Member;
+import com.orange.fintech.payment.dto.TransactionDetailRes;
 import com.orange.fintech.payment.dto.TransactionDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -34,7 +35,8 @@ public class TransactionQueryRepository {
                                         transaction.transactionAfterBalance,
                                         transaction.transactionSummary,
                                         transactionDetail.group.groupId,
-                                        transactionDetail.memo,
+                                        //
+                                        // transactionDetail.memo,
                                         transactionDetail.receiptEnrolled))
                         .from(transaction)
                         .leftJoin(transactionDetail)
@@ -60,5 +62,27 @@ public class TransactionQueryRepository {
         log.info("List {}", list.toArray());
 
         return list;
+    }
+
+    public TransactionDetailRes getTransactionDetail(int transactionId) {
+        TransactionDetailRes res =
+                jpaQueryFactory
+                        .select(
+                                Projections.bean(
+                                        TransactionDetailRes.class,
+                                        transaction.transactionDate,
+                                        transaction.transactionTime,
+                                        transaction.transactionBalance,
+                                        transaction.transactionSummary,
+                                        transactionDetail.memo,
+                                        transactionDetail.remainder,
+                                        transactionDetail.receiptEnrolled))
+                        .from(transaction)
+                        .leftJoin(transactionDetail)
+                        .on(transaction.eq(transactionDetail.transaction))
+                        .where(transaction.transactionId.eq(transactionId))
+                        .fetchOne();
+
+        return res;
     }
 }

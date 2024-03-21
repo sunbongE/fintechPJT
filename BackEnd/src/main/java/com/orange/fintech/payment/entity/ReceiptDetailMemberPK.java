@@ -12,6 +12,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Embeddable
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode

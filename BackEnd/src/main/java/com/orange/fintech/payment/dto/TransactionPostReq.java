@@ -34,7 +34,6 @@ public class TransactionPostReq {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "Asia/Seoul")
     private LocalTime transactionTime;
 
-    // SINYEONG
     @Schema(description = "현금 계산에 참여하는 사람 목록 (id, 금액, 잠금)")
     private List<TransactionMemberDto> memberList;
 

@@ -1,6 +1,7 @@
 package com.orange.fintech.payment.controller;
 
 import com.orange.fintech.common.BaseResponseBody;
+import com.orange.fintech.payment.dto.TransactionDetailRes;
 import com.orange.fintech.payment.dto.TransactionDto;
 import com.orange.fintech.payment.dto.TransactionPostReq;
 import com.orange.fintech.payment.service.PaymentService;
@@ -75,6 +76,7 @@ public class PaymentController {
         }
     }
 
+    // SINYEONG : 상세 전체 수정으로 변경
     @PutMapping("/{paymentId}/memo")
     @Operation(summary = "결제 내역에 메모", description = "<strong>paymentId</strong>로 정산 내역에 메모를 한다.")
     @ApiResponses({
@@ -129,12 +131,17 @@ public class PaymentController {
         @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    public ResponseEntity<? extends BaseResponseBody> getTransactionDetail(
+    public ResponseEntity<TransactionDetailRes> getTransactionDetail(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
             @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
             Principal principal) {
-        log.info("getTransactionDetail 시작");
 
-        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "OK"));
+        try {
+            TransactionDetailRes transactionDetail = paymentService.getTransactionDetail(paymentId);
+
+            return ResponseEntity.status(200).body(transactionDetail);
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(null);
+        }
     }
 }
