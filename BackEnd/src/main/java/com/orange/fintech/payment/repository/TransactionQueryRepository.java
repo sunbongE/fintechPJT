@@ -64,7 +64,7 @@ public class TransactionQueryRepository {
                                         .and(
                                                 transaction
                                                         .transactionType
-                                                        .eq("2")
+                                                        .ne("1")
                                                         .or(transaction.transactionType.isNull())))
                         .orderBy(dateOrderSpecifier, timeOrderSpecifier)
                         .offset(pageSize * page)
