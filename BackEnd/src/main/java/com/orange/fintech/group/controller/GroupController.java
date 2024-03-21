@@ -41,7 +41,7 @@ public class GroupController {
             groupService.createGroup(dto);
             return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "성공"));
         } catch (Exception e) {
-            //            log.info(e.getMessage());
+            log.info("[ERROR] :{}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
@@ -54,17 +54,14 @@ public class GroupController {
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> findGroups(Principal principal) {
-        //        log.info("** principal :{}", principal.getName());
-        //        log.info("** findGroups 호출~~~!!!");
         String memberId = principal.getName();
-        //        String memberId = "3388366548";
 
         try {
             List<Group> groups = groupService.findGroups(memberId);
 
             return ResponseEntity.status(HttpStatus.OK).body(groups);
         } catch (Exception e) {
-            //            log.info(e.getMessage());
+            log.info("[ERROR] :{}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
@@ -77,10 +74,7 @@ public class GroupController {
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> getGroup(@PathVariable("groupId") int groupId, Principal principal) {
-        //        log.info("** principal :{}", principal.getName());
         String memberId = principal.getName();
-
-        //        String memberId = "3388366548";
 
         try {
 
@@ -93,7 +87,7 @@ public class GroupController {
 
             return ResponseEntity.status(HttpStatus.OK).body(group);
         } catch (Exception e) {
-            //            log.info(e.getMessage());
+            log.info("[ERROR] :{}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
@@ -109,10 +103,7 @@ public class GroupController {
             @PathVariable("groupId") int groupId,
             @RequestBody @Valid ModifyGroupDto dto,
             Principal principal) {
-        //        log.info("** principal :{}", principal.getName());
         String memberId = principal.getName();
-
-        //        String memberId = "3388366548";
 
         try {
             if (!isExistMember(memberId, groupId)) {
@@ -124,7 +115,7 @@ public class GroupController {
 
             return ResponseEntity.status(HttpStatus.OK).body(group);
         } catch (Exception e) {
-            //            log.info(e.getMessage());
+            log.info("[ERROR] :{}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
@@ -138,7 +129,6 @@ public class GroupController {
     })
     public ResponseEntity<BaseResponseBody> leaveGroup(
             @PathVariable("groupId") int groupId, Principal principal) {
-        //        log.info("** principal :{}", principal.getName());
         String memberId = principal.getName();
 
         try {
@@ -156,7 +146,7 @@ public class GroupController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(BaseResponseBody.of(400, "정산이 완료되지 않아 나가기가 제한됩니다. 정산완료하기 누르세요!"));
         } catch (Exception e) {
-            //            log.info(e.getMessage());
+            log.info("[ERROR] :{}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
@@ -169,7 +159,6 @@ public class GroupController {
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> joinGroup(@PathVariable("groupId") int groupId, Principal principal) {
-        //        log.info("** joinGroup -> principal :{}", principal.getName());
         String memberId = principal.getName();
 
         try {
@@ -185,7 +174,7 @@ public class GroupController {
                     .body(BaseResponseBody.of(200, "여행 그룹에 참여했습니다."));
 
         } catch (Exception e) {
-            //            log.info(e.getMessage());
+            log.info("[ERROR] :{}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
@@ -199,7 +188,6 @@ public class GroupController {
     })
     public ResponseEntity<?> findGroupMembers(
             @PathVariable("groupId") int groupId, Principal principal) {
-        //        log.info("** findGroupMembers -> principal :{}", principal.getName());
         String memberId = principal.getName();
 
         try {
@@ -213,7 +201,7 @@ public class GroupController {
             return ResponseEntity.status(HttpStatus.OK).body(result);
 
         } catch (Exception e) {
-            //            log.info(e.getMessage());
+            log.info("[ERROR] :{}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
@@ -227,7 +215,6 @@ public class GroupController {
     })
     public ResponseEntity<BaseResponseBody> firstcall(
             @PathVariable("groupId") int groupId, Principal principal) {
-        //                log.info("** firstcall -> principal :{}", principal.getName());
         String memberId = principal.getName();
 
         try {
@@ -245,7 +232,7 @@ public class GroupController {
             }
 
         } catch (Exception e) {
-            //            log.info(e.getMessage());
+            log.info("[ERROR] :{}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
@@ -259,7 +246,6 @@ public class GroupController {
     })
     public ResponseEntity<BaseResponseBody> secondcall(
             @PathVariable("groupId") int groupId, Principal principal) {
-        //                log.info("** secondcall -> principal :{}", principal.getName());
         String memberId = principal.getName();
 
         try {
@@ -277,7 +263,7 @@ public class GroupController {
             }
 
         } catch (Exception e) {
-            //            log.info(e.getMessage());
+            log.info("[ERROR] :{}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
@@ -293,7 +279,6 @@ public class GroupController {
     })
     public ResponseEntity<?> firstcallMembers(
             @PathVariable("groupId") int groupId, Principal principal) {
-        //                log.info("** secondcall -> principal :{}", principal.getName());
         String memberId = principal.getName();
 
         try {
@@ -310,7 +295,7 @@ public class GroupController {
             return ResponseEntity.status(HttpStatus.OK).body(result);
 
         } catch (Exception e) {
-            //            log.info(e.getMessage());
+            log.info("[ERROR] :{}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
@@ -326,7 +311,6 @@ public class GroupController {
     })
     public ResponseEntity<?> secondcallMembers(
             @PathVariable("groupId") int groupId, Principal principal) {
-        //                log.info("** secondcall -> principal :{}", principal.getName());
         String memberId = principal.getName();
 
         try {
@@ -343,7 +327,7 @@ public class GroupController {
             return ResponseEntity.status(HttpStatus.OK).body(result);
 
         } catch (Exception e) {
-            //            log.info(e.getMessage());
+            log.info("[ERROR] :{}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
@@ -359,7 +343,6 @@ public class GroupController {
     })
     public ResponseEntity<?> getCalculateResult(
             @PathVariable("groupId") int groupId, Principal principal) {
-        log.info("** getCalculateResult 호출! -> principal :{}", principal.getName());
         String memberId = principal.getName();
 
         try {
@@ -376,7 +359,7 @@ public class GroupController {
             return ResponseEntity.status(HttpStatus.OK).body(result);
 
         } catch (Exception e) {
-            log.info(e.getMessage());
+            log.info("[ERROR] :{}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }

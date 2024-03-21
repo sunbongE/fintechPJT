@@ -40,9 +40,6 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<Group> findGroups(String memberId) {
-        //        Member member = memberRepository.findByKakaoId(memberId);
-        //        log.info("member : {} ", member);
-        //        return groupMemberRepository.findByGroupMemberPKMemberAndStateIsTrue(member);
         return groupQueryRepository.findAllMyGroup(memberId);
     }
 
@@ -120,7 +117,7 @@ public class GroupServiceImpl implements GroupService {
         GroupMember data = new GroupMember();
         data.setGroupMemberPK(groupMemberPK);
 
-        GroupMember groupMember = groupMemberRepository.save(data);
+        groupMemberRepository.save(data);
         return true;
     }
 
@@ -184,29 +181,24 @@ public class GroupServiceImpl implements GroupService {
         return result;
     }
 
+    // Todo : Dto를 만들 때 회원을 전부 조회하는 쿼리가 발생하고 필요 이상의 데이터를 조회하기 때문에 최적화를 고려할만 하다.
     @Override
     public List<GroupCalculateResultDto> getCalculateResult(int groupId) {
-        log.info("Impl호출~~~~~~~");
         List<CalculateResult> calculateResultList = new ArrayList<>();
-        log.info("그룹 찾기 호출");
         Optional<Group> OpGroup = groupRepository.findById(groupId);
-        log.info("=====================================================");
 
         if (OpGroup.isEmpty()) return null;
         Group group = OpGroup.get();
-        log.info("결과들 조회 호출====");
         calculateResultList = calculateResultRepository.findAllByGroup(group);
-        log.info("=====================================================");
 
         List<GroupCalculateResultDto> result = new ArrayList<>();
 
         for (CalculateResult calculateResult : calculateResultList) {
-            log.info("DB조회가 되나..?");
-            GroupCalculateResultDto data = new GroupCalculateResultDto(calculateResult);
+            GroupCalculateResultDto data =
+                    new GroupCalculateResultDto(calculateResult); // <=== 이부분.
             result.add(data);
         }
 
-        log.info("result : {}", result.toString());
         return result;
     }
 }
