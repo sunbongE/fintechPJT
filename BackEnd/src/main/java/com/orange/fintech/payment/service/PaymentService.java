@@ -1,7 +1,6 @@
 package com.orange.fintech.payment.service;
 
 import com.orange.fintech.payment.dto.*;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -17,7 +16,8 @@ public interface PaymentService {
 
     boolean changeContainStatus(int transactionId, int groupId);
 
-    void editTransactionDetail(int transactionId, TransactionEditReq req) throws NoSuchElementException;
+    void editTransactionDetail(int transactionId, TransactionEditReq req)
+            throws NoSuchElementException;
 
     TransactionDetailRes getTransactionDetail(int transactionId);
 
