@@ -20,12 +20,12 @@ class _ReseiptIconState extends State<ReseiptIcon> {
       width: 44.0.w,
       height: 44.0.h,
       decoration: BoxDecoration(
-        color: circleColor, // 원의 색상
-        shape: BoxShape.circle, // 원 모양 설정
+        color: circleColor,
+        shape: BoxShape.circle,
       ),
       child: Icon(
-        Icons.receipt_long_sharp, // 아이콘
-        color: Colors.white, // 아이콘 색상
+        Icons.receipt_long_sharp,
+        color: Colors.white,
       ),
     );
   }

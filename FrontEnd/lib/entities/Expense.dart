@@ -1,27 +1,37 @@
 class Expense {
   final int transactionId;
-  final String place;
-  final int amount;
-  final String date;
+  final String transactionSummary;
+  final int transactionBalance;
+  final String transactionDate;
   final bool isSettled;
-  final bool isReceipt;
+  final bool receiptEnrolled;
+  final String transactionTime;
+  final String memo;
+  final int? groupId;
 
-  Expense(
-      {required this.transactionId,
-      required this.place,
-      required this.amount,
-      required this.date,
-      required this.isSettled,
-      required this.isReceipt});
+  Expense({
+    required this.transactionId,
+    required this.transactionSummary,
+    required this.transactionBalance,
+    required this.transactionDate,
+    required this.isSettled,
+    required this.receiptEnrolled,
+    required this.transactionTime,
+    required this.memo,
+    required this.groupId,
+  });
 
   factory Expense.fromJson(Map<String, dynamic> json) {
     return Expense(
-      transactionId: json['거래번호'] as int,
-      place: json['장소'] as String,
-      amount: json['금액'] as int,
-      date: json['날짜'] as String,
-      isSettled: json['정산올림'] as bool,
-      isReceipt: json['영수증존재'] as bool,
+      transactionId: json['transactionId'] as int,
+      transactionSummary: json['transactionSummary'] as String,
+      transactionBalance: json['transactionBalance'] as int,
+      transactionDate: json['transactionDate'] as String,
+      transactionTime: json['transactionTime'] as String,
+      isSettled: json['groupId'] == null ? false : true as bool,
+      memo: json['memo'] as String,
+      receiptEnrolled: json['receiptEnrolled'] as bool,
+      groupId: json['groupId'] as int?,
     );
   }
 }

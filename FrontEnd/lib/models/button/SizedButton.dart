@@ -9,12 +9,14 @@ class SizedButton extends StatefulWidget {
   final VoidCallback? onPressed;
   final ButtonSize size;
   final double borderRadius;
+  final enable;
 
   const SizedButton({
     required this.btnText,
     this.size = ButtonSize.m,
     this.borderRadius = 15.0,
     this.onPressed,
+    this.enable = true,
     Key? key,
   }) : super(key: key);
 
@@ -57,7 +59,7 @@ class _SizedButtonState extends State<SizedButton> {
     final buttonSize = _getButtonSize(widget.size);
     final fontSize = _getFontSize(widget.size);
     return ElevatedButton(
-      onPressed: widget.onPressed,
+      onPressed: widget.enable ? widget.onPressed: null,
       style: ElevatedButton.styleFrom(
         backgroundColor: BUTTON_COLOR,
         minimumSize: buttonSize,
