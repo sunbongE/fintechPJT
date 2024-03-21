@@ -20,9 +20,11 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
@@ -32,9 +34,12 @@ public class GroupServiceImpl implements GroupService {
     private final CalculateResultRepository calculateResultRepository;
 
     @Override
-    public boolean createGroup(GroupCreateDto dto) {
+    public boolean createGroup(GroupCreateDto dto, String memberId) {
         Group data = new Group(dto);
-        groupRepository.save(data);
+        Group group = groupRepository.save(data);
+
+        joinGroup(group.getGroupId(), memberId);
+
         return true;
     }
 
