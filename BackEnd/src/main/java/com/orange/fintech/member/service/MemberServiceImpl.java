@@ -8,9 +8,12 @@ import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.oauth.dto.MemberSearchResponseDto;
 import com.orange.fintech.redis.service.RedisService;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class MemberServiceImpl implements MemberService {
     @Autowired MemberRepository memberRepository;
@@ -20,6 +23,8 @@ public class MemberServiceImpl implements MemberService {
     @Autowired RedisService redisService;
 
     @Autowired JWTUtil jWTUtil;
+
+    @Autowired PasswordEncoder passwordEncoder;
 
     // 그룹원 검색 응답
     @Override
@@ -58,7 +63,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public boolean updatePin(String kakaoId, String pin) {
         Member member = findByKakaoId(kakaoId);
-        member.setPin(pin);
+        member.setPin(passwordEncoder.encode(pin));
 
         try {
             memberRepository.save(member);
@@ -69,6 +74,13 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return true;
+    }
+
+    @Override
+    public boolean verifyPin(String kakaoId, String pin) {
+        Member member = findByKakaoId(kakaoId);
+
+        return passwordEncoder.matches(pin, member.getPin());
     }
 
     @Override

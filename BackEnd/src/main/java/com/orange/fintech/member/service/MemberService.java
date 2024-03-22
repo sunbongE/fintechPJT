@@ -16,5 +16,7 @@ public interface MemberService {
 
     boolean updatePin(String kakaoId, String pin);
 
+    boolean verifyPin(String kakaoId, String pin);
+
     boolean deleteUser(String kakaoId);
 }
