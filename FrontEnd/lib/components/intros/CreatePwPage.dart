@@ -56,6 +56,8 @@ class _CreatePwPageState extends State<CreatePwPage> {
         } else {
           FlutterToastMsg("생체 인증이 등록되지 않았습니다.\n다음에 다시 등록해주세요.");
         }
+        // 핀 번호 post API
+        await postPassWord(_confirmPassWord);
         UserManager().saveUserInfo(newPassword: _confirmPassWord);
         buttonSlideAnimation(context, SelectBank());
       } else {

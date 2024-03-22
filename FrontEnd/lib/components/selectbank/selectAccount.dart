@@ -35,6 +35,7 @@ class _SelectAccountState extends State<SelectAccount> {
         isLoading = true;
       });
 
+      // 한국은행에서 내가 가진 계좌 리스트 get API
       // List<Map<String, dynamic>>? getAccounts = await getBankInfo(widget.selectedBank);
       // await Future.delayed(Duration(seconds: 2));
 
@@ -132,6 +133,7 @@ class _SelectAccountState extends State<SelectAccount> {
                             ? Button(
                                 btnText: "Next",
                                 onPressed: () async {
+                                  // 한국은행에서 내가 가진 계좌들 중 하나 선택한 후 post API 보내기 (주 거래은행으로 선택)
                                   // postBankInfo({
                                   //   'selectedAccount': selectAccount,
                                   //   'selectedBank': widget.selectedBank

@@ -93,27 +93,13 @@ Future<bool> SocialKakao() async {
     try {
       await UserApi.instance.loginWithKakaoTalk();
       User user = await UserApi.instance.me();
-      // String? jwtToken = await postUserInfo(user);
-      // print('jwtToken 1');
-      // print(jwtToken);
-      // var dio = Dio();
-      // dio.options.headers['Content-Type'] = 'application/json';
-      // Response response =
-      //     await dio.post('http://${YOUR_IP}:8080/api/v1/auth/join', data: user);
-      // print('response');
-      // print(response);
-      // String jwtToken = response.headers['Authorization']!.first;
-      // print('jwtToken 1');
-      // print(jwtToken);
-
-      // List<String>? jwtTokens = response.headers['Authorization'];
-
+      Response res = await postUserInfo(user);
       UserManager().saveUserInfo(
         newName: user.kakaoAccount?.name,
         newEmail: user.kakaoAccount?.email,
         newThumbnailImageUrl: user.kakaoAccount?.profile?.thumbnailImageUrl,
         newProfileImageUrl: user.kakaoAccount?.profile?.profileImageUrl,
-        // newJwtToken: jwtToken,
+        newJwtToken: res.data['jwtToken'],
       );
       return true;
     } catch (error) {
@@ -128,23 +114,13 @@ Future<bool> SocialKakao() async {
       try {
         await UserApi.instance.loginWithKakaoAccount();
         User user = await UserApi.instance.me();
-        // String? jwtToken = await postUserInfo(user);
-        // var dio = Dio();
-        // dio.options.headers['Content-Type'] = 'application/json';
-        // Response response = await dio
-        //     .post('http://${YOUR_IP}:8080/api/v1/auth/join', data: user);
-        // print('response');
-        // print(response);
-        // String jwtToken = response.headers['Authorization']!.first;
-        // print('jwtToken 2');
-        // print(jwtToken);
-
+        Response res = await postUserInfo(user);
         UserManager().saveUserInfo(
           newName: user.kakaoAccount?.name,
           newEmail: user.kakaoAccount?.email,
           newThumbnailImageUrl: user.kakaoAccount?.profile?.thumbnailImageUrl,
           newProfileImageUrl: user.kakaoAccount?.profile?.profileImageUrl,
-          // newJwtToken: jwtToken,
+          newJwtToken: res.data['jwtToken'],
         );
         return true;
       } catch (error) {
@@ -156,6 +132,14 @@ Future<bool> SocialKakao() async {
     try {
       await UserApi.instance.loginWithKakaoAccount();
       User user = await UserApi.instance.me();
+      Response res = await postUserInfo(user);
+      UserManager().saveUserInfo(
+        newName: user.kakaoAccount?.name,
+        newEmail: user.kakaoAccount?.email,
+        newThumbnailImageUrl: user.kakaoAccount?.profile?.thumbnailImageUrl,
+        newProfileImageUrl: user.kakaoAccount?.profile?.profileImageUrl,
+        newJwtToken: res.data['jwtToken'],
+      );
       // String? jwtToken = await postUserInfo(user);
       // var dio = Dio();
       // dio.options.headers['Content-Type'] = 'application/json';
@@ -167,13 +151,13 @@ Future<bool> SocialKakao() async {
       // print('jwtToken 3');
       // print(jwtToken);
 
-      UserManager().saveUserInfo(
-        newName: user.kakaoAccount?.name,
-        newEmail: user.kakaoAccount?.email,
-        newThumbnailImageUrl: user.kakaoAccount?.profile?.thumbnailImageUrl,
-        newProfileImageUrl: user.kakaoAccount?.profile?.profileImageUrl,
-        // newJwtToken: jwtToken,
-      );
+      // UserManager().saveUserInfo(
+      //   newName: user.kakaoAccount?.name,
+      //   newEmail: user.kakaoAccount?.email,
+      //   newThumbnailImageUrl: user.kakaoAccount?.profile?.thumbnailImageUrl,
+      //   newProfileImageUrl: user.kakaoAccount?.profile?.profileImageUrl,
+      //   // newJwtToken: jwtToken,
+      // );
       return true;
     } catch (error) {
       print('카카오계정으로 로그인 실패 $error');
@@ -185,6 +169,7 @@ Future<bool> SocialKakao() async {
 Future<void> logoutKakao() async {
   try {
     await UserApi.instance.logout();
+    await postLogOut();
     print("카카오 로그아웃 성공");
     await UserManager().clearUserInfo();
   } catch (error) {

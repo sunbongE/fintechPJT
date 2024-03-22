@@ -1,15 +1,14 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:front/components/mypage/LogoutModal.dart';
-import 'package:front/components/mypage/ProfileChangeBtn.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../const/colors/Colors.dart';
 import '../../models/button/ButtonSlideAnimation.dart';
 import '../../providers/store.dart';
 import '../../repository/api/ApiMyPage.dart';
-import '../../screen/HomeScreen.dart';
+import 'LogoutModal.dart';
+import 'ProfileChangeBtn.dart';
 
 class ProfileChange extends StatefulWidget {
   final Function onUpdate;
@@ -25,20 +24,38 @@ class _ProfileChangeState extends State<ProfileChange> {
   File? _image;
 
   Future getImage() async {
-    final picker = ImagePicker();
+    final ImagePicker picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
-        // _image = File("https://k.kakaocdn.net/dn/hQA8L/btr0BClPKjh/YgcBWlcOYigokCVkCLO6pK/img_110x110.jpg");
-        print(_image);
-        // '/data/user/0/com.example.front/cache/81e68eaa-0814-41eb-bf14-d6dff0fda1a5/profileChange.png'
       });
-      uploadImage(_image);
     }
   }
 
-  Future uploadImage(File? image) async {}
+  Future uploadImage(File image) async {
+    if (image == null) return;
+
+    String fileName = image.path.split('/').last;
+    FormData formData = FormData.fromMap({
+      "file": await MultipartFile.fromFile(image.path, filename: fileName),
+    });
+
+    try {
+      print(image);
+      print(image.path);
+      print(fileName);
+
+      final res = await postUploadImage(formData);
+      if (res != null) {
+        print(res);
+        userManager.thumbnailImageUrl = res['url'];
+        buttonSlideAnimationPushAndRemoveUntil(context, 3);
+      }
+    } catch (err) {
+      print("이미지 업로드 실패: $err");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +122,9 @@ class _ProfileChangeState extends State<ProfileChange> {
             ProfileChangeBtn(
               buttonText: '저장',
               onPressed: () {
-                buttonSlideAnimationPushAndRemoveUntil(context, 3);
+                if (_image != null) {
+                  uploadImage(_image!);
+                }
               },
             ),
             Spacer(),
