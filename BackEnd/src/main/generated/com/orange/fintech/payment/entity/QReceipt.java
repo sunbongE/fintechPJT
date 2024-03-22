@@ -28,8 +28,6 @@ public class QReceipt extends EntityPathBase<Receipt> {
 
     public final StringPath businessName = createString("businessName");
 
-    public final DateTimePath<java.time.LocalDateTime> dateTime = createDateTime("dateTime", java.time.LocalDateTime.class);
-
     public final StringPath location = createString("location");
 
     public final NumberPath<Integer> receiptId = createNumber("receiptId", Integer.class);
@@ -37,6 +35,10 @@ public class QReceipt extends EntityPathBase<Receipt> {
     public final NumberPath<Integer> totalPrice = createNumber("totalPrice", Integer.class);
 
     public final QTransaction transaction;
+
+    public final DatePath<java.time.LocalDate> transactionDate = createDate("transactionDate", java.time.LocalDate.class);
+
+    public final TimePath<java.time.LocalTime> transactionTime = createTime("transactionTime", java.time.LocalTime.class);
 
     public final BooleanPath visibility = createBoolean("visibility");
 

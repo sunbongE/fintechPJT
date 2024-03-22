@@ -50,26 +50,25 @@ class _KeyBoardKeyState extends State<KeyBoardKey> {
       );
     }
 
-    return GestureDetector(
-      onTap: () {
-        widget.onTap(widget.value);
-        temporaryChangeColor();
-      },
-      child: Container(
-        alignment: Alignment.center,
-        width: 90.w,
-        height: 90.h,
-        margin: EdgeInsets.all(8.w),
-        decoration: BoxDecoration(
+    return Container(
+      alignment: Alignment.center,
+      width: 90.w,
+      height: 90.h,
+      margin: EdgeInsets.all(8.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
           borderRadius: BorderRadius.circular(10),
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(10),
-            onTap: () {},
-            child: content,
-          ),
+          onTap: widget.label == null
+              ? null
+              : () {
+                  widget.onTap(widget.value);
+                  temporaryChangeColor();
+                },
+          child: Center(child: content),
         ),
       ),
     );

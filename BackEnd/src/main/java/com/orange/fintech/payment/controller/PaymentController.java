@@ -1,10 +1,7 @@
 package com.orange.fintech.payment.controller;
 
 import com.orange.fintech.common.BaseResponseBody;
-import com.orange.fintech.payment.dto.AddCashTransactionReq;
-import com.orange.fintech.payment.dto.TransactionDetailRes;
-import com.orange.fintech.payment.dto.TransactionDto;
-import com.orange.fintech.payment.dto.TransactionEditReq;
+import com.orange.fintech.payment.dto.*;
 import com.orange.fintech.payment.service.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
-@Tag(name = "Payment", description = "정산 API")
+@Tag(name = "Payment", description = "그룹 정산 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/groups/{groupId}/payments")
@@ -87,12 +84,12 @@ public class PaymentController {
         @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    public ResponseEntity<? extends BaseResponseBody> editTrnasaction(
+    public ResponseEntity<? extends BaseResponseBody> editTransaction(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
             @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
             @RequestBody TransactionEditReq req,
             Principal principal) {
-        log.info("editTrnasaction 시작");
+        log.info("editTransaction 시작");
         if (!paymentService.isMyTransaction(principal.getName(), paymentId)) {
             return ResponseEntity.status(403).body(BaseResponseBody.of(403, "FORBIDDEN"));
         }
@@ -134,15 +131,19 @@ public class PaymentController {
         @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    public ResponseEntity<TransactionDetailRes> getTransactionDetail(
+    public ResponseEntity<GroupTransactionDetailRes> getGroupTransactionDetail(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
             @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
             Principal principal) {
 
-        try {
-            TransactionDetailRes transactionDetail = paymentService.getTransactionDetail(paymentId);
+        if (!paymentService.isMyGroup(principal.getName(), groupId)
+                || !paymentService.isMyGroupTransaction(groupId, paymentId)) {
+            return ResponseEntity.status(403).body(null);
+        }
 
-            return ResponseEntity.status(200).body(transactionDetail);
+        try {
+            GroupTransactionDetailRes res = paymentService.getGroupTransactionDetail(paymentId);
+            return ResponseEntity.status(200).body(res);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(404).body(null);

@@ -12,7 +12,6 @@ class KeyBoardBoard extends StatefulWidget {
 }
 
 class _KeyBoardBoardState extends State<KeyBoardBoard> {
-
   String passWord = '';
   List<List<dynamic>> keys = [
     ['1', '2', '3'],
@@ -51,7 +50,7 @@ class _KeyBoardBoardState extends State<KeyBoardBoard> {
 
   void onBackSpace() {
     setState(() {
-      if(passWord.isNotEmpty) {
+      if (passWord.isNotEmpty) {
         passWord = passWord.substring(0, passWord.length - 1);
         widget.onKeyTap(passWord);
       }

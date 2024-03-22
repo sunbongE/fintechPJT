@@ -1,28 +1,14 @@
 import "package:flutter/material.dart";
-import 'package:front/const/colors/Colors.dart';
 import 'package:front/screen/groupscreens/GroupAdd.dart'; // Group 클래스를 import
 import 'package:front/screen/groupscreens/GroupItem.dart';
 import 'package:front/components/groups/GroupCard.dart';
 
 import '../../entities/Group.dart';
 
-//백에서 group정보 받아오면 여기에 넣기
 
 class GroupList extends StatefulWidget {
   final List<Group> groups;
-  //final List<Group> groups;
   const GroupList({Key? key, required this.groups}) : super(key: key);
-
-
-  // static List<Group> getGroups(BuildContext context) {
-  //   final _GroupListState state = context.findAncestorStateOfType<_GroupListState>()!;
-  //   return state.groups;
-  // }
-  // static void setGroups(BuildContext context, List<Group> updatedGroup) {
-  //   final _GroupListState state = context.findAncestorStateOfType<_GroupListState>()!;
-  //     state.groups = updatedGroup;
-  // }
-
 
   @override
   State<GroupList> createState() => _GroupListState();
@@ -30,7 +16,6 @@ class GroupList extends StatefulWidget {
 
 class _GroupListState extends State<GroupList> {
 
-  //List<Group> groups = [];
 
   void navigateToGroupAdd() async {
     Group newGroup = await Navigator.push(
@@ -44,12 +29,23 @@ class _GroupListState extends State<GroupList> {
     }
   }
 
-  void navigateToGroupDetail(Group group) {
-    Navigator.push(
+  void navigateToGroupDetail(Group group) async {
+    final modifiedGroup = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => GroupDetail(group: group)),
+      MaterialPageRoute(builder: (context) => GroupItem(group: group)),
     );
+
+    if (modifiedGroup != null) {
+      setState(() {
+        // 수정된 그룹으로 groups 리스트 업데이트
+        int index = widget.groups.indexWhere((g) => g.title == modifiedGroup.title); // 고유 ID 또는 식별 가능한 속성을 사용
+        if (index != -1) {
+          widget.groups[index] = modifiedGroup;
+        }
+      });
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {

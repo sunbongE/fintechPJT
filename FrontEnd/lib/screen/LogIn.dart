@@ -1,10 +1,13 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:front/components/intros/ServiceIntro.dart';
 import 'package:front/components/login/SocialKakao.dart';
 import 'package:front/main.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/store.dart';
+import '../repository/api/ApiLogin.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -36,21 +39,35 @@ class _LoginState extends State<Login> {
                       setState(() {
                         _isLoading = true;
                       });
-                      bool loginSuccess = await SocialKakao();
-                      print(loginSuccess);
-                      if (loginSuccess) {
+                      User? user = await SocialKakao();
+                      print(user);
+                      if (user != null) {
+                        Response res = await postUserInfo(user);
+                        print(res);
+                        print(res.headers['Authorization']!.first);
+                        UserManager().saveUserInfo(
+                          newName: user.kakaoAccount?.name,
+                          newEmail: user.kakaoAccount?.email,
+                          newThumbnailImageUrl:
+                              user.kakaoAccount?.profile?.thumbnailImageUrl,
+                          newProfileImageUrl:
+                              user.kakaoAccount?.profile?.profileImageUrl,
+                          newJwtToken: res.headers['Authorization']!.first,
+                        );
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => ServiceIntro()),
-                              (Route<dynamic> route) => false,
+                          MaterialPageRoute(
+                              builder: (context) => ServiceIntro()),
+                          (Route<dynamic> route) => false,
                         );
                       } else {
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(builder: (context) => Login()),
-                              (Route<dynamic> route) => false,
+                          (Route<dynamic> route) => false,
                         );
-                      };
+                      }
+                      ;
                     },
                     icon: Image.asset(
                       "assets/images/kakao_login_btn.png",

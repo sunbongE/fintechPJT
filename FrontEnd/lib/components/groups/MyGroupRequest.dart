@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MyGroupRequest extends StatelessWidget {
   final String requestDetails;
@@ -13,9 +14,9 @@ class MyGroupRequest extends StatelessWidget {
       children: [
         Text(
           '내가 요청한 정산 내역',
-          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 16.0),
+        SizedBox(height: 16.0.h),
         Center(
           child: Text(requestDetails),
         ),
