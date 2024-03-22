@@ -1,5 +1,6 @@
 package com.orange.fintech.member.entity;
 
+import com.orange.fintech.auth.dto.JoinDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,11 +39,11 @@ public class Member {
 
     public Member() {}
 
-    //    public Member(JoinDto joinDto) {
-    //        this.email = joinDto.getEmail();
-    //        this.name = joinDto.getName();
-    //        this.profileImage = joinDto.getProfileImage();
-    //    }
+    public Member(JoinDto joinDto) {
+        this.email = joinDto.getKakaoAccount().getEmail();
+        this.name = joinDto.getKakaoAccount().getName();
+        this.profileImage = joinDto.getKakaoAccount().getProfile().getProfileImageUrl();
+    }
 
     @Override
     public String toString() {
