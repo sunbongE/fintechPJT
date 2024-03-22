@@ -1,9 +1,6 @@
 package com.orange.fintech.group.service;
 
-import com.orange.fintech.group.dto.GroupCalculateResultDto;
-import com.orange.fintech.group.dto.GroupCreateDto;
-import com.orange.fintech.group.dto.GroupMembersDto;
-import com.orange.fintech.group.dto.ModifyGroupDto;
+import com.orange.fintech.group.dto.*;
 import com.orange.fintech.group.entity.CalculateResult;
 import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.group.entity.GroupMember;
@@ -14,6 +11,7 @@ import com.orange.fintech.group.repository.GroupQueryRepository;
 import com.orange.fintech.group.repository.GroupRepository;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
+import com.orange.fintech.redis.service.GroupRedisService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +30,7 @@ public class GroupServiceImpl implements GroupService {
     private final MemberRepository memberRepository;
     private final GroupQueryRepository groupQueryRepository;
     private final CalculateResultRepository calculateResultRepository;
+    private final GroupRedisService groupRedisService;
 
     @Override
     public boolean createGroup(GroupCreateDto dto, String memberId) {
@@ -127,8 +126,30 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<GroupMembersDto> findGroupMembers(int groupId) {
-        List<GroupMembersDto> result = groupQueryRepository.findGroupMembers(groupId);
+    public GroupMembersListDto findGroupMembers(int groupId) {
+        GroupMembersListDto result ;
+        // 1. 캐시에서 그룹원을 조회한다.
+        result = groupRedisService.getGroupMembersFromCache(groupId);
+
+        if (result == null) {
+            log.info("** DB에서 호출 ===============");
+            // 2. 캐시에 없으면 DB에서 가져온다.
+            result = new GroupMembersListDto();
+            result.setGroupMembersDtos( groupQueryRepository.findGroupMembers(groupId));
+//            result.setGroupMembersDtos((List<GroupMembersDto>) groupQueryRepository.findGroupMembers(groupId));
+
+            // 3. DB에 조회한 그룹원을 캐시에 저장한다.
+            groupRedisService.saveDataExpire(groupId, result);
+        }
+
+//        List<GroupMembersDto> groupMembersDtos =  groupQueryRepository.findGroupMembers(groupId);
+
+//        result.setGroupMembersDtos(groupMembersDtos);
+
+//        result = groupQueryRepository.findGroupMembers(groupId);
+//        groupRedisService.deleteData(groupId); // 삭제
+//        groupRedisService.saveDataExpire(groupId, result); // 저장
+//        log.info("캐시된값 : {}",groupRedisService.getGroupMembersFromCache(groupId));
         return result;
     }
 
@@ -199,7 +220,7 @@ public class GroupServiceImpl implements GroupService {
         List<GroupCalculateResultDto> result = new ArrayList<>();
 
         for (CalculateResult calculateResult : calculateResultList) {
-//            log.info("DB 호출되나?");
+            //            log.info("DB 호출되나?");
             GroupCalculateResultDto data =
                     new GroupCalculateResultDto(calculateResult); // <=== 이부분.
             result.add(data);
@@ -207,9 +228,6 @@ public class GroupServiceImpl implements GroupService {
 
         return result;
     }
-
-
-
 
     /**
      * 회원이 그룹에 포함되어있는지 확인하거나 그룹이 존재하는지 확인한다.
