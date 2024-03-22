@@ -39,7 +39,7 @@ class _AddReceiptState extends State<AddReceipt> {
         }),
       });
       final res = await postReceiptImage(formData);
-      print("Response data: ${res?.data}");
+      print("Response data: ${res.data}");
     }
   }
 
@@ -65,7 +65,8 @@ class _AddReceiptState extends State<AddReceipt> {
           }),
         });
         final res = await postReceiptImage(formData);
-        print("Response data: ${res?.data}");
+        print("Response data: ${res.data}");
+        print("Response data: ${res.headers}");
       }
     }
   }

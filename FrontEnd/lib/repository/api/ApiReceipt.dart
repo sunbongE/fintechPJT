@@ -3,7 +3,7 @@ import 'package:front/repository/commons.dart';
 
 final api = ApiClient();
 
-Future<Response?> postReceiptImage(FormData formData) async {
+Future<Response> postReceiptImage(FormData formData) async {
   var dio = Dio();
   try {
     final res = await dio.post(
@@ -18,6 +18,6 @@ Future<Response?> postReceiptImage(FormData formData) async {
     return res;
   } catch (err) {
     print("Error posting image: $err");
-    return null;
+    throw Exception('Failed to post user info');
   }
 }
