@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -101,6 +103,7 @@ public class MemberController {
     })
     public ResponseEntity<?> registerPin(
             @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody String pin) {
+
         String kakaoId = customUserDetails.getUsername();
 
         if (memberService.updatePin(kakaoId, pin)) {

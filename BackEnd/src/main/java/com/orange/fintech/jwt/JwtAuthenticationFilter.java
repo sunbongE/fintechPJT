@@ -1,6 +1,7 @@
 package com.orange.fintech.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.orange.fintech.auth.dto.CustomUserDetails;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
 import jakarta.servlet.FilterChain;
@@ -13,6 +14,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -65,6 +67,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     new WebAuthenticationDetailsSource().buildDetails(request));
             securityContext.setAuthentication(authenticationToken);
             SecurityContextHolder.setContext(securityContext);
+
+            CustomUserDetails customUserDetails = new CustomUserDetails(user);
+
+            // 스프링 시큐리티 인증 토큰 생성
+            Authentication authToken =
+                    new UsernamePasswordAuthenticationToken(
+                            customUserDetails, null, customUserDetails.getAuthorities());
+
+            // 세션에 사용자 등록
+            SecurityContextHolder.getContext().setAuthentication(authToken);
 
         } catch (Exception exception) {
             exception.printStackTrace();

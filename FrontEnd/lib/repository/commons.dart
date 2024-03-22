@@ -4,18 +4,22 @@ import '../providers/store.dart';
 
 class ApiClient {
   late Dio dio;
-  final UserManager userManager = UserManager();
+  var userManager = UserManager();
 
   ApiClient() {
     dio = Dio();
+    userManager.loadUserInfo();
+    print("간다간다api요청~~~");
     dio.options.baseUrl = dotenv.env['BASE_URL']!;
     dio.options.headers['Content-Type'] = 'application/json';
     dio.interceptors
         .add(InterceptorsWrapper(onRequest: (options, handler) async {
       final jwtToken = await userManager.jwtToken;
+      print(jwtToken);
 
       if (jwtToken != null) {
-        options.headers["Authorization"] = "Bearer $jwtToken";
+        options.headers["Authorization"] = "$jwtToken";
+        print("간다간다토큰간다~~~~~");
       }
       return handler.next(options);
     }));

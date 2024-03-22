@@ -1,15 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:front/components/groups/FirstInviteModal.dart';
 import 'package:front/components/groups/GroupCalendar.dart';
-import 'package:front/components/groups/GroupList.dart';
 import 'package:front/components/groups/GroupTextField.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:front/const/colors/Colors.dart';
-import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
-
 import 'package:flutter/services.dart';
-
 import '../../entities/Group.dart';
+import 'package:front/repository/api/ApiGroup.dart';
+
 
 class GroupAdd extends StatefulWidget {
   @override
@@ -26,12 +25,6 @@ class _GroupAddState extends State<GroupAdd> {
   String? _startDateText;
   String? _endDateText;
   bool groupState = false;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _selectedDay = _focusedDay;
-  // }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
@@ -60,65 +53,41 @@ class _GroupAddState extends State<GroupAdd> {
       _endDateText = endDateText;
     });
 
+    // // 서버에 전송할 데이터를 Map 형태로 준비합니다.
+    // Map<String, dynamic> groupData = {
+    //   'title': _titleController.text,
+    //   'description': _descriptionController.text,
+    //   'startDate': startDateText,
+    //   'endDate': endDateText,
+    //   'groupState': groupState,
+    //   'groupMembers': [], // 실제 멤버 정보를 추가할 수 있습니다.
+    // };
+    //
+    // // ApiGroup 클래스의 postGroupInfo 함수를 호출하여 서버에 데이터를 전송합니다.
+    // var response = await ApiGroup().postGroupInfo(groupData);
+    //
+    // // 서버로부터의 응답을 처리합니다. (예: 성공/실패 메시지 표시)
+    // if (response != null) {
+    //   // 성공적으로 그룹이 생성되었을 때의 처리를 추가합니다.
+    //   Navigator.pop(context, response); // 예시로 응답 결과를 이전 화면으로 전달하고 있습니다.
+    //   FirstInviteModal.showInviteModal(context, response); // 모달창 띄우기
+    // } else {
+    //   // 그룹 생성 실패 시의 처리를 추가합니다.
+    //   print('그룹 생성 실패');
+    // }
     Group newGroup = Group(
       title: _titleController.text,
       description: _descriptionController.text,
       startDate: _startDateText.toString(),
       endDate: _endDateText.toString(),
       groupState: false,
-      //처음 만들때는 나를 포함하도록 코드 수정
       groupMembers: [],
     );
     Navigator.pop(context, newGroup);
 
-    // 모달창 띄우기
-    // showDialog(
-    //   context: context,
-    //   builder: (BuildContext context) {
-    //     return AlertDialog(
-    //       title: Text('그룹을 만드셨네요!'),
-    //       content: Text('링크를 공유해서 친구들을 초대해보세요'),
-    //       actions: [
-    //         ElevatedButton(
-    //           onPressed: () {
-    //             // 모달창 닫기
-    //             Navigator.pop(context, newGroup);
-    //             // 카카오톡 공유 함수 호출
-    //             // _kakaoShare();
-    //           },
-    //           child: Text('공유하기'),
-    //         ),
-    //       ],
-    //     );
-    //   },
-    // );
+    // 모달창 띄우기 - FirstInviteModal 클래스의 함수를 호출
+    FirstInviteModal.showInviteModal(context, newGroup);
   }
-
-  // void _kakaoShare() {
-  //   bool isKakaoTalkSharingAvailable = await ShareClient.instance.isKakaoTalkSharingAvailable();
-  //
-  //   if (isKakaoTalkSharingAvailable) {
-  //     print('카카오톡으로 공유 가능');
-  //   } else {
-  //     print('카카오톡 미설치: 웹 공유 기능 사용 권장');
-  //   }
-  //   // 카카오링크 SDK 초기화
-  //   // KakaoContext.clientId = "애플리케이션 키";
-  //
-  //   // 카카오링크 메시지 생성
-  //   // var template = TextTemplate(
-  //   //   text: "링크를 공유해서 친구들을 초대해보세요",
-  //   //   link: Link(
-  //   //     webUrl: "https://example.com", // 공유할 링크 주소
-  //   //   ),
-  //   // );
-  //
-  //   // 카카오링크 메시지 전송
-  //   // KakaoLink.instance
-  //   //     .sendDefaultTemplate(template)
-  //   //     .then((value) => print("카카오톡 메시지 전송 완료"))
-  //   //     .catchError((error) => print("카카오톡 메시지 전송 실패: $error"));
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -141,11 +110,9 @@ class _GroupAddState extends State<GroupAdd> {
                 controller: _descriptionController,
                 labelText: '그룹 테마',
               ),
-
               Text('${_rangeStart}'),
               Text('${_rangeEnd}'),
-
-              SizedBox(height: 16.0),
+              SizedBox(height: 16.0.h),
               //달력
               Expanded(
                 child: GroupCalendar(
@@ -157,8 +124,7 @@ class _GroupAddState extends State<GroupAdd> {
                   onRangeSelected: _onRangeSelected,
                 ),
               ),
-
-              SizedBox(height: 16.0),
+              SizedBox(height: 16.0.h),
               ElevatedButton(onPressed: _saveGroup, child: Text('저장')),
             ],
           ),

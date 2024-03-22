@@ -40,9 +40,9 @@ public class Member {
     public Member() {}
 
     public Member(JoinDto joinDto) {
-        this.email = joinDto.getEmail();
-        this.name = joinDto.getName();
-        this.profileImage = joinDto.getProfileImage();
+        this.email = joinDto.getKakaoAccount().getEmail();
+        this.name = joinDto.getKakaoAccount().getName();
+        this.profileImage = joinDto.getKakaoAccount().getProfile().getProfileImageUrl();
     }
 
     @Override
