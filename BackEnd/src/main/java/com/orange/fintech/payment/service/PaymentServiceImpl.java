@@ -2,6 +2,7 @@ package com.orange.fintech.payment.service;
 
 import com.orange.fintech.group.dto.GroupMembersDto;
 import com.orange.fintech.group.entity.Group;
+import com.orange.fintech.group.entity.GroupMemberPK;
 import com.orange.fintech.group.repository.GroupMemberRepository;
 import com.orange.fintech.group.repository.GroupQueryRepository;
 import com.orange.fintech.group.repository.GroupRepository;
@@ -11,7 +12,6 @@ import com.orange.fintech.payment.dto.*;
 import com.orange.fintech.payment.entity.*;
 import com.orange.fintech.payment.repository.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -112,12 +112,13 @@ public class PaymentServiceImpl implements PaymentService {
         receipt.setApprovalAmount(Math.toIntExact(req.getTransactionBalance()));
         receipt.setLocation(req.getLocation());
         if (transaction.getTransactionDate() != null && transaction.getTransactionTime() != null) {
-            receipt.setDateTime(
-                    LocalDateTime.of(
-                            transaction.getTransactionDate(), transaction.getTransactionTime()));
+            receipt.setTransactionDate(transaction.getTransactionDate());
+            receipt.setTransactionTime(transaction.getTransactionTime());
         } else {
-            receipt.setDateTime(LocalDateTime.now());
+            receipt.setTransactionDate(LocalDate.now());
+            receipt.setTransactionTime(LocalTime.now());
         }
+
         receipt.setBusinessName(req.getTransactionSummary());
         receiptRepository.save(receipt);
         log.info("saveReceipt 끝");
@@ -144,6 +145,30 @@ public class PaymentServiceImpl implements PaymentService {
         Transaction transaction = transactionRepository.findById(transactionId).get();
 
         if (transaction.getMember().getKakaoId().equals(memberId)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean isMyGroup(String memberId, int groupId) {
+        Member member = memberRepository.findById(memberId).get();
+        Group group = groupRepository.findById(groupId).get();
+
+        GroupMemberPK pk = new GroupMemberPK(member, group);
+        if (groupMemberRepository.existsById(pk)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean isMyGroupTransaction(int groupId, int transactionId) {
+        TransactionDetail transaction = transactionDetailRepository.findById(transactionId).get();
+
+        if (transaction.getGroup().getGroupId() == groupId) {
             return true;
         }
 
@@ -282,5 +307,22 @@ public class PaymentServiceImpl implements PaymentService {
                 pageSize,
                 option,
                 memberRepository.findById(memgerId).get());
+    }
+
+    @Override
+    public GroupTransactionDetailRes getGroupTransactionDetail(int transactionId) {
+        Transaction transaction = transactionRepository.findById(transactionId).get();
+        log.info("getGroupTransactionDetail - transaction: {}", transaction);
+
+        Receipt receipt =
+                receiptRepository.findByTransaction(
+                        transactionRepository.findById(transactionId).get());
+        log.info("getGroupTransactionDetail - receipt: {}", receipt);
+
+        List<TransactionMember> list =
+                transactionMemberRepository.findByTransactionMemberPKTransaction(transaction);
+        log.info("getGroupTransactionDetail - List<TransactionMember> list: {}", list);
+
+        return GroupTransactionDetailRes.of(receipt, list);
     }
 }

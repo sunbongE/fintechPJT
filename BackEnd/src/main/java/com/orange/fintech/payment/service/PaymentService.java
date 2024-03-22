@@ -14,6 +14,10 @@ public interface PaymentService {
 
     boolean isMyTransaction(String memberId, int transactionId);
 
+    boolean isMyGroup(String memberId, int groupId);
+
+    boolean isMyGroupTransaction(int groupId, int transactionId);
+
     boolean changeContainStatus(int transactionId, int groupId);
 
     void editTransactionDetail(int transactionId, TransactionEditReq req)
@@ -23,4 +27,6 @@ public interface PaymentService {
 
     List<TransactionDto> getGroupTransaction(
             String memgerId, int groupId, int page, int pageSize, String option);
+
+    GroupTransactionDetailRes getGroupTransactionDetail(int transactionId);
 }
