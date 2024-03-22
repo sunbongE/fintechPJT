@@ -343,4 +343,19 @@ public class PaymentServiceImpl implements PaymentService {
 
         return res;
     }
+
+    @Override
+    public void setReceiptDetailMember(List<ReceiptDetailMemberDto> req) {
+        for (ReceiptDetailMemberDto detailMemberDto : req) {
+            ReceiptDetailMemberPK pk = new ReceiptDetailMemberPK();
+            pk.setMember(memberRepository.findById(detailMemberDto.getMemberId()).get());
+            pk.setReceiptDetail(
+                    receiptDetailRepository.findById(detailMemberDto.getReceiptDetailId()).get());
+
+            ReceiptDetailMember detailMember = new ReceiptDetailMember();
+            detailMember.setReceiptDetailMemberPK(pk);
+            detailMember.setAmountDue(detailMemberDto.getAmountDue());
+            receiptDetailMemberRepository.save(detailMember);
+        }
+    }
 }

@@ -235,4 +235,35 @@ public class PaymentController {
             return ResponseEntity.status(404).body(null);
         }
     }
+
+    @PutMapping("/{paymentId}/receipt/receipt-detail/{receiptDetailId}")
+    @Operation(summary = "영수증 세부 항목 참여 인원 설정", description = "영수증 세부 항목에 대한 참여 인원 설정을 한다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "403", description = "권한 없음"),
+        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<BaseResponseBody> setReceiptDetailMember(
+            @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
+            @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
+            @PathVariable @Parameter(description = "영수증 세부항목 아이디", in = ParameterIn.PATH)
+                    int receiptDetailId,
+            @RequestBody List<ReceiptDetailMemberDto> memberList,
+            Principal principal) {
+
+//        if (!paymentService.isMyGroup(principal.getName(), groupId)
+//                || !paymentService.isMyGroupTransaction(groupId, paymentId)) {
+//            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "FORBIDDEN"));
+//        }
+
+        try {
+            paymentService.setReceiptDetailMember(memberList);
+
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "OK"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "NOT_FOUND"));
+        }
+    }
 }
