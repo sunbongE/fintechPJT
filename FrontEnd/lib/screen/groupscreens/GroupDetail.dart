@@ -44,7 +44,7 @@ class GroupDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(group.title),
+        title: Text(group.groupName),
       ),
       body: Column(
         children: [

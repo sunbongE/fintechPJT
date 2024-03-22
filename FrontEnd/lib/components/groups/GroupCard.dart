@@ -26,7 +26,7 @@ class GroupCard extends StatelessWidget {
         child: ListTile(
           onTap: onTap,
           title: Text(
-            group.title,
+            group.groupName,
             style: TextStyle(
               color: Colors.white,
               fontSize: 13.sp,
@@ -35,7 +35,7 @@ class GroupCard extends StatelessWidget {
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(group.description),
+              Text(group.theme),
               Text('시작일: ${group.startDate}'),
               Text('종료일: ${group.endDate}'),
             ],

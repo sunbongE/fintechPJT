@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front/components/mains/MainInfo.dart';
 import 'package:front/const/colors/Colors.dart';
 
 class MainPage extends StatefulWidget {
@@ -12,9 +13,12 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      backgroundColor: PRIMARY_COLOR,
-      body: Text('MainPage'),
+    return Scaffold(
+      appBar: AppBar(
+        scrolledUnderElevation: 0,
+      ),
+      body: MyInfoMain(),
+
     );
   }
 }

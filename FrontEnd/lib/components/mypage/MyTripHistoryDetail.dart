@@ -21,7 +21,7 @@ class _MyTripHistoryDetailState extends State<MyTripHistoryDetail> {
       appBar: AppBar(
         scrolledUnderElevation: 0,
         title: Text(
-          widget.groupData.title,
+          widget.groupData.groupName,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.sp),
         ),
         backgroundColor: BG_COLOR,
@@ -38,7 +38,7 @@ class _MyTripHistoryDetailState extends State<MyTripHistoryDetail> {
               child: MyTripHistoryGroupDetail(
                 startDate: widget.groupData.startDate,
                 endDate: widget.groupData.endDate,
-                description: widget.groupData.description,
+                description: widget.groupData.theme,
               ),
             ),
             MySpendList(),

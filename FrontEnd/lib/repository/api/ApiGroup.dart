@@ -6,48 +6,19 @@ final api = ApiClient();
 //그룹 생성
 Future<Response?> postGroupInfo(Map<String, dynamic> data) async {
   final res = await api.post('/groups', data: data);
-  return res.data;
-  // try {
-  //   if (res.data != null) {
-  //     return res.data;
-  //   }
-  //   return null;
-  // } catch (err) {
-  //   print(err);
-  //   return null;
-  // }
+  return res; // res.data 대신 res를 반환
 }
 
-// Future<List<Map<String, dynamic>>?> postGroupInfo(data) async {
-//   try {
-//     final res = await api.post('/groups', data: data);
-//     return res.data;
-//   } catch (err) {
-//     print(err);
-//     return null;
-//   }
-// }
-
 //그룹 목록 조회
-Future<Response?> getGroupList() async {
+Future<Response> getGroupList() async {
   try {
     final res = await api.get('/groups');
     return res;
   } catch (err) {
     print(err);
-    return null;
+    throw Exception('목록조회 실패');
   }
 }
-
-// Future<Response> getGroupList(data) async {
-//   try {
-//     final res = await api.post('/groups', data: data);
-//     return res;
-//   } catch (err) {
-//     print(err);
-//     throw Exception('목록조회 실');
-//   }
-// }
 
 //그룹 나가기
 Future<void> deleteGroup(data, groupId) async {

@@ -35,10 +35,10 @@ class FirstInviteModal {
     try {
       final CalendarTemplate calendarTemplate = CalendarTemplate(
         idType: IdType.event,
-        id: '${newGroup.title}',
+        id: '${newGroup.groupName}',
         content: Content(
-          title: '${newGroup.title}',
-          description: '${newGroup.description}에 초대합니다.',
+          title: '${newGroup.groupName}',
+          description: '${newGroup.theme}에 초대합니다.',
           imageUrl: Uri.parse(
               'assets/images/splash_logo_768.png'),
           link: Link(

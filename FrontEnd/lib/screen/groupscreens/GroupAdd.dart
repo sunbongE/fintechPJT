@@ -44,50 +44,65 @@ class _GroupAddState extends State<GroupAdd> {
     });
   }
 
-  void _saveGroup() {
+  void _saveGroup() async {
     String startDateText = _rangeStart?.toString().split(' ')[0] ?? '';
     String endDateText = _rangeEnd?.toString().split(' ')[0] ?? '';
 
-    setState(() {
-      _startDateText = startDateText;
-      _endDateText = endDateText;
-    });
+    Map<String, dynamic> groupData = {
+      "groupName": _titleController.text,
+      "startDate": startDateText,
+      "endDate": endDateText,
+      "theme": _descriptionController.text,
+    };
 
-    // // 서버에 전송할 데이터를 Map 형태로 준비합니다.
-    // Map<String, dynamic> groupData = {
-    //   'title': _titleController.text,
-    //   'description': _descriptionController.text,
-    //   'startDate': startDateText,
-    //   'endDate': endDateText,
-    //   'groupState': groupState,
-    //   'groupMembers': [], // 실제 멤버 정보를 추가할 수 있습니다.
-    // };
-    //
-    // // ApiGroup 클래스의 postGroupInfo 함수를 호출하여 서버에 데이터를 전송합니다.
-    // var response = await ApiGroup().postGroupInfo(groupData);
-    //
-    // // 서버로부터의 응답을 처리합니다. (예: 성공/실패 메시지 표시)
-    // if (response != null) {
-    //   // 성공적으로 그룹이 생성되었을 때의 처리를 추가합니다.
-    //   Navigator.pop(context, response); // 예시로 응답 결과를 이전 화면으로 전달하고 있습니다.
-    //   FirstInviteModal.showInviteModal(context, response); // 모달창 띄우기
-    // } else {
-    //   // 그룹 생성 실패 시의 처리를 추가합니다.
-    //   print('그룹 생성 실패');
-    // }
-    Group newGroup = Group(
-      title: _titleController.text,
-      description: _descriptionController.text,
-      startDate: _startDateText.toString(),
-      endDate: _endDateText.toString(),
-      groupState: false,
-      groupMembers: [],
-    );
-    Navigator.pop(context, newGroup);
+    try {
+      // API 호출을 시도합니다.
+      final response = await postGroupInfo(groupData);
+      if (response != null) {
+        print("그룹이 성공적으로 생성되었습니다.");
 
-    // 모달창 띄우기 - FirstInviteModal 클래스의 함수를 호출
-    FirstInviteModal.showInviteModal(context, newGroup);
+        Group newGroup = Group(
+          groupName: _titleController.text,
+          theme: _descriptionController.text,
+          startDate: startDateText,
+          endDate: endDateText,
+          groupState: false,
+          groupMembers: [],
+        );
+        Navigator.pop(context, newGroup);
+        print(newGroup.groupName);
+        FirstInviteModal.showInviteModal(context, newGroup);
+      } else {
+        print("그룹 생성에 실패했습니다.");
+      }
+    } catch (e) {
+      print("그룹 생성 중 에러가 발생했습니다: $e");
+    }
   }
+
+
+  // void _saveGroup() {
+  //   String startDateText = _rangeStart?.toString().split(' ')[0] ?? '';
+  //   String endDateText = _rangeEnd?.toString().split(' ')[0] ?? '';
+  //
+  //   setState(() {
+  //     _startDateText = startDateText;
+  //     _endDateText = endDateText;
+  //   });
+  //
+  //   Group newGroup = Group(
+  //     groupName: _titleController.text,
+  //     theme: _descriptionController.text,
+  //     startDate: _startDateText.toString(),
+  //     endDate: _endDateText.toString(),
+  //     groupState: false,
+  //     groupMembers: [],
+  //   );
+  //   Navigator.pop(context, newGroup);
+  //
+  //   // 모달창 띄우기 - FirstInviteModal 클래스의 함수를 호출
+  //   FirstInviteModal.showInviteModal(context, newGroup);
+  // }
 
   @override
   Widget build(BuildContext context) {
