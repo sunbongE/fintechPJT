@@ -18,11 +18,11 @@ import lombok.Setter;
 public class TransactionDetailRes {
 
     @Schema(description = "거래일자")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd", timezone = "Asia/Seoul")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate transactionDate;
 
     @Schema(description = "거래시각")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HHmmss", timezone = "Asia/Seoul")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "Asia/Seoul")
     private LocalTime transactionTime;
 
     @Schema(description = "거래금액")
