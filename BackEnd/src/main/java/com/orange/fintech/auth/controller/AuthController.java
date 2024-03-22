@@ -1,5 +1,6 @@
 package com.orange.fintech.auth.controller;
 
+import com.orange.fintech.auth.dto.JoinDto;
 import com.orange.fintech.auth.service.JoinService;
 import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.jwt.JWTUtil;
@@ -7,7 +8,6 @@ import com.orange.fintech.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +32,9 @@ public class AuthController {
         @ApiResponse(responseCode = "200", description = "정상 가입/로그인"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    public ResponseEntity<?> login(@RequestBody Map<String, Object> map) {
+    public ResponseEntity<?> login(@RequestBody JoinDto user) {
 
-        return joinService.joinProcess(map);
+        return joinService.joinProcess(user);
     }
 
     @PostMapping("/logout")

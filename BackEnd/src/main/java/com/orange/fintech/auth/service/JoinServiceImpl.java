@@ -1,5 +1,6 @@
 package com.orange.fintech.auth.service;
 
+import com.orange.fintech.auth.dto.JoinDto;
 import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.jwt.JWTUtil;
 import com.orange.fintech.member.entity.Member;
@@ -8,7 +9,6 @@ import com.orange.fintech.redis.service.RedisService;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +27,16 @@ public class JoinServiceImpl implements JoinService {
     @Autowired private final RedisService redisService;
     @Autowired private final JWTUtil jWTUtil;
 
-    public ResponseEntity<?> joinProcess(Map<String, Object> map) {
-        String id = String.valueOf(map.get("id"));
+    public ResponseEntity<?> joinProcess(JoinDto joinDto) {
+        String id = joinDto.getId();
 
-        Map<String, Object> properties = (Map<String, Object>) map.get("properties");
-        String profileImageUrl = (String) properties.get("profile_image");
-        String thumbnailImageUrl = (String) properties.get("thumbnail_image");
+        JoinDto.Properties properties = joinDto.getProperties();
+        String profileImageUrl = properties.getProfileImage();
+        String thumbnailImageUrl = properties.getThumbnailImage();
 
-        Map<String, Object> kakaoAccount = (Map<String, Object>) map.get("kakao_account");
-        String name = (String) kakaoAccount.get("name");
-        String email = (String) kakaoAccount.get("email");
+        JoinDto.KakaoAccount kakaoAccount = joinDto.getKakaoAccount();
+        String name = kakaoAccount.getName();
+        String email = kakaoAccount.getEmail();
 
         try {
             // 이미 존재하는 회원이 있는 경우 토큰만 발급 (회원가입 진행 X)
