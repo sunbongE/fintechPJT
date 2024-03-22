@@ -199,12 +199,32 @@ public class GroupServiceImpl implements GroupService {
         List<GroupCalculateResultDto> result = new ArrayList<>();
 
         for (CalculateResult calculateResult : calculateResultList) {
-            log.info("DB 호출되나?");
+//            log.info("DB 호출되나?");
             GroupCalculateResultDto data =
                     new GroupCalculateResultDto(calculateResult); // <=== 이부분.
             result.add(data);
         }
 
         return result;
+    }
+
+
+
+
+    /**
+     * 회원이 그룹에 포함되어있는지 확인하거나 그룹이 존재하는지 확인한다.
+     *
+     * @param memberId
+     * @param groupId
+     * @return
+     */
+    @Override
+    public boolean isExistMember(String memberId, int groupId) {
+
+        // 회원이 선택한 그룹의 존재여부와 포함되어(권한)있는지 확인.
+        if (!check(memberId, groupId)) {
+            return false;
+        }
+        return true;
     }
 }

@@ -33,4 +33,6 @@ public interface GroupService {
     List<GroupMembersDto> secondcallMembers(int groupId);
 
     List<GroupCalculateResultDto> getCalculateResult(int groupId);
+
+    boolean isExistMember(String memberId, int groupId);
 }
