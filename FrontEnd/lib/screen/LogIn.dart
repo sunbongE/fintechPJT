@@ -43,6 +43,8 @@ class _LoginState extends State<Login> {
                       print(user);
                       if (user != null) {
                         Response res = await postUserInfo(user);
+                        print(res);
+                        print(res.headers['Authorization']!.first);
                         UserManager().saveUserInfo(
                           newName: user.kakaoAccount?.name,
                           newEmail: user.kakaoAccount?.email,
@@ -50,7 +52,7 @@ class _LoginState extends State<Login> {
                               user.kakaoAccount?.profile?.thumbnailImageUrl,
                           newProfileImageUrl:
                               user.kakaoAccount?.profile?.profileImageUrl,
-                          newJwtToken: res.data['jwtToken'],
+                          newJwtToken: res.headers['Authorization']!.first,
                         );
                         Navigator.pushAndRemoveUntil(
                           context,
