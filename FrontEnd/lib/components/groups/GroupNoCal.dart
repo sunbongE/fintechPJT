@@ -9,6 +9,9 @@ import 'package:email_validator/email_validator.dart';
 
 import 'package:flutter/material.dart';
 
+import '../../models/button/ButtonSlideAnimation.dart';
+import '../../screen/MoneyRequest.dart';
+
 class GroupNoCal extends StatelessWidget {
   const GroupNoCal({Key? key}) : super(key: key);
 
@@ -42,9 +45,7 @@ class GroupNoCal extends StatelessWidget {
                 ),
                 SizedBox(height: 5.0.h),
                 ElevatedButton(
-                  onPressed: () {
-                    // 요청하기 버튼 클릭 시 동작할 코드
-                  },
+                  onPressed: () => buttonSlideAnimation(context, MoneyRequest(groupId: 1,)),//임시로 1로 썼습니다 -지연
                   style: ElevatedButton.styleFrom(
                     backgroundColor: STATE_COLOR,
                     textStyle: TextStyle(

@@ -2,15 +2,19 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:front/components/addreceipt/AddReceipt.dart';
 import 'package:front/models/button/SizedButton.dart';
 import 'package:front/components/groups/GroupList.dart';
 import 'package:front/screen/HomeScreen.dart';
 
 import '../components/moneyrequests/MoneyRequestList.dart';
 import '../entities/Expense.dart';
+import '../models/button/ButtonSlideAnimation.dart';
 
 class MoneyRequest extends StatefulWidget {
-  const MoneyRequest({super.key});
+  final groupId;
+  const MoneyRequest({super.key, this.groupId});
+
 
   @override
   State<MoneyRequest> createState() => _MoneyRequestState();
@@ -109,9 +113,7 @@ class _MoneyRequestState extends State<MoneyRequest> {
                   children: [
                     SizedButton(
                       btnText: '영수증 일괄 등록',
-                      onPressed: () {
-                        print('object');
-                      },
+                      onPressed: () => buttonSlideAnimation(context, AddReceipt()),
                     ),
                     Padding(padding: EdgeInsets.symmetric(horizontal: 5.w)),
                     SizedButton(

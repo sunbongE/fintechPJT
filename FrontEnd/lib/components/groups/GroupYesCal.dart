@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/groups/GroupJoinMember.dart';
 import 'package:front/models/button/Button.dart';
+import 'package:front/screen/MoneyRequest.dart';
 import 'package:front/screen/groupscreens/GroupDetail.dart';
 import 'package:front/const/colors/Colors.dart';
 import '../../entities/Group.dart';
 import 'package:email_validator/email_validator.dart';
+
+import '../../models/button/ButtonSlideAnimation.dart';
+import '../addreceipt/AddReceipt.dart';
 
 class GroupYesCal extends StatelessWidget {
   const GroupYesCal({Key? key}) : super(key: key);
@@ -46,9 +50,7 @@ class GroupYesCal extends StatelessWidget {
             ),
             SizedBox(width: 10.w),
             ElevatedButton(
-              onPressed: () {
-                // 추가 버튼 클릭 시 동작할 코드
-              },
+              onPressed: () => buttonSlideAnimation(context, MoneyRequest(groupId: 1,)),//임시로 1로 썼습니다 -지연
               style: ElevatedButton.styleFrom(
                 backgroundColor: BUTTON_COLOR,
                 minimumSize: Size(100.w, 45.h),
