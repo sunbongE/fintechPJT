@@ -213,9 +213,9 @@ class _GroupModifyState extends State<GroupModify> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.group.title);
+    _titleController = TextEditingController(text: widget.group.groupName);
     _descriptionController =
-        TextEditingController(text: widget.group.description);
+        TextEditingController(text: widget.group.theme);
     _startDateText = widget.group.startDate;
     _endDateText = widget.group.endDate;
     _rangeStart = DateTime.tryParse(_startDateText ?? '');
@@ -250,8 +250,8 @@ class _GroupModifyState extends State<GroupModify> {
     });
 
     Group modifiedGroup = Group(
-      title: _titleController.text,
-      description: _descriptionController.text,
+      groupName: _titleController.text,
+      theme: _descriptionController.text,
       startDate: _startDateText.toString(),
       endDate: _endDateText.toString(),
       groupState: widget.group.groupState,

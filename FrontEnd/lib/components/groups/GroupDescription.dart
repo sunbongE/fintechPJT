@@ -13,9 +13,9 @@ class GroupDescription extends StatefulWidget {
   @override
   _GroupDescriptionState createState() => _GroupDescriptionState();
 }
+
 class _GroupDescriptionState extends State<GroupDescription> {
   @override
-
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -25,7 +25,7 @@ class _GroupDescriptionState extends State<GroupDescription> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.group.description,
+                widget.group.theme,
                 style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -38,10 +38,12 @@ class _GroupDescriptionState extends State<GroupDescription> {
         ),
         IconButton(
           icon: Icon(Icons.edit),
-          onPressed: () async { // 비동기 함수로 변경
+          onPressed: () async {
+            // 비동기 함수로 변경
             final modifiedGroup = await Navigator.push<Group>(
               context,
-              MaterialPageRoute(builder: (context) => GroupModify(group: widget.group)),
+              MaterialPageRoute(
+                  builder: (context) => GroupModify(group: widget.group)),
             );
 
             if (modifiedGroup != null) {
@@ -49,8 +51,6 @@ class _GroupDescriptionState extends State<GroupDescription> {
             }
           },
         ),
-
-
       ],
     );
   }

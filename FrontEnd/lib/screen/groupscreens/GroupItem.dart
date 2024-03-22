@@ -40,7 +40,7 @@ class GroupItem extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        title: Text(group.title),
+        title: Text(group.groupName),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
