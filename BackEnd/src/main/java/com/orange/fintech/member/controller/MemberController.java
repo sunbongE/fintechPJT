@@ -8,6 +8,7 @@ import com.orange.fintech.member.service.AccountService;
 import com.orange.fintech.member.service.MemberService;
 import com.orange.fintech.oauth.dto.MemberSearchResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -77,7 +78,7 @@ public class MemberController {
     }
 
     @GetMapping("/{email}")
-    @Operation(summary = "사용자 검색", description = "<string>이메일 아이디<strong>로 사용자를 검색한다.")
+    @Operation(summary = "사용자 검색", description = "<strong>이메일 아이디</strong>로 사용자를 검색한다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "일치하는 유저 정보 있음"),
         @ApiResponse(responseCode = "404", description = "일치하는 유저 정보 없음"),
@@ -94,22 +95,43 @@ public class MemberController {
     }
 
     @PostMapping("/pin")
-    @Operation(summary = "핀 번호 등록", description = "앱에서 사용할 핀 번호를 등록한다.")
+    @Operation(summary = "핀 번호 등록", description = "앱에서 사용할 PIN 번호를 등록한다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "정상 등록"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> registerPin(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody String pin) {
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestBody @Parameter(description = "핀 번호", example = "123456") String pin) {
 
         String kakaoId = customUserDetails.getUsername();
 
         if (memberService.updatePin(kakaoId, pin)) {
-            return ResponseEntity.ok(BaseResponseBody.of(200, "Pin 번호 수정 완료"));
+            return ResponseEntity.ok(BaseResponseBody.of(200, "PIN 번호 수정 완료"));
         }
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(BaseResponseBody.of(500, "Pin 번호 수정 중 오류 발생"));
+                .body(BaseResponseBody.of(500, "PIN 번호 수정 중 오류 발생"));
+    }
+
+    @PutMapping("/pin")
+    @Operation(summary = "핀 번호 확인", description = "핀 번호가 일치하는지 대조한다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "PIN 번호 일치"),
+        @ApiResponse(responseCode = "401", description = "PIN 번호 틀림")
+    })
+    public ResponseEntity<?> verifyPin(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestBody @Parameter(description = "핀 번호", example = "123456") String pin) {
+
+        String kakaoId = customUserDetails.getUsername();
+
+        if (memberService.verifyPin(kakaoId, pin)) {
+            return ResponseEntity.ok(BaseResponseBody.of(200, "PIN 번호가 일치합니다."));
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(BaseResponseBody.of(401, "PIN 번호가 틀립니다."));
     }
 
     @DeleteMapping()
