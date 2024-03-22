@@ -5,10 +5,7 @@ import com.orange.fintech.auth.dto.CustomUserDetails;
 import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.common.exception.BigFileException;
 import com.orange.fintech.common.exception.NotValidExtensionException;
-import com.orange.fintech.group.dto.GroupCalculateResultDto;
-import com.orange.fintech.group.dto.GroupCreateDto;
-import com.orange.fintech.group.dto.GroupMembersDto;
-import com.orange.fintech.group.dto.ModifyGroupDto;
+import com.orange.fintech.group.dto.*;
 import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.group.service.GroupService;
 import com.orange.fintech.util.ReceiptOcrService;
@@ -20,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -93,7 +91,7 @@ public class GroupController {
 
         try {
 
-            if (!isExistMember(memberId, groupId)) {
+            if (!groupService.isExistMember(memberId, groupId)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
             }
@@ -121,7 +119,7 @@ public class GroupController {
         String memberId = principal.getName();
 
         try {
-            if (!isExistMember(memberId, groupId)) {
+            if (!groupService.isExistMember(memberId, groupId)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
             }
@@ -147,7 +145,7 @@ public class GroupController {
         String memberId = principal.getName();
 
         try {
-            if (!isExistMember(memberId, groupId)) {
+            if (!groupService.isExistMember(memberId, groupId)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
             }
@@ -203,19 +201,24 @@ public class GroupController {
     })
     public ResponseEntity<?> findGroupMembers(
             @PathVariable("groupId") int groupId, Principal principal) {
-        String memberId = principal.getName();
+        // 시작시간 확인.
+        LocalDateTime startTime = LocalDateTime.now();
+        System.out.println("컨트롤러 시작 시간: " + startTime);
 
+        String memberId = principal.getName();
         try {
-            if (!isExistMember(memberId, groupId)) {
+            if (!groupService.isExistMember(memberId, groupId)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
             }
 
-            List<GroupMembersDto> result = groupService.findGroupMembers(groupId);
-
+            GroupMembersListDto result = groupService.findGroupMembers(groupId);
+            LocalDateTime endTime = LocalDateTime.now();
+            System.out.println("컨트롤러 종료 시간: " + endTime);
             return ResponseEntity.status(HttpStatus.OK).body(result);
 
         } catch (Exception e) {
+            e.printStackTrace();
             log.info("[ERROR] :{}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
@@ -233,7 +236,7 @@ public class GroupController {
         String memberId = principal.getName();
 
         try {
-            if (!isExistMember(memberId, groupId)) {
+            if (!groupService.isExistMember(memberId, groupId)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
             }
@@ -264,7 +267,7 @@ public class GroupController {
         String memberId = principal.getName();
 
         try {
-            if (!isExistMember(memberId, groupId)) {
+            if (!groupService.isExistMember(memberId, groupId)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
             }
@@ -297,7 +300,7 @@ public class GroupController {
         String memberId = principal.getName();
 
         try {
-            if (!isExistMember(memberId, groupId)) {
+            if (!groupService.isExistMember(memberId, groupId)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
             }
@@ -329,7 +332,7 @@ public class GroupController {
         String memberId = principal.getName();
 
         try {
-            if (!isExistMember(memberId, groupId)) {
+            if (!groupService.isExistMember(memberId, groupId)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
             }
@@ -361,7 +364,7 @@ public class GroupController {
         String memberId = principal.getName();
 
         try {
-            if (!isExistMember(memberId, groupId)) {
+            if (!groupService.isExistMember(memberId, groupId)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
             }
@@ -378,22 +381,6 @@ public class GroupController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
-    }
-
-    /**
-     * 회원이 그룹에 포함되어있는지 확인하거나 그룹이 존재하는지 확인한다.
-     *
-     * @param memberId
-     * @param groupId
-     * @return
-     */
-    public boolean isExistMember(String memberId, int groupId) {
-
-        // 회원이 선택한 그룹의 존재여부와 포함되어(권한)있는지 확인.
-        if (!groupService.check(memberId, groupId)) {
-            return false;
-        }
-        return true;
     }
 
     @PostMapping(

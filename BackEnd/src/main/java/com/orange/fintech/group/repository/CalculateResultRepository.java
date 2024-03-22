@@ -13,6 +13,6 @@ public interface CalculateResultRepository extends JpaRepository<CalculateResult
 
     //    List<CalculateResult> findAllByGroupFetch(Group group);
     @Query(
-            "SELECT cr FROM CalculateResult cr join fetch sendMember join fetch receiveMember WHERE cr.group = :group")
+            "SELECT cr FROM CalculateResult cr join fetch cr.sendMember join fetch cr.receiveMember WHERE cr.group = :group")
     List<CalculateResult> findAllByGroup(@Param("group") Group group);
 }
