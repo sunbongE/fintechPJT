@@ -176,4 +176,34 @@ public class PaymentController {
             return ResponseEntity.status(404).body(null);
         }
     }
+
+    @GetMapping("/{paymentId}/receipt/{receiptDetailId}")
+    @Operation(summary = "영수증 세부 항목 보기", description = "영수증 세부 항목 내용(밥, 인원A,B,C)을 불러온다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "403", description = "권한 없음"),
+        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<ReceiptDetailRes> getGroupReceiptDetail(
+            @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
+            @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
+            @PathVariable @Parameter(description = "영수증 세부항목 아이디", in = ParameterIn.PATH)
+                    int receiptDetailId,
+            Principal principal) {
+
+        if (!paymentService.isMyGroup(principal.getName(), groupId)
+                || !paymentService.isMyGroupTransaction(groupId, paymentId)) {
+            return ResponseEntity.status(403).body(null);
+        }
+
+        try {
+            ReceiptDetailRes groupReceiptDetail =
+                    paymentService.getGroupReceiptDetail(receiptDetailId);
+            return ResponseEntity.status(200).body(groupReceiptDetail);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(404).body(null);
+        }
+    }
 }

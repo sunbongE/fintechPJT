@@ -54,17 +54,17 @@ public class ReceiptDto {
     List<ReceiptDetailDto> detailList;
 
     public static ReceiptDto of(Receipt receipt) {
-        ReceiptDto receiptDto = new ReceiptDto();
-        receiptDto.setReceiptId(receipt.getReceiptId());
-        receiptDto.setBusinessName(receipt.getBusinessName());
-        receiptDto.setLocation(receipt.getLocation());
-        receiptDto.setTransactionDate(receipt.getTransactionDate());
-        receiptDto.setTransactionTime(receipt.getTransactionTime());
-        receiptDto.setTotalPrice(receipt.getTotalPrice());
-        receiptDto.setApprovalAmount(receipt.getApprovalAmount());
-        receiptDto.setAuthNumber(receipt.getAuthNumber());
-        receiptDto.setVisibility(receipt.getVisibility());
-        return receiptDto;
+        ReceiptDto res = new ReceiptDto();
+        res.setReceiptId(receipt.getReceiptId());
+        res.setBusinessName(receipt.getBusinessName());
+        res.setLocation(receipt.getLocation());
+        res.setTransactionDate(receipt.getTransactionDate());
+        res.setTransactionTime(receipt.getTransactionTime());
+        res.setTotalPrice(receipt.getTotalPrice());
+        res.setApprovalAmount(receipt.getApprovalAmount());
+        res.setAuthNumber(receipt.getAuthNumber());
+        res.setVisibility(receipt.getVisibility());
+        return res;
     }
 
     public static ReceiptDto of(Receipt receipt, List<ReceiptDetail> list) {
