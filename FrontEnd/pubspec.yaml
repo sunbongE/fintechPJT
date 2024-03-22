@@ -57,6 +57,7 @@ dependencies:
   google_maps_flutter: ^2.6.0
   geolocator: ^11.0.0
   geocoding: ^3.0.0
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -86,6 +87,7 @@ flutter:
     - assets/files/
     - assets/images/
     - assets/images/banks/
+    - yeojung-env/ssafy_c203_env/.env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

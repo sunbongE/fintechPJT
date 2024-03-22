@@ -1,17 +1,18 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../providers/store.dart';
 
 class ApiClient {
   late Dio dio;
-  final UserManager _userManager = UserManager();
+  final UserManager userManager = UserManager();
 
   ApiClient() {
     dio = Dio();
-    dio.options.baseUrl = 'http://10.0.2.2:8080/api/v1/';
+    dio.options.baseUrl = dotenv.env['BASE_URL']!;
     dio.options.headers['Content-Type'] = 'application/json';
     dio.interceptors
         .add(InterceptorsWrapper(onRequest: (options, handler) async {
-      final jwtToken = await _userManager.jwtToken;
+      final jwtToken = await userManager.jwtToken;
 
       if (jwtToken != null) {
         options.headers["Authorization"] = "Bearer $jwtToken";
@@ -20,9 +21,9 @@ class ApiClient {
     }));
   }
 
-  // GET 요청
-  Future<Response> get(String path, {dynamic data}) async {
-    return dio.get(path, data: data);
+// GET 요청
+  Future<Response> get(String path, {dynamic queryParameters}) async {
+    return dio.get(path, queryParameters: queryParameters);
   }
 
   // POST 요청

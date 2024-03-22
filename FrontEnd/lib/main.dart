@@ -12,12 +12,15 @@ import 'models/Biometrics.dart';
 import 'models/PassWordCertification.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
+  await dotenv.load(fileName: "yeojung-env/ssafy_c203_env/.env");
   WidgetsFlutterBinding.ensureInitialized();
+
   KakaoSdk.init(
-    nativeAppKey: '67ca4770ad20679139010583e0a57684',
-    javaScriptAppKey: '506a7e7288e569efa8b05d06206ac60a',
+    nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY']!,
+    javaScriptAppKey: dotenv.env['KAKAO_JAVASCRIPT_APP_KEY']!,
   );
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
