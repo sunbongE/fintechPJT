@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:front/screen/GroupMain.dart';
@@ -53,8 +55,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
           return false;
         }
-        SystemNavigator.pop();
-        return true;
+        // 강제종료
+        exit(0);
       },
       child: Scaffold(
         body: _pages[_index],

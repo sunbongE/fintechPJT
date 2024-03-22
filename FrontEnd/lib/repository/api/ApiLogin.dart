@@ -18,8 +18,10 @@ Future<Response> postUserInfo(data) async {
 Future<void> postPassWord(data) async {
   try {
     final res = await api.post('/members/pin', data: data);
+    print(1111);
     return res.data;
   } catch (err) {
+    print(2222);
     print(err);
   }
 }
