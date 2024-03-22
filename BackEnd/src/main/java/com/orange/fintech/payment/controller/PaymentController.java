@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
-@Tag(name = "Payment", description = "정산 API")
+@Tag(name = "Payment", description = "그룹 정산 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/groups/{groupId}/payments")
@@ -84,12 +84,12 @@ public class PaymentController {
         @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    public ResponseEntity<? extends BaseResponseBody> editTrnasaction(
+    public ResponseEntity<? extends BaseResponseBody> editTransaction(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
             @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
             @RequestBody TransactionEditReq req,
             Principal principal) {
-        log.info("editTrnasaction 시작");
+        log.info("editTransaction 시작");
         if (!paymentService.isMyTransaction(principal.getName(), paymentId)) {
             return ResponseEntity.status(403).body(BaseResponseBody.of(403, "FORBIDDEN"));
         }
@@ -149,33 +149,6 @@ public class PaymentController {
             return ResponseEntity.status(404).body(null);
         }
     }
-
-    //    @GetMapping("/{paymentId}")
-    //    @Operation(summary = "결제 내역 상세보기", description = "<strong>paymentId</strong>로 결제 내역 상세보기
-    // 한다.")
-    //    @ApiResponses({
-    //        @ApiResponse(responseCode = "200", description = "성공"),
-    //        @ApiResponse(responseCode = "403", description = "권한 없음"),
-    //        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
-    //        @ApiResponse(responseCode = "500", description = "서버 오류")
-    //    })
-    //    public ResponseEntity<TransactionDetailRes> getTransactionDetail(
-    //            @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int
-    // groupId,
-    //            @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int
-    // paymentId,
-    //            Principal principal) {
-    //
-    //        try {
-    //            TransactionDetailRes transactionDetail =
-    // paymentService.getTransactionDetail(paymentId);
-    //
-    //            return ResponseEntity.status(200).body(transactionDetail);
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            return ResponseEntity.status(404).body(null);
-    //        }
-    //    }
 
     @GetMapping("")
     @Operation(summary = "그룹 결제내역 조회", description = "<strong>groupId</strong>로 그룹의 결제 내역을 조회한다.")

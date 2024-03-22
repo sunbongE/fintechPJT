@@ -175,8 +175,6 @@ public class PaymentServiceImpl implements PaymentService {
         return false;
     }
 
-    // SINYEONG: 거래내역에 추가하면 GROUP에 포함된 모든 인원이 TRANSACTION_MEMBER에 할당되고
-    // 금액 계산 되어야 함
     @Override
     public boolean changeContainStatus(int transactionId, int groupId) {
         Optional<Transaction> transactionOp = transactionRepository.findById(transactionId);
