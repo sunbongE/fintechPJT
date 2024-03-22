@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:front/screen/groupscreens/GroupModify.dart';
 import '../../entities/Group.dart';
-import 'package:front/components/groups/GroupDecription.dart';
+import 'package:front/components/groups/GroupDescription.dart';
 import 'package:front/components/groups/MyGroupRequest.dart';
 
-class GroupDetail2 extends StatelessWidget {
+class GroupDetail extends StatelessWidget {
   final Group group;
+  final VoidCallback onDelete;
 
-  GroupDetail2({required this.group});
+  GroupDetail({required this.group, required this.onDelete});
 
   void removeGroup(BuildContext context, Group group) {
     showDialog(
@@ -25,7 +28,7 @@ class GroupDetail2 extends StatelessWidget {
             TextButton(
               child: Text('네'),
               onPressed: () {
-                // 여기에 그룹 삭제 로직을 구현
+                onDelete(); // 삭제 버튼 클릭시 콜백 함수 호출
                 Navigator.of(context).pop(); // 모달 닫기
                 Navigator.of(context).pop(); // Detail2 닫기
                 Navigator.of(context).pop(); // Detail 닫기
@@ -36,6 +39,7 @@ class GroupDetail2 extends StatelessWidget {
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,12 +55,14 @@ class GroupDetail2 extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    GroupDecription(group: group, onEdit: () {
-                      // 수정 로직
-                    }),
-                    SizedBox(height: 16.0),
-                    Divider(height: 16.0, color: Colors.grey),
-                    SizedBox(height: 16.0),
+                    GroupDescription(
+                        group: group,
+                        onEdit: () {
+                          // 수정 로직
+                        }),
+                    SizedBox(height: 16.0.h),
+                    Divider(height: 16.0.h, color: Colors.grey),
+                    SizedBox(height: 16.0.h),
                     MyGroupRequest(requestDetails: '정보들'),
                   ],
                 ),
@@ -68,7 +74,7 @@ class GroupDetail2 extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () => removeGroup(context, group),
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
+                minimumSize: Size(double.infinity, 50.h),
               ),
               child: Text('그룹 삭제하기'),
             ),
