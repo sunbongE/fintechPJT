@@ -177,7 +177,36 @@ public class PaymentController {
         }
     }
 
-    @GetMapping("/{paymentId}/receipt/{receiptDetailId}")
+    @GetMapping("/{paymentId}/receipt/{receiptId}")
+    @Operation(summary = "영수증 보기", description = "영수증을 불러온다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "403", description = "권한 없음"),
+        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<ReceiptDto> getGroupReceipt(
+            @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
+            @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
+            @PathVariable @Parameter(description = "영수증 아이디", in = ParameterIn.PATH) int receiptId,
+            Principal principal) {
+
+        if (!paymentService.isMyGroup(principal.getName(), groupId)
+                || !paymentService.isMyGroupTransaction(groupId, paymentId)) {
+            return ResponseEntity.status(403).body(null);
+        }
+
+        try {
+            ReceiptDto res = paymentService.getGroupReceipt(receiptId);
+
+            return ResponseEntity.status(200).body(res);
+        } catch (Exception e) {
+
+            return ResponseEntity.status(403).body(null);
+        }
+    }
+
+    @GetMapping("/{paymentId}/receipt/receipt-detail/{receiptDetailId}")
     @Operation(summary = "영수증 세부 항목 보기", description = "영수증 세부 항목 내용(밥, 인원A,B,C)을 불러온다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "성공"),

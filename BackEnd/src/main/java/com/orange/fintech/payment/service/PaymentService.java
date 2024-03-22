@@ -30,5 +30,7 @@ public interface PaymentService {
 
     GroupTransactionDetailRes getGroupTransactionDetail(int transactionId);
 
+    ReceiptDto getGroupReceipt(int receiptId);
+
     ReceiptDetailRes getGroupReceiptDetail(int receiptDetailId);
 }
