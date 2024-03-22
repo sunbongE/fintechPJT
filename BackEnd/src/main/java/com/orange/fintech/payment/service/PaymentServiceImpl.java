@@ -35,6 +35,8 @@ public class PaymentServiceImpl implements PaymentService {
     private final TransactionDetailRepository transactionDetailRepository;
     private final TransactionMemberRepository transactionMemberRepository;
     private final ReceiptRepository receiptRepository;
+    private final ReceiptDetailRepository receiptDetailRepository;
+    private final ReceiptDetailMemberRepository receiptDetailMemberRepository;
 
     private final GroupQueryRepository groupQueryRepository;
     private final GroupMemberRepository groupMemberRepository;
@@ -295,16 +297,16 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public List<TransactionDto> getGroupTransaction(
-            String memgerId, int groupId, int page, int pageSize, String option) {
+            String memberId, int groupId, int page, int pageSize, String option) {
 
-        log.info("service -- getGroupTransaction, memberId {}", memgerId);
+        log.info("service -- getGroupTransaction, memberId {}", memberId);
 
         return transactionQueryRepository.getGroupTransaction(
                 groupRepository.findById(groupId).get(),
                 page,
                 pageSize,
                 option,
-                memberRepository.findById(memgerId).get());
+                memberRepository.findById(memberId).get());
     }
 
     @Override
@@ -322,5 +324,17 @@ public class PaymentServiceImpl implements PaymentService {
         log.info("getGroupTransactionDetail - List<TransactionMember> list: {}", list);
 
         return GroupTransactionDetailRes.of(receipt, list);
+    }
+
+    @Override
+    public ReceiptDetailRes getGroupReceiptDetail(int receiptDetailId) {
+        ReceiptDetail receiptDetail = receiptDetailRepository.findById(receiptDetailId).get();
+        List<ReceiptDetailMember> detailMemberList =
+                receiptDetailMemberRepository.findByReceiptDetailMemberPKReceiptDetail(
+                        receiptDetail);
+
+        ReceiptDetailRes res = ReceiptDetailRes.of(receiptDetail, detailMemberList);
+
+        return res;
     }
 }

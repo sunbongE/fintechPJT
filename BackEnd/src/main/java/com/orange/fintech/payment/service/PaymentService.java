@@ -26,7 +26,9 @@ public interface PaymentService {
     TransactionDetailRes getTransactionDetail(int transactionId);
 
     List<TransactionDto> getGroupTransaction(
-            String memgerId, int groupId, int page, int pageSize, String option);
+            String memberId, int groupId, int page, int pageSize, String option);
 
     GroupTransactionDetailRes getGroupTransactionDetail(int transactionId);
+
+    ReceiptDetailRes getGroupReceiptDetail(int receiptDetailId);
 }
