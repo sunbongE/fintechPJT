@@ -1,25 +1,25 @@
-//package com.orange.fintech.payment.controller;
+// package com.orange.fintech.payment.controller;
 //
-//import com.orange.fintech.payment.dto.*;
-//import com.orange.fintech.payment.service.PaymentService;
-//import io.swagger.v3.oas.annotations.Operation;
-//import io.swagger.v3.oas.annotations.Parameter;
-//import io.swagger.v3.oas.annotations.enums.ParameterIn;
-//import io.swagger.v3.oas.annotations.responses.ApiResponse;
-//import io.swagger.v3.oas.annotations.responses.ApiResponses;
-//import io.swagger.v3.oas.annotations.tags.Tag;
-//import java.security.Principal;
-//import lombok.RequiredArgsConstructor;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.*;
+// import com.orange.fintech.payment.dto.*;
+// import com.orange.fintech.payment.service.PaymentService;
+// import io.swagger.v3.oas.annotations.Operation;
+// import io.swagger.v3.oas.annotations.Parameter;
+// import io.swagger.v3.oas.annotations.enums.ParameterIn;
+// import io.swagger.v3.oas.annotations.responses.ApiResponse;
+// import io.swagger.v3.oas.annotations.responses.ApiResponses;
+// import io.swagger.v3.oas.annotations.tags.Tag;
+// import java.security.Principal;
+// import lombok.RequiredArgsConstructor;
+// import lombok.extern.slf4j.Slf4j;
+// import org.springframework.http.ResponseEntity;
+// import org.springframework.web.bind.annotation.*;
 //
-//@Slf4j
-//@Tag(name = "Payment", description = "정산 API")
-//@RestController
-//@RequiredArgsConstructor
-//@RequestMapping("/api/v1/payments")
-//public class PaymentController {
+// @Slf4j
+// @Tag(name = "Payment", description = "정산 API")
+// @RestController
+// @RequiredArgsConstructor
+// @RequestMapping("/api/v1/payments")
+// public class PaymentController {
 //
 //    private final PaymentService paymentService;
 //
@@ -37,7 +37,8 @@
 //            Principal principal) {
 //
 //        try {
-//            TransactionDetailRes transactionDetail = paymentService.getTransactionDetail(paymentId);
+//            TransactionDetailRes transactionDetail =
+// paymentService.getTransactionDetail(paymentId);
 //
 //            return ResponseEntity.status(200).body(transactionDetail);
 //        } catch (Exception e) {
@@ -45,4 +46,4 @@
 //            return ResponseEntity.status(404).body(null);
 //        }
 //    }
-//}
+// }

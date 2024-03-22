@@ -1,8 +1,7 @@
 package com.orange.fintech.config;
 
-import java.time.Duration;
-
 import com.orange.fintech.group.dto.GroupMembersListDto;
+import java.time.Duration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -65,9 +64,11 @@ public class RedisConfig {
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(GroupMembersListDto.class));
+        redisTemplate.setHashValueSerializer(
+                new Jackson2JsonRedisSerializer<>(GroupMembersListDto.class));
         return redisTemplate;
     }
+
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
