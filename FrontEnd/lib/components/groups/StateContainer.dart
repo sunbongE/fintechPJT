@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/const/colors/Colors.dart';
 
 class StateContainer extends StatelessWidget {
@@ -21,7 +22,7 @@ class StateContainer extends StatelessWidget {
         groupState ? '정산중' : '여행중',
         style: TextStyle(
           color: Colors.white,
-          fontSize: 12,
+          fontSize: 12.sp,
         ),
       ),
     );

@@ -117,13 +117,13 @@ Future<User?> SocialKakao() async {
   }
 }
 
-  Future<void> logoutKakao() async {
-    try {
-      await UserApi.instance.logout();
-      await postLogOut();
-      print("카카오 로그아웃 성공");
-      await UserManager().clearUserInfo();
-    } catch (error) {
-      print("카카오 로그아웃 실패: $error");
-    }
+Future<void> logoutKakao() async {
+  try {
+    await UserApi.instance.logout();
+    await postLogOut();
+    print("카카오 로그아웃 성공");
+    await UserManager().clearUserInfo();
+  } catch (error) {
+    print("카카오 로그아웃 실패: $error");
   }
+}
