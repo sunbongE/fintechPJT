@@ -1,9 +1,7 @@
 package com.orange.fintech.group.dto;
 
-import lombok.*;
-import org.springframework.data.redis.core.RedisHash;
-
 import java.io.Serializable;
+import lombok.*;
 
 @Getter
 @Setter

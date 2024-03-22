@@ -127,7 +127,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public GroupMembersListDto findGroupMembers(int groupId) {
-        GroupMembersListDto result ;
+        GroupMembersListDto result;
         // 1. 캐시에서 그룹원을 조회한다.
         result = groupRedisService.getGroupMembersFromCache(groupId);
 
@@ -135,21 +135,23 @@ public class GroupServiceImpl implements GroupService {
             log.info("** DB에서 호출 ===============");
             // 2. 캐시에 없으면 DB에서 가져온다.
             result = new GroupMembersListDto();
-            result.setGroupMembersDtos( groupQueryRepository.findGroupMembers(groupId));
-//            result.setGroupMembersDtos((List<GroupMembersDto>) groupQueryRepository.findGroupMembers(groupId));
+            result.setGroupMembersDtos(groupQueryRepository.findGroupMembers(groupId));
+            //            result.setGroupMembersDtos((List<GroupMembersDto>)
+            // groupQueryRepository.findGroupMembers(groupId));
 
             // 3. DB에 조회한 그룹원을 캐시에 저장한다.
             groupRedisService.saveDataExpire(groupId, result);
         }
 
-//        List<GroupMembersDto> groupMembersDtos =  groupQueryRepository.findGroupMembers(groupId);
+        //        List<GroupMembersDto> groupMembersDtos =
+        // groupQueryRepository.findGroupMembers(groupId);
 
-//        result.setGroupMembersDtos(groupMembersDtos);
+        //        result.setGroupMembersDtos(groupMembersDtos);
 
-//        result = groupQueryRepository.findGroupMembers(groupId);
-//        groupRedisService.deleteData(groupId); // 삭제
-//        groupRedisService.saveDataExpire(groupId, result); // 저장
-//        log.info("캐시된값 : {}",groupRedisService.getGroupMembersFromCache(groupId));
+        //        result = groupQueryRepository.findGroupMembers(groupId);
+        //        groupRedisService.deleteData(groupId); // 삭제
+        //        groupRedisService.saveDataExpire(groupId, result); // 저장
+        //        log.info("캐시된값 : {}",groupRedisService.getGroupMembersFromCache(groupId));
         return result;
     }
 
