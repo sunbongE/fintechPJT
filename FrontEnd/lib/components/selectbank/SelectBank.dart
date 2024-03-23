@@ -7,7 +7,6 @@ import 'package:front/components/selectbank/selectAccount.dart';
 import 'package:front/const/colors/Colors.dart';
 import 'package:front/models/button/Button.dart';
 import 'package:front/models/button/ButtonSlideAnimation.dart';
-import '../../models/FlutterToastMsg.dart';
 
 class SelectBank extends StatefulWidget {
   const SelectBank({super.key});

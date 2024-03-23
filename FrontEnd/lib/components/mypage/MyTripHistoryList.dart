@@ -13,59 +13,9 @@ class MyTripHistoryList extends StatefulWidget {
 }
 
 class _MyTripHistoryListState extends State<MyTripHistoryList> {
+
   final Map<String, dynamic> rawData = {
-    "groups": [
-      {
-        "title": "긔염둥이들",
-        "description": "전주",
-        "startDate": "2024-02-04",
-        "endDate": "2024-02-07",
-        "groupState": true,
-        "groupMember": [
-          {
-            "name": "승혜",
-            "email": "123@gmail.com",
-          },
-          {
-            "name": "새로운 멤버1",
-            "email": "456@gmail.com",
-          },
-          {
-            "name": "새로운 멤버2",
-            "email": "789@gmail.com",
-          },
-          {
-            "name": "새로운 멤버3",
-            "email": "111@gmail.com",
-          }
-        ]
-      },
-      {
-        "title": "고1칭구칭긔",
-        "description": "온천",
-        "startDate": "2024-03-15",
-        "endDate": "2024-03-22",
-        "groupState": true,
-        "groupMember": [
-          {
-            "name": "승혜",
-            "email": "123@gmail.com",
-          },
-          {
-            "name": "새로운 멤버1",
-            "email": "456@gmail.com",
-          },
-          {
-            "name": "새로운 멤버2",
-            "email": "789@gmail.com",
-          },
-          {
-            "name": "새로운 멤버3",
-            "email": "111@gmail.com",
-          }
-        ]
-      }
-    ]
+    'groups': []
   };
 
   void navigateToGroupDetail(Group groupData) {
@@ -79,6 +29,7 @@ class _MyTripHistoryListState extends State<MyTripHistoryList> {
   Widget build(BuildContext context) {
     List<Group> groups = rawData['groups']
         .map<Group>((groupJson) => Group.fromJson(groupJson))
+        .where((group) => group.groupState == false)
         .toList();
 
     return Scaffold(
