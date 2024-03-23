@@ -24,6 +24,15 @@ class CustomTextStyle {
   }
 }
 
+class CustomMenuStyle {
+  static TextStyle receiptTextStyle(BuildContext context, {bool includeLetterSpacing = true}) {
+    return TextStyle(
+      fontSize: 16.sp,
+      color: Colors.black,
+    );
+  }
+}
+
 class CustomResultStyle {
   static TextStyle receiptTextStyle(BuildContext context) {
     return TextStyle(fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.bold);
@@ -35,12 +44,12 @@ class _YjReceiptState extends State<YjReceipt> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(10.0),
         child: Column(
           children: [
             Text("YnJ",
                 style: TextStyle(
-                  fontSize: 64.sp,
+                  fontSize: 40.sp,
                 )),
             SizedBox(height: 30.h),
             // 상호명, 위치, 일정
@@ -102,7 +111,6 @@ class _YjReceiptState extends State<YjReceipt> {
                 0: FlexColumnWidth(3),
                 1: FlexColumnWidth(3),
                 2: FlexColumnWidth(3),
-                3: FlexColumnWidth(3),
               },
               children: [
                 TableRow(
@@ -114,10 +122,12 @@ class _YjReceiptState extends State<YjReceipt> {
                     Text(
                       "수량",
                       style: CustomTextStyle.receiptTextStyle(context),
+                      textAlign: TextAlign.center,
                     ),
                     Text(
                       "금액",
                       style: CustomTextStyle.receiptTextStyle(context),
+                      textAlign: TextAlign.end,
                     ),
                   ].map((e) => Padding(padding: EdgeInsets.all(8.0), child: e)).toList(),
                 ),
@@ -130,31 +140,31 @@ class _YjReceiptState extends State<YjReceipt> {
                 0: FlexColumnWidth(3),
                 1: FlexColumnWidth(3),
                 2: FlexColumnWidth(3),
-                3: FlexColumnWidth(3),
               },
               children: widget.spend.items?.isNotEmpty ?? false
                   ? widget.spend.items!.map<TableRow>((item) {
                       return TableRow(
                         children: [
                           Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: EdgeInsets.symmetric(vertical: 8.0.h),
                             child: Text(
                               "${item['name']}",
-                              style: CustomTextStyle.receiptTextStyle(context, includeLetterSpacing: false),
+                              style: CustomMenuStyle.receiptTextStyle(context, includeLetterSpacing: false),
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: EdgeInsets.symmetric(vertical: 8.0.h),
                             child: Text(
                               "${item['count']}",
-                              style: CustomTextStyle.receiptTextStyle(context, includeLetterSpacing: false),
+                              style: CustomMenuStyle.receiptTextStyle(context, includeLetterSpacing: false),
+                              textAlign: TextAlign.center,
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: EdgeInsets.symmetric(vertical: 8.0.h),
                             child: Text(
-                              "${item['price']}",
-                              style: CustomTextStyle.receiptTextStyle(context),
+                              '${NumberFormat('#,###').format(item['price'])}원',
+                              style: CustomMenuStyle.receiptTextStyle(context, includeLetterSpacing: false),
                               textAlign: TextAlign.end,
                             ),
                           ),
@@ -165,21 +175,22 @@ class _YjReceiptState extends State<YjReceipt> {
                       TableRow(
                         children: [
                           Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: EdgeInsets.symmetric(vertical: 8.0.h),
                             child: Text(
                               "-",
                               style: CustomTextStyle.receiptTextStyle(context, includeLetterSpacing: false),
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: EdgeInsets.symmetric(vertical: 8.0.h),
                             child: Text(
                               "-",
                               style: CustomTextStyle.receiptTextStyle(context, includeLetterSpacing: false),
+                              textAlign: TextAlign.center,
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: EdgeInsets.symmetric(vertical: 8.0.h),
                             child: Text(
                               "-",
                               style: CustomTextStyle.receiptTextStyle(context),

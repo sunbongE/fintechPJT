@@ -24,7 +24,7 @@ class _AddReceiptState extends State<AddReceipt> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(30.w),
+        padding: EdgeInsets.fromLTRB(30.w, 30.h, 30.w, 50.h),
         child: Column(
           children: [
             EasyRichText(

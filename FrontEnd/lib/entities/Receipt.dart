@@ -1,10 +1,10 @@
 class Receipt {
   final String storeName;
   final String? subName;
-  final String? addresses;
+  final String addresses;
   final String date;
   final List<Map<String, dynamic>>? items;
-  final String totalPrice;
+  final int totalPrice;
 
   Receipt({
     required this.storeName,
@@ -25,7 +25,7 @@ class Receipt {
     String formattedDate = "$year-$month-$day $hour:$minute:$second";
 
     List<Map<String, dynamic>> items = [];
-    List<dynamic>? subResults = json['subResults'];
+    List<dynamic>? subResults = json['images'][0]['receipt']['result']['subResults'];
     if (subResults != null) {
       for (var subResult in subResults) {
         var itemsList = subResult['items'] as List<dynamic>?;
@@ -33,24 +33,26 @@ class Receipt {
           for (var item in itemsList) {
             String? name = item['name']['formatted']['value'];
             String? count = item['count']['formatted']['value'];
-            String? price = item['price']['price']['formatted']['value'];
+            int price = int.parse(item['price']['price']['formatted']['value']);
             items.add({
               'name': name ?? 'Unknown',
               'count': count ?? '0',
-              'price': price ?? '0',
+              'price': price,
             });
           }
         }
       }
     }
 
+    int totalPrice = int.parse(json['images'][0]['receipt']['result']['totalPrice']['price']['formatted']['value']);
+
     return Receipt(
       storeName: json['images'][0]['receipt']['result']['storeInfo']['name']['formatted']['value'],
       subName: json['images']?[0]['receipt']['result']['storeInfo']['subName']['text'],
-      addresses: json['images']?[0]['receipt']['result']['storeInfo']['addresses']?[1]['formatted']['value'],
+      addresses: json['images']?[0]['receipt']['result']['storeInfo']['addresses'][1]['formatted']['value'],
       date: formattedDate,
       items: items.isNotEmpty ? items : null,
-      totalPrice: json['images'][0]['receipt']['result']['totalPrice']['price']['formatted']['value'],
+      totalPrice: totalPrice,
     );
   }
 }

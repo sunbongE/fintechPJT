@@ -25,7 +25,7 @@ class _LoadingPageState extends State<LoadingPage> {
     var userManager = Provider.of<UserManager>(context, listen: false);
     await userManager.loadUserInfo();
     print("로그인 상황: ${userManager.isLogin}");
-    print("로그인 상황: ${userManager.jwtToken}");
+    print("토큰토큰: ${userManager.jwtToken}");
 
     if (userManager.isLogin ?? false) {
       bool authenticated = await _authenticate();
