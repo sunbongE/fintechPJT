@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/const/colors/Colors.dart';
 import 'package:front/models/FlutterToastMsg.dart';
+import 'package:front/models/button/ButtonSlideAnimation.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../entities/Receipt.dart';
+import '../../models/button/SizedButton.dart';
 import '../../repository/api/ApiReceipt.dart';
 import '../../screen/YjReceipt.dart';
+import 'ModifyReceipt.dart';
 
 class ShowBeforeOcr extends StatefulWidget {
   ShowBeforeOcr({Key? key}) : super(key: key);
@@ -24,30 +27,34 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
   final ImagePicker picker = ImagePicker();
 
   double _progressValue = 0;
-  Timer? _animationTimer;
-  bool _isSwipeIconVisible = true;
-
-  void _toggleAnimation(bool isLastPage) {
-    if (isLastPage) {
-      if (_animationTimer == null || !_animationTimer!.isActive) {
-        _animationTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-          setState(() {
-            _isSwipeIconVisible = !_isSwipeIconVisible;
-          });
-        });
-      }
-    } else {
-      if (_animationTimer != null) {
-        _animationTimer!.cancel();
-        _animationTimer = null;
-      }
-    }
-  }
+  bool isEditing = false;
 
   @override
   void dispose() {
-    _animationTimer?.cancel();
     super.dispose();
+  }
+
+  // 영수증 수정페이지로 이동 후 콜백 및 수정 사항 적용
+  void _navigateAndEditReceipt(BuildContext context, int index) async {
+    final modifiedReceipt = await Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => ModifyReceipt(receipt: receiptData[index]),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: animation.drive(Tween(begin: Offset(1.0, 0.0), end: Offset.zero).chain(CurveTween(curve: Curves.ease))),
+            child: child,
+          );
+        },
+        transitionDuration: Duration(milliseconds: 300),
+      ),
+    );
+
+    if (modifiedReceipt != null) {
+      setState(() {
+        receiptData[index] = modifiedReceipt;
+      });
+    }
   }
 
   // 하단 모달
@@ -63,14 +70,14 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
                     title: Text('사진 찍기'),
                     onTap: () {
                       Navigator.pop(context);
-                      receiptfromCamera();
+                      receiptFromCamera();
                     }),
                 ListTile(
                   leading: Icon(Icons.photo_library),
                   title: Text('갤러리에서 가져오기'),
                   onTap: () {
                     Navigator.pop(context);
-                    receiptfromGallary();
+                    receiptFromGallery();
                   },
                 ),
               ],
@@ -80,7 +87,7 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
   }
 
   // 카메라로 사진찍기
-  void receiptfromCamera() async {
+  void receiptFromCamera() async {
     final XFile? image = await picker.pickImage(source: ImageSource.camera);
     if (image != null) {
       onImageSelected(image);
@@ -88,15 +95,16 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
   }
 
   // 갤러리에서 사진 가져오기
-  void receiptfromGallary() async {
+  void receiptFromGallery() async {
     final List<XFile>? selectedImages = await picker.pickMultiImage();
     if (selectedImages != null && selectedImages.isNotEmpty) {
       if (selectedImages.length > 10) {
         FlutterToastMsg('한 번에 최대 10장까지만 선택할 수 있습니다.');
         return;
       }
+
       for (XFile image in selectedImages) {
-        onImageSelected(image);
+        await onImageSelected(image);
       }
     }
   }
@@ -120,10 +128,15 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
       }),
     });
     final res = await postReceiptImage(formData);
-    print("Response data: ${res.data}");
+    Receipt receipt = Receipt.fromJson(res.data);
 
-    Map<String, dynamic> jsonData = json.decode(res.data);
-    Receipt receipt = Receipt.fromJson(jsonData);
+    debugPrint("2222222222 data: ${receipt.storeName}");
+    debugPrint("3333333333 data: ${receipt.subName}");
+    debugPrint("4444444444 data: ${receipt.addresses}");
+    debugPrint("5555555555 data: ${receipt.date}");
+    debugPrint("6666666666 data: ${receipt.items}");
+    debugPrint("7777777777 data: ${receipt.totalPrice}");
+
     setState(() {
       receiptData.add(receipt);
     });
@@ -131,43 +144,18 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
 
   // 영수증이 없을 때의 페이지
   Widget _buildAddReceiptPage() {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
+    return Center(
+      child: TextButton(
+        onPressed: () => showModal(),
+        child: Icon(
+          Icons.add,
           color: PRIMARY_COLOR,
-          width: 3.w,
+          size: 50.0.sp,
         ),
-      ),
-      width: double.infinity,
-      height: double.infinity,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          TextButton(
-            onPressed: () => showModal(),
-            child: Icon(
-              Icons.add,
-              color: PRIMARY_COLOR,
-              size: 50.0.sp,
-            ),
-            style: TextButton.styleFrom(
-              backgroundColor: BG_COLOR,
-              minimumSize: Size(100.w, 100.h),
-              shape: CircleBorder(),
-            ),
-          ),
-          Positioned(
-            bottom: 20.h,
-            child: Visibility(
-              visible: _isSwipeIconVisible,
-              child: Icon(
-                Icons.swipe,
-                color: PRIMARY_COLOR,
-                size: 30.sp,
-              ),
-            ),
-          ),
-        ],
+        style: TextButton.styleFrom(
+          backgroundColor: BG_COLOR,
+          shape: CircleBorder(),
+        ),
       ),
     );
   }
@@ -177,6 +165,11 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
     return Scaffold(
       body: Column(
         children: [
+          LinearProgressIndicator(
+            value: _progressValue,
+            backgroundColor: BG_COLOR,
+            valueColor: AlwaysStoppedAnimation<Color>(PRIMARY_COLOR),
+          ),
           Expanded(
             child: Center(
               child: receiptData.isEmpty
@@ -186,8 +179,7 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
                       itemCount: receiptData.length + 1,
                       onPageChanged: (int index) {
                         setState(() {
-                          _progressValue = index / (receiptData.length + 1);
-                          _toggleAnimation(index == receiptData.length);
+                          _progressValue = index + 1 / (receiptData.length + 1);
                         });
                       },
                       itemBuilder: (context, index) {
@@ -200,11 +192,36 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
                     ),
             ),
           ),
-          LinearProgressIndicator(
-            value: _progressValue,
-            backgroundColor: BG_COLOR,
-            valueColor: AlwaysStoppedAnimation<Color>(PRIMARY_COLOR),
-          ),
+          receiptData.isNotEmpty
+              ? Text(
+                  "수정이 필요하다면?",
+                  style: TextStyle(fontSize: 14, color: RECEIPT_TEXT_COLOR),
+                )
+              : SizedBox(
+                  height: 0.h,
+                ),
+          receiptData.isNotEmpty
+              ? SizedButton(
+                  btnText: isEditing ? "저장" : "영수증 수정",
+                  onPressed: () {
+                    if (isEditing) {
+                      setState(() {
+                        isEditing = false;
+                      });
+                    } else {
+                      final currentIndex = _pageController.page?.round();
+                      if (currentIndex != null && currentIndex < receiptData.length) {
+                        _navigateAndEditReceipt(context, currentIndex);
+                      }
+                      setState(() {
+                        isEditing = true;
+                      });
+                    }
+                  },
+                )
+              : SizedBox(
+                  height: 0.h,
+                )
         ],
       ),
     );
