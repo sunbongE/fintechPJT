@@ -3,9 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/models/CustomDivider.dart';
 import 'package:intl/intl.dart';
 import '../const/colors/Colors.dart';
+import '../entities/Receipt.dart';
 
 class YjReceipt extends StatefulWidget {
-  final Map<String, dynamic> spend;
+  final Receipt spend;
 
   const YjReceipt({Key? key, required this.spend}) : super(key: key);
 
@@ -14,8 +15,7 @@ class YjReceipt extends StatefulWidget {
 }
 
 class CustomTextStyle {
-  static TextStyle receiptTextStyle(BuildContext context,
-      {bool includeLetterSpacing = true}) {
+  static TextStyle receiptTextStyle(BuildContext context, {bool includeLetterSpacing = true}) {
     return TextStyle(
       fontSize: 16.sp,
       letterSpacing: includeLetterSpacing ? 10.w : null,
@@ -26,8 +26,7 @@ class CustomTextStyle {
 
 class CustomResultStyle {
   static TextStyle receiptTextStyle(BuildContext context) {
-    return TextStyle(
-        fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.bold);
+    return TextStyle(fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.bold);
   }
 }
 
@@ -61,7 +60,7 @@ class _YjReceiptState extends State<YjReceipt> {
                   Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text(
-                        "${widget.spend['transactionSummary']}",
+                        "${widget.spend.storeName} ${widget.spend.subName}",
                         textAlign: TextAlign.end,
                       )),
                 ]),
@@ -75,7 +74,7 @@ class _YjReceiptState extends State<YjReceipt> {
                   Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text(
-                        "${widget.spend['location']}",
+                        "${widget.spend.addresses}",
                         textAlign: TextAlign.end,
                         softWrap: true,
                       )),
@@ -90,14 +89,14 @@ class _YjReceiptState extends State<YjReceipt> {
                   Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text(
-                        '${widget.spend['transactionDate']} ${widget.spend['transactionTime']}',
+                        '${widget.spend.date}',
                         textAlign: TextAlign.end,
                       )),
                 ]),
               ],
             ),
             CustomDivider(),
-            // 상품명, 단가, 수량, 금액
+            // 상품명, 수량, 금액
             Table(
               columnWidths: const {
                 0: FlexColumnWidth(3),
@@ -113,10 +112,6 @@ class _YjReceiptState extends State<YjReceipt> {
                       style: CustomTextStyle.receiptTextStyle(context),
                     ),
                     Text(
-                      "단가",
-                      style: CustomTextStyle.receiptTextStyle(context),
-                    ),
-                    Text(
                       "수량",
                       style: CustomTextStyle.receiptTextStyle(context),
                     ),
@@ -124,15 +119,12 @@ class _YjReceiptState extends State<YjReceipt> {
                       "금액",
                       style: CustomTextStyle.receiptTextStyle(context),
                     ),
-                  ]
-                      .map((e) =>
-                          Padding(padding: EdgeInsets.all(8.0), child: e))
-                      .toList(),
+                  ].map((e) => Padding(padding: EdgeInsets.all(8.0), child: e)).toList(),
                 ),
               ],
             ),
             CustomDivider(),
-            // 메뉴, 가격, 수량, 금액(사용자 인풋)
+            // 메뉴, 수량, 금액(사용자 인풋)
             Table(
               columnWidths: const {
                 0: FlexColumnWidth(3),
@@ -140,40 +132,29 @@ class _YjReceiptState extends State<YjReceipt> {
                 2: FlexColumnWidth(3),
                 3: FlexColumnWidth(3),
               },
-              children: widget.spend['receiptEnrolled']
-                  ? widget.spend['details'].map<TableRow>((detail) {
+              children: widget.spend.items?.isNotEmpty ?? false
+                  ? widget.spend.items!.map<TableRow>((item) {
                       return TableRow(
                         children: [
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
-                              detail['menu'],
-                              style: CustomTextStyle.receiptTextStyle(context,
-                                  includeLetterSpacing: false),
+                              "${item['name']}",
+                              style: CustomTextStyle.receiptTextStyle(context, includeLetterSpacing: false),
                             ),
                           ),
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
-                              "${detail['price']}",
-                              style: CustomTextStyle.receiptTextStyle(context,
-                                  includeLetterSpacing: false),
+                              "${item['count']}",
+                              style: CustomTextStyle.receiptTextStyle(context, includeLetterSpacing: false),
                             ),
                           ),
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
-                              "${detail['count']}",
-                              style: CustomTextStyle.receiptTextStyle(context,
-                                  includeLetterSpacing: false),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              "${detail['totalAmount']}",
-                              style:
-                                  CustomResultStyle.receiptTextStyle(context),
+                              "${item['price']}",
+                              style: CustomTextStyle.receiptTextStyle(context),
                               textAlign: TextAlign.end,
                             ),
                           ),
@@ -187,41 +168,30 @@ class _YjReceiptState extends State<YjReceipt> {
                             padding: EdgeInsets.all(8.0),
                             child: Text(
                               "-",
-                              style: CustomTextStyle.receiptTextStyle(context,
-                                  includeLetterSpacing: false),
+                              style: CustomTextStyle.receiptTextStyle(context, includeLetterSpacing: false),
                             ),
                           ),
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
                               "-",
-                              style: CustomTextStyle.receiptTextStyle(context,
-                                  includeLetterSpacing: false),
+                              style: CustomTextStyle.receiptTextStyle(context, includeLetterSpacing: false),
                             ),
                           ),
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
                               "-",
-                              style: CustomTextStyle.receiptTextStyle(context,
-                                  includeLetterSpacing: false),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              "-",
+                              style: CustomTextStyle.receiptTextStyle(context),
                               textAlign: TextAlign.end,
-                              style: CustomTextStyle.receiptTextStyle(context,
-                                  includeLetterSpacing: false),
                             ),
                           ),
                         ],
-                      )
+                      ),
                     ],
             ),
             CustomDivider(),
-            // 합계금액, 승인금액, 승인번호
+            // 합계금액
             Table(
               columnWidths: const {
                 0: FlexColumnWidth(3),
@@ -238,37 +208,7 @@ class _YjReceiptState extends State<YjReceipt> {
                   Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text(
-                        '${NumberFormat('#,###').format(widget.spend['transactionBalance'])}원',
-                        textAlign: TextAlign.end,
-                        style: CustomResultStyle.receiptTextStyle(context),
-                      )),
-                ]),
-                TableRow(children: [
-                  Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        "승인금액",
-                        style: CustomTextStyle.receiptTextStyle(context),
-                      )),
-                  Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        '${NumberFormat('#,###').format(widget.spend['transactionBalance'])}원',
-                        textAlign: TextAlign.end,
-                        style: CustomResultStyle.receiptTextStyle(context),
-                      )),
-                ]),
-                TableRow(children: [
-                  Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        "승인번호",
-                        style: CustomTextStyle.receiptTextStyle(context),
-                      )),
-                  Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        "-",
+                        '${NumberFormat('#,###').format(widget.spend.totalPrice)}원',
                         textAlign: TextAlign.end,
                         style: CustomResultStyle.receiptTextStyle(context),
                       )),

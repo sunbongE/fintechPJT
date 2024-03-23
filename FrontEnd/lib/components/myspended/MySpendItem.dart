@@ -5,11 +5,12 @@ import 'package:front/components/myspended/ShowReceiptBtn.dart';
 import 'package:front/const/colors/Colors.dart';
 import 'package:front/providers/store.dart';
 import 'package:intl/intl.dart';
+import '../../entities/Receipt.dart';
 import '../../models/CustomDivider.dart';
 import '../../screen/YjReceipt.dart';
 
 class MySpendItem extends StatefulWidget {
-  final Map<String, dynamic>? spend;
+  final Receipt spend;
 
   const MySpendItem({required this.spend, super.key});
 
@@ -27,8 +28,7 @@ class _MySpendItemState extends State<MySpendItem> {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        title: Text(widget.spend?['transactionSummary'],
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.sp)),
+        title: Text(widget.spend.storeName, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.sp)),
       ),
       body: Padding(
         padding: EdgeInsets.all(30.w),
@@ -44,7 +44,7 @@ class _MySpendItemState extends State<MySpendItem> {
                       style: TextStyle(fontSize: 16.sp),
                     ),
                     Text(
-                      '${widget.spend?['transactionDate']} ${widget.spend?['transactionTime']}',
+                      '${widget.spend.date}',
                       style: TextStyle(fontSize: 16.sp),
                     ),
                   ],
@@ -60,11 +60,8 @@ class _MySpendItemState extends State<MySpendItem> {
                       style: TextStyle(fontSize: 16.sp),
                     ),
                     Text(
-                      '${NumberFormat('#,###').format(widget.spend?['transactionBalance'])}원',
-                      style: TextStyle(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.bold,
-                          color: TEXT_COLOR),
+                      '${NumberFormat('#,###').format(widget.spend.totalPrice)}원',
+                      style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold, color: TEXT_COLOR),
                     ),
                   ],
                 ),
@@ -98,7 +95,7 @@ class _MySpendItemState extends State<MySpendItem> {
                           height: MediaQuery.of(context).size.height * 0.8,
                           color: Colors.white,
                           child: Center(
-                            child: YjReceipt(spend: widget.spend ?? {}),
+                            child: YjReceipt(spend: widget.spend),
                           ),
                         );
                       },
@@ -109,7 +106,7 @@ class _MySpendItemState extends State<MySpendItem> {
                 SizedBox(
                   height: 10.h,
                 ),
-                MySpendMap(location: widget.spend?['location']),
+                MySpendMap(location: widget.spend.addresses ?? "광주 광산구 하남산단6번로 107"),
               ],
             ),
           ],

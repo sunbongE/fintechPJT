@@ -41,12 +41,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     // 뒤로가기 두 번 누르면 어플 종료
     return WillPopScope(
       onWillPop: () async {
         final now = DateTime.now();
-        if (lastPressed == null || now.difference(lastPressed!) > Duration(seconds: 2)) {
+        if (lastPressed == null ||
+            now.difference(lastPressed!) > Duration(seconds: 2)) {
           lastPressed = DateTime.now();
           final snackBar = SnackBar(
             content: Text('뒤로 가기 버튼을 한 번 더 누르면 앱이 종료됩니다.'),
@@ -55,7 +55,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
           return false;
         }
-        // 강제종료
         exit(0);
       },
       child: Scaffold(

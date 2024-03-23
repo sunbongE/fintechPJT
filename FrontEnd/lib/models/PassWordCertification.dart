@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/models/FlutterToastMsg.dart';
 import 'package:front/components/intros/KeyBoardBoard.dart';
 import 'package:front/components/intros/ShowPassWord.dart';
-import 'package:local_auth/local_auth.dart';
 import '../../providers/store.dart';
 
 class PassWordCertification extends StatefulWidget {
@@ -30,21 +29,23 @@ class _PassWordCertificationState extends State<PassWordCertification> {
     loadUserInfo();
   }
 
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
+
   void loadUserInfo() async {
-    setState(() {
-      isLoading = true; // 로딩 시작
-    });
     await userManager.loadUserInfo();
-    if (!mounted) return;
-    setState(() {
-      confirmPassWord = userManager.password;
-      isLoading = false; // 로딩 종료
-    });
+    if (mounted) {
+      setState(() {
+        confirmPassWord = userManager.password;
+        isLoading = false;
+      });
+    }
   }
 
   void updatePassword(String val) {
-    if (!mounted) return;
-
     setState(() {
       if (val.length <= 6) {
         passWord = val;
@@ -53,7 +54,7 @@ class _PassWordCertificationState extends State<PassWordCertification> {
             widget.onSuccess();
           } else {
             FlutterToastMsg("비밀번호가 일치하지 않습니다.\n다시 입력해주세요.");
-            if (!mounted) return;
+
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                   builder: (context) =>

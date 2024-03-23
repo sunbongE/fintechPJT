@@ -11,7 +11,7 @@ Future<Response> postReceiptImage(FormData formData) async {
       data: formData,
       options: Options(
         headers: {
-          'X-OCR-SECRET': 'eGduV3FSVHNaZklGeGxVT1J4R1drd2diT1pMeGxiT0o=',
+          // 'X-OCR-SECRET': 'eGduV3FSVHNaZklGeGxVT1J4R1drd2diT1pMeGxiT0o=',
         },
       ),
     );
