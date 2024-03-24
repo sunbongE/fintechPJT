@@ -21,3 +21,13 @@ Future<Response> postReceiptImage(FormData formData) async {
     throw Exception('Failed to post user info');
   }
 }
+
+Future<Response> postYjReceipt(groupId, paymentId, data) async {
+  try{
+    final res = api.post('/groups/${groupId}/payments/${paymentId}/singlereceipt', data: data);
+    return res;
+  } catch(err) {
+    print(err);
+    throw(err);
+  }
+}

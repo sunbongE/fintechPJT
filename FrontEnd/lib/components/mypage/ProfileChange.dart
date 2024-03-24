@@ -35,27 +35,21 @@ class _ProfileChangeState extends State<ProfileChange> {
 
   Future uploadImage(File image) async {
     if (image == null) return;
-
     String fileName = image.path.split('/').last;
     FormData formData = FormData.fromMap({
       "file": await MultipartFile.fromFile(image.path, filename: fileName),
     });
+    final res = await putUploadImage(formData);
+    print(res.data);
 
-    try {
-      print(image);
-      print(image.path);
-      print(fileName);
-
-      final res = await postUploadImage(formData);
-      if (res != null) {
-        print(res);
-        userManager.thumbnailImageUrl = res['url'];
-        buttonSlideAnimationPushAndRemoveUntil(context, 3);
-      }
-    } catch (err) {
-      print("이미지 업로드 실패: $err");
-    }
+    UserManager userManager = UserManager();
+    await userManager.saveUserInfo(
+      newThumbnailImageUrl: res.data['thumbnailImagePathURL'],
+      newProfileImageUrl: res.data['profileImagePath'],
+    );
+    buttonSlideAnimationPushAndRemoveUntil(context, 3);
   }
+
 
   @override
   Widget build(BuildContext context) {
