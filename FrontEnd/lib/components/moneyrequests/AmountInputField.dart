@@ -29,6 +29,16 @@ class _AmountInputFieldState extends State<AmountInputField> {
     }
   }
   @override
+  void didUpdateWidget(covariant AmountInputField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      setState(() {
+        final formattedValue = formatInitialValue(widget.controller.text);
+        widget.controller.text = formattedValue;
+      });
+    }
+  }
+  @override
   Widget build(BuildContext context) {
     return TextField(
       controller: widget.controller,

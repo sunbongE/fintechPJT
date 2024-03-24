@@ -1,3 +1,4 @@
+import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/moneyrequests/MoneyRequestItem.dart';
@@ -11,6 +12,7 @@ import '../../models/button/SizedButton.dart';
 import '../../models/button/Toggle.dart';
 import '../../components/moneyrequests/RequestMemberList.dart';
 import '../../entities/RequestDetail.dart';
+import '../../repository/api/ApiMoneyRequest.dart';
 import '../../utils/RequestModifyUtil.dart';
 
 class MoneyRequestModify extends StatefulWidget {
@@ -33,42 +35,30 @@ class _MoneyRequestModifyState extends State<MoneyRequestModify> {
   @override
   void initState() {
     super.initState();
+    fetchMyGroupPaymentsDetail();
     memoController = TextEditingController(
       text: widget.expense.memo.toString(),
     );
-    final Map<String, dynamic> rawData = {
-      "장소": "초돈2",
-      "금액": 78000,
-      "날짜": "2024-05-01",
-      "정산올림": true,
-      "영수증존재": true,
-      "메모": "카공",
-      "함께한멤버": [
-        {
-          "프로필주소": "https://picsum.photos/100/100",
-          "이름": "사람1",
-          "금액": 4033,
-          "정산여부": true
-        },
-        {
-          "프로필주소": "https://picsum.photos/100/100",
-          "이름": "사람2",
-          "금액": 4033,
-          "정산여부": false
-        },
-        {
-          "프로필주소": "https://picsum.photos/100/100",
-          "이름": "사람3",
-          "금액": 4033,
-          "정산여부": true
-        }
-      ]
-    };
-    request = RequestDetail.fromJson(rawData);
-    personalRequestAmount =
-        request.members.map((member) => member.amount).toList();
-    remainderAmount = 5; //백엔드에서 받아오는 값으로 바뀔 때는 생길 예정
-    isLockedList = List<bool>.filled(request.members.length, false);
+  }
+
+  void fetchMyGroupPaymentsDetail() async {
+    final MyGroupPaymentsDetailJson = await getMyGroupPaymentsDetail(1, 17);
+    print(MyGroupPaymentsDetailJson.data);
+    if (MyGroupPaymentsDetailJson != null) {
+      setState(() {
+        request = RequestDetail.fromJson(MyGroupPaymentsDetailJson.data);
+        print(request);
+        memoController = TextEditingController(
+          text: widget.expense.memo.toString(),
+        );
+        personalRequestAmount =
+            request.members.map((member) => member.amount).toList();
+        remainderAmount = 5; // 백엔드에서 받아오는 값으로 바뀔 때는 생길 예정
+        isLockedList = request.members.map((member) => member.lock).toList();
+      });
+    } else {
+      print("정산 데이터를 불러오는 데 실패했습니다.");
+    }
   }
 
   @override
@@ -87,11 +77,12 @@ class _MoneyRequestModifyState extends State<MoneyRequestModify> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: SizedButton(
+              onPressed: () {},
               btnText: '완료',
               size: ButtonSize.xs,
               borderRadius: 10,
               enable: isModifyButtonEnabled(
-                  request.amount, personalRequestAmount, remainderAmount),
+                  request.totalPrice, personalRequestAmount, remainderAmount),
             ),
           ),
         ],
@@ -105,42 +96,54 @@ class _MoneyRequestModifyState extends State<MoneyRequestModify> {
               expense: widget.expense,
               isToggle: false,
             ),
-            Row(
-              children: [
-                Padding(padding: EdgeInsets.symmetric(horizontal: 10.w)),
-                Text('메모:'),
-                Padding(padding: EdgeInsets.symmetric(horizontal: 5.w)),
-                SizedBox(
-                    width: 250.w,
-                    child: RequestMemoInputField(
-                        controller: memoController,
-                        onSubmitted: (String value) {})),
-              ],
-            ),
-            Padding(padding: EdgeInsets.symmetric(vertical: 5.h)),
-            Expanded(
-              child: SizedBox(
-                height: 400.h,
-                child: RequestModifyList(
-                  requestDetail: request,
-                  requestAmount: personalRequestAmount,
-                  isLockedList: (List<bool> value) {
-                    setState(() {
-                      isLockedList = value;
-                    });
-                  },
-                  personalAmounts: (List<int> value) {
-                    setState(() {
-                      personalRequestAmount = value;
-                    });
-                  },
+            if (request != null) ...[
+              Row(
+                children: [
+                  Padding(padding: EdgeInsets.symmetric(horizontal: 10.w)),
+                  Text('메모:'),
+                  Padding(padding: EdgeInsets.symmetric(horizontal: 5.w)),
+                  SizedBox(
+                      width: 250.w,
+                      child: RequestMemoInputField(
+                          controller: memoController,
+                          onSubmitted: (String value) {})),
+                ],
+              ),
+              Padding(padding: EdgeInsets.symmetric(vertical: 5.h)),
+              Expanded(
+                child: SizedBox(
+                  height: 400.h,
+                  child: RequestModifyList(
+                    requestDetail: request,
+                    requestAmount: personalRequestAmount,
+                    isLockedList: (List<bool> value) {
+                      setState(() {
+                        isLockedList = value;
+                      });
+                    },
+                    personalAmounts: (List<int> value) {
+                      setState(() {
+                        personalRequestAmount = reCalculateAmount(
+                            request.totalPrice, value, isLockedList);
+                        remainderAmount = reCalculateRemainder(
+                            request.totalPrice, personalRequestAmount);
+                      });
+                    },
+                  ),
                 ),
               ),
-            ),
-            Padding(padding: EdgeInsets.symmetric(vertical: 10.w)),
-            MoneyRequestDetailBottom(
-              amount: remainderAmount,
-            ),
+              Padding(padding: EdgeInsets.symmetric(vertical: 10.w)),
+              MoneyRequestDetailBottom(
+                amount: remainderAmount,
+              ),
+            ] else ...[
+              // request가 아직 초기화되지 않았다면 로딩 인디케이터를 보여줍니다.
+              Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ],
             Padding(padding: EdgeInsets.symmetric(vertical: 10.w)),
           ],
         ),

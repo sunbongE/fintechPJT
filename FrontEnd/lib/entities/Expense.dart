@@ -6,7 +6,7 @@ class Expense {
   final bool isSettled;
   final bool receiptEnrolled;
   final String transactionTime;
-  final String memo;
+  final String? memo;
   final int? groupId;
 
   Expense({
@@ -29,9 +29,13 @@ class Expense {
       transactionDate: json['transactionDate'] as String,
       transactionTime: json['transactionTime'] as String,
       isSettled: json['groupId'] == null ? false : true as bool,
-      memo: json['memo'] as String,
+      memo: json['memo'] as String?,
       receiptEnrolled: json['receiptEnrolled'] as bool,
       groupId: json['groupId'] as int?,
     );
+  }
+  @override
+  String toString() {
+    return 'Transaction(transactionId: $transactionId, transactionDate: $transactionDate, transactionTime: $transactionTime,  transactionBalance: $transactionBalance, transactionSummary: $transactionSummary, groupId: $groupId, memo: $memo, receiptEnrolled: $receiptEnrolled)';
   }
 }

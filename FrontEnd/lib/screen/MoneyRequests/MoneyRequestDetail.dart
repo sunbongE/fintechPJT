@@ -11,6 +11,7 @@ import '../../models/button/SizedButton.dart';
 import '../../models/button/Toggle.dart';
 import '../../components/moneyrequests/RequestMemberList.dart';
 import '../../entities/RequestDetail.dart';
+import '../../repository/api/ApiMoneyRequest.dart';
 
 class MoneyRequestDetail extends StatefulWidget {
   final Function onSuccess;
@@ -26,11 +27,28 @@ class MoneyRequestDetail extends StatefulWidget {
 
 class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
   late bool isSettledStates;
+  late List<int> amounts;
+  RequestDetail request = RequestDetail.empty();
 
   @override
   void initState() {
     super.initState();
     isSettledStates = widget.expense.isSettled;
+    fetchMyGroupPaymentsDetail();
+  }
+
+  void fetchMyGroupPaymentsDetail() async {
+    final MyGroupPaymentsDetailJson = await getMyGroupPaymentsDetail(1, 17);
+    //print(MyGroupPaymentsDetailJson.data);
+    if (MyGroupPaymentsDetailJson != null) {
+      setState(() {
+        request = RequestDetail.fromJson(MyGroupPaymentsDetailJson.data);
+        amounts = request.members.map((member) => member.amount).toList();
+        //print(amounts);
+      });
+    } else {
+      print("정산 데이터를 불러오는 데 실패했습니다.");
+    }
   }
 
   void updateIsSettledStates(bool newStates) {
@@ -42,36 +60,6 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> rawData = {
-      "장소": "초돈2",
-      "금액": 78000,
-      "날짜": "2024-05-01",
-      "정산올림": true,
-      "영수증존재": true,
-      "메모": "카공",
-      "함께한멤버": [
-        {
-          "프로필주소": "https://picsum.photos/100/100",
-          "이름": "사람1",
-          "금액": 4033,
-          "정산여부": true
-        },
-        {
-          "프로필주소": "https://picsum.photos/100/100",
-          "이름": "사람2",
-          "금액": 4033,
-          "정산여부": false
-        },
-        {
-          "프로필주소": "https://picsum.photos/100/100",
-          "이름": "사람3",
-          "금액": 4033,
-          "정산여부": true
-        }
-      ]
-    };
-    final request = RequestDetail.fromJson(rawData);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.expense.transactionSummary),
@@ -83,12 +71,13 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
               btnText: '수정',
               size: ButtonSize.xs,
               borderRadius: 10,
-              onPressed: () => buttonSlideAnimation(
-                context,
-                MoneyRequestModify(
-                  expense: widget.expense,
-                ),
-              ),
+              onPressed: () =>
+                  buttonSlideAnimation(
+                    context,
+                    MoneyRequestModify(
+                      expense: widget.expense,
+                    ),
+                  ),
             ),
           ),
         ],
@@ -102,29 +91,40 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
               expense: widget.expense,
               isToggle: false,
             ),
-            SizedBox(
-              width: 343.w,
-              child: Row(
-                children: [
-                  Text('${request.memo}'),
-                ],
-              ),
-            ),
-            Padding(padding: EdgeInsets.symmetric(vertical: 5.w)),
-            Expanded(
-              child: SizedBox(
-                //width: 368.w,
-                height: 400.h,
-                child: RequestMemberList(
-                  requestDetail: request,
-                  allSettledCallback: updateIsSettledStates,
+            if (request.members.isNotEmpty) ...[
+              SizedBox(
+                width: 343.w,
+                child: Row(
+                  children: [
+                    Text('${request.memo}'),
+                  ],
                 ),
               ),
-            ),
-            Padding(padding: EdgeInsets.symmetric(vertical: 10.w)),
-            MoneyRequestDetailBottom(
-              amount: widget.expense.transactionBalance,
-            ),
+              Padding(padding: EdgeInsets.symmetric(vertical: 5.w)),
+              Expanded(
+                child: SizedBox(
+                  //width: 368.w,
+                  height: 400.h,
+                  child: RequestMemberList(
+                    requestDetail: request,
+                    allSettledCallback: updateIsSettledStates,
+                    callbackAmountList: (List<int> value)
+                    { },
+                  ),
+                ),
+              ),
+              Padding(padding: EdgeInsets.symmetric(vertical: 10.w)),
+              MoneyRequestDetailBottom(
+                amount: widget.expense.transactionBalance,
+              ),
+            ] else
+              ...[
+                Expanded(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              ],
             Padding(padding: EdgeInsets.symmetric(vertical: 10.w)),
           ],
         ),
