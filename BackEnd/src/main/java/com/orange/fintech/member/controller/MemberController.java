@@ -2,24 +2,31 @@ package com.orange.fintech.member.controller;
 
 import com.orange.fintech.auth.dto.CustomUserDetails;
 import com.orange.fintech.common.BaseResponseBody;
+import com.orange.fintech.common.exception.BigFileException;
+import com.orange.fintech.common.exception.EmptyFileException;
+import com.orange.fintech.common.exception.NotValidExtensionException;
 import com.orange.fintech.member.entity.Account;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.service.AccountService;
 import com.orange.fintech.member.service.MemberService;
 import com.orange.fintech.oauth.dto.MemberSearchResponseDto;
+import com.orange.fintech.util.FileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Tag(name = "Member", description = "회원 API")
@@ -27,6 +34,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/members")
 public class MemberController {
+
+    @Autowired FileService fileService;
 
     @Autowired MemberService memberService;
 
@@ -135,7 +144,7 @@ public class MemberController {
     }
 
     @DeleteMapping()
-    @Operation(summary = "회원 탈퇴", description = "")
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 진행한다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "정상 탈퇴"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
@@ -150,5 +159,84 @@ public class MemberController {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(BaseResponseBody.of(500, "탈퇴 중 오류 발생"));
+    }
+
+    @PutMapping(
+            value = "/profile",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "회원정보수정:프로필사진", description = "회원의 프로필 이미지를 변경한다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "정상 수정"),
+        @ApiResponse(responseCode = "400", description = "비어있는 파일"),
+        @ApiResponse(responseCode = "413", description = "20MB를 초과하는 파일"),
+        @ApiResponse(responseCode = "415", description = "지원하지 않는 확장자"),
+        @ApiResponse(responseCode = "500", description = "서버 오류"),
+        @ApiResponse(responseCode = "503", description = "서버 오류 (File IO)")
+    })
+    public ResponseEntity<?> updateProfileImage(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestPart(value = "file", required = true) MultipartFile profileImage) {
+
+        String kakaoId = customUserDetails.getUsername();
+        Member member = memberService.findByKakaoId(kakaoId);
+
+        try {
+            memberService.updateProfileImage(profileImage, member);
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(memberService.getSelfProfileURL(kakaoId));
+        } catch (EmptyFileException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(BaseResponseBody.of(400, "파일이 비어있습니다."));
+        } catch (BigFileException e) {
+            return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+                    .body(BaseResponseBody.of(413, "업로드한 파일의 용량이 20MB 이상입니다."));
+        } catch (NotValidExtensionException e) {
+            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                    .body(
+                            BaseResponseBody.of(
+                                    415, "지원하는 확장자가 아닙니다. 지원하는 이미지 형식: jpg, jpeg, pdf, tiff"));
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(BaseResponseBody.of(503, "썸네일 이미지 생성 중 예외 발생 (서비스 서버 오류)"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(BaseResponseBody.of(500, "서버 오류"));
+        }
+    }
+
+    @GetMapping("/profile")
+    @Operation(
+            summary = "프로필 이미지 조회",
+            description = "사용자 본인의 (카카오 CDN 또는 Amazon S3) 프로필 이미지 경로를 조회한다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "정상 반환"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> getSelfProfileURL(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        String kakaoId = customUserDetails.getUsername();
+
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.getSelfProfileURL(kakaoId));
+    }
+
+    @DeleteMapping("/profile")
+    @Operation(
+            summary = "프로필 이미지 삭제",
+            description = "사용자 본인의 (카카오 CDN 또는 Amazon S3) 프로필 이미지를 삭제한다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "정상 삭제"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> deleteSelfProfileURL(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        String kakaoId = customUserDetails.getUsername();
+
+        if (fileService.deleteProfileImageFilesOnAmazonS3(kakaoId)) {
+            return ResponseEntity.ok(BaseResponseBody.of(200, "정상적으로 삭제되었습니다."));
+        }
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(BaseResponseBody.of(500, "서버 오류"));
     }
 }

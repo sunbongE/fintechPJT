@@ -47,7 +47,6 @@ public class JoinServiceImpl implements JoinService {
                 member.setKakaoId(id);
                 member.setEmail(email);
                 member.setName(name);
-                // FIXME: Amazon S3로 프로필 이미지, 프로필 썸네일 이미지 업로드
                 member.setProfileImage(profileImageUrl);
                 member.setThumbnailImage(thumbnailImageUrl);
 
