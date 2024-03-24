@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/moneyrequests/ReceiptIcon.dart';
 import 'package:front/models/button/Toggle.dart';
@@ -58,7 +59,8 @@ class _MoneyRequestItemState extends State<MoneyRequestItem> {
                 isReceipt: widget.expense.receiptEnrolled,
               ),
               SizedBox(width: 8.w),
-              Expanded(
+              SizedBox(
+                width: 130.w,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,12 +88,16 @@ class _MoneyRequestItemState extends State<MoneyRequestItem> {
                   ],
                 ),
               ),
-              Text(
-                  '${NumberFormat('#,###').format(widget.expense.transactionBalance)}원',
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                  )),
+              SizedBox(
+                width: 110.w,
+                child: Text(
+                    '${NumberFormat('#,###').format(widget.expense.transactionBalance)}원',
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                    )),
+              ),
               SizedBox(width: 4.w),
               if (widget.isToggle)
                 Switch(

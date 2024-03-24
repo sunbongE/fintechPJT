@@ -7,6 +7,7 @@ import 'AmountInputField.dart';
 
 class RequestModifyItem extends StatefulWidget {
   final RequestMember member;
+  final int amount;
   final bool isLocked;
   final Function(bool) onLockedChanged;
   final Function(int) onAmountChanged;
@@ -17,6 +18,7 @@ class RequestModifyItem extends StatefulWidget {
     required this.isLocked,
     required this.onLockedChanged,
     required this.onAmountChanged,
+    required this.amount,
   }) : super(key: key);
 
   @override
@@ -32,8 +34,20 @@ class _RequestModifyItemState extends State<RequestModifyItem> {
     super.initState();
     isLocked = widget.isLocked;
     amountController = TextEditingController(
-      text: widget.member.amount.toString(),
+      text: widget.amount.toString(),
     );
+  }
+
+  @override
+  void didUpdateWidget(covariant RequestModifyItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.amount != widget.amount) {
+      //amountController.text = widget.amount.toString();
+      amountController = TextEditingController(
+        text: widget.amount.toString(),
+      );
+      //나중에 isLock관리
+    }
   }
 
   void toggleSettled() {
@@ -78,8 +92,12 @@ class _RequestModifyItemState extends State<RequestModifyItem> {
       subtitle: AmountInputField(
         controller: amountController,
         onSubmitted: (value) {
-          String removeCommaValue = value.replaceAll(',', '');
+          amountController.text = value.isEmpty ? '0' : amountController.text;
+          String removeCommaValue =
+              (value.isEmpty ? '0' : value).replaceAll(',', '');
           widget.onAmountChanged(int.parse(removeCommaValue));
+          isLocked = removeCommaValue == '0' ? false : true;
+          print(isLocked);
         },
       ),
       trailing: IconButton(

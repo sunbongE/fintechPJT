@@ -8,12 +8,13 @@ class RequestMemberItem extends StatefulWidget {
   final RequestMember member;
   final bool isSettledState;
   final Function(bool) onSettledChanged;
+  final Function(int) callbackAmount;
 
   const RequestMemberItem({
     Key? key,
     required this.member,
     required this.isSettledState,
-    required this.onSettledChanged,
+    required this.onSettledChanged, required this.callbackAmount,
   }) : super(key: key);
 
   @override
@@ -22,17 +23,26 @@ class RequestMemberItem extends StatefulWidget {
 
 class _RequestMemberItemState extends State<RequestMemberItem> {
   late bool isSettledState;
+  late int amount = 0;
 
   @override
   void initState() {
     super.initState();
     isSettledState = widget.isSettledState;
+    amount = widget.member.amount;//생성자 바꾸면 여기도 바꿔야함
   }
 
   void toggleSettled(bool value) {
     widget.onSettledChanged(value);
     setState(() {
       isSettledState = value;
+      if(!value){
+        amount = 0;
+        //나중에는 islock가져와서 잠금 해제
+      }else{
+        amount = 1;
+      }
+      widget.callbackAmount (amount);
     });
   }
 
@@ -64,7 +74,7 @@ class _RequestMemberItemState extends State<RequestMemberItem> {
         ),
       ),
       subtitle: Text(
-        '${NumberFormat('#,###').format(widget.member.amount)}원',
+        '${NumberFormat('#,###').format(amount)}원',
         style: TextStyle(
           color: TEXT_COLOR,
           fontSize: 18.sp,

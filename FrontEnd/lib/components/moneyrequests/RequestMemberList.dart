@@ -9,11 +9,12 @@ import 'RequestMemberItem.dart';
 class RequestMemberList extends StatefulWidget {
   final RequestDetail requestDetail;
   final Function(bool) allSettledCallback;
+  final Function(List<int>) callbackAmountList;
 
   const RequestMemberList({
     Key? key,
     required this.requestDetail,
-    required this.allSettledCallback,
+    required this.allSettledCallback, required this.callbackAmountList,
   }) : super(key: key);
 
   @override
@@ -24,14 +25,16 @@ class _RequestMemberListState extends State<RequestMemberList> {
   late List<bool> isSettledStates;
   bool allSettled = false;
   int settledMembersCount = 0;
+  late List<int> amountList;
 
   @override
   void initState() {
     super.initState();
     isSettledStates =
-        widget.requestDetail.members.map((m) => m.isSettled).toList();
+        widget.requestDetail.members.map((m) => m.amount!=0).toList();
     settledMembersCount =
-        widget.requestDetail.members.where((m) => m.isSettled).length;
+        widget.requestDetail.members.where((m) => m.amount!=0).length;
+    amountList = widget.requestDetail.members.map((m) => m.amount).toList();
   }
 
   void updateAllSettled() {
@@ -90,10 +93,13 @@ class _RequestMemberListState extends State<RequestMemberList> {
                 onSettledChanged: (bool value) {
                   setState(() {
                     isSettledStates[index] = value;
-                    print('isSettledStates: $isSettledStates');
+                    //print('isSettledStates: $isSettledStates');
                     updateAllSettled();
                   });
-                },
+                }, callbackAmount: (int value) { setState((){
+                amountList[index]=value;
+                print(amountList);
+              });},
               );
             },
           ),

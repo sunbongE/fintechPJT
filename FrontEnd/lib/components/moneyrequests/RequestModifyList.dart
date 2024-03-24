@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -33,17 +34,23 @@ class _RequestModifyListState extends State<RequestModifyList> {
   @override
   void initState() {
     super.initState();
-    isLockes = widget.requestDetail.members.map((m) => m.isSettled).toList();
+    isLockes = widget.requestDetail.members.map((m) => m.lock).toList();
     settledMembersCount =
-        widget.requestDetail.members.where((m) => m.isSettled).length;
+        widget.requestDetail.members.where((m) => m.amount!=0).length;
     personalAmounts =
         widget.requestAmount;
   }
 
-  void updateState() {
-    //settledMembersCount = isLockes.where((element) => element).length;// 금액 수정으로 변경해야댐....
-
+  @override
+  void didUpdateWidget(covariant RequestModifyList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!listEquals(oldWidget.requestAmount, widget.requestAmount)) {
+      setState(() {
+        personalAmounts = widget.requestAmount;
+      });
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +81,7 @@ class _RequestModifyListState extends State<RequestModifyList> {
               return RequestModifyItem(
                 member: member,
                 isLocked: isLockes[index],
+                amount: personalAmounts[index],
                 onLockedChanged: (bool value) {
                   setState(() {
                     isLockes[index] = value;
