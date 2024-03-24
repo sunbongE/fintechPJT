@@ -26,7 +26,6 @@ public class JWTUtil {
      * @param token
      * @return
      */
-    // TODO: 테스트 필요
     public String getKakaoId(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)

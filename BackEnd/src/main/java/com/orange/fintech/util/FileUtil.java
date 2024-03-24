@@ -44,4 +44,13 @@ public class FileUtil {
 
         return false;
     }
+
+    public boolean isLargerThan20MB(MultipartFile receiptImage) {
+        // CLOVA OCR 20MB 초과 업로드 불가
+        if (receiptImage.getSize() > 2 * Math.pow(10, 7)) {
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -1,17 +1,24 @@
 package com.orange.fintech.member.service;
 
+import com.orange.fintech.common.exception.BigFileException;
+import com.orange.fintech.common.exception.EmptyFileException;
+import com.orange.fintech.common.exception.NotValidExtensionException;
 import com.orange.fintech.jwt.JWTUtil;
 import com.orange.fintech.member.entity.Account;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.AccountRepository;
 import com.orange.fintech.member.repository.MemberRepository;
+import com.orange.fintech.member.repository.ProfileImageRepository;
 import com.orange.fintech.oauth.dto.MemberSearchResponseDto;
 import com.orange.fintech.redis.service.RedisService;
+import com.orange.fintech.util.FileService;
+import java.io.IOException;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -25,6 +32,10 @@ public class MemberServiceImpl implements MemberService {
     @Autowired JWTUtil jWTUtil;
 
     @Autowired PasswordEncoder passwordEncoder;
+
+    @Autowired FileService fileService;
+
+    @Autowired ProfileImageRepository profileImageRepository;
 
     // 그룹원 검색 응답
     @Override
@@ -98,5 +109,16 @@ public class MemberServiceImpl implements MemberService {
 
             return false;
         }
+    }
+
+    @Override
+    public boolean updateProfileImage(MultipartFile multipartFile, Member member)
+            throws IOException, EmptyFileException, BigFileException, NotValidExtensionException {
+        return fileService.uploadProfileImageToAmazonS3(multipartFile, member);
+    }
+
+    @Override
+    public String getSelfProfileURL(String kakaoId) {
+        return fileService.getProfileAndThumbnailImageUrl(kakaoId);
     }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.orange.fintech.auth.dto.CustomUserDetails;
 import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.common.exception.BigFileException;
+import com.orange.fintech.common.exception.EmptyFileException;
 import com.orange.fintech.common.exception.NotValidExtensionException;
 import com.orange.fintech.group.dto.*;
 import com.orange.fintech.group.entity.Group;
@@ -389,6 +390,9 @@ public class GroupController {
     @Operation(summary = "영수증 단건 등록", description = "영수증 1개를 업로드한다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "정상 등록"),
+        @ApiResponse(responseCode = "400", description = "비어있는 파일"),
+        @ApiResponse(responseCode = "413", description = "20MB를 초과하는 파일"),
+        @ApiResponse(responseCode = "415", description = "지원하지 않는 확장자"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> uploadSingleReceipt(
@@ -401,6 +405,9 @@ public class GroupController {
             JsonNode singleResponse = receiptOcrService.singleRequest(receiptImage);
 
             return ResponseEntity.status(HttpStatus.OK).body(singleResponse);
+        } catch (EmptyFileException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(BaseResponseBody.of(400, "파일이 비어있습니다."));
         } catch (BigFileException e) {
             return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
                     .body(BaseResponseBody.of(413, "업로드한 파일의 용량이 20MB 이상입니다."));

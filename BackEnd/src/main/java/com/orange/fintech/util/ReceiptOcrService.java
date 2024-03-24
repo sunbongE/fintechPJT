@@ -5,6 +5,7 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.fintech.common.exception.BigFileException;
+import com.orange.fintech.common.exception.EmptyFileException;
 import com.orange.fintech.common.exception.NotValidExtensionException;
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -35,29 +36,23 @@ public class ReceiptOcrService {
 
     RestClient restClient = RestClient.create();
 
-    public boolean isLargerThan20MB(MultipartFile receiptImage) {
-        // CLOVA OCR 20MB 초과 업로드 불가
-        if (receiptImage.getSize() > 2 * Math.pow(10, 7)) {
-            return true;
+    public JsonNode singleRequest(MultipartFile receiptImage)
+            throws EmptyFileException, BigFileException, NotValidExtensionException {
+        // 0-1. 업로드 한 파일이 비어있는지 확인
+        if (receiptImage.isEmpty()) {
+            throw new EmptyFileException();
         }
 
-        return false;
-    }
-
-    public JsonNode singleRequest(MultipartFile receiptImage)
-            throws BigFileException, NotValidExtensionException {
-        /*
-        //0-1. 파일 확장자 체크 (“jpg”, “jpeg”, “png”, "pdf","tiff" 이미지 포맷 지원)
+        // 0-2. 파일 확장자 체크 (“jpg”, “jpeg”, “png”, "pdf","tiff" 이미지 포맷 지원)
         String extension = FilenameUtils.getExtension(receiptImage.getOriginalFilename());
-        if(!fileUtil.isValidImageExtension(extension)) {
+        if (!fileUtil.isValidImageExtension(extension)) {
             throw new NotValidExtensionException();
         }
 
-        //0-2. 파일 용량 체크
-        if(isLargerThan20MB(receiptImage)) {
+        // 0-3. 파일 용량 체크
+        if (fileUtil.isLargerThan20MB(receiptImage)) {
             throw new BigFileException();
         }
-         */
 
         // 1. 요청 Body에 넣을 객체 생성 (requestBody #JSON)
         MultiValueMap<String, Object> requestBody = new LinkedMultiValueMap<>();
@@ -88,7 +83,6 @@ public class ReceiptOcrService {
 
         // 2-3-3. image에 값 추가
         // 2-3-3-1. 클라이언트가 업로드한 파일의 확장자 추출
-        String extension = FilenameUtils.getExtension(receiptImage.getOriginalFilename());
         image.put("format", extension);
 
         // 2-3-3-2. 클라이언트가 업로드한 파일의 이름 추출

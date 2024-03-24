@@ -94,6 +94,15 @@ dependencies {
 
 	//FilenameUtils
 	implementation 'commons-io:commons-io:2.15.1'
+
+	//com.amazonaws.util.Base64
+	implementation 'javax.xml.bind:jaxb-api:2.3.0'
+
+	//ImageMetadataReader -Image EXIF
+	implementation 'com.drewnoakes:metadata-extractor:2.18.0'
+
+	//Scalr -Image rotation
+	implementation 'org.imgscalr:imgscalr-lib:4.2'
 }
 
 tasks.named('test') {
