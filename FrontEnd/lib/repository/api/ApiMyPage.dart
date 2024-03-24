@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:front/repository/commons.dart';
 
 final api = ApiClient();
+final fileApi = ApiFileClient();
 
 // 프로필 사진 변경
 Future<void> putProfileImage(data) async {
@@ -24,12 +25,13 @@ Future<void> putMyAccount(data) async {
   }
 }
 
-// 이미지 업로드 요청
-Future<dynamic> postUploadImage(formData) async {
+// 회원의 프로필 이미지를 변경한다.
+Future<Response> putUploadImage(formData) async {
   try {
-    final res = await api.post("/members/profile", data: formData);
-    return res.data;
+    final res = await fileApi.put("/members/profile", data: formData);
+    return res;
   } catch (e) {
+    print(e);
     throw Exception('Failed to post user info');
   }
 }

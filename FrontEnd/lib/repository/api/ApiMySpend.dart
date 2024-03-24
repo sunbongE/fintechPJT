@@ -1,14 +1,15 @@
+import 'package:dio/dio.dart';
 import 'package:front/repository/commons.dart';
 
 final api = ApiClient();
 
 // 회원 본인의 계좌정보를 조회한다.
-Future<List<Map<String, dynamic>>?> getMyAccount(data) async {
+Future<Response> getMyAccount() async {
   try {
-    final res = await api.get('/members/account', queryParameters: data);
-    return res.data;
+    final res = await api.get('/members/account',);
+    return res;
   } catch (err) {
     print(err);
-    return null;
+    throw Exception('Failed to post user info');
   }
 }

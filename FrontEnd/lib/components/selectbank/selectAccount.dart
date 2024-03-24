@@ -36,7 +36,7 @@ class _SelectAccountState extends State<SelectAccount> {
       });
 
       // 한국은행에서 내가 가진 계좌 리스트 get API
-      // List<Map<String, dynamic>>? getAccounts = await getBankInfo(widget.selectedBank);
+      // final res = await getBankInfo(widget.selectedBank);
       // await Future.delayed(Duration(seconds: 2));
 
       List<Map<String, dynamic>>? getAccounts = [

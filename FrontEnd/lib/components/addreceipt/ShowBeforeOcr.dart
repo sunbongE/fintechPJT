@@ -14,7 +14,9 @@ import '../../screen/YjReceipt.dart';
 import 'ModifyReceipt.dart';
 
 class ShowBeforeOcr extends StatefulWidget {
-  ShowBeforeOcr({Key? key}) : super(key: key);
+  final Function(List<Receipt>) onReceiptsChanged;
+
+  ShowBeforeOcr({Key? key, required this.onReceiptsChanged}) : super(key: key);
 
   @override
   State<ShowBeforeOcr> createState() => _ShowBeforeOcrState();
@@ -28,6 +30,7 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
 
   double _progressValue = 0;
   int _currentPageIndex = 0;
+  bool isLoading = false;
 
   @override
   void dispose() {
@@ -53,6 +56,7 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
     if (modifiedReceipt != null) {
       setState(() {
         receiptData[index] = modifiedReceipt;
+        widget.onReceiptsChanged(receiptData);
         print(receiptData[index].storeName);
         print(receiptData[index].subName);
         print(receiptData[index].addresses);
@@ -117,6 +121,10 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
 
   // 선택된 이미지를 네이버 클로바로 보내는 api 호출
   Future<void> onImageSelected(XFile image) async {
+    setState(() {
+      isLoading = true;
+    });
+
     String fileName = image.name;
     String requestId = DateTime.now().millisecondsSinceEpoch.toString();
     FormData formData = FormData.fromMap({
@@ -126,33 +134,18 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
         "requestId": requestId,
         "timestamp": 0,
         "images": [
-          {
-            "format": "jpg",
-            "name": fileName,
-          }
+          { "format": "jpg", "name": fileName, }
         ]
       }),
     });
 
-    print("파일 이름: $fileName");
-    print("요청 ID: $requestId");
-    var message = jsonDecode(formData.fields.firstWhere((element) => element.key == 'message').value);
-    message['images'].forEach((image) {
-      print("이미지 이름: ${image['name']}");
-    });
-
+    // API 호출 및 응답 처리
     final res = await postReceiptImage(formData);
     Receipt receipt = Receipt.fromJson(res.data);
 
-    debugPrint("2222222222 data: ${receipt.storeName}");
-    debugPrint("3333333333 data: ${receipt.subName}");
-    debugPrint("4444444444 data: ${receipt.addresses}");
-    debugPrint("5555555555 data: ${receipt.date}");
-    debugPrint("6666666666 data: ${receipt.items}");
-    debugPrint("7777777777 data: ${receipt.totalPrice}");
-
     setState(() {
       receiptData.add(receipt);
+      isLoading = false;
     });
   }
 
@@ -179,12 +172,14 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
     return Scaffold(
       body: Column(
         children: [
+          if (isLoading)
+            Center(child: CircularProgressIndicator()),
           LinearProgressIndicator(
             value: _progressValue,
             backgroundColor: BG_COLOR,
             valueColor: AlwaysStoppedAnimation<Color>(PRIMARY_COLOR),
           ),
-          if (_currentPageIndex == receiptData.length)
+          if (receiptData.length > 0 && _currentPageIndex == receiptData.length)
             Text(
               "옆으로 넘기면 새 영수증을 추가할 수 있습니다.",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey),

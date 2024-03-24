@@ -18,22 +18,20 @@ Future<Response> postUserInfo(data) async {
 Future<void> postPassWord(data) async {
   try {
     final res = await api.post('/members/pin', data: data);
-    print(1111);
     return res.data;
   } catch (err) {
-    print(2222);
     print(err);
   }
 }
 
 // 사용자가 선택한 은행과 연결된 계좌 목록 get
-Future<List<Map<String, dynamic>>?> getBankInfo(data) async {
+Future<Response> getBankInfo(data) async {
   try {
     final res = await api.get('/bank/myAccount', queryParameters: data);
-    return res.data;
+    return res;
   } catch (err) {
     print(err);
-    return null;
+    throw Exception('Failed to post user info');
   }
 }
 
