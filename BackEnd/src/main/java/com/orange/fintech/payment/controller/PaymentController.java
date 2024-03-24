@@ -64,9 +64,9 @@ public class PaymentController {
             @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
             Principal principal) {
 
-        if (!paymentService.isMyTransaction(principal.getName(), paymentId)) {
-            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "FORBIDDEN"));
-        }
+        //        if (!paymentService.isMyTransaction(principal.getName(), paymentId)) {
+        //            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "FORBIDDEN"));
+        //        }
 
         if (paymentService.changeContainStatus(paymentId, groupId)) {
 
@@ -90,9 +90,9 @@ public class PaymentController {
             @RequestBody TransactionEditReq req,
             Principal principal) {
         log.info("editTransaction 시작");
-        if (!paymentService.isMyTransaction(principal.getName(), paymentId)) {
-            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "FORBIDDEN"));
-        }
+        //        if (!paymentService.isMyTransaction(principal.getName(), paymentId)) {
+        //            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "FORBIDDEN"));
+        //        }
 
         try {
             paymentService.editTransactionDetail(paymentId, req);
@@ -136,10 +136,10 @@ public class PaymentController {
             @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
             Principal principal) {
 
-        if (!paymentService.isMyGroup(principal.getName(), groupId)
-                || !paymentService.isMyGroupTransaction(groupId, paymentId)) {
-            return ResponseEntity.status(403).body(null);
-        }
+        //        if (!paymentService.isMyGroup(principal.getName(), groupId)
+        //                || !paymentService.isMyGroupTransaction(groupId, paymentId)) {
+        //            return ResponseEntity.status(403).body(null);
+        //        }
 
         try {
             GroupTransactionDetailRes res = paymentService.getGroupTransactionDetail(paymentId);
@@ -191,10 +191,10 @@ public class PaymentController {
             @PathVariable @Parameter(description = "영수증 아이디", in = ParameterIn.PATH) int receiptId,
             Principal principal) {
 
-        if (!paymentService.isMyGroup(principal.getName(), groupId)
-                || !paymentService.isMyGroupTransaction(groupId, paymentId)) {
-            return ResponseEntity.status(403).body(null);
-        }
+        //        if (!paymentService.isMyGroup(principal.getName(), groupId)
+        //                || !paymentService.isMyGroupTransaction(groupId, paymentId)) {
+        //            return ResponseEntity.status(403).body(null);
+        //        }
 
         try {
             ReceiptDto res = paymentService.getGroupReceipt(receiptId);
@@ -221,10 +221,10 @@ public class PaymentController {
                     int receiptDetailId,
             Principal principal) {
 
-        if (!paymentService.isMyGroup(principal.getName(), groupId)
-                || !paymentService.isMyGroupTransaction(groupId, paymentId)) {
-            return ResponseEntity.status(403).body(null);
-        }
+        //        if (!paymentService.isMyGroup(principal.getName(), groupId)
+        //                || !paymentService.isMyGroupTransaction(groupId, paymentId)) {
+        //            return ResponseEntity.status(403).body(null);
+        //        }
 
         try {
             ReceiptDetailRes groupReceiptDetail =
@@ -252,10 +252,10 @@ public class PaymentController {
             @RequestBody List<ReceiptDetailMemberDto> memberList,
             Principal principal) {
 
-//        if (!paymentService.isMyGroup(principal.getName(), groupId)
-//                || !paymentService.isMyGroupTransaction(groupId, paymentId)) {
-//            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "FORBIDDEN"));
-//        }
+        //        if (!paymentService.isMyGroup(principal.getName(), groupId)
+        //                || !paymentService.isMyGroupTransaction(groupId, paymentId)) {
+        //            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "FORBIDDEN"));
+        //        }
 
         try {
             paymentService.setReceiptDetailMember(memberList);
