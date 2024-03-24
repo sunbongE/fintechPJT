@@ -3,9 +3,6 @@ package com.orange.fintech.util;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
-// TODO: TTL 늘리기
-// @RedisHash(value = "refreshToken", timeToLive = 60)
-// TTL 3개월
 @RedisHash(value = "refreshToken", timeToLive = 60 * 60 * 24 * 90)
 public class RefreshToken {
 

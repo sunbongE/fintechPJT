@@ -1,6 +1,5 @@
 package com.orange.fintech.redis.service;
 
-import com.orange.fintech.util.RefreshTokenRepository;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class RedisServiceImpl implements RedisService {
-    @Autowired private final RefreshTokenRepository refreshTokenRepository;
 
     @Autowired private RedisTemplate<String, Object> redisTemplate;
 
