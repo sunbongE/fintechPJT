@@ -22,7 +22,7 @@ public class QTransaction extends EntityPathBase<Transaction> {
 
     public static final QTransaction transaction = new QTransaction("transaction");
 
-    public final com.orange.fintech.member.entity.QAccount account;
+    public final com.orange.fintech.account.entity.QAccount account;
 
     public final com.orange.fintech.member.entity.QMember member;
 
@@ -62,7 +62,7 @@ public class QTransaction extends EntityPathBase<Transaction> {
 
     public QTransaction(Class<? extends Transaction> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.account = inits.isInitialized("account") ? new com.orange.fintech.member.entity.QAccount(forProperty("account"), inits.get("account")) : null;
+        this.account = inits.isInitialized("account") ? new com.orange.fintech.account.entity.QAccount(forProperty("account"), inits.get("account")) : null;
         this.member = inits.isInitialized("member") ? new com.orange.fintech.member.entity.QMember(forProperty("member")) : null;
     }
 

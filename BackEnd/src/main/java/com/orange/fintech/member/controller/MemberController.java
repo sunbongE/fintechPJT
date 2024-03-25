@@ -1,13 +1,14 @@
 package com.orange.fintech.member.controller;
 
+import com.orange.fintech.account.entity.Account;
 import com.orange.fintech.auth.dto.CustomUserDetails;
 import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.common.exception.BigFileException;
 import com.orange.fintech.common.exception.EmptyFileException;
 import com.orange.fintech.common.exception.NotValidExtensionException;
-import com.orange.fintech.member.entity.Account;
 import com.orange.fintech.member.entity.Member;
-import com.orange.fintech.member.service.AccountService;
+import com.orange.fintech.account.service.AccountService;
+import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.member.service.MemberService;
 import com.orange.fintech.oauth.dto.MemberSearchResponseDto;
 import com.orange.fintech.util.FileService;
@@ -17,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
@@ -40,6 +43,8 @@ public class MemberController {
     @Autowired MemberService memberService;
 
     @Autowired AccountService accountService;
+    @Autowired
+    MemberRepository memberRepository;
 
     @GetMapping("/account")
     @Operation(
@@ -240,5 +245,30 @@ public class MemberController {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(BaseResponseBody.of(500, "서버 오류"));
+    }
+
+    @GetMapping("/mydata/search")
+    @Operation(summary = "싸피은행에서 회원정보 불러오기. ", description = "싸피은행에서 회원정보 불러오기.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> searchMember(Principal principal) {
+
+        try {
+            RestClient restClient = RestClient.create();
+            Member member = memberRepository.findById(principal.getName()).get();
+            String email = member.getEmail();
+            if (email == null)
+                return ResponseEntity.badRequest()
+                        .body(BaseResponseBody.of(400, "회원정보로 가입된 은행정보가 없습니다."));
+
+            return memberService.searchMember(email);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(BaseResponseBody.of(500, "서버 에러"));
+        }
     }
 }

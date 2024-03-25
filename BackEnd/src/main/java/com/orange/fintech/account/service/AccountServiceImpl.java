@@ -1,16 +1,35 @@
-package com.orange.fintech.member.service;
+package com.orange.fintech.account.service;
 
-import com.orange.fintech.member.entity.Account;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.orange.fintech.account.entity.Account;
+import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.AccountRepository;
+import com.orange.fintech.member.repository.MemberRepository;
+import com.orange.fintech.member.service.MemberService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
+@Slf4j
 public class AccountServiceImpl implements AccountService {
     @Autowired AccountRepository accountRepository;
+    @Autowired
+    MemberRepository memberRepository;
 
-    @Autowired MemberService memberService;
+    @Autowired
+    MemberService memberService;
+
+
 
     @Override
     public boolean insertAccount(String kakaoId, Account account) {
