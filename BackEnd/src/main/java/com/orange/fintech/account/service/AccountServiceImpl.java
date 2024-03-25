@@ -1,35 +1,34 @@
 package com.orange.fintech.account.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.orange.fintech.account.dto.AccountResDto;
+import com.orange.fintech.account.dto.ReqHeader;
 import com.orange.fintech.account.entity.Account;
-import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.AccountRepository;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.member.service.MemberService;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @Slf4j
 public class AccountServiceImpl implements AccountService {
     @Autowired AccountRepository accountRepository;
-    @Autowired
-    MemberRepository memberRepository;
+    @Autowired MemberRepository memberRepository;
 
-    @Autowired
-    MemberService memberService;
+    @Autowired MemberService memberService;
 
+    @Value("${ssafy.bank.search.accounts}")
+    private String searchAccountsUrl;
 
+    @Value("${ssafy.bank.api-key}")
+    private String apiKey;
 
     @Override
     public boolean insertAccount(String kakaoId, Account account) {
@@ -60,5 +59,37 @@ public class AccountServiceImpl implements AccountService {
         Account newPrimaryAccount = accountRepository.findByAccountNo(accountNo);
         newPrimaryAccount.setIsPrimaryAccount(true);
         accountRepository.save(newPrimaryAccount);
+    }
+
+    @Override
+    public List<AccountResDto> findAccountList(String memberId) {
+        String apinameAndApiServiceCode = getApinameAndApiServiceCode(searchAccountsUrl);
+
+        Member member = memberRepository.findById(memberId).get();
+        String userKey = member.getUserKey();
+
+        ReqHeader reqHeader = new ReqHeader();
+        reqHeader.setApiKey(apiKey);
+        reqHeader.setUserKey(userKey);
+        reqHeader.setApiName(apinameAndApiServiceCode);
+        reqHeader.setApiServiceCode(apinameAndApiServiceCode);
+        RestClient.ResponseSpec response = null;
+        RestClient restClient = RestClient.create();
+        Map<String, Object> req = new HashMap<>();
+        req.put("Header", reqHeader);
+
+        response = restClient.post().uri(searchAccountsUrl).body(req).retrieve();
+        log.info(response.body(String.class));
+
+        log.info(reqHeader.toString());
+
+        return null;
+    }
+
+    @Override
+    public String getApinameAndApiServiceCode(String url) {
+        String[] tmp = url.split("/");
+        String result = tmp[tmp.length - 1];
+        return result;
     }
 }
