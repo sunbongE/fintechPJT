@@ -122,6 +122,8 @@ public class GroupServiceImpl implements GroupService {
         data.setGroupMemberPK(groupMemberPK);
 
         groupMemberRepository.save(data);
+
+        // 여기서 캐시 날려주셈
         return true;
     }
 

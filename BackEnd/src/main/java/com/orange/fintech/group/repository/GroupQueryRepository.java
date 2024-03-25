@@ -34,8 +34,10 @@ public class GroupQueryRepository {
                                 Group.class,
                                 group.groupId,
                                 group.groupName,
+                                group.theme,
                                 group.startDate,
-                                group.endDate))
+                                group.endDate,
+                                group.isCalculateDone))
                 .from(group)
                 .leftJoin(groupMember)
                 .on(group.groupId.eq(groupMember.groupMemberPK.group.groupId))
