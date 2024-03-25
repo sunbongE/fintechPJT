@@ -112,6 +112,8 @@ public class GroupServiceImpl implements GroupService {
             GroupMember groupMember = groupMemberRepository.findById(groupMemberPK).get();
             groupMember.setState(false);
             groupMemberRepository.save(groupMember);
+
+            groupRedisService.deleteData(groupId);
             return true;
         }
         return false;
