@@ -1,6 +1,7 @@
-package com.orange.fintech.member.entity;
+package com.orange.fintech.account.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.orange.fintech.member.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.orange.fintech.member.entity;
+package com.orange.fintech.account.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QAccount extends EntityPathBase<Account> {
 
-    private static final long serialVersionUID = -1174591402L;
+    private static final long serialVersionUID = 1045619043L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
@@ -30,7 +30,7 @@ public class QAccount extends EntityPathBase<Account> {
 
     public final BooleanPath isPrimaryAccount = createBoolean("isPrimaryAccount");
 
-    public final QMember member;
+    public final com.orange.fintech.member.entity.QMember member;
 
     public QAccount(String variable) {
         this(Account.class, forVariable(variable), INITS);
@@ -50,7 +50,7 @@ public class QAccount extends EntityPathBase<Account> {
 
     public QAccount(Class<? extends Account> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.member = inits.isInitialized("member") ? new QMember(forProperty("member")) : null;
+        this.member = inits.isInitialized("member") ? new com.orange.fintech.member.entity.QMember(forProperty("member")) : null;
     }
 
 }
