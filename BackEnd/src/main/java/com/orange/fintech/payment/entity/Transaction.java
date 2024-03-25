@@ -1,7 +1,7 @@
 package com.orange.fintech.payment.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.orange.fintech.member.entity.Account;
+import com.orange.fintech.account.entity.Account;
 import com.orange.fintech.member.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
