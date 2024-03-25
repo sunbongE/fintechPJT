@@ -27,6 +27,8 @@ public class Receipt {
 
     @NotNull private String businessName;
 
+    private String subName;
+
     @NotNull private String location;
 
     @NotNull

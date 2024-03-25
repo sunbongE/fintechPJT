@@ -32,6 +32,8 @@ public class QReceipt extends EntityPathBase<Receipt> {
 
     public final NumberPath<Integer> receiptId = createNumber("receiptId", Integer.class);
 
+    public final StringPath subName = createString("subName");
+
     public final NumberPath<Integer> totalPrice = createNumber("totalPrice", Integer.class);
 
     public final QTransaction transaction;
