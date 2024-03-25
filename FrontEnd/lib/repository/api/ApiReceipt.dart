@@ -1,17 +1,21 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:front/repository/commons.dart';
+
+import '../../entities/Receipt.dart';
 
 final api = ApiClient();
 
 Future<Response> postReceiptImage(FormData formData) async {
   var dio = Dio();
+
   try {
     final res = await dio.post(
-      'https://0xk6maip7m.apigw.ntruss.com/custom/v1/29150/799498f1feeb274ee00714974948725693d0eb995f5478622e975cd57c51c4f7/document/receipt',
+      dotenv.env['OCR_URL']!,
       data: formData,
       options: Options(
         headers: {
-          // 'X-OCR-SECRET': 'eGduV3FSVHNaZklGeGxVT1J4R1drd2diT1pMeGxiT0o=',
+          'X-OCR-SECRET': dotenv.env['OCR_TOKEN']!,
         },
       ),
     );
@@ -22,12 +26,23 @@ Future<Response> postReceiptImage(FormData formData) async {
   }
 }
 
-Future<Response> postYjReceipt(groupId, paymentId, data) async {
-  try{
-    final res = api.post('/groups/${groupId}/payments/${paymentId}/singlereceipt', data: data);
+Future<Response> postYjReceipt(List<Receipt> data) async {
+  try {
+    final res = api.post('/members/test', data: data);
     return res;
-  } catch(err) {
+  } catch (err) {
     print(err);
-    throw(err);
+    throw (err);
+  }
+}
+
+// 영수증 더미데이터 추가하기~~
+Future<Response> postReceiptFakeData(List<Receipt> data) async {
+  try {
+    final res = api.post('/members/test', data: data);
+    return res;
+  } catch (err) {
+    print(err);
+    throw (err);
   }
 }
