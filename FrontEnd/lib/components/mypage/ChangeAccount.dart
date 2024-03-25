@@ -39,22 +39,26 @@ class _ChangeAccountState extends State<ChangeAccount> {
       setState(() {
         isLoading = true;
       });
-      // List<Map<String, dynamic>>? getAccounts = await getBankInfo(widget.selectedBank);
+
+      // 한국은행에서 내가 가진 계좌 리스트 get API
+      // final res = await getBankInfo(widget.selectedBank);
       // await Future.delayed(Duration(seconds: 2));
+
       List<Map<String, dynamic>>? getAccounts = [
-        {"idx": 0, "account": "3333-06-2400348"},
-        {"idx": 1, "account": "3333-24-8039659"},
-        {"idx": 2, "account": "3333-23-6307311"},
-        {"idx": 3, "account": "3333-09-6719262"},
-        {"idx": 4, "account": "3333-09-6719262"},
-        {"idx": 5, "account": "3333-09-6719262"},
-        {"idx": 6, "account": "3333-09-6719262"},
-        {"idx": 7, "account": "3333-09-6719262"},
+        {"accountNo": "3333-33-2400348", "balance": 0, "isPrimaryAccount": true, "institutionCode": null},
+        {"accountNo": "3333-24-8039659", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
+        {"accountNo": "3333-23-6307311", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
+        {"accountNo": "3333-09-6719262", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
+        {"accountNo": "3333-06-2400348", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
+        {"accountNo": "3333-06-2400348", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
+        {"accountNo": "3333-06-2400348", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
+        {"accountNo": "3333-06-2400348", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
+        {"accountNo": "3333-06-2400348", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
       ];
 
       setState(() {
         isLoading = false;
-        accountList = getAccounts.isNotEmpty ? getAccounts : null;
+        accountList = getAccounts;
       });
     } catch (e) {
       setState(() {
@@ -75,7 +79,7 @@ class _ChangeAccountState extends State<ChangeAccount> {
         child: Center(
           child: isLoading
               ? CircularProgressIndicator()
-              : accountList == null
+              : accountList == []
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
