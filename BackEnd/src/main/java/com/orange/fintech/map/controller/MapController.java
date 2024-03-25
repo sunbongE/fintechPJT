@@ -25,7 +25,7 @@ public class MapController {
     private final MapService mapService;
 
     @GetMapping("/group/{groupId}")
-    @Operation(summary = "그룹 내에서 내 결제 내역 조회", description = "<strong>그룹 아이디</strong>로 을 조회한다.")
+    @Operation(summary = "그룹의 결제 위치 목록 불러오기", description = "<strong>그룹 아이디</strong>로 위치 목록을 조회한다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "성공"),
         @ApiResponse(responseCode = "404", description = "사용자 정보 없음"),
