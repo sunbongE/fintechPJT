@@ -156,6 +156,7 @@ public class FileServiceImpl implements FileService {
             deleteProfileImageFilesOnAmazonS3(member.getKakaoId());
         }
 
+
         // 4-3. profile_image 테이블에 Amazon S3 기준 파일 경로 저장
         profileImage.setProfileImagePath(amazonProfileFilePath);
         profileImage.setThumbnailImagePath(amazonProfileThumbnailFilePath);
