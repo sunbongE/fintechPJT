@@ -120,7 +120,13 @@ public class FileServiceImpl implements FileService {
         // 2-3. 한 변의 길이가 최대 640인 썸네일 이미지 생성
         File thumbnailFile = imageUtil.createThumbnailImage(convertedFile, 640, 640);
 
-        // 3. Amazon S3 파일 업로드
+        // 3. ProfileImage 레코드 조회 -> 레코드가 존재하면 AmazonS3의 기존 프로필 이미지 삭제
+        ProfileImage profileImage = profileImageRepository.findByMember(member);
+        if (profileImage != null) {
+            deleteProfileImageFilesOnAmazonS3(member.getKakaoId());
+        }
+
+        // 4. Amazon S3 파일 업로드
         try (InputStream inputStream = multipartFile.getInputStream()) {
             // 3-1. 원본 이미지 업로드
             amazonS3Client.putObject(
@@ -138,23 +144,26 @@ public class FileServiceImpl implements FileService {
             return false;
         }
 
-        // 4. profile_image 테이블에 Amazon S3 기준 파일 경로 저장
+        // 4. 테이블에 프로필 이미지 경로 추가
         // 기존 레코드 없으면 추가, 있으면 업데이트 (사용자가 앱 내에서 프로필 사진을 수정한 적이 있는 경우 레코드 존재)
-        ProfileImage profileImage = profileImageRepository.findByMember(member);
-
-        if (profileImage == null) {     // 4-1. 레코드 없음 -> 생성
+        if (profileImage == null) {
             profileImage = new ProfileImage();
             profileImage.setMember(member);
         } else {                        // 4-2. AmazonS3의 기존 프로필 이미지 삭제
             deleteProfileImageFilesOnAmazonS3(member.getKakaoId());
         }
 
+        // 4-3. profile_image 테이블에 Amazon S3 기준 파일 경로 저장
         profileImage.setProfileImagePath(amazonProfileFilePath);
         profileImage.setThumbnailImagePath(amazonProfileThumbnailFilePath);
 
         profileImageRepository.save(profileImage);
 
-        // 6. MultipartFile -> File로 변환하면서 로컬에 저장된 파일 삭제
+        // 4-3. member 테이블에 Amazon S3 기준 파일 경로 저장
+        member.setProfileImage(getProfileThumbnailImageUrl(member.getKakaoId()));
+        member.setThumbnailImage(getProfileThumbnailImageUrl(member.getKakaoId()));
+
+        // 5. MultipartFile -> File로 변환하면서 로컬에 저장된 파일 삭제
         fileUtil.removeFile(convertedFile);
         fileUtil.removeFile(thumbnailFile);
 
