@@ -11,6 +11,7 @@ import com.orange.fintech.common.exception.EmptyFileException;
 import com.orange.fintech.common.exception.NotValidExtensionException;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.entity.ProfileImage;
+import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.member.repository.ProfileImageRepository;
 import java.io.File;
 import java.io.IOException;
@@ -41,6 +42,8 @@ public class FileServiceImpl implements FileService {
     @Autowired FileUtil fileUtil;
 
     @Autowired ImageUtil imageUtil;
+
+    @Autowired MemberRepository memberRepository;
 
     @Override
     public boolean deleteFileOnAmazonS3(String path) {
@@ -149,7 +152,7 @@ public class FileServiceImpl implements FileService {
         if (profileImage == null) {
             profileImage = new ProfileImage();
             profileImage.setMember(member);
-        } else {                        // 4-2. AmazonS3의 기존 프로필 이미지 삭제
+        } else { // 4-2. AmazonS3의 기존 프로필 이미지 삭제
             deleteProfileImageFilesOnAmazonS3(member.getKakaoId());
         }
 
@@ -162,6 +165,8 @@ public class FileServiceImpl implements FileService {
         // 4-3. member 테이블에 Amazon S3 기준 파일 경로 저장
         member.setProfileImage(getProfileThumbnailImageUrl(member.getKakaoId()));
         member.setThumbnailImage(getProfileThumbnailImageUrl(member.getKakaoId()));
+
+        memberRepository.save(member);
 
         // 5. MultipartFile -> File로 변환하면서 로컬에 저장된 파일 삭제
         fileUtil.removeFile(convertedFile);
