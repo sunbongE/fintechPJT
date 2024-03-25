@@ -2,6 +2,7 @@ package com.orange.fintech.payment.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.orange.fintech.payment.entity.Receipt;
+import com.orange.fintech.payment.entity.TransactionDetail;
 import com.orange.fintech.payment.entity.TransactionMember;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
@@ -49,6 +50,15 @@ public class GroupTransactionDetailRes {
     @Schema(description = "지도 표시 여부")
     private Boolean visibility;
 
+    @Schema(description = "메모")
+    private String memo;
+
+    @Schema(description = "자투리 금액")
+    private Integer remainder;
+
+    @Schema(description = "영수증 등록 여부")
+    private Boolean receiptEnrolled;
+
     @Schema(description = "거래 멤버 리스트")
     private List<TransactionMemberDto> memberList;
 
@@ -76,6 +86,17 @@ public class GroupTransactionDetailRes {
 
         GroupTransactionDetailRes res = of(receipt);
         res.setMemberList(list);
+        return res;
+    }
+
+    public static GroupTransactionDetailRes of(
+            Receipt receipt,
+            List<TransactionMember> transactionMembers,
+            TransactionDetail transactionDetail) {
+        GroupTransactionDetailRes res = of(receipt, transactionMembers);
+        res.setMemo(transactionDetail.getMemo());
+        res.setRemainder(transactionDetail.getRemainder());
+        res.setReceiptEnrolled(transactionDetail.getReceiptEnrolled());
         return res;
     }
 }
