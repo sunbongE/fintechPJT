@@ -4,12 +4,13 @@ import 'package:front/screen/groupscreens/GroupModify.dart';
 import '../../entities/Group.dart';
 import 'package:front/components/groups/GroupDescription.dart';
 import 'package:front/components/groups/MyGroupRequest.dart';
+import 'package:front/repository/api/ApiGroup.dart';
+
+import '../../models/button/ButtonSlideAnimation.dart';
 
 class GroupDetail extends StatelessWidget {
   final Group group;
-  final VoidCallback onDelete;
-
-  GroupDetail({required this.group, required this.onDelete});
+  GroupDetail({required this.group});
 
   void removeGroup(BuildContext context, Group group) {
     showDialog(
@@ -22,16 +23,14 @@ class GroupDetail extends StatelessWidget {
             TextButton(
               child: Text('아니오'),
               onPressed: () {
-                Navigator.of(context).pop(); // 모달 닫기
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
               child: Text('네'),
-              onPressed: () {
-                onDelete(); // 삭제 버튼 클릭시 콜백 함수 호출
-                Navigator.of(context).pop(); // 모달 닫기
-                Navigator.of(context).pop(); // Detail2 닫기
-                Navigator.of(context).pop(); // Detail 닫기
+              onPressed: () async {
+                await deleteGroup(group.groupId); // 그룹 삭제 비동기 호출
+                buttonSlideAnimationPushAndRemoveUntil(context, 1);
               },
             ),
           ],

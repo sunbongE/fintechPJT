@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:front/components/groups/GroupJoinMemberCarousel.dart';
 import 'package:front/const/colors/Colors.dart';
 import '../../entities/Group.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:front/entities/GroupMember.dart';
+import 'package:front/repository/api/ApiGroup.dart';
 
 class GroupJoinMember extends StatefulWidget {
   final Group group;
@@ -16,6 +18,38 @@ class GroupJoinMember extends StatefulWidget {
 }
 
 class _GroupJoinMemberState extends State<GroupJoinMember> {
+  List<GroupMember> members = [];
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchMembers();
+  }
+
+  void fetchMembers() async {
+    setState(() {
+      isLoading = true;
+    });
+    final groupMembersJson = await getGroupMemberList(widget.group.groupId);
+    if (groupMembersJson != null) {
+      setState(() {
+        members = (groupMembersJson.data['groupMembersDtos'] as List)
+            .map((item) => GroupMember.fromJson(item))
+            .toList();
+        isLoading = false;
+      });
+      // print(groupsJson.data);
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      print("그룹 데이터를 불러오는 데 실패했습니다.");
+    }
+
+    // print(groupMembersJson.data['groupMembersDtos']);
+  }
+
   // 이메일 추가 로직을 위한 메서드
   void _addMember() {
     showDialog(
@@ -37,7 +71,10 @@ class _GroupJoinMemberState extends State<GroupJoinMember> {
                     if (_formKey.currentState!.validate()) {
                       // 백엔드에 이메일 전달 후 데이터 받아오는 로직 추가
                       // 예시에서는 단순화를 위해 바로 ListView에 추가
-                      var newMember = GroupMember(name: '새로운 이름', email: _emailController.text, profileimg: 'dlalwl');
+                      var newMember = GroupMember(
+                          name: '새로운 이름',
+                          kakaoId: _emailController.text,
+                          thumbnailImage: 'dlalwl');
                       setState(() {
                         widget.group.groupMembers.add(newMember);
                       });
@@ -47,7 +84,9 @@ class _GroupJoinMemberState extends State<GroupJoinMember> {
                 ),
               ),
               validator: (value) {
-                if (value == null || value.isEmpty || !EmailValidator.validate(value)) {
+                if (value == null ||
+                    value.isEmpty ||
+                    !EmailValidator.validate(value)) {
                   return '유효한 이메일을 입력해주세요.';
                 }
                 return null;
@@ -61,96 +100,33 @@ class _GroupJoinMemberState extends State<GroupJoinMember> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.add),
-              tooltip: '인원 추가',
-              onPressed: _addMember, // 인원 추가 로직 연결
-            ),
-          ],
-        ),
-        Center(
-          child: Container(
-            height: 100.h,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: widget.group.groupMembers
-                  .map((member) => Card(
-                child: Container(
-                  width: 100.w,
-                  child: Center(
-                      child: Column(
-                        children: [
-                          Text(member.name),
-                          Text(member.email),
-                          // 이미지 추가 예시
-                          // Image.network(member.profileimg),
-                        ],
-                      )),
-                ),
-              ))
-                  .toList(),
-            ),
+    return SizedBox(
+      height: 180.h,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: _addMember, // 인원 추가 로직 연결
+              ),
+            ],
           ),
-        ),
-      ],
+          isLoading // isLoading의 상태에 따라 다른 위젯을 표시
+              ? Center(
+                  child: Column(
+                    // mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 20.h),
+                      Text("멤버를 불러오고 있습니다"),
+                    ],
+                  ),
+                )
+              : GroupJoinMemberCarousel(members: members),
+        ],
+      ),
     );
   }
 }
-
-
-
-
-//
-// class GroupJoinMember extends StatelessWidget {
-//   final Group group;
-//
-//   const GroupJoinMember({Key? key, required this.group}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: [
-//         Row(
-//           mainAxisAlignment: MainAxisAlignment.end, // 위젯을 오른쪽 끝으로 정렬
-//           children: <Widget>[
-//             IconButton(
-//               icon: Icon(Icons.add), // 아이콘 설정
-//               tooltip: '인원 추가', // 사용자에게 버튼의 기능을 설명하는 툴팁 추가
-//               onPressed: () {
-//                 // 인원 추가 로직
-//               },
-//             ),
-//           ],
-//         ),
-//         // 나머지 코드는 동일하게 유지
-//         Center(
-//           child: Container(
-//             height: 100.h, // Card의 세로 크기를 지정
-//             child: ListView(
-//               scrollDirection: Axis.horizontal, // 가로 스크롤 설정
-//               children: group.groupMembers
-//                   .map((member) => Card(
-//                         child: Container(
-//                           width: 100.w,
-//                           child: Center(
-//                               child: Column(
-//                             children: [
-//                               Text(member.name),
-//                               Text(member.email),
-//                             ],
-//                           )),
-//                         ),
-//                       ))
-//                   .toList(),
-//             ),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }

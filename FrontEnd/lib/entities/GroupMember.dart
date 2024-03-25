@@ -1,19 +1,19 @@
 class GroupMember {
   final String name;
-  final String email;
-  final String profileimg;
+  final String kakaoId;
+  final String thumbnailImage;
 
   GroupMember({
     required this.name,
-    required this.email,
-    required this.profileimg,
+    required this.kakaoId,
+    required this.thumbnailImage,
   });
 
   factory GroupMember.fromJson(Map<String, dynamic> json) {
     return GroupMember(
       name: json['name'],
-      email: json['email'],
-      profileimg: json['profileimg'],
+      kakaoId: json['kakaoId'],
+      thumbnailImage: json['thumbnailImage'],
     );
   }
 }

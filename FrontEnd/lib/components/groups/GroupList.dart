@@ -41,7 +41,7 @@ class _GroupListState extends State<GroupList> {
     if (modifiedGroup != null) {
       setState(() {
         // 수정된 그룹으로 groups 리스트 업데이트
-        int index = widget.groups.indexWhere((g) => g.groupName == modifiedGroup.groupName); // 고유 ID 또는 식별 가능한 속성을 사용
+        int index = widget.groups.indexWhere((g) => g.groupId == modifiedGroup.groupId); // 고유 ID 또는 식별 가능한 속성을 사용
         if (index != -1) {
           widget.groups[index] = modifiedGroup;
         }
@@ -53,9 +53,7 @@ class _GroupListState extends State<GroupList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: widget.groups.isEmpty
-          ? Center(child: Text('그룹이 없습니다'))
-          : ListView.builder(
+      body: ListView.builder(
         itemCount: widget.groups.length,
         itemBuilder: (context, index) {
           return GroupCard(
