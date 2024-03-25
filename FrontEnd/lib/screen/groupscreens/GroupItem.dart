@@ -6,17 +6,6 @@ import 'package:front/models/button/Button.dart';
 import 'package:front/screen/groupscreens/GroupDetail.dart';
 import '../../entities/Group.dart';
 
-// fetchMemberInfo 함수의 더미 데이터 구현
-Future<Map<String, dynamic>> MemberInfo(String email) async {
-  // 더미 데이터 생성
-  Map<String, dynamic> dummyMemberInfo = {
-    'name': 'John Doe',
-    'profileimg': 'https://example.com/profile.jpg',
-    'email': '123@naver.com',
-  };
-  // 1초 대기 후 더미 데이터 반환
-  return dummyMemberInfo;
-}
 
 class GroupItem extends StatelessWidget {
   final Group group;
@@ -56,10 +45,6 @@ class GroupItem extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => GroupDetail(
                     group: group,
-                    onDelete: () {
-
-                      // 여기서 삭제 로직을 구현합니다.
-                    },
                   ),
                 ),
               );
@@ -73,10 +58,12 @@ class GroupItem extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              //GroupMember.dart
+
               GroupJoinMember(group: group),
+
               // 정산하기 버튼
               Button(
+
                 btnText: '정산하기',
                 onPressed: () {
                 },
