@@ -247,7 +247,7 @@ public class MemberController {
                 .body(BaseResponseBody.of(500, "서버 오류"));
     }
 
-    @GetMapping("/mydata/search")
+    @PostMapping("/mydata/search")
     @Operation(summary = "싸피은행에서 회원정보 불러오기. ", description = "싸피은행에서 회원정보 불러오기.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
