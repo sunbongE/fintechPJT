@@ -50,13 +50,12 @@ class _GroupAddState extends State<GroupAdd> {
 
     Map<String, dynamic> groupData = {
       "groupName": _titleController.text,
+      "theme": _descriptionController.text,
       "startDate": startDateText,
       "endDate": endDateText,
-      "theme": _descriptionController.text,
     };
 
     try {
-      // API 호출을 시도합니다.
       final response = await postGroupInfo(groupData);
       if (response != null) {
         print("그룹이 성공적으로 생성되었습니다.");
@@ -70,7 +69,6 @@ class _GroupAddState extends State<GroupAdd> {
           groupMembers: [],
         );
         Navigator.pop(context, newGroup);
-        print(newGroup.groupName);
         FirstInviteModal.showInviteModal(context, newGroup);
       } else {
         print("그룹 생성에 실패했습니다.");
@@ -79,30 +77,6 @@ class _GroupAddState extends State<GroupAdd> {
       print("그룹 생성 중 에러가 발생했습니다: $e");
     }
   }
-
-
-  // void _saveGroup() {
-  //   String startDateText = _rangeStart?.toString().split(' ')[0] ?? '';
-  //   String endDateText = _rangeEnd?.toString().split(' ')[0] ?? '';
-  //
-  //   setState(() {
-  //     _startDateText = startDateText;
-  //     _endDateText = endDateText;
-  //   });
-  //
-  //   Group newGroup = Group(
-  //     groupName: _titleController.text,
-  //     theme: _descriptionController.text,
-  //     startDate: _startDateText.toString(),
-  //     endDate: _endDateText.toString(),
-  //     groupState: false,
-  //     groupMembers: [],
-  //   );
-  //   Navigator.pop(context, newGroup);
-  //
-  //   // 모달창 띄우기 - FirstInviteModal 클래스의 함수를 호출
-  //   FirstInviteModal.showInviteModal(context, newGroup);
-  // }
 
   @override
   Widget build(BuildContext context) {
