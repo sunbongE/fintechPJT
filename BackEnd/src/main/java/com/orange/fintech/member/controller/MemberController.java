@@ -200,6 +200,8 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(BaseResponseBody.of(503, "썸네일 이미지 생성 중 예외 발생 (서비스 서버 오류)"));
         } catch (Exception e) {
+            e.printStackTrace();
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
