@@ -319,11 +319,14 @@ public class PaymentServiceImpl implements PaymentService {
                         transactionRepository.findById(transactionId).get());
         log.info("getGroupTransactionDetail - receipt: {}", receipt);
 
+        TransactionDetail transactionDetail =
+                transactionDetailRepository.getReferenceById(transactionId);
+
         List<TransactionMember> list =
                 transactionMemberRepository.findByTransactionMemberPKTransaction(transaction);
         log.info("getGroupTransactionDetail - List<TransactionMember> list: {}", list);
 
-        return GroupTransactionDetailRes.of(receipt, list);
+        return GroupTransactionDetailRes.of(receipt, list, transactionDetail);
     }
 
     @Override

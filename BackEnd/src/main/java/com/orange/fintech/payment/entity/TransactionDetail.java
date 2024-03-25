@@ -35,5 +35,5 @@ public class TransactionDetail {
     private Integer remainder;
 
     @ColumnDefault("false")
-    private boolean receiptEnrolled;
+    private Boolean receiptEnrolled;
 }
