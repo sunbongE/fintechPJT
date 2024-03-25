@@ -27,6 +27,9 @@ public class ReceiptDto {
     @Schema(description = "상호")
     private String businessName;
 
+    @Schema(description = "지점")
+    private String subName;
+
     @Schema(description = "위치")
     private String location;
 
