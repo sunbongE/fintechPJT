@@ -120,17 +120,14 @@ public class FileServiceImpl implements FileService {
         // 2-3. 한 변의 길이가 최대 640인 썸네일 이미지 생성
         File thumbnailFile = imageUtil.createThumbnailImage(convertedFile, 640, 640);
 
-        // 3. 기존 프로필 이미지 삭제
-        deleteProfileImageFilesOnAmazonS3(member.getKakaoId());
-
-        // 4. Amazon S3 파일 업로드
+        // 3. Amazon S3 파일 업로드
         try (InputStream inputStream = multipartFile.getInputStream()) {
-            // 4-1. 원본 이미지 업로드
+            // 3-1. 원본 이미지 업로드
             amazonS3Client.putObject(
                     new PutObjectRequest(bucket, amazonProfileFilePath, convertedFile)
                             .withCannedAcl(CannedAccessControlList.PublicRead));
 
-            // 4-2. 썸네일 이미지 업로드
+            // 3-2. 썸네일 이미지 업로드
             amazonS3Client.putObject(
                     new PutObjectRequest(bucket, amazonProfileThumbnailFilePath, thumbnailFile)
                             .withCannedAcl(CannedAccessControlList.PublicRead));
@@ -141,14 +138,15 @@ public class FileServiceImpl implements FileService {
             return false;
         }
 
-        // 5. profile_image 테이블에 Amazon S3 기준 파일 경로 저장
+        // 4. profile_image 테이블에 Amazon S3 기준 파일 경로 저장
         // 기존 레코드 없으면 추가, 있으면 업데이트 (사용자가 앱 내에서 프로필 사진을 수정한 적이 있는 경우 레코드 존재)
         ProfileImage profileImage = profileImageRepository.findByMember(member);
 
-        // 레코드 없음 -> 생성
-        if (profileImage == null) {
+        if (profileImage == null) {     // 4-1. 레코드 없음 -> 생성
             profileImage = new ProfileImage();
             profileImage.setMember(member);
+        } else {                        // 4-2. AmazonS3의 기존 프로필 이미지 삭제
+            deleteProfileImageFilesOnAmazonS3(member.getKakaoId());
         }
 
         profileImage.setProfileImagePath(amazonProfileFilePath);
