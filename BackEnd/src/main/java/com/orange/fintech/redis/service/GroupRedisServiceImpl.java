@@ -46,7 +46,7 @@ public class GroupRedisServiceImpl implements GroupRedisService {
     public void saveDataExpire(int groupId, GroupMembersListDto result) {
 
         log.info("넘어오는 result :{}", result);
-        hashOpsGroup.put(GroupKEY + "-" + String.valueOf(groupId), String.valueOf(groupId), result);
+        hashOpsGroup.put(GroupKEY + "-" + groupId, String.valueOf(groupId), result);
         // 만료 시간 설정
         Duration expiredDuration = Duration.ofDays(7);
         redisTemplate.expire(GroupKEY, expiredDuration);
@@ -54,7 +54,7 @@ public class GroupRedisServiceImpl implements GroupRedisService {
 
     @Override
     public void deleteData(Integer groupId) {
-
-        hashOpsGroup.delete(GroupKEY, String.valueOf(groupId));
+        log.info("deleteData: {}", groupId);
+        hashOpsGroup.delete(GroupKEY + "-" + groupId, String.valueOf(groupId));
     }
 }

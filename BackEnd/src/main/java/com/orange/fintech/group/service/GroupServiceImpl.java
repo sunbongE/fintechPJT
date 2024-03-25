@@ -11,6 +11,11 @@ import com.orange.fintech.group.repository.GroupQueryRepository;
 import com.orange.fintech.group.repository.GroupRepository;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
+import com.orange.fintech.payment.entity.TransactionDetail;
+import com.orange.fintech.payment.entity.TransactionMember;
+import com.orange.fintech.payment.entity.TransactionMemberPK;
+import com.orange.fintech.payment.repository.TransactionDetailRepository;
+import com.orange.fintech.payment.repository.TransactionMemberRepository;
 import com.orange.fintech.redis.service.GroupRedisService;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +30,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
+
     private final GroupRepository groupRepository;
     private final GroupMemberRepository groupMemberRepository;
     private final MemberRepository memberRepository;
     private final GroupQueryRepository groupQueryRepository;
     private final CalculateResultRepository calculateResultRepository;
     private final GroupRedisService groupRedisService;
+    private final TransactionDetailRepository transactionDetailRepository;
+    private final TransactionMemberRepository transactionMemberRepository;
 
     @Override
     public boolean createGroup(GroupCreateDto dto, String memberId) {
@@ -123,8 +131,30 @@ public class GroupServiceImpl implements GroupService {
 
         groupMemberRepository.save(data);
 
+        log.info("여기서부터");
+        addAllTransactionMember(group, member);
+
         // 여기서 캐시 날려주셈
+        groupRedisService.deleteData(groupId);
+
         return true;
+    }
+
+    public void addAllTransactionMember(Group group, Member member) {
+
+        List<TransactionDetail> transactionDetails = transactionDetailRepository.findByGroup(group);
+        for (TransactionDetail transactionDetail : transactionDetails) {
+            TransactionMemberPK pk = new TransactionMemberPK();
+            pk.setTransaction(transactionDetail.getTransaction());
+            pk.setMember(member);
+
+            TransactionMember transactionMember = new TransactionMember();
+            transactionMember.setTransactionMemberPK(pk);
+            transactionMember.setIsLock(false);
+            transactionMember.setTotalAmount(0);
+
+            transactionMemberRepository.save(transactionMember);
+        }
     }
 
     @Override
