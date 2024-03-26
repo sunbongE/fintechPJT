@@ -1,7 +1,9 @@
 package com.orange.fintech.member.entity;
 
+import com.orange.fintech.account.entity.Account;
 import com.orange.fintech.auth.dto.JoinDto;
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -36,6 +38,9 @@ public class Member {
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'ROLE_USER'")
     private Roles role;
+
+    @OneToMany(mappedBy = "member")
+    private List<Account> accounts;
 
     public Member() {}
 

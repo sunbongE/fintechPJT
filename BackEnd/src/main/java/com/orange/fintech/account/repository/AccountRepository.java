@@ -1,4 +1,4 @@
-package com.orange.fintech.member.repository;
+package com.orange.fintech.account.repository;
 
 import com.orange.fintech.account.entity.Account;
 import com.orange.fintech.member.entity.Member;
@@ -9,8 +9,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AccountRepository extends JpaRepository<Account, Integer> {
+public interface AccountRepository extends JpaRepository<Account, String> {
     List<Account> findByMember(Member member);
+
+    List<Account> findByMemberAndIsPrimaryAccountIsTrue(Member member);
 
     Account findByAccountNo(String accountNo);
 

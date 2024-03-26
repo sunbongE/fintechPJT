@@ -7,10 +7,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
 @Setter
+@DynamicInsert
 public class Account {
 
     @Id
@@ -18,16 +20,21 @@ public class Account {
     private String accountNo;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "kakao_id")
     private Member member;
 
     @NotNull private Long balance;
 
-    @ColumnDefault("false")
+    @NotNull
+    @ColumnDefault("true")
     private Boolean isPrimaryAccount;
 
-    @NotNull private String institutionCode;
+    @NotNull private String bankCode;
+
+    public Account() {
+        this.isPrimaryAccount = true;
+    }
 
     @Override
     public String toString() {
@@ -35,14 +42,12 @@ public class Account {
                 + "accountNo='"
                 + accountNo
                 + '\''
-                + ", member="
-                + member
                 + ", balance="
                 + balance
                 + ", isPrimaryAccount="
                 + isPrimaryAccount
-                + ", institutionCode='"
-                + institutionCode
+                + ", bankCode='"
+                + bankCode
                 + '\''
                 + '}';
     }

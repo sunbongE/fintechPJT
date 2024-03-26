@@ -26,7 +26,7 @@ public class QAccount extends EntityPathBase<Account> {
 
     public final NumberPath<Long> balance = createNumber("balance", Long.class);
 
-    public final StringPath institutionCode = createString("institutionCode");
+    public final StringPath bankCode = createString("bankCode");
 
     public final BooleanPath isPrimaryAccount = createBoolean("isPrimaryAccount");
 
