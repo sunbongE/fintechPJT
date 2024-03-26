@@ -11,10 +11,11 @@ import 'package:front/screen/MyPage.dart';
 import '../../models/Biometrics.dart';
 import '../../models/FlutterToastMsg.dart';
 import '../../models/PassWordCertification.dart';
+import '../../repository/api/ApiMyPage.dart';
 import '../selectbank/AccountList.dart';
 
 class ChangeAccount extends StatefulWidget {
-  final String? selectedBank;
+  final Map<String, String> selectedBank;
 
   const ChangeAccount({required this.selectedBank, super.key});
 
@@ -112,7 +113,7 @@ class _ChangeAccountState extends State<ChangeAccount> {
                             children: <TextSpan>[
                               TextSpan(
                                   text:
-                                      "${widget.selectedBank}에서\n여정과 함께할 계좌를 "),
+                                      "${widget.selectedBank['name']}에서\n여정과 함께할 계좌를 "),
                               TextSpan(
                                 text: "한 개",
                                 style: TextStyle(color: TEXT_COLOR),
@@ -130,10 +131,10 @@ class _ChangeAccountState extends State<ChangeAccount> {
                             accountList: accountList,
                             selectedAccountIndex: selectedAccountIndex,
                             selectedBank: widget.selectedBank,
-                            onSelectAccount: (int index, String account) {
+                            onSelectAccount: (int index, String accountNo) {
                               setState(() {
                                 selectedAccountIndex = index;
-                                selectAccount = account;
+                                selectAccount = accountNo;
                               });
                             },
                           ),
@@ -146,8 +147,15 @@ class _ChangeAccountState extends State<ChangeAccount> {
                                   bool? authenticated = await CheckBiometrics();
                                   if (authenticated == true) {
                                     FlutterToastMsg("변경이 완료되었습니다.");
+
+                                    Map<String, dynamic> accountInfo = {
+                                      "bankCode": widget.selectedBank['code'],
+                                      "accountNo": selectAccount,
+                                    };
+
+                                    putMyAccount(accountInfo);
                                     UserManager().saveUserInfo(
-                                      newSelectedBank: widget.selectedBank,
+                                      newSelectedBank: widget.selectedBank['name'],
                                       newSelectedAccount: selectAccount,
                                     );
                                     buttonSlideAnimationPushAndRemoveUntil(context, 3);
@@ -157,9 +165,15 @@ class _ChangeAccountState extends State<ChangeAccount> {
                                       PassWordCertification(
                                         onSuccess: () {
                                           FlutterToastMsg("변경이 완료되었습니다.");
+
+                                          Map<String, dynamic> accountInfo = {
+                                            "bankCode": widget.selectedBank['code'],
+                                            "accountNo": selectAccount,
+                                          };
+
+                                          putMyAccount(accountInfo);
                                           UserManager().saveUserInfo(
-                                            newSelectedBank:
-                                                widget.selectedBank,
+                                            newSelectedBank: widget.selectedBank['name'],
                                             newSelectedAccount: selectAccount,
                                           );
                                           buttonSlideAnimationPushAndRemoveUntil(context, 3);

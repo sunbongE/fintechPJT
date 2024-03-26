@@ -17,7 +17,6 @@ class ApiClient {
     dio.interceptors
         .add(InterceptorsWrapper(onRequest: (options, handler) async {
       final jwtToken = await userManager.jwtToken;
-      print(jwtToken);
 
       if (jwtToken != null) {
         options.headers["Authorization"] = "$jwtToken";
@@ -61,7 +60,6 @@ class ApiFileClient {
     dio.interceptors
         .add(InterceptorsWrapper(onRequest: (options, handler) async {
       final jwtToken = await userManager.jwtToken;
-      print(jwtToken);
 
       if (jwtToken != null) {
         options.headers["Authorization"] = "$jwtToken";

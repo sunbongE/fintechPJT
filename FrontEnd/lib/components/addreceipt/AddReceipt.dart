@@ -7,6 +7,7 @@ import 'package:front/components/addreceipt/ShowBeforeOcr.dart';
 import 'package:front/repository/api/ApiReceipt.dart';
 import '../../const/colors/Colors.dart';
 import '../../entities/Receipt.dart';
+import '../../models/FlutterToastMsg.dart';
 
 class AddReceipt extends StatefulWidget {
   const AddReceipt({super.key});
@@ -22,8 +23,6 @@ class _AddReceiptState extends State<AddReceipt> {
 
   // 영수증 post 요청
   void sendReceiptData() async {
-    if (receiptData == null || receiptData!.isEmpty) return;
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -71,7 +70,7 @@ class _AddReceiptState extends State<AddReceipt> {
         ),
         actions: [
           TextButton(
-            onPressed: () => sendReceiptData(),
+            onPressed: () => receiptData == null || receiptData!.isEmpty ? sendReceiptData() : FlutterToastMsg("모든 영수증을 확인해주세요."),
             child: Text(
               "추가",
               style: TextStyle(

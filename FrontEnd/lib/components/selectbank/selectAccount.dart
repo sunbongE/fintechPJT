@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/intros/TermsPage.dart';
@@ -5,11 +8,12 @@ import 'package:front/components/selectbank/AccountList.dart';
 import 'package:front/const/colors/Colors.dart';
 import 'package:front/models/button/Button.dart';
 import 'package:front/models/button/ButtonSlideAnimation.dart';
+import 'package:front/models/button/SizedButton.dart';
 import 'package:front/providers/store.dart';
 import 'package:front/repository/api/ApiLogin.dart';
 
 class SelectAccount extends StatefulWidget {
-  final String? selectedBank;
+  final Map<String, String> selectedBank;
 
   const SelectAccount({required this.selectedBank, super.key});
 
@@ -35,11 +39,12 @@ class _SelectAccountState extends State<SelectAccount> {
         isLoading = true;
       });
 
-      // 한국은행에서 내가 가진 계좌 리스트 get API
-      // final res = await getBankInfo(widget.selectedBank);
-      // await Future.delayed(Duration(seconds: 2));
+      // // 한국은행에서 내가 가진 계좌 리스트 get API
+      // final res = await getBankInfo(widget.selectedBank['code']);
+      // var resData = jsonDecode(res.data);
+      // print('111111111: ${resData}');
 
-      List<Map<String, dynamic>>? getAccounts = [
+      List<Map<String, dynamic>>? resData = [
         {"accountNo": "3333-33-2400348", "balance": 0, "isPrimaryAccount": true, "institutionCode": null},
         {"accountNo": "3333-24-8039659", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
         {"accountNo": "3333-23-6307311", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
@@ -50,7 +55,7 @@ class _SelectAccountState extends State<SelectAccount> {
 
       setState(() {
         isLoading = false;
-        accountList = getAccounts;
+        accountList = resData;
       });
     } catch (e) {
       setState(() {
@@ -67,7 +72,7 @@ class _SelectAccountState extends State<SelectAccount> {
         child: Center(
           child: isLoading
               ? CircularProgressIndicator()
-              : accountList == []
+              : accountList?.isEmpty ?? true
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -81,7 +86,7 @@ class _SelectAccountState extends State<SelectAccount> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        Button(
+                        SizedButton(
                           btnText: "뒤로 가기",
                           onPressed: () => Navigator.pop(context),
                         )
@@ -98,7 +103,7 @@ class _SelectAccountState extends State<SelectAccount> {
                               letterSpacing: 1.0.w,
                             ),
                             children: <TextSpan>[
-                              TextSpan(text: "${widget.selectedBank}에서\n여정과 함께할 계좌를 "),
+                              TextSpan(text: "${widget.selectedBank['name']}에서\n여정과 함께할 계좌를 "),
                               TextSpan(
                                 text: "한 개",
                                 style: TextStyle(color: TEXT_COLOR),
@@ -135,7 +140,7 @@ class _SelectAccountState extends State<SelectAccount> {
                                   //   'selectedBank': widget.selectedBank
                                   // });
                                   UserManager().saveUserInfo(
-                                    newSelectedBank: widget.selectedBank,
+                                    newSelectedBank: widget.selectedBank['name'],
                                     newSelectedAccount: selectAccount,
                                   );
                                   buttonSlideAnimation(context, TermsPage());

@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:easy_rich_text/easy_rich_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,11 +18,11 @@ class SelectBank extends StatefulWidget {
 }
 
 class _SelectBankState extends State<SelectBank> {
-  String? selectedBank = '';
+  Map<String, String> selectedBank = {};
 
-  void onBankSelected(String bankName) {
+  void onBankSelected(Map<String, String> bank) {
     setState(() {
-      selectedBank = bankName;
+      selectedBank = bank;
     });
   }
 
@@ -72,7 +74,7 @@ class _SelectBankState extends State<SelectBank> {
           child: BankList(onBankSelected: onBankSelected),
         ),
         SizedBox(height: 10.h),
-        selectedBank != ''
+        selectedBank != {}
             ? Button(
                 btnText: "Next",
                 onPressed: () => buttonSlideAnimation(
