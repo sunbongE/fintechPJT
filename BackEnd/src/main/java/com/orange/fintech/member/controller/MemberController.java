@@ -1,13 +1,13 @@
 package com.orange.fintech.member.controller;
 
 import com.orange.fintech.account.entity.Account;
+import com.orange.fintech.account.service.AccountService;
 import com.orange.fintech.auth.dto.CustomUserDetails;
 import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.common.exception.BigFileException;
 import com.orange.fintech.common.exception.EmptyFileException;
 import com.orange.fintech.common.exception.NotValidExtensionException;
 import com.orange.fintech.member.entity.Member;
-import com.orange.fintech.account.service.AccountService;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.member.service.MemberService;
 import com.orange.fintech.oauth.dto.MemberSearchResponseDto;
@@ -43,8 +43,7 @@ public class MemberController {
     @Autowired MemberService memberService;
 
     @Autowired AccountService accountService;
-    @Autowired
-    MemberRepository memberRepository;
+    @Autowired MemberRepository memberRepository;
 
     @GetMapping("/account")
     @Operation(
@@ -250,8 +249,8 @@ public class MemberController {
     @PostMapping("/mydata/search")
     @Operation(summary = "싸피은행에서 회원정보 불러오기. ", description = "싸피은행에서 회원정보 불러오기.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "성공"),
-            @ApiResponse(responseCode = "500", description = "서버 오류")
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> searchMember(Principal principal) {
 
@@ -264,7 +263,6 @@ public class MemberController {
                         .body(BaseResponseBody.of(400, "회원정보로 가입된 은행정보가 없습니다."));
 
             return memberService.searchMember(email);
-
 
         } catch (Exception e) {
             e.printStackTrace();

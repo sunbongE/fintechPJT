@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +46,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Autowired ProfileImageRepository profileImageRepository;
     static final String SUCCESS = "\"succeed\"";
+
     @Value("${ssafy.bank.search}")
     private String searchMember;
 
@@ -59,34 +59,31 @@ public class MemberServiceImpl implements MemberService {
         RestClient restClient = RestClient.create();
         RestClient.ResponseSpec response = null;
 
-
         Map<String, String> req = new HashMap<>();
         req.put("userId", email);
         req.put("apiKey", apiKey);
-
 
         response = restClient.post().uri(searchMember).body(req).retrieve();
         JsonNode bankResponse = new ObjectMapper().readTree(response.body(String.class));
 
         String statudCode = String.valueOf(bankResponse.get("code"));
-//        log.info("statudCode: {}",statudCode);
+        //        log.info("statudCode: {}",statudCode);
 
-        if(statudCode.equals(SUCCESS)){
+        if (statudCode.equals(SUCCESS)) {
             JsonNode userKey = bankResponse.get("payload").get("userKey");
-            String data = userKey.toString().substring(1, userKey.toString().length()-1);
-            log.info("저장할 데이터:{}",data);
+            String data = userKey.toString().substring(1, userKey.toString().length() - 1);
+            log.info("저장할 데이터:{}", data);
 
             Member member = memberRepository.findByEmail(email);
 
             member.setUserKey(data);
             memberRepository.save(member);
 
-//            log.info("userKey : {}", userKey);
-            return ResponseEntity.ok().body(BaseResponseBody.of(200,"성공적으로 userKey 저장함."));
-        }else{
-            return ResponseEntity.ok().body(BaseResponseBody.of(400,"잘못된 요청"));
+            //            log.info("userKey : {}", userKey);
+            return ResponseEntity.ok().body(BaseResponseBody.of(200, "성공적으로 userKey 저장함."));
+        } else {
+            return ResponseEntity.ok().body(BaseResponseBody.of(400, "잘못된 요청"));
         }
-
     }
 
     // 그룹원 검색 응답
