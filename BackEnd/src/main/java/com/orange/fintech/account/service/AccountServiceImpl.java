@@ -2,9 +2,7 @@ package com.orange.fintech.account.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.orange.fintech.account.dto.ReqHeader;
-
 import com.orange.fintech.account.dto.UpdateAccountDto;
-
 import com.orange.fintech.account.entity.Account;
 import com.orange.fintech.account.repository.AccountRepository;
 import com.orange.fintech.member.entity.Member;
@@ -16,7 +14,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -26,7 +23,6 @@ import org.springframework.web.client.RestClient;
 public class AccountServiceImpl implements AccountService {
     @Autowired AccountRepository accountRepository;
     @Autowired MemberRepository memberRepository;
-
 
     @Autowired MemberService memberService;
 
@@ -38,7 +34,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Value("${ssafy.bank.api-key}")
     private String apiKey;
-
 
     @Override
     public boolean insertAccount(String kakaoId, Account account) {
