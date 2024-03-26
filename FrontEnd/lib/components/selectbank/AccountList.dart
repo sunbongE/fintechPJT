@@ -38,7 +38,7 @@ class _AccountListState extends State<AccountList> {
               } else {
                 selectedAccountIndex = index;
                 widget.onSelectAccount(
-                    index, widget.accountList?[index]['account'] ?? '');
+                    index, widget.accountList?[index]['accountNo'] ?? '');
               }
             });
           },
@@ -88,7 +88,7 @@ class _AccountListState extends State<AccountList> {
                         ),
                       ),
                       Text(
-                        widget.accountList?[index]['account'],
+                        widget.accountList?[index]['accountNo'],
                         style: TextStyle(
                           fontSize: 20.sp,
                           fontWeight: FontWeight.bold,

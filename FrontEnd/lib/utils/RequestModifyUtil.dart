@@ -34,15 +34,15 @@ List<int> reCalculateAmount(
       newList[changeIndexList[i]] = newAmount;
     }
   }
+  //print(newList);
   return newList;
 }
 
 int reCalculateRemainder(int amount, List<int> personalRequestAmount) {
   //전부 숫자입력이면 자투리 금액으로 몰빵가능한건 막아야함
   int totalRequestAmount = amount;
-  if (amount <
-      personalRequestAmount.length) //지금은 인원수보다 적게인데 나중에는 인원수 * 품목수로 계산해야함
     totalRequestAmount =
         personalRequestAmount.fold(0, (sum, item) => sum + item);
-  return amount - totalRequestAmount;
+    int tmp = amount - totalRequestAmount;
+  return tmp > personalRequestAmount.length? 0: tmp;
 }

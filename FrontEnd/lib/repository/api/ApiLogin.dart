@@ -14,6 +14,17 @@ Future<Response> postUserInfo(data) async {
   }
 }
 
+// 싸피은행에서 회원정보 불러오기.
+Future<Response> postMyData() async {
+  try {
+    final res = await api.post('/members/mydata/search');
+    return res;
+  } catch (err) {
+    print(err);
+    throw err;
+  }
+}
+
 // 6자리 핀번호 post
 Future<void> postPassWord(data) async {
   try {
@@ -27,7 +38,7 @@ Future<void> postPassWord(data) async {
 // 사용자가 선택한 은행과 연결된 계좌 목록 get
 Future<Response> getBankInfo(data) async {
   try {
-    final res = await api.get('/bank/myAccount', queryParameters: data);
+    final res = await api.get('/members/account', queryParameters: data);
     return res;
   } catch (err) {
     print(err);

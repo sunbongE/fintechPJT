@@ -75,7 +75,7 @@ late List<Expense> requests = [];
                 Expanded(
                   // ListView를 Expanded로 감싸기
                   child: SizedBox(
-                    width: 368.w,
+                    width: 400.w,
                     height: 594.h,
                     child: MoneyRequestList(expenses: requests),
                   ),

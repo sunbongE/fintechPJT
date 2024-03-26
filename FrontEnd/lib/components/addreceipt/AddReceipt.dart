@@ -18,7 +18,9 @@ class AddReceipt extends StatefulWidget {
 class _AddReceiptState extends State<AddReceipt> {
   List<Receipt>? receiptData;
   bool isLoading = false;
+  bool allReceiptsSaved = false;
 
+  // 영수증 post 요청
   void sendReceiptData() async {
     if (receiptData == null || receiptData!.isEmpty) return;
 
@@ -38,37 +40,25 @@ class _AddReceiptState extends State<AddReceipt> {
             TextButton(
               child: Text("예"),
               onPressed: () async {
-                Navigator.of(context).pop();
                 setState(() {
                   isLoading = true;
                 });
-                List<Receipt> failedReceipts = [];
-                for (var receipt in receiptData!) {
-                  final res = await postYjReceipt(1, 1, receipt);
-                  if (res.statusCode != 200) {
-                    failedReceipts.add(receipt);
-                  }
-                }
-                setState(() {
-                  isLoading = false;
-                  receiptData = failedReceipts;
-                });
-                if (failedReceipts.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('모든 영수증이 등록되었습니다.')),
-                  );
-                  Navigator.of(context).pop();
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('일부 영수증 등록에 실패했습니다. 다시 시도해주세요.')),
-                  );
-                }
+                // final res = await postYjReceipt(receiptData!);
+                // print("1111111111: ${res}");
+
               },
             ),
           ],
         );
       },
     );
+  }
+
+  // 모두 저장을 했으면 "추가"버튼 활성화
+  void updateReceiptSavedState(bool allSaved) {
+    setState(() {
+      allReceiptsSaved = allSaved;
+    });
   }
 
   @override
@@ -81,9 +71,22 @@ class _AddReceiptState extends State<AddReceipt> {
         ),
         actions: [
           TextButton(
-            onPressed: receiptData != null && receiptData!.isNotEmpty ? () => sendReceiptData() : null,
+            onPressed: () => sendReceiptData(),
             child: Text(
               "추가",
+              style: TextStyle(
+                color: receiptData != null && receiptData!.isNotEmpty ? TEXT_COLOR : Colors.grey,
+                fontWeight: FontWeight.bold,
+                fontSize: 20.sp,
+              ),
+            ),
+          ),
+
+          // 더미데이터 추가하기!!!!!!!
+          TextButton(
+            onPressed: () => postReceiptFakeData(receiptData!),
+            child: Text(
+              "영수증 정보 받아~느~~",
               style: TextStyle(
                 color: receiptData != null && receiptData!.isNotEmpty ? TEXT_COLOR : Colors.grey,
                 fontWeight: FontWeight.bold,
@@ -97,7 +100,6 @@ class _AddReceiptState extends State<AddReceipt> {
         padding: EdgeInsets.fromLTRB(30.w, 30.h, 30.w, 50.h),
         child: Column(
           children: [
-            isLoading ? Center(child: CircularProgressIndicator()) : Container(),
             EasyRichText(
               "영수증은 한번에\n최대 10장까지 등록 가능합니다.",
               defaultStyle: TextStyle(
@@ -114,17 +116,16 @@ class _AddReceiptState extends State<AddReceipt> {
               ],
               textAlign: TextAlign.center,
             ),
-            Expanded(
-              child: ShowBeforeOcr(
-                onReceiptsChanged: (newData) {
-                  setState(
-                    () {
-                      receiptData = newData;
+            isLoading
+                ? Center(child: CircularProgressIndicator())
+                : Expanded(
+                    child: ShowBeforeOcr(
+                    onReceiptsUpdated: (updatedReceipts) {
+                      setState(() {
+                        receiptData = updatedReceipts;
+                      });
                     },
-                  );
-                },
-              ),
-            ),
+                  )),
           ],
         ),
       ),

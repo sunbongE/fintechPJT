@@ -348,17 +348,62 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void setReceiptDetailMember(List<ReceiptDetailMemberDto> req) {
-        for (ReceiptDetailMemberDto detailMemberDto : req) {
+    public void setReceiptDetailMember(
+            int paymentId, int receiptDetailId, List<ReceiptDetailMemberPutDto> req) {
+        int payAmount = 0;
+
+        Transaction transaction = transactionRepository.findById(paymentId).get();
+        ReceiptDetail receiptDetail = receiptDetailRepository.findById(receiptDetailId).get();
+        log.info("receiptDetail: {}", receiptDetail);
+
+        for (ReceiptDetailMemberPutDto detailMemberDto : req) {
             ReceiptDetailMemberPK pk = new ReceiptDetailMemberPK();
-            pk.setMember(memberRepository.findById(detailMemberDto.getMemberId()).get());
-            pk.setReceiptDetail(
-                    receiptDetailRepository.findById(detailMemberDto.getReceiptDetailId()).get());
+
+            Member member = new Member();
+            member.setKakaoId(detailMemberDto.getMemberId());
+
+            pk.setMember(member);
+            pk.setReceiptDetail(receiptDetail);
+
+            // pk.setMember(memberRepository.findById(detailMemberDto.getMemberId()).get());
+            //            pk.setReceiptDetail(
+            // receiptDetailRepository.findById(detailMemberDto.getReceiptDetailId()).get());
 
             ReceiptDetailMember detailMember = new ReceiptDetailMember();
             detailMember.setReceiptDetailMemberPK(pk);
             detailMember.setAmountDue(detailMemberDto.getAmountDue());
+
             receiptDetailMemberRepository.save(detailMember);
+
+            TransactionMemberPK tmPk = new TransactionMemberPK();
+            tmPk.setMember(member);
+            tmPk.setTransaction(transaction);
+
+            // transactionMember - totalAmount 설정
+            TransactionMember transactionMember = transactionMemberRepository.findById(tmPk).get();
+            int pay =
+                    calculateTransactionMember(
+                            member.getKakaoId(), receiptDetail.getReceipt().getReceiptId());
+            payAmount += pay;
+            transactionMember.setTotalAmount(pay);
+            transactionMemberRepository.save(transactionMember);
         }
+
+        // 자투리금액 계산
+        TransactionDetail transactionDetail =
+                transactionDetailRepository.findById(transaction.getTransactionId()).get();
+
+        // SINYEONG: 예외처리?
+        if (transaction.getTransactionBalance() >= payAmount) {
+            transactionDetail.setRemainder((int) (transaction.getTransactionBalance() - payAmount));
+        }
+
+        log.info("remainder: {} - {}", transaction.getTransactionBalance(), payAmount);
+
+        transactionDetailRepository.save(transactionDetail);
+    }
+
+    public int calculateTransactionMember(String memberId, int receiptId) {
+        return transactionQueryRepository.getTransactionTotalAmount(memberId, receiptId);
     }
 }

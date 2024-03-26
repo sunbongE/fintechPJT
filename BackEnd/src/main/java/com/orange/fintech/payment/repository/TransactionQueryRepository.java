@@ -1,5 +1,8 @@
 package com.orange.fintech.payment.repository;
 
+import static com.orange.fintech.payment.entity.QReceipt.receipt;
+import static com.orange.fintech.payment.entity.QReceiptDetail.receiptDetail;
+import static com.orange.fintech.payment.entity.QReceiptDetailMember.receiptDetailMember;
 import static com.orange.fintech.payment.entity.QTransaction.transaction;
 import static com.orange.fintech.payment.entity.QTransactionDetail.transactionDetail;
 import static com.orange.fintech.payment.entity.QTransactionMember.transactionMember;
@@ -159,5 +162,29 @@ public class TransactionQueryRepository {
                                 transactionMember.transactionMemberPK.transaction.eq(
                                         transactionDetail.transaction))
                 : selectQuery;
+    }
+
+    public int getTransactionTotalAmount(String memberId, int receiptId) {
+        int res =
+                jpaQueryFactory
+                        .select(receiptDetailMember.amountDue.sum())
+                        .from(receipt)
+                        .join(receiptDetail)
+                        .on(receipt.eq(receiptDetail.receipt))
+                        .join(receiptDetailMember)
+                        .on(
+                                receiptDetail.eq(
+                                        receiptDetailMember.receiptDetailMemberPK.receiptDetail))
+                        .where(
+                                receiptDetailMember
+                                        .receiptDetailMemberPK
+                                        .member
+                                        .kakaoId
+                                        .eq(memberId)
+                                        .and(receipt.receiptId.eq(receiptId)))
+                        .fetchOne();
+
+        log.info("getTransactionTotalAmount({}, {}): {}", memberId, receiptId, res);
+        return res;
     }
 }
