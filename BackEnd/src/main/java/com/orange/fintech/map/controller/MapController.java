@@ -42,6 +42,5 @@ public class MapController {
 
             return ResponseEntity.status(400).body(null);
         }
-
     }
 }
