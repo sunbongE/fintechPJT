@@ -1,5 +1,8 @@
 package com.orange.fintech.account.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.fintech.account.dto.AccountResDto;
 import com.orange.fintech.account.dto.ReqHeader;
 import com.orange.fintech.account.entity.Account;
@@ -7,10 +10,11 @@ import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.AccountRepository;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.member.service.MemberService;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -62,7 +66,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<AccountResDto> findAccountList(String memberId) {
+    public List<JSONObject> findAccountList(String memberId)
+            throws JsonProcessingException, ParseException {
         String apinameAndApiServiceCode = getApinameAndApiServiceCode(searchAccountsUrl);
 
         Member member = memberRepository.findById(memberId).get();
@@ -73,17 +78,29 @@ public class AccountServiceImpl implements AccountService {
         reqHeader.setUserKey(userKey);
         reqHeader.setApiName(apinameAndApiServiceCode);
         reqHeader.setApiServiceCode(apinameAndApiServiceCode);
+
         RestClient.ResponseSpec response = null;
         RestClient restClient = RestClient.create();
+
         Map<String, Object> req = new HashMap<>();
         req.put("Header", reqHeader);
 
+        RestClient response2 = null;
+
         response = restClient.post().uri(searchAccountsUrl).body(req).retrieve();
-        log.info(response.body(String.class));
+        String responseBody = response.body(String.class);
 
-        log.info(reqHeader.toString());
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(responseBody);
 
-        return null;
+        List<JSONObject> target = (List<JSONObject>) jsonObject.get("REC");
+//        log.info("responseBody : {}", responseBody);
+//        log.info("==========================================================================");
+//        log.info("obj : {}", jsonObject.get("REC"));
+//        log.info("target size: {}", target.size());
+//        log.info("==========================================================================");
+
+        return target;
     }
 
     @Override
