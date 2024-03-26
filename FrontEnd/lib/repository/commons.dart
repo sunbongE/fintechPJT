@@ -12,6 +12,7 @@ class ApiClient {
     userManager.loadUserInfo();
     print("간다간다api요청~~~");
     dio.options.baseUrl = dotenv.env['BASE_URL']!;
+    // dio.options.baseUrl = "http://10.0.2.2:8080/api/v1";
     dio.options.headers['Content-Type'] = 'application/json';
     dio.interceptors
         .add(InterceptorsWrapper(onRequest: (options, handler) async {

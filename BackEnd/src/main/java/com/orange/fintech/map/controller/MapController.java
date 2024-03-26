@@ -25,18 +25,22 @@ public class MapController {
     private final MapService mapService;
 
     @GetMapping("/group/{groupId}")
-    @Operation(summary = "그룹 내에서 내 결제 내역 조회", description = "<strong>그룹 아이디</strong>로 을 조회한다.")
+    @Operation(summary = "그룹의 결제 위치 목록 불러오기", description = "<strong>그룹 아이디</strong>로 위치 목록을 조회한다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "404", description = "사용자 정보 없음"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<List<LocationDto>> getMyTransactionList(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
             Principal principal) {
 
-        List<LocationDto> res = mapService.getLocations(groupId);
+        try {
+            List<LocationDto> res = mapService.getLocations(groupId);
+            return ResponseEntity.status(200).body(res);
+        } catch (Exception e) {
 
-        return ResponseEntity.status(200).body(res);
+            return ResponseEntity.status(400).body(null);
+        }
     }
 }

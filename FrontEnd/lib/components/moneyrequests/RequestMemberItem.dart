@@ -7,14 +7,16 @@ import '../../entities/RequestMember.dart';
 class RequestMemberItem extends StatefulWidget {
   final RequestMember member;
   final bool isSettledState;
+  final int amount;
   final Function(bool) onSettledChanged;
   final Function(int) callbackAmount;
+  final Function(bool) onLockedChanged;
 
   const RequestMemberItem({
     Key? key,
     required this.member,
     required this.isSettledState,
-    required this.onSettledChanged, required this.callbackAmount,
+    required this.onSettledChanged, required this.callbackAmount, required this.onLockedChanged, required this.amount,
   }) : super(key: key);
 
   @override
@@ -29,20 +31,17 @@ class _RequestMemberItemState extends State<RequestMemberItem> {
   void initState() {
     super.initState();
     isSettledState = widget.isSettledState;
-    amount = widget.member.amount;//생성자 바꾸면 여기도 바꿔야함
+    amount = widget.amount;
   }
 
   void toggleSettled(bool value) {
     widget.onSettledChanged(value);
     setState(() {
       isSettledState = value;
-      if(!value){
-        amount = 0;
-        //나중에는 islock가져와서 잠금 해제
-      }else{
-        amount = 1;
-      }
+      amount = value ? 1 : 0;
+      widget.onLockedChanged(false);
       widget.callbackAmount (amount);
+      amount = widget.amount;
     });
   }
 
@@ -52,6 +51,11 @@ class _RequestMemberItemState extends State<RequestMemberItem> {
     if (oldWidget.isSettledState != widget.isSettledState) {
       setState(() {
         isSettledState = widget.isSettledState;
+      });
+    }
+    if (oldWidget.amount != widget.amount) {
+      setState(() {
+        amount = widget.amount;
       });
     }
   }

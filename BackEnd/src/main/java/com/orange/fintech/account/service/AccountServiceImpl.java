@@ -1,10 +1,13 @@
 package com.orange.fintech.account.service;
 
+<<<<<<< BackEnd/src/main/java/com/orange/fintech/account/service/AccountServiceImpl.java
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.fintech.account.dto.AccountResDto;
 import com.orange.fintech.account.dto.ReqHeader;
+=======
+>>>>>>> BackEnd/src/main/java/com/orange/fintech/account/service/AccountServiceImpl.java
 import com.orange.fintech.account.entity.Account;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.AccountRepository;
@@ -16,6 +19,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -26,6 +30,7 @@ public class AccountServiceImpl implements AccountService {
     @Autowired AccountRepository accountRepository;
     @Autowired MemberRepository memberRepository;
 
+
     @Autowired MemberService memberService;
 
     @Value("${ssafy.bank.search.accounts}")
@@ -33,6 +38,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Value("${ssafy.bank.api-key}")
     private String apiKey;
+
 
     @Override
     public boolean insertAccount(String kakaoId, Account account) {

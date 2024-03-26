@@ -27,10 +27,10 @@ class MoneyRequestModify extends StatefulWidget {
 class _MoneyRequestModifyState extends State<MoneyRequestModify> {
   late bool isSettledStates;
   late TextEditingController memoController;
-  late RequestDetail request;
-  late List<int> personalRequestAmount;
-  late List<bool> isLockedList;
-  late int remainderAmount;
+  RequestDetail request = RequestDetail.empty();
+  List<int> personalRequestAmount = [];
+  List<bool> isLockedList = [];
+  int remainderAmount = 0;
 
   @override
   void initState() {
@@ -77,7 +77,9 @@ class _MoneyRequestModifyState extends State<MoneyRequestModify> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: SizedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context);
+              },
               btnText: '완료',
               size: ButtonSize.xs,
               borderRadius: 10,
@@ -96,7 +98,7 @@ class _MoneyRequestModifyState extends State<MoneyRequestModify> {
               expense: widget.expense,
               isToggle: false,
             ),
-            if (request != null) ...[
+            if (request.members.isNotEmpty) ...[
               Row(
                 children: [
                   Padding(padding: EdgeInsets.symmetric(horizontal: 10.w)),
@@ -127,6 +129,7 @@ class _MoneyRequestModifyState extends State<MoneyRequestModify> {
                             request.totalPrice, value, isLockedList);
                         remainderAmount = reCalculateRemainder(
                             request.totalPrice, personalRequestAmount);
+                        print(personalRequestAmount);
                       });
                     },
                   ),
@@ -137,7 +140,6 @@ class _MoneyRequestModifyState extends State<MoneyRequestModify> {
                 amount: remainderAmount,
               ),
             ] else ...[
-              // request가 아직 초기화되지 않았다면 로딩 인디케이터를 보여줍니다.
               Expanded(
                 child: Center(
                   child: CircularProgressIndicator(),

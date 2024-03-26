@@ -503,7 +503,7 @@ class _ModifyReceiptState extends State<ModifyReceipt> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('수정 사항 저장'),
-          content: Text('현재까지의 수정 사항을 모두 잃습니다.\n그래도 나가시겠습니까?'),
+          content: Text('현재까지의 수정 사항이 모두 저장됩니다.\n그래도 나가시겠습니까?'),
           actions: <Widget>[
             TextButton(
               child: Text('취소'),

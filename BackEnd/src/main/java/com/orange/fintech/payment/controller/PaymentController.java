@@ -249,7 +249,7 @@ public class PaymentController {
             @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
             @PathVariable @Parameter(description = "영수증 세부항목 아이디", in = ParameterIn.PATH)
                     int receiptDetailId,
-            @RequestBody List<ReceiptDetailMemberDto> memberList,
+            @RequestBody List<ReceiptDetailMemberPutDto> memberList,
             Principal principal) {
 
         //        if (!paymentService.isMyGroup(principal.getName(), groupId)
@@ -258,7 +258,7 @@ public class PaymentController {
         //        }
 
         try {
-            paymentService.setReceiptDetailMember(memberList);
+            paymentService.setReceiptDetailMember(paymentId, receiptDetailId, memberList);
 
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "OK"));
         } catch (Exception e) {
