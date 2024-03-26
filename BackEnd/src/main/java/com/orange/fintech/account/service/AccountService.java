@@ -18,7 +18,15 @@ public interface AccountService {
 
     String getApinameAndApiServiceCode(String url);
 
-    void accountMainAccount(String memberId, UpdateAccountDto dto) throws ParseException;
+    void updateMainAccount(String memberId, UpdateAccountDto dto) throws ParseException;
 
     ReqHeader createHeader(String userKey, String reqUrl);
+
+    void getAllTransaction(
+            String bankCode,
+            String accountNo,
+            String startDate,
+            String endDate,
+            ReqHeader reqHeader)
+            throws ParseException;
 }

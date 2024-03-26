@@ -61,7 +61,7 @@ public class AccountController {
 
         String memberId = principal.getName();
         try {
-            accountService.accountMainAccount(memberId, dto);
+            accountService.updateMainAccount(memberId, dto);
             return ResponseEntity.ok().body("주계좌 등록됨");
         } catch (Exception e) {
             e.printStackTrace();
