@@ -47,7 +47,7 @@ class _MoneyRequestItemState extends State<MoneyRequestItem> {
                     )));
       },
       child: Container(
-        width: 368.w,
+        width: 380.w,
         height: 80.h,
         child: Card(
           elevation: 0,

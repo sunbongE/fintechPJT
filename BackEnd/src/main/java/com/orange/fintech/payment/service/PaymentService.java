@@ -34,5 +34,6 @@ public interface PaymentService {
 
     ReceiptDetailRes getGroupReceiptDetail(int receiptDetailId);
 
-    void setReceiptDetailMember(List<ReceiptDetailMemberDto> req);
+    void setReceiptDetailMember(
+            int paymentId, int receiptDetailId, List<ReceiptDetailMemberPutDto> req);
 }

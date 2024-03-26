@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/intros/CreatePwPage.dart';
@@ -5,6 +8,7 @@ import 'package:front/components/intros/IntroBox.dart';
 import 'package:front/screen/HomeScreen.dart';
 
 import '../../providers/store.dart';
+import '../../repository/api/ApiLogin.dart';
 
 class ServiceIntro extends StatefulWidget {
   final int selectedIndex;
@@ -30,7 +34,7 @@ class _ServiceIntroState extends State<ServiceIntro> {
     {
       'idx': 2,
       "title": "은행에서 정보를\n받는 중입니다.",
-      "desc": "잠시만 기다려주세요",
+      "desc": "손쉽게 은행정보를 받아보세요",
     },
     {
       'idx': 3,
@@ -39,7 +43,7 @@ class _ServiceIntroState extends State<ServiceIntro> {
     }
   ];
   final PageController _pageController = PageController();
-  final int stopIdex = 1;
+  final int stopIdex = 2;
 
   @override
   void initState() {
@@ -82,7 +86,7 @@ class _ServiceIntroState extends State<ServiceIntro> {
                     IntroBox(
                       title: introInfo[index]['title'],
                       desc: introInfo[index]['desc'],
-                      onNext: () {
+                      onNext: () async {
                         if (index < stopIdex) {
                           _pageController.animateToPage(
                             index + 1,
@@ -90,6 +94,8 @@ class _ServiceIntroState extends State<ServiceIntro> {
                             curve: Curves.easeInOut,
                           );
                         } else if (index == stopIdex) {
+                          Response res = await postMyData();
+                          print(res.data['message']);
                           Navigator.push(
                             context,
                             MaterialPageRoute(

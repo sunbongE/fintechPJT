@@ -12,6 +12,7 @@ import '../../models/button/Toggle.dart';
 import '../../components/moneyrequests/RequestMemberList.dart';
 import '../../entities/RequestDetail.dart';
 import '../../repository/api/ApiMoneyRequest.dart';
+import '../../utils/RequestModifyUtil.dart';
 
 class MoneyRequestDetail extends StatefulWidget {
   final Function onSuccess;
@@ -28,7 +29,9 @@ class MoneyRequestDetail extends StatefulWidget {
 class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
   late bool isSettledStates;
   late List<int> amounts;
+  int remainderAmount = 0;
   RequestDetail request = RequestDetail.empty();
+  List<bool> isLockedList = [];
 
   @override
   void initState() {
@@ -45,6 +48,8 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
         request = RequestDetail.fromJson(MyGroupPaymentsDetailJson.data);
         amounts = request.members.map((member) => member.amount).toList();
         //print(amounts);
+        remainderAmount = 5;
+        isLockedList = request.members.map((member) => member.lock).toList();
       });
     } else {
       print("정산 데이터를 불러오는 데 실패했습니다.");
@@ -107,15 +112,26 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
                   height: 400.h,
                   child: RequestMemberList(
                     requestDetail: request,
+                    amountList: amounts,
                     allSettledCallback: updateIsSettledStates,
                     callbackAmountList: (List<int> value)
-                    { },
+                    { //amounts = value;
+                      setState(() {
+                        amounts = value;
+                        amounts = reCalculateAmount(widget.expense.transactionBalance, amounts, isLockedList);
+                        print(amounts);
+                        remainderAmount = reCalculateRemainder(
+                            widget.expense.transactionBalance, amounts);
+                        print(remainderAmount);
+                      });
+
+                      }, isLockList: (List<bool> value) { isLockedList = value; },
                   ),
                 ),
               ),
               Padding(padding: EdgeInsets.symmetric(vertical: 10.w)),
               MoneyRequestDetailBottom(
-                amount: widget.expense.transactionBalance,
+                amount: remainderAmount,
               ),
             ] else
               ...[

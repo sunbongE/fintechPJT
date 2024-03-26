@@ -14,9 +14,12 @@ import '../../screen/YjReceipt.dart';
 import 'ModifyReceipt.dart';
 
 class ShowBeforeOcr extends StatefulWidget {
-  final Function(List<Receipt>) onReceiptsChanged;
+  final Function(List<Receipt>) onReceiptsUpdated;
 
-  ShowBeforeOcr({Key? key, required this.onReceiptsChanged}) : super(key: key);
+  ShowBeforeOcr({
+    Key? key,
+    required this.onReceiptsUpdated,
+  }) : super(key: key);
 
   @override
   State<ShowBeforeOcr> createState() => _ShowBeforeOcrState();
@@ -24,20 +27,23 @@ class ShowBeforeOcr extends StatefulWidget {
 
 class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
   List<Receipt> receiptData = [];
+  List<bool> receiptSavedStates = [];
 
   final PageController _pageController = PageController();
   final ImagePicker picker = ImagePicker();
 
   double _progressValue = 0;
   int _currentPageIndex = 0;
+  int countCheckReceipt = 0;
   bool isLoading = false;
 
   @override
-  void dispose() {
-    super.dispose();
+  void initState() {
+    super.initState();
+    receiptSavedStates = List.generate(receiptData.length, (index) => false);
   }
 
-  // 영수증 수정페이지로 이동 후 콜백 및 수정 사항 적용
+  // 영수증 수정페이지로 이동 후 수정 사항 적용
   void _navigateAndEditReceipt(BuildContext context, int index) async {
     final modifiedReceipt = await Navigator.push(
       context,
@@ -56,19 +62,27 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
     if (modifiedReceipt != null) {
       setState(() {
         receiptData[index] = modifiedReceipt;
-        widget.onReceiptsChanged(receiptData);
-        print(receiptData[index].storeName);
-        print(receiptData[index].subName);
-        print(receiptData[index].addresses);
-        print(receiptData[index].date);
-        print(receiptData[index].items);
-        print(receiptData[index].totalPrice);
+        receiptSavedStates[index] = false;
       });
     }
   }
 
+  // 영수증을 확인했다는 버튼
+  void countCheckedReceipt(int index) {
+    setState(() {
+      receiptSavedStates[index] = !receiptSavedStates[index];
+
+      if (receiptSavedStates.every((isSaved) => isSaved)) {
+        widget.onReceiptsUpdated(receiptData);
+      } else {
+        widget.onReceiptsUpdated([]);
+      }
+    });
+  }
+
   // 하단 모달
   void showModal() {
+    print(receiptData);
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
@@ -134,7 +148,10 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
         "requestId": requestId,
         "timestamp": 0,
         "images": [
-          { "format": "jpg", "name": fileName, }
+          {
+            "format": "jpg",
+            "name": fileName,
+          }
         ]
       }),
     });
@@ -142,10 +159,19 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
     // API 호출 및 응답 처리
     final res = await postReceiptImage(formData);
     Receipt receipt = Receipt.fromJson(res.data);
+    debugPrint("2222222222 data: ${receipt.storeName}");
+    debugPrint("3333333333 data: ${receipt.subName}");
+    debugPrint("4444444444 data: ${receipt.addresses}");
+    debugPrint("5555555555 data: ${receipt.date}");
+    debugPrint("6666666666 data: ${receipt.items}");
+    debugPrint("7777777777 data: ${receipt.totalPrice}");
 
     setState(() {
       receiptData.add(receipt);
+      receiptSavedStates.add(false);
       isLoading = false;
+      _currentPageIndex = receiptData.length - 1;
+      _progressValue = (_currentPageIndex + 1) / (receiptData.length + 1);
     });
   }
 
@@ -167,19 +193,18 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          if (isLoading)
-            Center(child: CircularProgressIndicator()),
           LinearProgressIndicator(
             value: _progressValue,
             backgroundColor: BG_COLOR,
             valueColor: AlwaysStoppedAnimation<Color>(PRIMARY_COLOR),
           ),
-          if (receiptData.length > 0 && _currentPageIndex == receiptData.length)
+          if (receiptData.isNotEmpty && _currentPageIndex < receiptData.length)
             Text(
               "옆으로 넘기면 새 영수증을 추가할 수 있습니다.",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey),
@@ -200,37 +225,56 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
                       itemCount: receiptData.length + 1,
                       onPageChanged: (int index) {
                         setState(() {
-                          _currentPageIndex = index + 1;
-                          _progressValue = index + 1 / (receiptData.length + 1);
+                          _currentPageIndex = index;
+                          _progressValue = (index + 1) / (receiptData.length + 1);
                         });
                       },
                       itemBuilder: (context, index) {
-                        if (index < receiptData.length) {
-                          return YjReceipt(spend: receiptData[index]);
-                        } else {
+                        if (isLoading) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (index >= receiptData.length) {
                           return _buildAddReceiptPage();
+                        } else {
+                          return Column(
+                            children: [
+                              YjReceipt(spend: receiptData[index]),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Text(
+                                        receiptSavedStates[index] ? "다시 수정하려면?" : "수정이 완료되었다면?",
+                                        style: TextStyle(fontSize: 14, color: RECEIPT_TEXT_COLOR),
+                                      ),
+                                      SizedButton(
+                                        btnText: receiptSavedStates[index] ? "영수증 저장 취소" : "영수증 저장",
+                                        onPressed: () => countCheckedReceipt(index),
+                                      )
+                                    ],
+                                  ),
+                                  if (!receiptSavedStates[index])
+                                    Column(
+                                      children: [
+                                        Text(
+                                          "수정이 필요하다면?",
+                                          style: TextStyle(fontSize: 14, color: RECEIPT_TEXT_COLOR),
+                                        ),
+                                        SizedButton(
+                                          btnText: "영수증 수정",
+                                          onPressed: () => _navigateAndEditReceipt(context, index),
+                                        )
+                                      ],
+                                    ),
+                                ],
+                              )
+                            ],
+                          );
                         }
                       },
                     ),
             ),
           ),
-          receiptData.isNotEmpty
-              ? Text(
-                  "수정이 필요하다면?",
-                  style: TextStyle(fontSize: 14, color: RECEIPT_TEXT_COLOR),
-                )
-              : SizedBox.shrink(),
-          receiptData.isNotEmpty
-              ? SizedButton(
-                  btnText: "영수증 수정",
-                  onPressed: () {
-                    final currentIndex = _pageController.page?.round();
-                    if (currentIndex != null && currentIndex < receiptData.length) {
-                      _navigateAndEditReceipt(context, currentIndex);
-                    }
-                  },
-                )
-              : SizedBox.shrink(),
         ],
       ),
     );

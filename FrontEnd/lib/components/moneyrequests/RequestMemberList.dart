@@ -9,12 +9,17 @@ import 'RequestMemberItem.dart';
 class RequestMemberList extends StatefulWidget {
   final RequestDetail requestDetail;
   final Function(bool) allSettledCallback;
+  final List<int> amountList;
   final Function(List<int>) callbackAmountList;
+  final Function(List<bool>) isLockList;
 
   const RequestMemberList({
     Key? key,
     required this.requestDetail,
-    required this.allSettledCallback, required this.callbackAmountList,
+    required this.allSettledCallback,
+    required this.callbackAmountList,
+    required this.amountList,
+    required this.isLockList,
   }) : super(key: key);
 
   @override
@@ -26,15 +31,18 @@ class _RequestMemberListState extends State<RequestMemberList> {
   bool allSettled = false;
   int settledMembersCount = 0;
   late List<int> amountList;
+  late List<bool> isLockList;
 
   @override
   void initState() {
     super.initState();
     isSettledStates =
-        widget.requestDetail.members.map((m) => m.amount!=0).toList();
+        widget.requestDetail.members.map((m) => m.amount != 0).toList();
     settledMembersCount =
-        widget.requestDetail.members.where((m) => m.amount!=0).length;
-    amountList = widget.requestDetail.members.map((m) => m.amount).toList();
+        widget.requestDetail.members.where((m) => m.amount != 0).length;
+    isLockList = widget.requestDetail.members.map((m) => m.lock).toList();
+    amountList = widget
+        .amountList; //widget.requestDetail.members.map((m) => m.amount).toList();
   }
 
   void updateAllSettled() {
@@ -48,10 +56,24 @@ class _RequestMemberListState extends State<RequestMemberList> {
     setState(() {
       isSettledStates = List<bool>.filled(isSettledStates.length, value);
       print('isSettledStates: $isSettledStates');
+      widget.isLockList(List<bool>.filled(isLockList.length, value));
+      if(value == true)
+      widget.callbackAmountList(List<int>.filled(amountList.length, (widget.requestDetail.totalPrice/amountList.length).toInt()));
+      else
+        widget.callbackAmountList(List<int>.filled(amountList.length, 0));
+
+      //전체해제할때 전부 lock풀기
       updateAllSettled();
     });
   }
-
+  void didUpdateWidget(covariant RequestMemberList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.amountList != widget.amountList) {
+      setState(() {
+        amountList = widget.amountList;
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     //isSettled = widget.requestDetail.isSettled;
@@ -71,11 +93,11 @@ class _RequestMemberListState extends State<RequestMemberList> {
               Text('$settledMembersCount명'),
               Spacer(),
               SizedButton(
-                btnText: '전체선택',
+                btnText: allSettled ? '전체 해제' : '전체 선택',
                 size: ButtonSize.s,
                 borderRadius: 10,
                 onPressed: () {
-                  toggleAll(true);
+                  toggleAll(!allSettled);
                 },
               ),
             ],
@@ -93,13 +115,22 @@ class _RequestMemberListState extends State<RequestMemberList> {
                 onSettledChanged: (bool value) {
                   setState(() {
                     isSettledStates[index] = value;
-                    //print('isSettledStates: $isSettledStates');
                     updateAllSettled();
                   });
-                }, callbackAmount: (int value) { setState((){
-                amountList[index]=value;
-                print(amountList);
-              });},
+                },
+                callbackAmount: (int value) {
+                  amountList[index] = value;
+                  widget.callbackAmountList(amountList);setState(() {
+
+                  });
+                },
+                onLockedChanged: (bool value) {
+                  setState(() {
+                    isLockList[index] = value;
+                    widget.isLockList(isLockList);
+                  });
+                },
+                amount: amountList[index],
               );
             },
           ),

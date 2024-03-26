@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,16 +41,18 @@ class _ProfileChangeState extends State<ProfileChange> {
       "file": await MultipartFile.fromFile(image.path, filename: fileName),
     });
     final res = await putUploadImage(formData);
-    print(res.data);
+
+    var responseData = jsonDecode(res.data);
+    String profileImagePath = responseData['profileImagePath'];
+    String thumbnailImagePathURL = responseData['thumbnailImagePathURL'];
 
     UserManager userManager = UserManager();
     await userManager.saveUserInfo(
-      newThumbnailImageUrl: res.data['thumbnailImagePathURL'],
-      newProfileImageUrl: res.data['profileImagePath'],
+      newThumbnailImageUrl: thumbnailImagePathURL,
+      newProfileImageUrl: profileImagePath,
     );
     buttonSlideAnimationPushAndRemoveUntil(context, 3);
   }
-
 
   @override
   Widget build(BuildContext context) {
