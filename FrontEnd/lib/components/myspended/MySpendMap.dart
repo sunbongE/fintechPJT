@@ -41,14 +41,29 @@ class _MySpendMapState extends State<MySpendMap> {
     mapController = controller;
   }
 
+  void _onCameraMove(CameraPosition position) {
+    center = position.target;
+  }
+
+  _onCameraIdle() async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(center.latitude, center.longitude);
+      if (placemarks.isNotEmpty) {
+        print("주소: ${placemarks.first}");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Set<Marker> markers = {
       Marker(
-        markerId: MarkerId('someMarker'),
+        markerId: MarkerId('centerMarker'),
         position: center,
         infoWindow: InfoWindow(
-          title: widget.location,
+          title: '선택된 위치',
         ),
       ),
     };
@@ -58,13 +73,15 @@ class _MySpendMapState extends State<MySpendMap> {
       height: 450.h,
       child: isLocationLoaded
           ? GoogleMap(
-              onMapCreated: onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target: center,
-                zoom: 15.0,
-              ),
-              markers: markers,
-            )
+        onMapCreated: onMapCreated,
+        initialCameraPosition: CameraPosition(
+          target: center,
+          zoom: 15.0,
+        ),
+        markers: markers,
+        onCameraMove: _onCameraMove,
+        onCameraIdle: _onCameraIdle,
+      )
           : Center(child: CircularProgressIndicator()),
     );
   }

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/mypage/MyTripHistoryGroupDetail.dart';
-import 'package:front/components/myspended/MySpendList.dart';
+import 'package:front/models/button/ButtonSlideAnimation.dart';
+import 'package:front/models/button/SizedButton.dart';
 import '../../const/colors/Colors.dart';
 import '../../entities/Group.dart';
+import 'GroupMap.dart';
+import 'GroupSpendList.dart';
 
 class MyTripHistoryDetail extends StatefulWidget {
   final Group groupData;
@@ -17,6 +20,7 @@ class MyTripHistoryDetail extends StatefulWidget {
 class _MyTripHistoryDetailState extends State<MyTripHistoryDetail> {
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
@@ -35,13 +39,26 @@ class _MyTripHistoryDetailState extends State<MyTripHistoryDetail> {
               decoration: BoxDecoration(
                 color: BG_COLOR,
               ),
-              child: MyTripHistoryGroupDetail(
-                startDate: widget.groupData.startDate,
-                endDate: widget.groupData.endDate,
-                description: widget.groupData.theme,
+              child: Column(
+                children: [
+                  MyTripHistoryGroupDetail(
+                    startDate: widget.groupData.startDate,
+                    endDate: widget.groupData.endDate,
+                    description: widget.groupData.theme,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        SizedButton(btnText: "지도보기", onPressed: () => buttonSlideAnimation(context, GroupMap(description: widget.groupData.theme, groupId: widget.groupData.groupId!)),),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-            MySpendList(),
+            GroupSpendList(groupId: widget.groupData.groupId!),
           ],
         ),
       ),

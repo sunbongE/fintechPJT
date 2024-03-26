@@ -9,7 +9,9 @@ import '../../models/CustomDivider.dart';
 import '../../models/button/ButtonSlideAnimation.dart';
 
 class MySpendList extends StatefulWidget {
-  const MySpendList({super.key});
+  const MySpendList({
+    super.key,
+  });
 
   @override
   State<MySpendList> createState() => _MySpendListState();
@@ -27,10 +29,11 @@ class _MySpendListState extends State<MySpendList> {
         children: getMySpended!
             .map((spend) => InkWell(
                   onTap: () {
-                    buttonSlideAnimation(
-                      context,
-                      MySpendItem(spend: spend),
-                    );
+                    // buttonSlideAnimation(
+                    //   context,
+                    //   MySpendItem(spend: spend),
+                    // );
+                    print("ㅠㅠ api 만들어조ㅠ");
                   },
                   child: Column(
                     children: [

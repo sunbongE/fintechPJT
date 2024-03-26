@@ -36,12 +36,12 @@ Future<void> postPassWord(data) async {
 }
 
 // 사용자가 선택한 은행과 연결된 계좌 목록 get
-Future<Response> getBankInfo(data) async {
+Future<Response> getBankInfo(code) async {
   try {
-    final res = await api.get('/members/account', queryParameters: data);
+    final res = await api.get('/account/list/${code}');
     return res;
   } catch (err) {
-    print(err);
+    print('err: ${err}');
     throw Exception('Failed to post user info');
   }
 }
@@ -50,6 +50,7 @@ Future<Response> getBankInfo(data) async {
 Future<void> postBankInfo(data) async {
   try {
     final res = await api.post('/bank/myAccount', data: data);
+    print('postBankInfo: ${res.data}');
     return res.data;
   } catch (err) {
     print(err);
