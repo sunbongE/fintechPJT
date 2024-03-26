@@ -118,7 +118,7 @@ public class AccountServiceImpl implements AccountService {
 
         // 은행에서 이 계좌로 된거 불러와야함.
         ReqHeader reqHeader = createHeader(member.getUserKey(), mainAccountsUrl);
-        log.info(reqHeader.toString());
+
         RestClient.ResponseSpec response = null;
         RestClient restClient = RestClient.create();
 
@@ -144,8 +144,11 @@ public class AccountServiceImpl implements AccountService {
         List<Account> prePrimaryAccount =
                 accountRepository.findByMemberAndIsPrimaryAccountIsTrue(member);
         for (Account pre : prePrimaryAccount) {
-            pre.setIsPrimaryAccount(false);
-            accountRepository.save(pre);
+            if (pre.getIsPrimaryAccount()) {
+
+                pre.setIsPrimaryAccount(false);
+                accountRepository.save(pre);
+            }
         }
 
         accountRepository.save(account);
@@ -159,9 +162,6 @@ public class AccountServiceImpl implements AccountService {
         reqHeader.setUserKey(userKey);
         reqHeader.setApiName(apinameAndApiServiceCode);
         reqHeader.setApiServiceCode(apinameAndApiServiceCode);
-
-        RestClient.ResponseSpec response = null;
-        RestClient restClient = RestClient.create();
 
         return reqHeader;
     }
