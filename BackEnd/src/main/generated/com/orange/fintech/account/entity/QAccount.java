@@ -32,6 +32,8 @@ public class QAccount extends EntityPathBase<Account> {
 
     public final com.orange.fintech.member.entity.QMember member;
 
+    public final ListPath<com.orange.fintech.payment.entity.Transaction, com.orange.fintech.payment.entity.QTransaction> transactionList = this.<com.orange.fintech.payment.entity.Transaction, com.orange.fintech.payment.entity.QTransaction>createList("transactionList", com.orange.fintech.payment.entity.Transaction.class, com.orange.fintech.payment.entity.QTransaction.class, PathInits.DIRECT2);
+
     public QAccount(String variable) {
         this(Account.class, forVariable(variable), INITS);
     }

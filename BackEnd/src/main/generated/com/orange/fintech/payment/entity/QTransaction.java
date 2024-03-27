@@ -34,6 +34,8 @@ public class QTransaction extends EntityPathBase<Transaction> {
 
     public final DatePath<java.time.LocalDate> transactionDate = createDate("transactionDate", java.time.LocalDate.class);
 
+    public final QTransactionDetail transactionDetail;
+
     public final NumberPath<Integer> transactionId = createNumber("transactionId", Integer.class);
 
     public final StringPath transactionSummary = createString("transactionSummary");
@@ -66,6 +68,7 @@ public class QTransaction extends EntityPathBase<Transaction> {
         super(type, metadata, inits);
         this.account = inits.isInitialized("account") ? new com.orange.fintech.account.entity.QAccount(forProperty("account"), inits.get("account")) : null;
         this.member = inits.isInitialized("member") ? new com.orange.fintech.member.entity.QMember(forProperty("member")) : null;
+        this.transactionDetail = inits.isInitialized("transactionDetail") ? new QTransactionDetail(forProperty("transactionDetail"), inits.get("transactionDetail")) : null;
     }
 
 }
