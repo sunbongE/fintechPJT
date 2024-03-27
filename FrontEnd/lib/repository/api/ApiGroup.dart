@@ -35,7 +35,6 @@ Future<void> deleteGroup(groupId) async {
 Future<Response> getGroupMemberList(groupId) async {
   try {
     final res = await api.get('/groups/$groupId/members');
-    // print(res);
     return res;
   } catch (err) {
     print(err);
@@ -55,15 +54,25 @@ Future<void> inviteMemberToGroup(data, groupId) async {
 }
 
 //가입되어있는 멤버 조회
-Future<Map<String, dynamic>?> getMemberByEmail(String email, Map<String, dynamic> queryParameters) async {
+Future<Response> getMemberByEmail(email) async {
   try {
-    final res = await api.get('/members/$email', queryParameters: queryParameters);
-    return res.data;
+    final res = await api.get('/members/$email');
+    print(res);
+    return res;
   } catch (err) {
     print(err);
-    return null;
+    throw Exception('멤버 조회 실패');
   }
 }
+// Future<Map<String, dynamic>?> getMemberByEmail(String email, Map<String, dynamic> queryParameters) async {
+//   try {
+//     final res = await api.get('/members/$email', queryParameters: queryParameters);
+//     return res.data;
+//   } catch (err) {
+//     print(err);
+//     return null;
+//   }
+// }
 // {
 // "kakaoId": "23423423",
 // "email": "SSAFY01@naver.com",

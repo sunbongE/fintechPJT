@@ -1,19 +1,19 @@
 import "package:flutter/material.dart";
-import 'package:front/components/mains/MainNowTravelCard.dart';
+import 'package:front/components/mains/MainPastTravelCard.dart';
 import 'package:front/screen/groupscreens/GroupItem.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../../entities/Group.dart';
 
-class NowTravelList extends StatefulWidget {
+class PastTravelList extends StatefulWidget {
   final List<Group> groups;
 
-  const NowTravelList({Key? key, required this.groups}) : super(key: key);
+  const PastTravelList({Key? key, required this.groups}) : super(key: key);
 
   @override
-  State<NowTravelList> createState() => _NowTravelListState();
+  State<PastTravelList> createState() => _PastTravelListState();
 }
 
-class _NowTravelListState extends State<NowTravelList> {
+class _PastTravelListState extends State<PastTravelList> {
   void navigateToGroupDetail(Group group) async {
     await Navigator.push(
       context,
@@ -23,11 +23,20 @@ class _NowTravelListState extends State<NowTravelList> {
 
   @override
   Widget build(BuildContext context) {
+    final filteredGroups = widget.groups.where((group) => group.isCalculateDone).toList();
+    // if (filteredGroups.isEmpty) {
+    //   return Scaffold(
+    //     body: Center(
+    //       child: Text('이전 여행이 없습니다.'),
+    //     ),
+    //   );
+    // }
+
     return Scaffold(
       body: CarouselSlider.builder(
         itemCount: widget.groups.length,
         itemBuilder: (context, index, realIndex) {
-          return MainNowTravelCard(
+          return MainPastTravelCard(
             group: widget.groups[index],
             onTap: () {
               navigateToGroupDetail(widget.groups[index]);
@@ -35,11 +44,9 @@ class _NowTravelListState extends State<NowTravelList> {
           );
         },
         options: CarouselOptions(
-
           autoPlay: false,
           aspectRatio: 3.0,
-          enlargeCenterPage: true,
-          viewportFraction: 0.37,
+          viewportFraction: 0.6,
         ),
       ),
     );

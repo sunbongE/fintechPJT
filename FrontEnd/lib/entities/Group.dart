@@ -7,7 +7,7 @@ class Group {
   final String startDate;
   final String endDate;
   bool? groupState;
-  bool? isCalculateDone;
+  final bool isCalculateDone;
   final List<GroupMember> groupMembers;
 
   Group({
@@ -17,7 +17,7 @@ class Group {
     required this.startDate,
     required this.endDate,
     required this.groupState,
-    this.isCalculateDone,
+    required this.isCalculateDone,
     required this.groupMembers,
   });
   factory Group.fromJson(Map<String, dynamic> json) {
