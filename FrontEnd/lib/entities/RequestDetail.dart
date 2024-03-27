@@ -11,6 +11,7 @@ class RequestDetail {
   final int authNumber;
   final bool visibility;
   final bool receiptExists;
+  final int remainder;
   final String memo;
   final List<RequestMember> members;
 
@@ -26,6 +27,7 @@ class RequestDetail {
     required this.approvalAmount,
     this.receiptExists = false,
     this.memo = '',
+    required this.remainder,
     required this.members,
   });
 
@@ -43,10 +45,11 @@ class RequestDetail {
       approvalAmount: json['approvalAmount'],
       transactionDate: json['transactionDate'],
       transactionTime: json['transactionTime'],
-      receiptExists: json['영수증존재'] ?? false,
+      receiptExists: json['receiptEnrolled'] ?? false,
       memo: json['memo'] ?? '',
       authNumber: json['authNumber'],
       visibility: json['visibility'],
+      remainder: json['remainder'],
       members: _members,
     );
   }
@@ -65,6 +68,28 @@ class RequestDetail {
       receiptExists: false,
       memo: '',
       members: [],
+      remainder: 0,
     );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'receiptId': receiptId,
+      'businessName': businessName,
+      'location': location,
+      'transactionDate': transactionDate,
+      'transactionTime': transactionTime,
+      'totalPrice': totalPrice,
+      'approvalAmount': approvalAmount,
+      'authNumber': authNumber,
+      'visibility': visibility,
+      'memo': memo,
+      'remainder': remainder,
+      'receiptEnrolled': receiptExists,
+      'memberList': members.map((member) => member.toJson()).toList(),
+    };
+  }
+  @override
+  String toString() {
+    return 'RequestDetail(receiptId: $receiptId, businessName: $businessName, location: $location, transactionDate: $transactionDate, transactionTime: $transactionTime, totalPrice: $totalPrice, approvalAmount: $approvalAmount, authNumber: $authNumber, visibility: $visibility, receiptExists: $receiptExists, remainder: $remainder, memo: $memo, members: ${members.toString()})';
   }
 }

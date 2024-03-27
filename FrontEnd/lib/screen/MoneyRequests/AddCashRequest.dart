@@ -9,11 +9,14 @@ import 'package:lottie/lottie.dart';
 
 import '../../components/moneyrequests/AddCashAmountInputField.dart';
 import '../../components/moneyrequests/AddCashTextInputField.dart';
+import '../../components/moneyrequests/MoneyRequestDetailBottom.dart';
 import '../../entities/RequestCash.dart';
 import '../../entities/RequestMember.dart';
 import '../../models/button/ButtonSlideAnimation.dart';
 import '../../models/button/SizedButton.dart';
 import '../../repository/api/ApiGroup.dart';
+import '../../repository/api/ApiMoneyRequest.dart';
+import '../../utils/RequestModifyUtil.dart';
 
 class AddCashRequest extends StatefulWidget {
   final int groupId;
@@ -29,6 +32,7 @@ class _AddCashRequestState extends State<AddCashRequest> {
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   RequestCash requestCash = RequestCash.empty();
+  int remainderAmount = 0;
   List<int> amountList = [];
   late List<bool> isLockList;
 
@@ -44,7 +48,8 @@ class _AddCashRequestState extends State<AddCashRequest> {
 
   void _updateState() {
     setState(() {
-      requestCash.transactionBalance = int.tryParse(_priceController.text) ?? 0;
+      requestCash.transactionBalance =
+          int.tryParse(_priceController.text.replaceAll(',', '')) ?? 0;
     });
   }
 
@@ -61,11 +66,15 @@ class _AddCashRequestState extends State<AddCashRequest> {
         _locationController.text.isNotEmpty &&
         _priceController.text.isNotEmpty;
   }
+
   void fetchMyGroupMemberList() async {
     final MyGroupMemberListJson = await getGroupMemberList(widget.groupId);
-    final members = List<RequestMember>.from(MyGroupMemberListJson.data['groupMembersDtos'].map((x) => RequestMember.fromCashJson(x)));
-    String currentDate = DateTime.now().toString().split(' ')[0]; // YYYY-MM-DD 형식
-    String currentTime = DateTime.now().toString().split(' ')[1]; // 시간
+    final members = List<RequestMember>.from(
+        MyGroupMemberListJson.data['groupMembersDtos'].map((x) =>
+            RequestMember.fromCashJson(x)));
+    String currentDate = DateTime.now().toString().split(
+        ' ')[0]; // YYYY-MM-DD 형식
+    String currentTime = DateTime.now().toString().split(' ')[1].split('.')[0]; // 시간
     int exampleRemainder = 0;
     if (MyGroupMemberListJson != null) {
       setState(() {
@@ -79,6 +88,7 @@ class _AddCashRequestState extends State<AddCashRequest> {
           remainder: exampleRemainder,
         );
         amountList = List<int>.filled(members.length, 0);
+        isLockList = List<bool>.filled(members.length, false);
       });
     } else {
       print("그룹 데이터를 불러오는 데 실패했습니다.");
@@ -98,7 +108,40 @@ class _AddCashRequestState extends State<AddCashRequest> {
               btnText: '완료',
               size: ButtonSize.xs,
               borderRadius: 10,
-              onPressed: () => Navigator.pop(context),
+              onPressed: _isFormFilled() ? () async {
+                final groupId = widget.groupId;
+
+                List<RequestMember> newMembers = List<RequestMember>.generate(
+                    requestCash.members.length, (index) {
+                  return RequestMember(
+                    memberId: requestCash.members[index].memberId,
+                    profileUrl: requestCash.members[index].profileUrl,
+                    name: requestCash.members[index].name,
+                    amount: amountList[index],
+                    lock: isLockList[index],
+                  );
+                });
+
+                RequestCash newRequestCash = RequestCash(
+                    transactionSummary: _titleController.text,
+                    location: _locationController.text,
+                    transactionBalance: int.tryParse(_priceController.text.replaceAll(',', '')) ?? 0,
+                    transactionDate: requestCash.transactionDate,
+                    transactionTime: requestCash.transactionTime,
+                    members: newMembers,
+                    remainder: remainderAmount);
+
+
+                final data = newRequestCash.toJson();
+
+                try {
+                  final response = await postAddCash(groupId, data);
+                  print('현금 등록 post 요청 성공: $response');
+                  Navigator.pop(context, true);
+                } catch (e) {
+                  print('오류: $e');
+                }
+              } : null,
               enable: _isFormFilled(),
             ),
           ),
@@ -131,30 +174,44 @@ class _AddCashRequestState extends State<AddCashRequest> {
             SizedBox(height: 10),
             AmountInputField(
               controller: _priceController,
-              onSubmitted: (String ) {  },
+              onSubmitted: (String) {},
             ),
-          if (requestCash.members?.isNotEmpty ?? false) ...[
-            Flexible(
-              fit: FlexFit.loose,
-              child: SizedBox(
-                height: 400.h,
-                child: RequestMemberList(
-                    requestDetail: requestCash,
-                    allSettledCallback: (bool value){},
-                    callbackAmountList: (List<int> value){},
-                    amountList: amountList,
-                    isLockList: (List<bool> value){}),
-              ),
-            ),
-          ] else
-            ...[
-              Flexible (
-            fit: FlexFit.loose,
-                child: Center(
-                  child: Lottie.asset('assets/lotties/orangewalking.json'),
+            if (requestCash.members?.isNotEmpty ?? false) ...[
+              Flexible(
+                fit: FlexFit.loose,
+                child: SizedBox(
+                  height: 400.h,
+                  child: RequestMemberList(
+                      requestDetail: requestCash,
+                      allSettledCallback: (bool value) {},
+                      callbackAmountList: (List<int> value) {
+                        setState(() {
+                          amountList = value;
+                          amountList = reCalculateAmount(
+                              requestCash.transactionBalance, amountList,
+                              isLockList);
+                          print(amountList);
+                          remainderAmount = reCalculateRemainder(
+                              requestCash.transactionBalance, amountList);
+                          print(remainderAmount);
+                        });
+                      },
+                      amountList: amountList,
+                      isLockList: (List<bool> value) {}),
                 ),
               ),
-            ],
+              MoneyRequestDetailBottom(
+                amount: remainderAmount,
+              ),
+            ] else
+              ...[
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: Center(
+                    child: Lottie.asset('assets/lotties/orangewalking.json'),
+                  ),
+                ),
+              ],
           ],
         ),
       ),

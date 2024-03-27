@@ -66,7 +66,7 @@ late List<Expense> requests = [];
                     Padding(padding: EdgeInsets.symmetric(horizontal: 5.w)),
                     SizedButton(
                       btnText: '현금 계산 추가',
-                      onPressed: () => buttonSlideAnimation(context, AddCashRequest(groupId: widget.groupId,)),
+                      onPressed: () => navigateToAddCashPage(),
                     ),
                   ],
                 ),
@@ -76,7 +76,7 @@ late List<Expense> requests = [];
                   child: SizedBox(
                     width: 400.w,
                     height: 594.h,
-                    child: MoneyRequestList(expenses: requests),
+                    child: MoneyRequestList(expenses: requests, groupId: widget.groupId),
                   ),
                 ),
                 Padding(padding: EdgeInsets.symmetric(vertical: 20.w)),
@@ -86,4 +86,15 @@ late List<Expense> requests = [];
         ),
     );
   }
+
+Future<void> navigateToAddCashPage() async {
+  final result = await Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => AddCashRequest(groupId: widget.groupId,)),
+  );
+
+  if (result == true) {
+    fetchMyGroupPayments();
+  }
+}
 }

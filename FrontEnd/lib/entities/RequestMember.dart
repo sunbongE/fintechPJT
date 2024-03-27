@@ -41,4 +41,8 @@ class RequestMember {
       memberId: json['kakaoId'] as String,
     );
   }
+  @override
+  String toString() {
+    return 'RequestMember(memberId: $memberId, profileUrl: $profileUrl, name: $name, amount: $amount, lock: $lock)';
+  }
 }
