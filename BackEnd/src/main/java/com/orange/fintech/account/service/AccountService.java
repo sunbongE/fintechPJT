@@ -2,6 +2,7 @@ package com.orange.fintech.account.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.orange.fintech.account.dto.ReqHeader;
+import com.orange.fintech.account.dto.TransactionResDto;
 import com.orange.fintech.account.dto.UpdateAccountDto;
 import com.orange.fintech.account.entity.Account;
 import java.util.List;
@@ -31,4 +32,6 @@ public interface AccountService {
             String endDate,
             ReqHeader reqHeader, Member member)
             throws ParseException;
+
+    List<TransactionResDto> readAllOrUpdateTransation(String memberId);
 }
