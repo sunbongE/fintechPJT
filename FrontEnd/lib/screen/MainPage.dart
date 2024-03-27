@@ -72,20 +72,34 @@ class _MainPageState extends State<MainPage> {
               ],
             ),
           ),
-          if (isLoading) // isLoading 대신 groups.isEmpty 조건을 사용합니다.
-            Expanded(
-              child: Center(
-                child: Lottie.asset('assets/lotties/orangewalking.json'),
-              ),
-            )
-          else ...[
+          // if (groups.isEmpty) // isLoading 대신 groups.isEmpty 조건을 사용합니다.
+          //   Expanded(
+          //     child: Center(
+          //       child: CircularProgressIndicator(),
+          //     ),
+          //   )
+          // else ...[
+          isLoading?
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 20.h),
+                Text("그룹을 불러오고 있습니다"),
+              ],
+            ),
+          ) :
             Expanded(
               child: NowTravelList(groups: groups),
             ),
             Expanded(
               child: PastTravelList(groups: groups),
             ),
-          ],
-        ]));
+          // ],
+        ]
+        )
+    );
   }
 }

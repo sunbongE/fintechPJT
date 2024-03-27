@@ -15,14 +15,14 @@ class StateContainer extends StatelessWidget {
         vertical: 5,
       ),
       decoration: BoxDecoration(
-        color: STATE_COLOR,
+        color: TRAVELING,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
         groupState ? '정산중' : '여행중',
         style: TextStyle(
           color: Colors.white,
-          fontSize: 12.sp,
+          fontSize: 17.sp,
         ),
       ),
     );

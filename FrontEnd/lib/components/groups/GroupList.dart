@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import 'package:front/screen/groupscreens/GroupAdd.dart'; // Group 클래스를 import
 import 'package:front/screen/groupscreens/GroupItem.dart';
 import 'package:front/components/groups/GroupCard.dart';
-
+import 'package:front/const/colors/Colors.dart';
 import '../../entities/Group.dart';
 
 
@@ -67,7 +67,8 @@ class _GroupListState extends State<GroupList> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: navigateToGroupAdd,
-        child: Icon(Icons.add),
+        child: Icon(Icons.add, color: Colors.white), // Icon의 color 속성에 Colors.white를 추가
+        backgroundColor: BUTTON_COLOR,
       ),
     );
   }

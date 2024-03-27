@@ -4,12 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/groups/FirstInviteModal.dart';
 import 'package:front/components/groups/GroupCalendar.dart';
 import 'package:front/components/groups/GroupTextField.dart';
+import 'package:front/models/button/GroupAddButton2.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter/services.dart';
+import 'package:front/const/colors/Colors.dart';
 import '../../entities/Group.dart';
 import '../../models/button/ButtonSlideAnimation.dart';
 import 'package:front/repository/api/ApiGroup.dart';
-
 
 class GroupAdd extends StatefulWidget {
   @override
@@ -94,7 +95,6 @@ class _GroupAddState extends State<GroupAdd> {
           padding: EdgeInsets.all(16.0),
           child: ListView(
             children: [
-              // 기존 TextField 위젯 대신 GroupTextField 위젯을 사용
               GroupTextField(
                 controller: _titleController,
                 labelText: '그룹 이름',
@@ -103,8 +103,64 @@ class _GroupAddState extends State<GroupAdd> {
                 controller: _descriptionController,
                 labelText: '그룹 테마',
               ),
-              Text('${_rangeStart}'),
-              Text('${_rangeEnd}'),
+              SizedBox(height: 16.0.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: 150.w,
+                    child: Card(
+                      color: GREY_COLOR,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              _rangeStart != null
+                                  ? '출발일: ${_rangeStart!.toString().split(' ')[0]}'
+                                  : '출발일을 선택해주세요',
+                              style: TextStyle(
+                                  fontSize: 16.0.sp, color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Icon(Icons.arrow_right),
+                      Icon(Icons.arrow_right),
+                      Icon(Icons.arrow_right),
+                    ],
+                  ),
+                  SizedBox(
+                    width: 150.w,
+                    child: Card(
+                      color: GREY_COLOR,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              _rangeEnd != null
+                                  ? '도착일: ${_rangeEnd!.toString().split(' ')[0]}'
+                                  : '도착일을 선택해주세요',
+                              style: TextStyle(
+                                  fontSize: 16.0.sp, color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
               SizedBox(height: 16.0.h),
               //달력
               Expanded(
@@ -118,7 +174,10 @@ class _GroupAddState extends State<GroupAdd> {
                 ),
               ),
               SizedBox(height: 16.0.h),
-              ElevatedButton(onPressed: _saveGroup, child: Text('저장')),
+              GroupAddButton2(
+                onPressed: _saveGroup,
+                btnText: '저장하기',
+              ),
             ],
           ),
         ),

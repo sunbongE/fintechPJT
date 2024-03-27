@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../entities/Group.dart';
-import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
-import 'package:kakao_flutter_sdk_template/kakao_flutter_sdk_template.dart';
-import 'package:flutter/material.dart';
-import '../../entities/Group.dart';
-import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
-import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
-import 'package:flutter/material.dart';
-import '../../entities/Group.dart';
-import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
+// import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
+// import 'package:kakao_flutter_sdk_template/kakao_flutter_sdk_template.dart';
+import 'package:share_plus/share_plus.dart';
+
 
 class FirstInviteModal {
   static void showInviteModal(BuildContext context, Group newGroup) {
@@ -20,9 +15,7 @@ class FirstInviteModal {
           content: Text('링크를 공유해서 친구들을 초대해보세요'),
           actions: [
             ElevatedButton(
-              onPressed: () {
-                _kakaoShare(context, newGroup);
-              },
+              onPressed: sharePressed,
               child: Text('공유하기'),
             ),
           ],
@@ -31,47 +24,52 @@ class FirstInviteModal {
     );
   }
 
-  static void _kakaoShare(BuildContext context, Group newGroup) async {
-    try {
-      final CalendarTemplate calendarTemplate = CalendarTemplate(
-        idType: IdType.event,
-        id: '${newGroup.groupName}',
-        content: Content(
-          title: '${newGroup.groupName}',
-          description: '${newGroup.theme}에 초대합니다.',
-          imageUrl: Uri.parse(
-              'assets/images/splash_logo_768.png'),
-          link: Link(
-            webUrl: Uri.parse('https://developers.kakao.com'),
-            mobileWebUrl: Uri.parse('https://developers.kakao.com'),
-          ),
-        ),
-        buttons: [
-          Button(
-            title: '모임 주제 보기',
-            link: Link(
-              webUrl: Uri.parse('https://developers.kakao.com'),
-              mobileWebUrl: Uri.parse('https://developers.kakao.com'),
-            ),
-          )
-        ],
-      );
-      // await ShareClient.instance.shareDefault(template: calendarTemplate);
-      bool isKakaoTalkSharingAvailable = await ShareClient.instance.isKakaoTalkSharingAvailable();
-
-      // 카카오톡으로 공유
-      if (isKakaoTalkSharingAvailable) {
-        await ShareClient.instance.shareDefault(template: calendarTemplate);
-      } else {
-        // 카카오톡이 설치되어 있지 않은 경우, 예외 처리
-        print('카카오톡이 설치되어 있지 않습니다. 웹 공유를 사용하세요.');
-      }
-      Navigator.pop(context); // 공유 후 모달창 닫기
-    } catch (error) {
-      print('카카오톡 공유 실패: $error');
-    }
+  static void sharePressed() {
+    String message = '공유가 완료되었습니다.';
+    Share.share(message);
   }
 }
+//   static void _kakaoShare(BuildContext context, Group newGroup) async {
+//     try {
+//       final CalendarTemplate calendarTemplate = CalendarTemplate(
+//         idType: IdType.event,
+//         id: '${newGroup.groupName}',
+//         content: Content(
+//           title: '${newGroup.groupName}',
+//           description: '${newGroup.theme}에 초대합니다.',
+//           imageUrl: Uri.parse(
+//               'assets/images/splash_logo_768.png'),
+//           link: Link(
+//             webUrl: Uri.parse('https://developers.kakao.com'),
+//             mobileWebUrl: Uri.parse('https://developers.kakao.com'),
+//           ),
+//         ),
+//         buttons: [
+//           Button(
+//             title: '모임 주제 보기',
+//             link: Link(
+//               webUrl: Uri.parse('https://developers.kakao.com'),
+//               mobileWebUrl: Uri.parse('https://developers.kakao.com'),
+//             ),
+//           )
+//         ],
+//       );
+//       // await ShareClient.instance.shareDefault(template: calendarTemplate);
+//       bool isKakaoTalkSharingAvailable = await ShareClient.instance.isKakaoTalkSharingAvailable();
+//
+//       // 카카오톡으로 공유
+//       if (isKakaoTalkSharingAvailable) {
+//         await ShareClient.instance.shareDefault(template: calendarTemplate);
+//       } else {
+//         // 카카오톡이 설치되어 있지 않은 경우, 예외 처리
+//         print('카카오톡이 설치되어 있지 않습니다. 웹 공유를 사용하세요.');
+//       }
+//       Navigator.pop(context); // 공유 후 모달창 닫기
+//     } catch (error) {
+//       print('카카오톡 공유 실패: $error');
+//     }
+//   }
+// }
 
 
 

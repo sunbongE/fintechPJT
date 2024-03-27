@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:front/components/groups/GroupList.dart';
-import 'package:front/components/mains/MainNowTravel.dart';
-import 'package:lottie/lottie.dart';
+import 'package:front/screen/groupscreens/GroupAdd.dart';
+import 'package:front/models/button/GroupAddButton2.dart';
 import '../entities/Group.dart';
 import 'package:front/repository/api/ApiGroup.dart';
 
@@ -45,6 +44,19 @@ class _GroupMainState extends State<GroupMain> {
     }
   }
 
+  void navigateToGroupAdd() async {
+    final Group? newGroup = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => GroupAdd()),
+    );
+
+    if (newGroup != null) {
+      setState(() {
+        groups.add(newGroup);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,6 +71,7 @@ class _GroupMainState extends State<GroupMain> {
           ? Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Lottie.asset('assets/lotties/orangewalking.json'),
                   SizedBox(height: 20.h),
@@ -66,7 +79,41 @@ class _GroupMainState extends State<GroupMain> {
                 ],
               ),
             )
-          : GroupList(groups: groups),
+          : groups.isEmpty
+              ? Center(
+                  child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/empty.png',
+                      width: 250.w,
+                      height: 200.h,
+                    ),
+                    Text(
+                      '아직 시작한 여행이 없네요',
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '여행을 등록해볼까요?',
+                      style: TextStyle(
+                        fontSize: 30.sp,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 16.0.h),
+                    GroupAddButton2(
+                      onPressed: navigateToGroupAdd,
+                      btnText: '등록하기',
+                    )
+                  ],
+                ))
+              : GroupList(groups: groups),
     );
   }
 }
