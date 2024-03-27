@@ -17,11 +17,11 @@ class ChangeBank extends StatefulWidget {
 }
 
 class _ChangeBankState extends State<ChangeBank> {
-  String? selectedBank = '';
+  Map<String, String> selectedBank = {};
 
-  void onBankSelected(String bankName) {
+  void onBankSelected(Map<String, String> bank) {
     setState(() {
-      selectedBank = bankName;
+      selectedBank = bank;
     });
   }
 

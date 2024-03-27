@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/models/CustomDivider.dart';
 import 'package:front/models/FlutterToastMsg.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 import '../../const/colors/Colors.dart';
 import '../../entities/Receipt.dart';
 import '../../models/button/SizedButton.dart';
+import 'SelectLocation.dart';
 
 class ModifyReceipt extends StatefulWidget {
   final Receipt receipt;
@@ -157,6 +159,38 @@ class _ModifyReceiptState extends State<ModifyReceipt> {
     super.dispose();
   }
 
+  // appBar에서 뒤로가기 시 저장이 안된다는 알림창
+  void _showSaveChangesDialog() {
+    if (_hasEmptyItem()) {
+      _showEmptyItemWarning();
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('수정 사항 저장'),
+          content: Text('현재까지의 수정 사항이 모두 저장됩니다.\n그래도 나가시겠습니까?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('취소'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('저장'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -214,32 +248,55 @@ class _ModifyReceiptState extends State<ModifyReceipt> {
                       ),
                     ),
                   ]),
-                  TableRow(children: [
-                    Padding(
+                  TableRow(
+                    children: [
+                      Padding(
+                          padding: EdgeInsets.all(8.0.w),
+                          child: Text(
+                            "위치",
+                            style: CustomTextStyle.receiptTextStyle(context),
+                          )),
+                      Padding(
                         padding: EdgeInsets.all(8.0.w),
-                        child: Text(
-                          "위치",
-                          style: CustomTextStyle.receiptTextStyle(context),
-                        )),
-                    Padding(
-                      padding: EdgeInsets.all(8.0.w),
-                      child: TextField(
-                        controller: addressesController,
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          color: Colors.black,
+                        child: Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.map),
+                              onPressed: () async {
+                                final result = await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => SelectLocation(),
+                                  ),
+                                );
+
+                                if (result is String) {
+                                  addressesController.text = result;
+                                }
+                              },
+                            ),
+
+                            Expanded(
+                              child: TextField(
+                                controller: addressesController,
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  color: Colors.black,
+                                ),
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.all(5),
+                                  border: OutlineInputBorder(),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: PRIMARY_COLOR),
+                                  ),
+                                ),
+                                textAlign: TextAlign.end,
+                              ),
+                            ),
+                          ],
                         ),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(5),
-                          border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: PRIMARY_COLOR),
-                          ),
-                        ),
-                        textAlign: TextAlign.end,
                       ),
-                    ),
-                  ]),
+                    ],
+                  ),
                   TableRow(children: [
                     Padding(
                         padding: EdgeInsets.all(8.0.w),
@@ -352,6 +409,7 @@ class _ModifyReceiptState extends State<ModifyReceipt> {
                               padding: EdgeInsets.all(5.w),
                               child: TextField(
                                 controller: priceControllers[index],
+                                keyboardType: TextInputType.number,
                                 style: TextStyle(
                                   fontSize: 16.sp,
                                   color: Colors.black,
@@ -416,7 +474,6 @@ class _ModifyReceiptState extends State<ModifyReceipt> {
                         ),
                       ],
               ),
-
               // 항목 추가
               TextButton(
                 onPressed: () => addItem(),
@@ -455,7 +512,6 @@ class _ModifyReceiptState extends State<ModifyReceipt> {
                   ]),
                 ],
               ),
-
               SizedButton(
                 btnText: "수정하기",
                 onPressed: () {
@@ -489,38 +545,6 @@ class _ModifyReceiptState extends State<ModifyReceipt> {
           ),
         ),
       ),
-    );
-  }
-
-  // appBar에서 뒤로가기 시 저장이 안된다는 알림창
-  void _showSaveChangesDialog() {
-    if (_hasEmptyItem()) {
-      _showEmptyItemWarning();
-      return;
-    }
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('수정 사항 저장'),
-          content: Text('현재까지의 수정 사항이 모두 저장됩니다.\n그래도 나가시겠습니까?'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('취소'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('저장'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }

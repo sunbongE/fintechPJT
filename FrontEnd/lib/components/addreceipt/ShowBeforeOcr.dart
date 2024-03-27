@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/const/colors/Colors.dart';
@@ -193,7 +194,6 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -235,40 +235,42 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
                         } else if (index >= receiptData.length) {
                           return _buildAddReceiptPage();
                         } else {
-                          return Column(
-                            children: [
-                              YjReceipt(spend: receiptData[index]),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Text(
-                                        receiptSavedStates[index] ? "다시 수정하려면?" : "수정이 완료되었다면?",
-                                        style: TextStyle(fontSize: 14, color: RECEIPT_TEXT_COLOR),
-                                      ),
-                                      SizedButton(
-                                        btnText: receiptSavedStates[index] ? "영수증 저장 취소" : "영수증 저장",
-                                        onPressed: () => countCheckedReceipt(index),
-                                      )
-                                    ],
-                                  ),
-                                  if (!receiptSavedStates[index])
+                          return SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                YjReceipt(spend: receiptData[index]),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
                                     Column(
                                       children: [
                                         Text(
-                                          "수정이 필요하다면?",
-                                          style: TextStyle(fontSize: 14, color: RECEIPT_TEXT_COLOR),
+                                          receiptSavedStates[index] ? "다시 수정하려면?" : "수정이 완료되었다면?",
+                                          style: TextStyle(fontSize: 14.sp, color: RECEIPT_TEXT_COLOR),
                                         ),
                                         SizedButton(
-                                          btnText: "영수증 수정",
-                                          onPressed: () => _navigateAndEditReceipt(context, index),
+                                          btnText: receiptSavedStates[index] ? "영수증 저장 취소" : "영수증 저장",
+                                          onPressed: () => countCheckedReceipt(index),
                                         )
                                       ],
                                     ),
-                                ],
-                              )
-                            ],
+                                    if (!receiptSavedStates[index])
+                                      Column(
+                                        children: [
+                                          Text(
+                                            "수정이 필요하다면?",
+                                            style: TextStyle(fontSize: 14.sp, color: RECEIPT_TEXT_COLOR),
+                                          ),
+                                          SizedButton(
+                                            btnText: "영수증 수정",
+                                            onPressed: () => _navigateAndEditReceipt(context, index),
+                                          )
+                                        ],
+                                      ),
+                                  ],
+                                )
+                              ],
+                            ),
                           );
                         }
                       },

@@ -6,7 +6,7 @@ import '../../const/colors/Colors.dart';
 class AccountList extends StatefulWidget {
   final List<dynamic>? accountList;
   final int? selectedAccountIndex;
-  final String? selectedBank;
+  final Map<String, String> selectedBank;
   final Function(int, String) onSelectAccount;
 
   const AccountList({
@@ -71,7 +71,7 @@ class _AccountListState extends State<AccountList> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(50),
                     child: Image.asset(
-                      'assets/images/banks/${widget.selectedBank}.png',
+                      'assets/images/banks/${widget.selectedBank['name']}.png',
                       width: 50.w,
                       height: 50.h,
                     ),
@@ -82,7 +82,7 @@ class _AccountListState extends State<AccountList> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        "${widget.selectedBank}",
+                        "${widget.selectedBank['name']}",
                         style: TextStyle(
                           fontSize: 20.sp,
                         ),
