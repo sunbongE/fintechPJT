@@ -8,8 +8,12 @@ import com.orange.fintech.account.repository.AccountRepository;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.member.service.MemberService;
+import com.orange.fintech.payment.entity.Transaction;
+import com.orange.fintech.payment.repository.TransactionRepository;
+import jakarta.transaction.Transactional;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -18,11 +22,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-@Service
 @Slf4j
+@Service
+@Transactional
 public class AccountServiceImpl implements AccountService {
     @Autowired AccountRepository accountRepository;
     @Autowired MemberRepository memberRepository;
+
+    @Autowired
+    TransactionRepository transactionRepository;
 
     @Autowired MemberService memberService;
 
@@ -31,6 +39,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Value("${ssafy.bank.search.main-account}")
     private String mainAccountsUrl;
+
+    @Value("${ssafy.bank.transaction.history}")
+    private String transactionHistoryUrl;
 
     @Value("${ssafy.bank.api-key}")
     private String apiKey;
@@ -113,7 +124,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void accountMainAccount(String memberId, UpdateAccountDto dto) throws ParseException {
+    public void updateMainAccount(String memberId, UpdateAccountDto dto) throws ParseException {
         Member member = memberRepository.findById(memberId).get();
 
         // 은행에서 이 계좌로 된거 불러와야함.
@@ -151,7 +162,15 @@ public class AccountServiceImpl implements AccountService {
             }
         }
 
-        accountRepository.save(account);
+        Account saveData = accountRepository.save(account);
+
+        // 거래내역 저장.
+        String bankCode = saveData.getBankCode();
+        String accountNo = saveData.getAccountNo();
+        String startDate = "20240101";
+        String endDate = "20241231";
+        reqHeader = createHeader(member.getUserKey(), transactionHistoryUrl);
+        getAllTransaction(bankCode, accountNo, startDate, endDate, reqHeader,member);
     }
 
     @Override
@@ -164,5 +183,55 @@ public class AccountServiceImpl implements AccountService {
         reqHeader.setApiServiceCode(apinameAndApiServiceCode);
 
         return reqHeader;
+    }
+
+    @Override
+    public void getAllTransaction(
+            String bankCode,
+            String accountNo,
+            String startDate,
+            String endDate,
+            ReqHeader reqHeader, Member member)
+            throws ParseException {
+        Map<String, Object> req = new HashMap<>();
+        req.put("Header", reqHeader);
+        req.put("bankCode", bankCode);
+        req.put("accountNo", accountNo);
+        req.put("startDate", startDate);
+        req.put("endDate", endDate);
+        req.put("transactionType", "A");
+        req.put("orderByType", "DESC");
+
+        RestClient restClient = RestClient.create();
+        RestClient.ResponseSpec response =
+                restClient.post().uri(transactionHistoryUrl).body(req).retrieve();
+
+        String responseBody = response.body(String.class);
+
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(responseBody);
+        JSONObject transactions = (JSONObject) jsonObject.get("REC");
+        log.info("transactions :{}", transactions);
+        JSONArray jsonArray = (JSONArray) transactions.get("list");
+        log.info("jsonArray :{}", jsonArray);
+
+        Account curAccount = accountRepository.findByAccountNo(accountNo);
+        for (Object element : jsonArray){
+            //transactionType : 1 -> 입금 | 2 -> 출금
+            log.info("el:{}",element);// 여기서 입금 출금 각각 dto가 달라요. 차이: 출금에만 transactionAccountNo가 있다.
+            JSONObject tmp = (JSONObject)element;
+
+            Transaction transaction = new Transaction(tmp,curAccount,member);
+
+            if(tmp.get("transactionTypeName").equals("출금(이체)") || tmp.get("transactionTypeName").equals("입금(이체)")){
+                //  "transactionAccountNo":"001367035538944", 추가시킴.\
+                transaction.setTransactionAccountNo(tmp.get("transactionAccountNo").toString());
+
+            }
+            log.info("객체결과->> {}",transaction.toString());
+            transactionRepository.save(transaction);
+        }
+
+
     }
 }

@@ -26,6 +26,8 @@ public class QTransaction extends EntityPathBase<Transaction> {
 
     public final com.orange.fintech.member.entity.QMember member;
 
+    public final StringPath transactionAccountNo = createString("transactionAccountNo");
+
     public final NumberPath<Long> transactionAfterBalance = createNumber("transactionAfterBalance", Long.class);
 
     public final NumberPath<Long> transactionBalance = createNumber("transactionBalance", Long.class);
