@@ -31,125 +31,25 @@ class _MyTripHistoryListState extends State<MyTripHistoryList> {
     );
   }
 
-  // 더미데이터 코드
   void fetchGroups() async {
     setState(() {
       isLoading = true;
     });
-
-    final List<dynamic> dummyData = [
-      {
-        "groupId": 1,
-        "groupName": "그루비룸",
-        "startDate": "2024-03-21",
-        "endDate": "2024-03-21",
-        "theme": "여행 테마",
-        "isCalculateDone": false
-      },
-      {
-        "groupId": 2,
-        "groupName": "그루비룸2",
-        "startDate": "2024-03-21",
-        "endDate": "2024-03-21",
-        "theme": "여행 테마",
-        "isCalculateDone": true,
-      },
-      {
-        "groupId": 7,
-        "groupName": "그루비룸9911",
-        "startDate": "2024-03-21",
-        "endDate": "2024-03-21",
-        "theme": "여행 테마",
-        "isCalculateDone": false
-      },
-      {
-        "groupId": 8,
-        "groupName": "그룹ㄱ생성ㅌ체스트1",
-        "startDate": "2024-03-21",
-        "endDate": "2024-03-21",
-        "theme": "여행 테마",
-        "isCalculateDone": true,
-      },
-      {
-        "groupId": 9,
-        "groupName": "그루비룸",
-        "startDate": "2024-03-22",
-        "endDate": "2024-03-22",
-        "theme": "여행 테마",
-        "isCalculateDone": false
-      },
-      {
-        "groupId": 10,
-        "groupName": "녕뇽냥늉",
-        "startDate": "2024-03-22",
-        "endDate": "2024-03-22",
-        "theme": "여행 테마",
-        "isCalculateDone": true,
-      },
-      {
-        "groupId": 20,
-        "groupName": "그루비룸",
-        "startDate": "2024-03-22",
-        "endDate": "2024-03-22",
-        "theme": "여행 테마",
-        "isCalculateDone": true,
-      },
-      {
-        "groupId": 21,
-        "groupName": "ㅎㅇㅎㅇ",
-        "startDate": "2024-03-22",
-        "endDate": "2024-03-22",
-        "theme": "여행 테마",
-        "isCalculateDone": true,
-      },
-      {
-        "groupId": 22,
-        "groupName": "도저언",
-        "startDate": "2024-03-22",
-        "endDate": "2024-03-22",
-        "theme": "여행 갈랭",
-        "isCalculateDone": true,
-      },
-      {
-        "groupId": 26,
-        "groupName": "ㄷㅂㄷㅂ",
-        "startDate": "2024-03-25",
-        "endDate": "2024-03-30",
-        "theme": "ㅈㅂㅈㅂ",
-        "isCalculateDone": false,
-      },
-      {
-        "groupId": 31,
-        "groupName": "theme왜",
-        "startDate": "2024-03-24",
-        "endDate": "2024-03-24",
-        "theme": "나와라잇",
-        "isCalculateDone": true,
-      }
-    ];
-    setState(() {
-      groups = dummyData.map((item) => Group.fromJson(item as Map<String, dynamic>)).where((group) => group.isCalculateDone ?? false).toList();
-      isLoading = false;
-    });
+    var groupsJson = await getGroupList();
+    if (groupsJson != null && groupsJson.data is List) {
+      setState(() {
+        // 이게 진짜코드임~~ 무조건 변경해야함.
+        // groups = (groupsJson.data as List).map((item) => Group.fromJson(item)).where((group) => group.isCalculateDone!).toList();
+        groups = (groupsJson.data as List).map((item) => Group.fromJson(item)).where((group) => !group.isCalculateDone!).toList();
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      print("그룹 데이터를 불러오는 데 실패했습니다.");
+    }
   }
-  // 찐 코드
-  // void fetchGroups() async {
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  //   final groupsJson = await getGroupList();
-  //   if (groupsJson != null && groupsJson.data is List) {
-  //     setState(() {
-  //       groups = (groupsJson.data as List).map((item) => Group.fromJson(item)).where((group) => group.isCalculateDone ?? false).toList();
-  //       isLoading = false;
-  //     });
-  //   } else {
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //     print("그룹 데이터를 불러오는 데 실패했습니다.");
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {

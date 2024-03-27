@@ -153,7 +153,7 @@ public class GroupServiceImpl implements GroupService {
             TransactionMember transactionMember = new TransactionMember();
             transactionMember.setTransactionMemberPK(pk);
             transactionMember.setIsLock(false);
-            transactionMember.setTotalAmount(0);
+            transactionMember.setTotalAmount(0L);
 
             transactionMemberRepository.save(transactionMember);
         }

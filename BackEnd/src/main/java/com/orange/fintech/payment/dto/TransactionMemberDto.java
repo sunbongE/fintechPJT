@@ -23,7 +23,7 @@ public class TransactionMemberDto {
     String thumbnailImage;
 
     @Schema(description = "낼 금액")
-    private Integer totalAmount;
+    private Long totalAmount;
 
     @Schema(description = "금액 고정 여부")
     private boolean isLock;

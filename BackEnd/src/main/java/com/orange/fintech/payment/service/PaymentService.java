@@ -18,7 +18,7 @@ public interface PaymentService {
 
     boolean isMyGroupTransaction(int groupId, int transactionId);
 
-    boolean changeContainStatus(int transactionId, int groupId);
+    void changeContainStatus(int transactionId, int groupId);
 
     void editTransactionDetail(int transactionId, TransactionEditReq req)
             throws NoSuchElementException;
@@ -35,5 +35,6 @@ public interface PaymentService {
     ReceiptDetailRes getGroupReceiptDetail(int receiptDetailId);
 
     void setReceiptDetailMember(
-            int paymentId, int receiptDetailId, List<ReceiptDetailMemberPutDto> req);
+            int paymentId, int receiptDetailId, List<ReceiptDetailMemberPutDto> req)
+            throws Exception;
 }

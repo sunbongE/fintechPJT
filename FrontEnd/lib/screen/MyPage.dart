@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/mypage/MyInfo.dart';
+import '../components/calculate/Jjatury.dart';
 import '../components/mypage/MyAccount.dart';
 import '../components/mypage/MyTripHistory.dart';
 import '../components/mypage/ProfileChange.dart';
 import '../components/mypage/ProfileChangeBtn.dart';
+import '../models/button/Button.dart';
 import '../models/button/ButtonSlideAnimation.dart';
 
 class MyPage extends StatefulWidget {
@@ -34,6 +36,7 @@ class _MyPageState extends State<MyPage> with WidgetsBindingObserver {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           MyInfo(),
+          Button(btnText: "자투리금액 페이지로 이동", onPressed: () => buttonSlideAnimation(context, Jjatury()),),
           ProfileChangeBtn(
             buttonText: '프로필 수정',
             onPressed: () => buttonSlideAnimation(

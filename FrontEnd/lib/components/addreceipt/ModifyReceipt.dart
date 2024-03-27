@@ -274,7 +274,6 @@ class _ModifyReceiptState extends State<ModifyReceipt> {
                                 }
                               },
                             ),
-
                             Expanded(
                               child: TextField(
                                 controller: addressesController,

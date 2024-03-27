@@ -12,7 +12,8 @@ import '../../models/button/ButtonSlideAnimation.dart';
 import '../addreceipt/AddReceipt.dart';
 
 class GroupYesCal extends StatelessWidget {
-  const GroupYesCal({Key? key}) : super(key: key);
+  final int groupId;
+  const GroupYesCal({Key? key, required this.groupId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +51,7 @@ class GroupYesCal extends StatelessWidget {
             ),
             SizedBox(width: 10.w),
             ElevatedButton(
-              onPressed: () => buttonSlideAnimation(context, MoneyRequest(groupId: 1,)),//임시로 1로 썼습니다 -지연
+              onPressed: () => buttonSlideAnimation(context, MoneyRequest(groupId: groupId,)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: BUTTON_COLOR,
                 minimumSize: Size(100.w, 45.h),

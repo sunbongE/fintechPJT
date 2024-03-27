@@ -70,11 +70,11 @@ class GroupItem extends StatelessWidget {
               ),
               //정산요청 내역이 있으면
               // 정산 요청 내역
-              GroupYesCal(),
+              GroupYesCal(groupId: group.groupId ?? 0,),
               // 내가 포함된 내역 필터링 버튼
               // 정산 요청 추가하기 버튼
               //정산 요청 내역이 없으면
-              GroupNoCal(),
+              GroupNoCal(groupId: group.groupId ?? 0,),
             ],
           ),
         ),

@@ -137,6 +137,7 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
   // 선택된 이미지를 네이버 클로바로 보내는 api 호출
   Future<void> onImageSelected(XFile image) async {
     setState(() {
+      print(111111);
       isLoading = true;
     });
 
@@ -212,7 +213,7 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
             )
           else
             Text(
-              "버튼을 눌러 영수증을 추가해보세요.",
+              "+ 버튼을 눌러 영수증을 추가해보세요.",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey),
               textAlign: TextAlign.center,
             ),

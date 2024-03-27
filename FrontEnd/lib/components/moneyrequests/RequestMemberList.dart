@@ -2,12 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:front/entities/RequestCash.dart';
+import 'package:front/screen/MoneyRequests/AddCashRequest.dart';
 import '../../entities/RequestDetail.dart';
 import '../../models/button/SizedButton.dart';
 import 'RequestMemberItem.dart';
 
 class RequestMemberList extends StatefulWidget {
-  final RequestDetail requestDetail;
+  final dynamic requestDetail;
   final Function(bool) allSettledCallback;
   final List<int> amountList;
   final Function(List<int>) callbackAmountList;
@@ -27,7 +29,7 @@ class RequestMemberList extends StatefulWidget {
 }
 
 class _RequestMemberListState extends State<RequestMemberList> {
-  late List<bool> isSettledStates;
+  List<bool> isSettledStates = [];
   bool allSettled = false;
   int settledMembersCount = 0;
   late List<int> amountList;
@@ -36,13 +38,26 @@ class _RequestMemberListState extends State<RequestMemberList> {
   @override
   void initState() {
     super.initState();
-    isSettledStates =
-        widget.requestDetail.members.map((m) => m.amount != 0).toList();
-    settledMembersCount =
-        widget.requestDetail.members.where((m) => m.amount != 0).length;
-    isLockList = widget.requestDetail.members.map((m) => m.lock).toList();
-    amountList = widget
-        .amountList; //widget.requestDetail.members.map((m) => m.amount).toList();
+    if (widget.requestDetail is RequestDetail) {
+      RequestDetail tmp = widget.requestDetail;
+      isSettledStates =
+          tmp.members.map((m) => m.amount != 0).toList();
+      settledMembersCount =
+          tmp.members
+              .where((m) => m.amount != 0)
+              .length;
+      isLockList = tmp.members.map((m) => m.lock).toList();
+      amountList = widget
+          .amountList;
+    }
+    else if(widget.requestDetail is RequestCash) {
+      isSettledStates =
+      List<bool>.filled(widget.requestDetail.members.length, false);
+      settledMembersCount = 0;
+      isLockList = List<bool>.filled(widget.requestDetail.members.length, false);
+      amountList = widget
+          .amountList;
+    }
   }
 
   void updateAllSettled() {
@@ -57,13 +72,22 @@ class _RequestMemberListState extends State<RequestMemberList> {
       isSettledStates = List<bool>.filled(isSettledStates.length, value);
       print('isSettledStates: $isSettledStates');
       widget.isLockList(List<bool>.filled(isLockList.length, value));
-      if(value == true)
-      widget.callbackAmountList(List<int>.filled(amountList.length, (widget.requestDetail.totalPrice/amountList.length).toInt()));
+      if(value == true){
+      if(widget.requestDetail is RequestDetail)
+        widget.callbackAmountList(List<int>.filled(amountList.length, (widget.requestDetail.totalPrice/amountList.length).toInt()));
+      else if(widget.requestDetail is RequestCash)
+        widget.callbackAmountList(List<int>.filled(amountList.length, (widget.requestDetail.transactionBalance/amountList.length).toInt()));
+      }
       else
         widget.callbackAmountList(List<int>.filled(amountList.length, 0));
 
       //전체해제할때 전부 lock풀기
       updateAllSettled();
+      print('111111111111111111111111111111111111111111111');
+      if(widget.requestDetail is RequestCash) {
+        print(widget.requestDetail.transactionBalance);
+      }
+      // 이게 잘 들어오는지 확인....해야할거같은데
     });
   }
   void didUpdateWidget(covariant RequestMemberList oldWidget) {
@@ -71,6 +95,12 @@ class _RequestMemberListState extends State<RequestMemberList> {
     if (oldWidget.amountList != widget.amountList) {
       setState(() {
         amountList = widget.amountList;
+      });
+    }
+    if(oldWidget.requestDetail != widget.requestDetail){
+      print(widget.requestDetail.toString());
+      setState(() {
+
       });
     }
   }
@@ -105,7 +135,8 @@ class _RequestMemberListState extends State<RequestMemberList> {
         ),
         SizedBox(height: 8.h),
         Expanded(
-          child: ListView.builder(
+          child: isSettledStates.isNotEmpty
+              ? ListView.builder(
             itemCount: widget.requestDetail.members.length,
             itemBuilder: (context, index) {
               final member = widget.requestDetail.members[index];
@@ -120,9 +151,8 @@ class _RequestMemberListState extends State<RequestMemberList> {
                 },
                 callbackAmount: (int value) {
                   amountList[index] = value;
-                  widget.callbackAmountList(amountList);setState(() {
-
-                  });
+                  widget.callbackAmountList(amountList);
+                  setState(() {});
                 },
                 onLockedChanged: (bool value) {
                   setState(() {
@@ -133,6 +163,9 @@ class _RequestMemberListState extends State<RequestMemberList> {
                 amount: amountList[index],
               );
             },
+          )
+              : Center(
+            child: Text('멤버가 없습니다.'),
           ),
         ),
       ],

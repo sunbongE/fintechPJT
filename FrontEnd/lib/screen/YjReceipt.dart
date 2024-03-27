@@ -40,6 +40,40 @@ class CustomResultStyle {
 }
 
 class _YjReceiptState extends State<YjReceipt> {
+
+  List<TextEditingController> priceControllers = [];
+  int approvalAmount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    calculateTotalAmount();
+  }
+
+  void calculateTotalAmount() {
+    int totalAmount = 0;
+    if (widget.spend.items != null) {
+      for (var item in widget.spend.items!) {
+        int price = item['price'];
+        totalAmount += price;
+      }
+    }
+    setState(() {
+      approvalAmount = totalAmount;
+    });
+
+    if (approvalAmount != widget.spend.totalPrice) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('합계금액과 승인금액이 다릅니다.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -212,8 +246,26 @@ class _YjReceiptState extends State<YjReceipt> {
                 TableRow(children: [
                   Padding(
                       padding: EdgeInsets.all(8.0),
+
+                      // 에누리 제외한 물건의 총 금액 => approvalAmount
                       child: Text(
                         "합계금액",
+                        style: CustomTextStyle.receiptTextStyle(context),
+                      )),
+                  Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        '${NumberFormat('#,###').format(approvalAmount)}원',
+                        textAlign: TextAlign.end,
+                        style: CustomResultStyle.receiptTextStyle(context),
+                      )),
+                ]),
+                TableRow(children: [
+                  Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        // 실제 내가 카드로 긁은 금액(에누리라는 반례가 있음..)
+                        "승인금액",
                         style: CustomTextStyle.receiptTextStyle(context),
                       )),
                   Padding(
