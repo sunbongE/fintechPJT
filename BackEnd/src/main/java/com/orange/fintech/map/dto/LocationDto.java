@@ -18,4 +18,7 @@ public class LocationDto {
 
     @Schema(description = "위치")
     private String location;
+
+    @Schema(description = "상호")
+    private String storeName;
 }

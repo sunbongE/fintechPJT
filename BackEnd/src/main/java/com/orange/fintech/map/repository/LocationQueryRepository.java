@@ -25,7 +25,8 @@ public class LocationQueryRepository {
                                 Projections.bean(
                                         LocationDto.class,
                                         transactionDetail.transactionId,
-                                        receipt.location))
+                                        receipt.location,
+                                        receipt.businessName.as("storeName")))
                         .from(receipt)
                         .join(transactionDetail)
                         .on(receipt.transaction.eq(transactionDetail.transaction))
