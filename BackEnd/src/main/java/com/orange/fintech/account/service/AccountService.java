@@ -33,5 +33,5 @@ public interface AccountService {
             ReqHeader reqHeader, Member member)
             throws ParseException;
 
-    List<TransactionResDto> readAllOrUpdateTransation(String memberId);
+    List<TransactionResDto> readAllOrUpdateTransation(String memberId) throws ParseException;
 }

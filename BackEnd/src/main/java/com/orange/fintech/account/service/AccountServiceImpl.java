@@ -13,7 +13,10 @@ import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.member.service.MemberService;
 import com.orange.fintech.payment.entity.Transaction;
 import com.orange.fintech.payment.repository.TransactionRepository;
+import com.orange.fintech.util.AccountUtil;
 import jakarta.transaction.Transactional;
+
+import java.text.DateFormat;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
@@ -38,6 +41,8 @@ public class AccountServiceImpl implements AccountService {
     AccountQueryRepository accountQueryRepository;
 
     @Autowired MemberService memberService;
+    @Autowired
+    AccountUtil accountUtil;
 
     @Value("${ssafy.bank.search.accounts}")
     private String searchAccountsUrl;
@@ -234,22 +239,38 @@ public class AccountServiceImpl implements AccountService {
 
             }
             log.info("객체결과->> {}",transaction.toString());
-            transactionRepository.save(transaction);
+            // Todo : 거래내역 최신화 후 다시 주석 해제
+//            transactionRepository.save(transaction);
         }
 
 
     }
 
     @Override
-    public List<TransactionResDto> readAllOrUpdateTransation(String memberId) {
+    public List<TransactionResDto> readAllOrUpdateTransation(String memberId) throws ParseException {
         log.info("impl call");
 
         // DB에서 가장 최근의 데이터의 날짜와 시간을 가져온다.
         LatestDateTimeDto latestData = accountQueryRepository.getLatest(memberId);
         log.info("latestData:{}",latestData); // LatestDateTimeDto(transactionDate=2024-03-27, transactionTime=11:14:59)
+        Member member = memberRepository.findById(memberId).get();
+        List<Account> accountList = accountRepository.findByMemberAndIsPrimaryAccountIsTrue(member);
+        Account account =accountList.get(0); // 주계좌
 
 
-        //
+
+        // 최근값 이후로 데이터 받아서 저장하기.
+        RestClient restClient = RestClient.create();
+        RestClient.ResponseSpec bankResponse = null;
+
+        String bankCode = account.getBankCode();
+        String accountNo = account.getAccountNo();
+        String startDate = accountUtil.localDateToString(latestData.getTransactionDate());
+        String endDate = "20241231";
+        ReqHeader reqHeader = createHeader(member.getUserKey(), transactionHistoryUrl);
+        log.info("reqHeader:{}, date,time :{}, {}",reqHeader,startDate,endDate);
+        getAllTransaction(bankCode, accountNo, startDate, endDate, reqHeader,member);
+
 
         // ========= DB에 저장된 데이터를 반환
         List<TransactionResDto> response = new ArrayList<>();
