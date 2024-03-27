@@ -8,6 +8,7 @@ import 'package:front/const/colors/Colors.dart';
 import 'package:front/models/FlutterToastMsg.dart';
 import 'package:front/models/button/ButtonSlideAnimation.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import '../../entities/Receipt.dart';
 import '../../models/button/SizedButton.dart';
 import '../../repository/api/ApiReceipt.dart';
@@ -232,7 +233,7 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
                       },
                       itemBuilder: (context, index) {
                         if (isLoading) {
-                          return Center(child: CircularProgressIndicator());
+                          return Center(child: Lottie.asset('assets/lotties/orangewalking.json'));
                         } else if (index >= receiptData.length) {
                           return _buildAddReceiptPage();
                         } else {

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:front/components/groups/GroupList.dart';
 import 'package:front/components/mains/MainNowTravel.dart';
+import 'package:lottie/lottie.dart';
 import '../entities/Group.dart';
 import 'package:front/repository/api/ApiGroup.dart';
 
@@ -59,7 +60,7 @@ class _GroupMainState extends State<GroupMain> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircularProgressIndicator(),
+                  Lottie.asset('assets/lotties/orangewalking.json'),
                   SizedBox(height: 20.h),
                   Text("그룹을 불러오고 있습니다"),
                 ],

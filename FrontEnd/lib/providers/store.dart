@@ -15,6 +15,9 @@ class UserManager with ChangeNotifier {
   // 비밀번호
   String? password;
 
+  // FCM 토큰
+  String? fcmToken;
+
   // 주 거래 은행 및 계좌 정보
   String? selectedBank;
   String? selectedAccount;
@@ -37,6 +40,7 @@ class UserManager with ChangeNotifier {
     String? newThumbnailImageUrl,
     String? newProfileImageUrl,
     String? newJwtToken,
+    String? newFcmToken,
     String? newPassword,
     String? newSelectedBank,
     String? newSelectedAccount,
@@ -48,6 +52,7 @@ class UserManager with ChangeNotifier {
     thumbnailImageUrl = newThumbnailImageUrl ?? thumbnailImageUrl;
     profileImageUrl = newProfileImageUrl ?? profileImageUrl;
     jwtToken = newJwtToken ?? jwtToken;
+    fcmToken = newFcmToken ?? jwtToken;
     password = newPassword ?? password;
     selectedBank = newSelectedBank ?? selectedBank;
     selectedAccount = newSelectedAccount ?? selectedAccount;
@@ -58,6 +63,7 @@ class UserManager with ChangeNotifier {
     await storage.write(key: 'thumbnailImageUrl', value: thumbnailImageUrl);
     await storage.write(key: 'profileImageUrl', value: profileImageUrl);
     await storage.write(key: 'jwtToken', value: jwtToken);
+    await storage.write(key: 'fcmToken', value: fcmToken);
     await storage.write(key: 'password', value: password);
     await storage.write(key: 'selectedBank', value: selectedBank);
     await storage.write(key: 'selectedAccount', value: selectedAccount);
@@ -73,6 +79,7 @@ class UserManager with ChangeNotifier {
     thumbnailImageUrl = await storage.read(key: 'thumbnailImageUrl');
     profileImageUrl = await storage.read(key: 'profileImageUrl');
     jwtToken = await storage.read(key: 'jwtToken');
+    fcmToken = await storage.read(key: 'fcmToken');
     password = await storage.read(key: 'password');
     selectedBank = await storage.read(key: 'selectedBank');
     selectedAccount = await storage.read(key: 'selectedAccount');
@@ -89,6 +96,7 @@ class UserManager with ChangeNotifier {
     thumbnailImageUrl = null;
     profileImageUrl = null;
     jwtToken = null;
+    fcmToken = null;
     password = null;
     selectedBank = null;
     selectedAccount = null;

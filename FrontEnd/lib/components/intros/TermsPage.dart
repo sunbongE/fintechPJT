@@ -3,6 +3,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/intros/ServiceIntro.dart';
 import 'package:front/models/button/Button.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../models/button/ButtonSlideAnimation.dart';
 
@@ -67,7 +68,7 @@ class _TermsPageState extends State<TermsPage> {
                                   style: TextStyle(fontSize: 16.0)),
                             );
                           } else {
-                            return Center(child: CircularProgressIndicator());
+                            return Center(child: Lottie.asset('assets/lotties/orangewalking.json'));
                           }
                         },
                       );

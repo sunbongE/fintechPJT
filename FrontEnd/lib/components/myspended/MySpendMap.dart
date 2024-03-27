@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:lottie/lottie.dart' as lottie;
+
 
 class MySpendMap extends StatefulWidget {
   final String location;
@@ -82,7 +84,7 @@ class _MySpendMapState extends State<MySpendMap> {
         onCameraMove: _onCameraMove,
         onCameraIdle: _onCameraIdle,
       )
-          : Center(child: CircularProgressIndicator()),
+          : Center(child: lottie.Lottie.asset('assets/lotties/orangewalking.json')),
     );
   }
 }

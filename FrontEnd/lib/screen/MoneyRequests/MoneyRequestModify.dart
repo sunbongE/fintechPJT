@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/moneyrequests/MoneyRequestItem.dart';
 import 'package:front/components/moneyrequests/RequestMemoInputField.dart';
 import 'package:front/entities/Expense.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../components/moneyrequests/MoneyRequestDetailBottom.dart';
 import '../../components/moneyrequests/RequestModifyList.dart';
@@ -142,7 +143,7 @@ class _MoneyRequestModifyState extends State<MoneyRequestModify> {
             ] else ...[
               Expanded(
                 child: Center(
-                  child: CircularProgressIndicator(),
+                  child: Lottie.asset('assets/lotties/orangewalking.json'),
                 ),
               ),
             ],

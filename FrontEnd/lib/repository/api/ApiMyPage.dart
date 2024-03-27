@@ -16,9 +16,10 @@ Future<void> putProfileImage(data) async {
 }
 
 // 회원 본인의 계좌 정보를 수정한다.
-Future<void> putMyAccount(Map<String, dynamic> data) async {
+Future<void> putMyAccount(data) async {
+  print('11111111: ${data}');
   try {
-    final res = await api.put('/members/account', data: data);
+    final res = await api.put('/account/update', data: data);
     print('putMyAccount: ${res.data}');
     return res.data;
   } catch (err) {

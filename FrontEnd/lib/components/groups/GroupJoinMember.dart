@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:front/components/groups/GroupJoinMemberCarousel.dart';
 import 'package:front/const/colors/Colors.dart';
+import 'package:lottie/lottie.dart';
 import '../../entities/Group.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:email_validator/email_validator.dart';
@@ -68,7 +69,7 @@ class _GroupJoinMemberState extends State<GroupJoinMember> {
                   child: Column(
                     // mainAxisSize: MainAxisSize.min,
                     children: [
-                      CircularProgressIndicator(),
+                      Lottie.asset('assets/lotties/orangewalking.json'),
                       SizedBox(height: 20.h),
                       Text("멤버를 불러오고 있습니다"),
                     ],
