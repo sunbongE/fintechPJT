@@ -11,6 +11,7 @@ import 'package:front/models/button/ButtonSlideAnimation.dart';
 import 'package:front/models/button/SizedButton.dart';
 import 'package:front/providers/store.dart';
 import 'package:front/repository/api/ApiLogin.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../repository/api/ApiMyPage.dart';
 
@@ -55,7 +56,7 @@ class _SelectAccountState extends State<SelectAccount> {
         padding: EdgeInsets.fromLTRB(0, 100.h, 0, 30.h),
         child: Center(
           child: isLoading
-              ? CircularProgressIndicator()
+              ? Lottie.asset('assets/lotties/orangewalking.json')
               : accountList.isEmpty ?? true
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -118,12 +119,14 @@ class _SelectAccountState extends State<SelectAccount> {
                             ? Button(
                                 btnText: "Next",
                                 onPressed: () async {
-                                  Map<String, dynamic> accountInfo = {
-                                    "bankCode": widget.selectedBank['code'],
-                                    "accountNo": selectAccount,
+
+                                  Map<String, String> accountInfo = {
+                                    "bankCode": widget.selectedBank['code']!,
+                                    "accountNo": selectAccount!,
                                   };
 
                                   putMyAccount(accountInfo);
+
                                   UserManager().saveUserInfo(
                                     newSelectedBank: widget.selectedBank['name'],
                                     newSelectedAccount: selectAccount,

@@ -7,6 +7,7 @@ import 'package:front/providers/store.dart';
 import 'package:front/repository/api/ApiLogin.dart';
 import 'package:front/screen/HomeScreen.dart';
 import 'package:front/screen/MyPage.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../models/Biometrics.dart';
 import '../../models/FlutterToastMsg.dart';
@@ -40,26 +41,10 @@ class _ChangeAccountState extends State<ChangeAccount> {
       setState(() {
         isLoading = true;
       });
-
-      // 한국은행에서 내가 가진 계좌 리스트 get API
-      // final res = await getBankInfo(widget.selectedBank);
-      // await Future.delayed(Duration(seconds: 2));
-
-      List<Map<String, dynamic>>? getAccounts = [
-        {"accountNo": "3333-33-2400348", "balance": 0, "isPrimaryAccount": true, "institutionCode": null},
-        {"accountNo": "3333-24-8039659", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
-        {"accountNo": "3333-23-6307311", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
-        {"accountNo": "3333-09-6719262", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
-        {"accountNo": "3333-06-2400348", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
-        {"accountNo": "3333-06-2400348", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
-        {"accountNo": "3333-06-2400348", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
-        {"accountNo": "3333-06-2400348", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
-        {"accountNo": "3333-06-2400348", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
-      ];
-
+      List<Map<String, dynamic>> res = await getBankInfo(widget.selectedBank['code']!);
       setState(() {
         isLoading = false;
-        accountList = getAccounts;
+        accountList = res;
       });
     } catch (e) {
       setState(() {
@@ -79,7 +64,7 @@ class _ChangeAccountState extends State<ChangeAccount> {
         padding: EdgeInsets.symmetric(vertical: 30.h),
         child: Center(
           child: isLoading
-              ? CircularProgressIndicator()
+              ? Lottie.asset('assets/lotties/orangewalking.json')
               : accountList == []
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -148,12 +133,12 @@ class _ChangeAccountState extends State<ChangeAccount> {
                                   if (authenticated == true) {
                                     FlutterToastMsg("변경이 완료되었습니다.");
 
-                                    Map<String, dynamic> accountInfo = {
-                                      "bankCode": widget.selectedBank['code'],
-                                      "accountNo": selectAccount,
+                                    Map<String, String> accountInfo = {
+                                      "bankCode": widget.selectedBank['code']!,
+                                      "accountNo": selectAccount!,
                                     };
-
                                     putMyAccount(accountInfo);
+
                                     UserManager().saveUserInfo(
                                       newSelectedBank: widget.selectedBank['name'],
                                       newSelectedAccount: selectAccount,
@@ -166,12 +151,12 @@ class _ChangeAccountState extends State<ChangeAccount> {
                                         onSuccess: () {
                                           FlutterToastMsg("변경이 완료되었습니다.");
 
-                                          Map<String, dynamic> accountInfo = {
-                                            "bankCode": widget.selectedBank['code'],
-                                            "accountNo": selectAccount,
+                                          Map<String, String> accountInfo = {
+                                            "bankCode": widget.selectedBank['code']!,
+                                            "accountNo": selectAccount!,
                                           };
-
                                           putMyAccount(accountInfo);
+
                                           UserManager().saveUserInfo(
                                             newSelectedBank: widget.selectedBank['name'],
                                             newSelectedAccount: selectAccount,

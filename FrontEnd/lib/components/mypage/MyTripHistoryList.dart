@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/groups/GroupCard.dart';
 import 'package:front/components/mypage/MyTripHistoryDetail.dart';
+import 'package:lottie/lottie.dart';
 import '../../entities/Group.dart';
 import '../../models/button/ButtonSlideAnimation.dart';
 import '../../repository/api/ApiGroup.dart';
@@ -64,7 +65,7 @@ class _MyTripHistoryListState extends State<MyTripHistoryList> {
       body: Padding(
         padding: EdgeInsets.all(10.w),
         child: isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? Center(child: Lottie.asset('assets/lotties/orangewalking.json'))
             : ListView.builder(
                 itemCount: groups.length,
                 itemBuilder: (context, index) {

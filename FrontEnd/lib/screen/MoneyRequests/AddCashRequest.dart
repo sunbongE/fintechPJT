@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/moneyrequests/AmountInputField.dart';
 import 'package:front/components/moneyrequests/MoneyRequestList.dart';
 import 'package:front/components/moneyrequests/RequestMemberList.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../components/moneyrequests/AddCashAmountInputField.dart';
 import '../../components/moneyrequests/AddCashTextInputField.dart';
@@ -150,7 +151,7 @@ class _AddCashRequestState extends State<AddCashRequest> {
               Flexible (
             fit: FlexFit.loose,
                 child: Center(
-                  child: CircularProgressIndicator(),
+                  child: Lottie.asset('assets/lotties/orangewalking.json'),
                 ),
               ),
             ],

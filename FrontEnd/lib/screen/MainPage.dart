@@ -4,6 +4,7 @@ import 'package:front/components/mains/MainInfo.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/mains/MainPastTravel.dart';
 import 'package:front/components/mains/MainNowTravel.dart';
+import 'package:lottie/lottie.dart';
 import '../entities/Group.dart';
 import 'package:front/repository/api/ApiGroup.dart';
 
@@ -74,7 +75,7 @@ class _MainPageState extends State<MainPage> {
           if (isLoading) // isLoading 대신 groups.isEmpty 조건을 사용합니다.
             Expanded(
               child: Center(
-                child: CircularProgressIndicator(),
+                child: Lottie.asset('assets/lotties/orangewalking.json'),
               ),
             )
           else ...[

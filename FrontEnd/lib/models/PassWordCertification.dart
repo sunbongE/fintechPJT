@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/models/FlutterToastMsg.dart';
 import 'package:front/components/intros/KeyBoardBoard.dart';
 import 'package:front/components/intros/ShowPassWord.dart';
+import 'package:lottie/lottie.dart';
 import '../../providers/store.dart';
 
 class PassWordCertification extends StatefulWidget {
@@ -73,7 +74,7 @@ class _PassWordCertificationState extends State<PassWordCertification> {
         padding: EdgeInsets.fromLTRB(0, 100.h, 0, 0),
         child: Container(
           child: isLoading
-              ? Center(child: CircularProgressIndicator())
+              ? Center(child: Lottie.asset('assets/lotties/orangewalking.json'))
               : PageView(
                   controller: pageController,
                   physics: NeverScrollableScrollPhysics(),

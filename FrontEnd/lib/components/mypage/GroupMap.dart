@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:lottie/lottie.dart' as lottie;
 import '../../repository/api/ApiMyPage.dart';
 
 class GroupMap extends StatefulWidget {
@@ -76,7 +77,7 @@ class _GroupMapState extends State<GroupMap> {
               ),
               markers: markers,
             )
-          : Center(child: CircularProgressIndicator()),
+          : Center(child: lottie.Lottie.asset('assets/lotties/orangewalking.json')),
     );
   }
 }

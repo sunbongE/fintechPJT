@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/addreceipt/ShowBeforeOcr.dart';
 import 'package:front/repository/api/ApiReceipt.dart';
+import 'package:lottie/lottie.dart';
 import '../../const/colors/Colors.dart';
 import '../../entities/Receipt.dart';
 import '../../models/FlutterToastMsg.dart';
@@ -121,7 +122,7 @@ class _AddReceiptState extends State<AddReceipt> {
               textAlign: TextAlign.center,
             ),
             isLoading
-                ? Center(child: CircularProgressIndicator())
+                ? Center(child: Lottie.asset('assets/lotties/orangewalking.json'))
                 : Expanded(child: ShowBeforeOcr(
                     onReceiptsUpdated: (updatedReceipts) {
                       setState(() {

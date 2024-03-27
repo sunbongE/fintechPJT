@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/mypage/MyInfo.dart';
+import 'package:front/repository/api/ApiFcm.dart';
 import '../components/calculate/Jjatury.dart';
 import '../components/mypage/MyAccount.dart';
 import '../components/mypage/MyTripHistory.dart';
