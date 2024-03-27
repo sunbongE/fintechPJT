@@ -7,6 +7,7 @@ import 'package:front/components/groups/GroupTextField.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter/services.dart';
 import '../../entities/Group.dart';
+import '../../models/button/ButtonSlideAnimation.dart';
 import 'package:front/repository/api/ApiGroup.dart';
 
 
@@ -53,6 +54,7 @@ class _GroupAddState extends State<GroupAdd> {
       "theme": _descriptionController.text,
       "startDate": startDateText,
       "endDate": endDateText,
+      "isCalculateDone": false,
     };
 
     try {
@@ -66,9 +68,11 @@ class _GroupAddState extends State<GroupAdd> {
           startDate: startDateText,
           endDate: endDateText,
           groupState: false,
+          isCalculateDone: false,
           groupMembers: [],
         );
-        Navigator.pop(context, newGroup);
+        buttonSlideAnimationPushAndRemoveUntil(context, 1);
+        // Navigator.pop(context, newGroup);
         FirstInviteModal.showInviteModal(context, newGroup);
       } else {
         print("그룹 생성에 실패했습니다.");

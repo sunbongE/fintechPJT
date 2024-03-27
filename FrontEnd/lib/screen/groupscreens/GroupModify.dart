@@ -256,6 +256,7 @@ class _GroupModifyState extends State<GroupModify> {
       endDate: _endDateText.toString(),
       groupState: widget.group.groupState,
       groupMembers: widget.group.groupMembers,
+      isCalculateDone: widget.group.isCalculateDone,
     );
     Navigator.pop(context, modifiedGroup);
   }
