@@ -16,6 +16,7 @@ import java.util.List;
 
 import static com.orange.fintech.payment.entity.QTransaction.*;
 import static com.querydsl.jpa.JPAExpressions.select;
+import static com.querydsl.jpa.JPAExpressions.selectFrom;
 
 @Slf4j
 @Repository
@@ -76,9 +77,18 @@ public class AccountQueryRepository {
                 .orderBy(transaction.transactionDate.desc(), transaction.transactionTime.desc())
                 .limit(1)
                 .fetch();
+        if(result == null) return null;
         Transaction latestData = result.get(0);
         LatestDateTimeDto dto = new LatestDateTimeDto(latestData);
 
         return dto;
+    }
+
+    public boolean transactionIsExists(String accountNo) {
+
+        return queryFactory
+                .from(transaction)
+                .where(transaction.account.accountNo.eq(accountNo))
+                .fetchFirst() == null;
     }
 }

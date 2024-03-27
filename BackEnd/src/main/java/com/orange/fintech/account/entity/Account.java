@@ -2,12 +2,15 @@ package com.orange.fintech.account.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.orange.fintech.member.entity.Member;
+import com.orange.fintech.payment.entity.Transaction;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,6 +34,10 @@ public class Account {
     private Boolean isPrimaryAccount;
 
     @NotNull private String bankCode;
+
+    @OneToMany(mappedBy = "account")
+    private List<Transaction> transactionList;
+
 
     public Account() {
         this.isPrimaryAccount = true;

@@ -3,6 +3,7 @@ package com.orange.fintech.payment.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.orange.fintech.account.entity.Account;
 import com.orange.fintech.member.entity.Member;
+import com.orange.fintech.util.AccountDateTimeUtil;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -65,6 +66,9 @@ public class Transaction {
     @Column(length = 20)
     private String transactionSummary;
 
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private TransactionDetail transactionDetail;
+
     public Transaction() {}
 
     public Transaction(JSONObject data, Account curAccount, Member member) {
@@ -76,20 +80,20 @@ public class Transaction {
         this.transactionUniqueNo = Integer.parseInt(data.get("transactionUniqueNo").toString());
         this.transactionBalance = Long.parseLong(data.get("transactionBalance").toString());
         this.transactionSummary = data.get("transactionSummary").toString();
-        this.transactionDate = StringToLocalDate(data.get("transactionDate").toString());
-        this.transactionTime = StringToLocalTime(data.get("transactionTime").toString());
+        this.transactionDate = AccountDateTimeUtil.StringToLocalDate(data.get("transactionDate").toString());
+        this.transactionTime = AccountDateTimeUtil.StringToLocalTime(data.get("transactionTime").toString());
         this.transactionTypeName = data.get("transactionTypeName").toString();
     }
 
-    private LocalDate StringToLocalDate(String stringDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        LocalDate date = LocalDate.parse(stringDate, formatter);
-        return date;
-    }
-
-    private LocalTime StringToLocalTime(String stringTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmmss");
-        LocalTime date = LocalTime.parse(stringTime, formatter);
-        return date;
-    }
+//    private LocalDate StringToLocalDate(String stringDate) {
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+//        LocalDate date = LocalDate.parse(stringDate, formatter);
+//        return date;
+//    }
+//
+//    private LocalTime StringToLocalTime(String stringTime) {
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmmss");
+//        LocalTime date = LocalTime.parse(stringTime, formatter);
+//        return date;
+//    }
 }
