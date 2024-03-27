@@ -13,7 +13,8 @@ import '../../models/button/ButtonSlideAnimation.dart';
 import '../../screen/MoneyRequest.dart';
 
 class GroupNoCal extends StatelessWidget {
-  const GroupNoCal({Key? key}) : super(key: key);
+  final int groupId;
+  const GroupNoCal({Key? key, required this.groupId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,7 @@ class GroupNoCal extends StatelessWidget {
                 ),
                 SizedBox(height: 5.0.h),
                 ElevatedButton(
-                  onPressed: () => buttonSlideAnimation(context, MoneyRequest(groupId: 1,)),//임시로 1로 썼습니다 -지연
+                  onPressed: () => buttonSlideAnimation(context, MoneyRequest(groupId: groupId,)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: STATE_COLOR,
                     textStyle: TextStyle(

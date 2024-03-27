@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/addreceipt/AddReceipt.dart';
 import 'package:front/models/button/SizedButton.dart';
+import 'package:front/screen/MoneyRequests/AddCashRequest.dart';
 import '../components/moneyrequests/MoneyRequestList.dart';
 import '../entities/Expense.dart';
 import '../models/button/ButtonSlideAnimation.dart';
@@ -27,7 +28,7 @@ late List<Expense> requests = [];
   }
 
   void fetchMyGroupPayments() async {
-    final MyGroupPaymentsJson = await getMyGroupPayments(1,0,10);
+    final MyGroupPaymentsJson = await getMyGroupPayments(widget.groupId,0,10);//받는 수 하드코딩함
    // print(MyGroupPaymentsJson.data);
     if (MyGroupPaymentsJson != null && MyGroupPaymentsJson.data is List) {
       setState(() {
@@ -65,9 +66,7 @@ late List<Expense> requests = [];
                     Padding(padding: EdgeInsets.symmetric(horizontal: 5.w)),
                     SizedButton(
                       btnText: '현금 계산 추가',
-                      onPressed: () {
-                        print('object');
-                      },
+                      onPressed: () => buttonSlideAnimation(context, AddCashRequest(groupId: widget.groupId,)),
                     ),
                   ],
                 ),

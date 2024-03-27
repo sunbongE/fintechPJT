@@ -16,7 +16,10 @@ class RequestMemberItem extends StatefulWidget {
     Key? key,
     required this.member,
     required this.isSettledState,
-    required this.onSettledChanged, required this.callbackAmount, required this.onLockedChanged, required this.amount,
+    required this.onSettledChanged,
+    required this.callbackAmount,
+    required this.onLockedChanged,
+    required this.amount,
   }) : super(key: key);
 
   @override
@@ -40,7 +43,7 @@ class _RequestMemberItemState extends State<RequestMemberItem> {
       isSettledState = value;
       amount = value ? 1 : 0;
       widget.onLockedChanged(false);
-      widget.callbackAmount (amount);
+      widget.callbackAmount(amount);
       amount = widget.amount;
     });
   }
