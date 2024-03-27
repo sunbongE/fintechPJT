@@ -22,10 +22,10 @@ public class CalculateService {
     private final TransactionQueryRepository transactionQueryRepository;
 
     public class Member {
-        int amount;
+        long amount;
         String kakaoId;
 
-        public Member(int amount, String kakaoId) {
+        public Member(long amount, String kakaoId) {
             this.amount = amount;
             this.kakaoId = kakaoId;
         }
@@ -40,7 +40,7 @@ public class CalculateService {
         int remainder = transactionQueryRepository.sumOfRemainder(groupId);
 
         for (GroupMembersDto dto : listDto.getGroupMembersDtos()) {
-            int amount = transactionQueryRepository.sumOfTotalAmount(groupId, dto.getKakaoId());
+            long amount = transactionQueryRepository.sumOfTotalAmount(groupId, dto.getKakaoId());
             if (dto.getKakaoId().equals(lastMemberId)) {
                 amount -= remainder;
             }

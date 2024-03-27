@@ -32,7 +32,7 @@ public class PaymentController {
             description = "<strong>그룹 아이디</strong>로 내 결제 내역을 조회한다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "404", description = "사용자 정보 없음"),
+        @ApiResponse(responseCode = "403", description = "권한 없음"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<? extends List<TransactionDto>> getMyTransactionList(
@@ -42,6 +42,10 @@ public class PaymentController {
             Principal principal) {
 
         String memberId = principal.getName();
+
+        if (!paymentService.isMyGroup(principal.getName(), groupId)) {
+            return ResponseEntity.status(403).body(null);
+        }
 
         List<TransactionDto> list = paymentService.getMyTransaction(memberId, groupId, page, size);
 
@@ -68,12 +72,14 @@ public class PaymentController {
             return ResponseEntity.status(403).body(BaseResponseBody.of(403, "FORBIDDEN"));
         }
 
-        if (paymentService.changeContainStatus(paymentId, groupId)) {
-
+        try {
+            paymentService.changeContainStatus(paymentId, groupId);
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "OK"));
-        } else {
-            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "NOT_FOUND"));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        return ResponseEntity.status(404).body(BaseResponseBody.of(404, "NOT_FOUND"));
     }
 
     @PutMapping("/{paymentId}")
@@ -151,7 +157,9 @@ public class PaymentController {
     }
 
     @GetMapping("")
-    @Operation(summary = "그룹 결제내역 조회", description = "<strong>groupId</strong>로 그룹의 결제 내역을 조회한다.")
+    @Operation(
+            summary = "그룹 결제내역 조회",
+            description = "<strong>groupId</strong>로 그룹의 결제(정산) 내역을 조회한다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "성공"),
         @ApiResponse(responseCode = "403", description = "권한 없음"),

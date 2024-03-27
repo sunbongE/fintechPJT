@@ -18,7 +18,7 @@ public interface PaymentService {
 
     boolean isMyGroupTransaction(int groupId, int transactionId);
 
-    boolean changeContainStatus(int transactionId, int groupId);
+    void changeContainStatus(int transactionId, int groupId);
 
     void editTransactionDetail(int transactionId, TransactionEditReq req)
             throws NoSuchElementException;

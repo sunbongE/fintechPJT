@@ -188,8 +188,8 @@ public class TransactionQueryRepository {
         return res;
     }
 
-    public int sumOfTotalAmount(int groupId, String memberId) {
-        int res =
+    public long sumOfTotalAmount(int groupId, String memberId) {
+        long res =
                 jpaQueryFactory
                         .select(transactionMember.totalAmount.sum())
                         .from(transaction)

@@ -144,6 +144,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public boolean isMyTransaction(String memberId, int transactionId) {
+        log.info("isMyTransaction: transactionId:{}", transactionId);
         Transaction transaction = transactionRepository.findById(transactionId).get();
 
         if (transaction.getMember().getKakaoId().equals(memberId)) {
@@ -178,7 +179,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public boolean changeContainStatus(int transactionId, int groupId) {
+    public void changeContainStatus(int transactionId, int groupId) {
         Optional<Transaction> transactionOp = transactionRepository.findById(transactionId);
 
         if (transactionOp.isPresent()) {
@@ -186,70 +187,83 @@ public class PaymentServiceImpl implements PaymentService {
             Transaction transaction = transactionOp.get();
             Optional<TransactionDetail> td = transactionDetailRepository.findById(transactionId);
 
-            if (td.isPresent()) {
-                log.info("transactionOp detail present");
-                log.info("td.get().getGroup() {}", td.get().getGroup());
+            //            if (td.isPresent()) {
+            //                log.info("transactionOp detail present");
+            //                log.info("td.get().getGroup() {}", td.get().getGroup());
+            //            }
 
-                TransactionDetail transactionDetail = td.get();
+            TransactionDetail transactionDetail = null;
+            if (td.isPresent()) {
+                transactionDetail = td.get();
+            } else {
+                transactionDetail = new TransactionDetail();
+                transactionDetail.setTransactionId(transactionId);
+            }
+
+            // 포함하기
+            if (transactionDetail.getGroup() == null) {
+                Group group = groupRepository.findById(groupId).get();
 
                 // 포함하기
-                if (td.get().getGroup() == null) {
-                    Group group = groupRepository.findById(groupId).get();
+                transactionDetail.setGroup(group);
 
-                    // 포함하기
-                    transactionDetail.setGroup(group);
+                // transactionMember 설정
+                int headCount = groupMemberRepository.countByGroupMemberPKGroup(group);
+                long individualAmount = transaction.getTransactionBalance() / headCount;
 
-                    // transactionMember 설정
-                    int headCount = groupMemberRepository.countByGroupMemberPKGroup(group);
-                    int individualAmount =
-                            Math.toIntExact(transaction.getTransactionBalance()) / headCount;
+                log.info("individualAmount: {}", individualAmount);
 
-                    log.info("individualAmount: {}", individualAmount);
-
-                    for (GroupMembersDto groupMember :
-                            groupQueryRepository.findGroupMembers(groupId)) {
-                        TransactionMember tm = new TransactionMember();
-                        TransactionMemberPK pk =
-                                new TransactionMemberPK(
-                                        transaction,
-                                        memberRepository.findById(groupMember.getKakaoId()).get());
-                        tm.setTransactionMemberPK(pk);
-                        tm.setIsLock(false);
-                        tm.setTotalAmount(individualAmount);
-                        transactionMemberRepository.save(tm);
-                    }
-
-                    transactionDetail.setRemainder(
-                            Math.toIntExact(transaction.getTransactionBalance()) % headCount);
-                }
-                // 제외하기
-                else {
-                    // transactionMember 낼 금액 0으로 설정
-                    for (GroupMembersDto groupMember :
-                            groupQueryRepository.findGroupMembers(groupId)) {
-                        TransactionMember transactionMember = new TransactionMember();
-                        TransactionMemberPK pk =
-                                new TransactionMemberPK(
-                                        transaction,
-                                        memberRepository.findById(groupMember.getKakaoId()).get());
-                        transactionMember.setTransactionMemberPK(pk);
-                        transactionMember.setIsLock(false);
-                        transactionMember.setTotalAmount(0);
-                        transactionMemberRepository.save(transactionMember);
-                    }
-
-                    transactionDetail.setRemainder(0);
-                    transactionDetail.setGroup(null);
+                for (GroupMembersDto groupMember : groupQueryRepository.findGroupMembers(groupId)) {
+                    TransactionMember tm = new TransactionMember();
+                    TransactionMemberPK pk =
+                            new TransactionMemberPK(
+                                    transaction,
+                                    memberRepository.findById(groupMember.getKakaoId()).get());
+                    tm.setTransactionMemberPK(pk);
+                    tm.setIsLock(false);
+                    tm.setTotalAmount(individualAmount);
+                    transactionMemberRepository.save(tm);
                 }
 
-                transactionDetailRepository.save(transactionDetail);
-                return true;
+                transactionDetail.setRemainder(
+                        Math.toIntExact(transaction.getTransactionBalance()) % headCount);
             }
-        } else {
-            log.info("transactionOp not present");
-        }
+            // 제외하기
+            else {
+                for (GroupMembersDto groupMember : groupQueryRepository.findGroupMembers(groupId)) {
+                    // transactionMember 낼 금액 0으로 설정
+                    //                    TransactionMember transactionMember = new
+                    // TransactionMember();
+                    //                    TransactionMemberPK pk =
+                    //                            new TransactionMemberPK(
+                    //                                    transaction,
+                    //
+                    // memberRepository.findById(groupMember.getKakaoId()).get());
+                    //                    transactionMember.setTransactionMemberPK(pk);
+                    //                    transactionMember.setIsLock(false);
+                    //                    transactionMember.setTotalAmount(0);
+                    //                    transactionMemberRepository.save(transactionMember);
 
-        return false;
+                    // transactionMember 컬럼 삭제
+                    TransactionMemberPK pk =
+                            new TransactionMemberPK(
+                                    transaction,
+                                    memberRepository.findById(groupMember.getKakaoId()).get());
+                    TransactionMember transactionMember =
+                            transactionMemberRepository.findById(pk).get();
+                    transactionMemberRepository.delete(transactionMember);
+                }
+
+                transactionDetail.setRemainder(0);
+                transactionDetail.setGroup(null);
+            }
+
+            log.info("transactionDetail : {}", transactionDetail);
+            transactionDetailRepository.save(transactionDetail);
+        } else {
+            log.info("transaction not present");
+            throw new RuntimeException();
+        }
     }
 
     @Override
@@ -394,7 +408,7 @@ public class PaymentServiceImpl implements PaymentService {
                     calculateTransactionMember(
                             member.getKakaoId(), receiptDetail.getReceipt().getReceiptId());
             payAmount += (pay - discount / headCnt);
-            transactionMember.setTotalAmount(pay - discount / headCnt);
+            transactionMember.setTotalAmount((long) (pay - discount / headCnt));
             transactionMemberRepository.save(transactionMember);
         }
 

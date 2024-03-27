@@ -14,7 +14,7 @@ public class TransactionMember {
 
     @EmbeddedId private TransactionMemberPK transactionMemberPK;
 
-    @NotNull private Integer totalAmount;
+    @NotNull private Long totalAmount;
 
     @NotNull private Boolean isLock;
 }
