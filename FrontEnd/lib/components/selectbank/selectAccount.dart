@@ -12,6 +12,8 @@ import 'package:front/models/button/SizedButton.dart';
 import 'package:front/providers/store.dart';
 import 'package:front/repository/api/ApiLogin.dart';
 
+import '../../repository/api/ApiMyPage.dart';
+
 class SelectAccount extends StatefulWidget {
   final Map<String, String> selectedBank;
 
@@ -22,7 +24,7 @@ class SelectAccount extends StatefulWidget {
 }
 
 class _SelectAccountState extends State<SelectAccount> {
-  List<Map<String, dynamic>>? accountList = [];
+  List<Map<String, dynamic>> accountList = [];
   int? selectedAccountIndex;
   String? selectAccount = '';
   bool isLoading = true;
@@ -34,34 +36,16 @@ class _SelectAccountState extends State<SelectAccount> {
   }
 
   void getAccounts() async {
-    try {
-      setState(() {
-        isLoading = true;
-      });
+    setState(() {
+      isLoading = true;
+    });
 
-      // // 한국은행에서 내가 가진 계좌 리스트 get API
-      // final res = await getBankInfo(widget.selectedBank['code']);
-      // var resData = jsonDecode(res.data);
-      // print('111111111: ${resData}');
+    List<Map<String, dynamic>> res = await getBankInfo(widget.selectedBank['code']!);
 
-      List<Map<String, dynamic>>? resData = [
-        {"accountNo": "3333-33-2400348", "balance": 0, "isPrimaryAccount": true, "institutionCode": null},
-        {"accountNo": "3333-24-8039659", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
-        {"accountNo": "3333-23-6307311", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
-        {"accountNo": "3333-09-6719262", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
-        {"accountNo": "3333-06-2400348", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
-        {"accountNo": "3333-06-2400348", "balance": 0, "isPrimaryAccount": false, "institutionCode": null},
-      ];
-
-      setState(() {
-        isLoading = false;
-        accountList = resData;
-      });
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-    }
+    setState(() {
+      isLoading = false;
+      accountList = res;
+    });
   }
 
   @override
@@ -72,7 +56,7 @@ class _SelectAccountState extends State<SelectAccount> {
         child: Center(
           child: isLoading
               ? CircularProgressIndicator()
-              : accountList?.isEmpty ?? true
+              : accountList.isEmpty ?? true
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -134,11 +118,12 @@ class _SelectAccountState extends State<SelectAccount> {
                             ? Button(
                                 btnText: "Next",
                                 onPressed: () async {
-                                  // 한국은행에서 내가 가진 계좌들 중 하나 선택한 후 post API 보내기 (주 거래은행으로 선택)
-                                  // postBankInfo({
-                                  //   'selectedAccount': selectAccount,
-                                  //   'selectedBank': widget.selectedBank
-                                  // });
+                                  Map<String, dynamic> accountInfo = {
+                                    "bankCode": widget.selectedBank['code'],
+                                    "accountNo": selectAccount,
+                                  };
+
+                                  putMyAccount(accountInfo);
                                   UserManager().saveUserInfo(
                                     newSelectedBank: widget.selectedBank['name'],
                                     newSelectedAccount: selectAccount,

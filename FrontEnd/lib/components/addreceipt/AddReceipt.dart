@@ -44,7 +44,6 @@ class _AddReceiptState extends State<AddReceipt> {
                 });
                 // final res = await postYjReceipt(receiptData!);
                 // print("1111111111: ${res}");
-
               },
             ),
           ],
@@ -70,11 +69,17 @@ class _AddReceiptState extends State<AddReceipt> {
         ),
         actions: [
           TextButton(
-            onPressed: () => receiptData == null || receiptData!.isEmpty ? sendReceiptData() : FlutterToastMsg("모든 영수증을 확인해주세요."),
+            onPressed: () {
+              if (receiptData != null && receiptData!.isNotEmpty && allReceiptsSaved) {
+                sendReceiptData();
+              } else {
+                FlutterToastMsg("모든 영수증을 확인해주세요.");
+              }
+            },
             child: Text(
               "추가",
               style: TextStyle(
-                color: receiptData != null && receiptData!.isNotEmpty ? TEXT_COLOR : Colors.grey,
+                color: receiptData != null && receiptData!.isNotEmpty && allReceiptsSaved ? TEXT_COLOR : Colors.grey,
                 fontWeight: FontWeight.bold,
                 fontSize: 20.sp,
               ),
@@ -117,8 +122,7 @@ class _AddReceiptState extends State<AddReceipt> {
             ),
             isLoading
                 ? Center(child: CircularProgressIndicator())
-                : Expanded(
-                    child: ShowBeforeOcr(
+                : Expanded(child: ShowBeforeOcr(
                     onReceiptsUpdated: (updatedReceipts) {
                       setState(() {
                         receiptData = updatedReceipts;
