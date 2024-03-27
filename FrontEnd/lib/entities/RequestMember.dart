@@ -22,4 +22,23 @@ class RequestMember {
       memberId: json['memberId'],
     );
   }
+  Map<String, dynamic> toJson() {
+    return {
+      'memberId': memberId,
+      'name': name,
+      'thumbnailImage': profileUrl,
+      'totalAmount': amount,
+      'lock': lock,
+    };
+  }
+
+  factory RequestMember.fromCashJson(Map<String, dynamic> json) {
+    return RequestMember(
+      profileUrl: json['thumbnailImage'] as String,
+      name: json['name'] as String,
+      amount: 0,
+      lock: false,
+      memberId: json['kakaoId'] as String,
+    );
+  }
 }
