@@ -13,5 +13,4 @@ public class DepositsAndWithdrawalsDto {
     String transactionDate;
     String transactionTime;
     String transactionTypeName;
-
 }

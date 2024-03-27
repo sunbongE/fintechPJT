@@ -3,10 +3,10 @@ package com.orange.fintech.account.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.orange.fintech.payment.entity.Transaction;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
+import lombok.Data;
+
 @Data
 public class LatestDateTimeDto {
 

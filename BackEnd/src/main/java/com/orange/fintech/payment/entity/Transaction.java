@@ -8,7 +8,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -66,7 +65,7 @@ public class Transaction {
     @Column(length = 20)
     private String transactionSummary;
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private TransactionDetail transactionDetail;
 
     public Transaction() {}
@@ -80,20 +79,22 @@ public class Transaction {
         this.transactionUniqueNo = Integer.parseInt(data.get("transactionUniqueNo").toString());
         this.transactionBalance = Long.parseLong(data.get("transactionBalance").toString());
         this.transactionSummary = data.get("transactionSummary").toString();
-        this.transactionDate = AccountDateTimeUtil.StringToLocalDate(data.get("transactionDate").toString());
-        this.transactionTime = AccountDateTimeUtil.StringToLocalTime(data.get("transactionTime").toString());
+        this.transactionDate =
+                AccountDateTimeUtil.StringToLocalDate(data.get("transactionDate").toString());
+        this.transactionTime =
+                AccountDateTimeUtil.StringToLocalTime(data.get("transactionTime").toString());
         this.transactionTypeName = data.get("transactionTypeName").toString();
     }
 
-//    private LocalDate StringToLocalDate(String stringDate) {
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-//        LocalDate date = LocalDate.parse(stringDate, formatter);
-//        return date;
-//    }
-//
-//    private LocalTime StringToLocalTime(String stringTime) {
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmmss");
-//        LocalTime date = LocalTime.parse(stringTime, formatter);
-//        return date;
-//    }
+    //    private LocalDate StringToLocalDate(String stringDate) {
+    //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+    //        LocalDate date = LocalDate.parse(stringDate, formatter);
+    //        return date;
+    //    }
+    //
+    //    private LocalTime StringToLocalTime(String stringTime) {
+    //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmmss");
+    //        LocalTime date = LocalTime.parse(stringTime, formatter);
+    //        return date;
+    //    }
 }

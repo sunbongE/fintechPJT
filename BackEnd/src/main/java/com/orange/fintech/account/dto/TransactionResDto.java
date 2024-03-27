@@ -17,7 +17,8 @@ public class TransactionResDto {
     String transactionTypeName;
 
     public TransactionResDto(Transaction transaction) {
-        if(!transaction.getTransactionType().equals("입금") || !transaction.getTransactionType().equals("출금")){
+        if (!transaction.getTransactionType().equals("입금")
+                || !transaction.getTransactionType().equals("출금")) {
             this.transactionAccountNo = transaction.getTransactionAccountNo();
         }
         this.transactionAfterBalance = transaction.getTransactionAfterBalance();

@@ -76,8 +76,7 @@ public class AccountController {
         @ApiResponse(responseCode = "200", description = "성공"),
         @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<?> readAllOrUpdateTransation(
-             Principal principal) {
+    public ResponseEntity<?> readAllOrUpdateTransation(Principal principal) {
 
         String memberId = principal.getName();
         try {
@@ -88,23 +87,24 @@ public class AccountController {
             return ResponseEntity.internalServerError().body(BaseResponseBody.of(500, "서버 에러"));
         }
     }
-//
-//    @GetMapping("/transaction/reload")
-//    @Operation(summary = "거래내역 새로고침", description = "회원의 거래내역에서 새로운 내역을 조회하여 저장한다.")
-//    @ApiResponses({
-//            @ApiResponse(responseCode = "200", description = "성공"),
-//            @ApiResponse(responseCode = "500", description = "서버 에러")
-//    })
-//    public ResponseEntity<?> transactionReload(
-//            Principal principal) {
-//        String memberId = principal.getName();
-//
-//        try {
-//            String result =
-//            return ResponseEntity.ok().body(result);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.internalServerError().body(BaseResponseBody.of(500, "서버 에러"));
-//        }
-//    }
+    //
+    //    @GetMapping("/transaction/reload")
+    //    @Operation(summary = "거래내역 새로고침", description = "회원의 거래내역에서 새로운 내역을 조회하여 저장한다.")
+    //    @ApiResponses({
+    //            @ApiResponse(responseCode = "200", description = "성공"),
+    //            @ApiResponse(responseCode = "500", description = "서버 에러")
+    //    })
+    //    public ResponseEntity<?> transactionReload(
+    //            Principal principal) {
+    //        String memberId = principal.getName();
+    //
+    //        try {
+    //            String result =
+    //            return ResponseEntity.ok().body(result);
+    //        } catch (Exception e) {
+    //            e.printStackTrace();
+    //            return ResponseEntity.internalServerError().body(BaseResponseBody.of(500, "서버
+    // 에러"));
+    //        }
+    //    }
 }
