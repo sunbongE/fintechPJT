@@ -349,7 +349,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public void setReceiptDetailMember(
-            int paymentId, int receiptDetailId, List<ReceiptDetailMemberPutDto> req) throws Exception {
+            int paymentId, int receiptDetailId, List<ReceiptDetailMemberPutDto> req)
+            throws Exception {
         int payAmount = 0;
         int headCnt = req.size();
 
@@ -360,7 +361,7 @@ public class PaymentServiceImpl implements PaymentService {
         Receipt receipt = receiptRepository.findByTransaction(transaction);
 
         int discount = 0;
-        if(receipt.getApprovalAmount() != receipt.getTotalPrice()){
+        if (receipt.getApprovalAmount() != receipt.getTotalPrice()) {
             discount = receipt.getTotalPrice() - receipt.getApprovalAmount();
         }
 

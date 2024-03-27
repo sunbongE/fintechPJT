@@ -13,5 +13,4 @@ public class TransactionResDto {
     String transactionDate;
     String transactionTime;
     String transactionTypeName;
-
 }
