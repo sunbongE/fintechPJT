@@ -36,13 +36,14 @@ Future<void> postPassWord(data) async {
 }
 
 // 사용자가 선택한 은행과 연결된 계좌 목록 get
-Future<Response> getBankInfo(code) async {
+Future<List<Map<String, dynamic>>> getBankInfo(String code) async {
   try {
-    final res = await api.get('/account/list/${code}');
-    return res;
+    final res = await api.get('/account/list/$code');
+    final List<Map<String, dynamic>> formattedRes = (res.data as List).map((e) => e as Map<String, dynamic>).toList();
+    return formattedRes;
   } catch (err) {
-    print('err: ${err}');
-    throw Exception('Failed to post user info');
+    print('err: $err');
+    throw Exception('Failed to get bank info');
   }
 }
 
@@ -60,7 +61,9 @@ Future<void> postBankInfo(data) async {
 // 로그아웃을 한다.
 Future<void> postLogOut() async {
   try {
-    final res = await api.post('/auth/logout',);
+    final res = await api.post(
+      '/auth/logout',
+    );
     return res.data;
   } catch (err) {
     print(err);
