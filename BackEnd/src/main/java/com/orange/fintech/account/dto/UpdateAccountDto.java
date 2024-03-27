@@ -9,6 +9,6 @@ import lombok.ToString;
 @ToString
 public class UpdateAccountDto {
 
-    String bankcode;
-    String acountNo;
+    String bankCode;
+    String accountNo;
 }

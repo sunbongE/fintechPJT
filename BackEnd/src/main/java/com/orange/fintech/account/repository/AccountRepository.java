@@ -18,4 +18,6 @@ public interface AccountRepository extends JpaRepository<Account, String> {
 
     @Query("SELECT a FROM Account a WHERE a.isPrimaryAccount IS TRUE AND a.member = :member")
     Account findPrimaryAccountByKakaoId(@Param("member") Member member);
+
+
 }
