@@ -1,7 +1,6 @@
 package com.orange.fintech.account.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.gson.JsonElement;
 import com.orange.fintech.account.dto.ReqHeader;
 import com.orange.fintech.account.dto.UpdateAccountDto;
 import com.orange.fintech.account.entity.Account;
@@ -9,6 +8,8 @@ import com.orange.fintech.account.repository.AccountRepository;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.member.service.MemberService;
+import com.orange.fintech.payment.entity.Transaction;
+import com.orange.fintech.payment.repository.TransactionRepository;
 import jakarta.transaction.Transactional;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,9 @@ import org.springframework.web.client.RestClient;
 public class AccountServiceImpl implements AccountService {
     @Autowired AccountRepository accountRepository;
     @Autowired MemberRepository memberRepository;
+
+    @Autowired
+    TransactionRepository transactionRepository;
 
     @Autowired MemberService memberService;
 
@@ -166,7 +170,7 @@ public class AccountServiceImpl implements AccountService {
         String startDate = "20240101";
         String endDate = "20241231";
         reqHeader = createHeader(member.getUserKey(), transactionHistoryUrl);
-        getAllTransaction(bankCode, accountNo, startDate, endDate, reqHeader);
+        getAllTransaction(bankCode, accountNo, startDate, endDate, reqHeader,member);
     }
 
     @Override
@@ -187,7 +191,7 @@ public class AccountServiceImpl implements AccountService {
             String accountNo,
             String startDate,
             String endDate,
-            ReqHeader reqHeader)
+            ReqHeader reqHeader, Member member)
             throws ParseException {
         Map<String, Object> req = new HashMap<>();
         req.put("Header", reqHeader);
@@ -211,11 +215,21 @@ public class AccountServiceImpl implements AccountService {
         JSONArray jsonArray = (JSONArray) transactions.get("list");
         log.info("jsonArray :{}", jsonArray);
 
-
+        Account curAccount = accountRepository.findByAccountNo(accountNo);
         for (Object element : jsonArray){
             //transactionType : 1 -> 입금 | 2 -> 출금
             log.info("el:{}",element);// 여기서 입금 출금 각각 dto가 달라요. 차이: 출금에만 transactionAccountNo가 있다.
+            JSONObject tmp = (JSONObject)element;
 
+            Transaction transaction = new Transaction(tmp,curAccount,member);
+
+            if(tmp.get("transactionTypeName").equals("출금(이체)") || tmp.get("transactionTypeName").equals("입금(이체)")){
+                //  "transactionAccountNo":"001367035538944", 추가시킴.\
+                transaction.setTransactionAccountNo(tmp.get("transactionAccountNo").toString());
+
+            }
+            log.info("객체결과->> {}",transaction.toString());
+            transactionRepository.save(transaction);
         }
 
 

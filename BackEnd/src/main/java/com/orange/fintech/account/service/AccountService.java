@@ -5,6 +5,8 @@ import com.orange.fintech.account.dto.ReqHeader;
 import com.orange.fintech.account.dto.UpdateAccountDto;
 import com.orange.fintech.account.entity.Account;
 import java.util.List;
+
+import com.orange.fintech.member.entity.Member;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -27,6 +29,6 @@ public interface AccountService {
             String accountNo,
             String startDate,
             String endDate,
-            ReqHeader reqHeader)
+            ReqHeader reqHeader, Member member)
             throws ParseException;
 }

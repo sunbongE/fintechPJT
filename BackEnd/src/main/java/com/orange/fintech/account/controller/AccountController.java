@@ -70,19 +70,17 @@ public class AccountController {
     }
 
     @GetMapping("/transaction")
-    @Operation(summary = "회원의 계좌 목록 조회", description = "<string>회원의 <strong>계좌 목록</strong>을 조회한다.")
+    @Operation(summary = "거래내역 조회", description = "<string>회원의 <strong>거래내역</strong>을 조회한다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "성공"),
         @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     public ResponseEntity<?> findAllTransation(
             @PathVariable("bankId") String bankId, Principal principal) {
-        if (!bankId.equals("001")) {
-            return ResponseEntity.ok().body(Collections.EMPTY_LIST);
-        }
+
         String memberId = principal.getName();
         try {
-            List<JSONObject> result = accountService.findAccountList(memberId);
+            String result = "아직 구현안함";
             return ResponseEntity.ok().body(result);
         } catch (Exception e) {
             e.printStackTrace();
