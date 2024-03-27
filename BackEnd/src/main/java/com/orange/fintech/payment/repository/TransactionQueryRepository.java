@@ -187,4 +187,41 @@ public class TransactionQueryRepository {
         log.info("getTransactionTotalAmount({}, {}): {}", memberId, receiptId, res);
         return res;
     }
+
+    public int sumOfTotalAmount(int groupId, String memberId) {
+        int res =
+                jpaQueryFactory
+                        .select(transactionMember.totalAmount.sum())
+                        .from(transaction)
+                        .join(transactionMember)
+                        .on(transaction.eq(transactionMember.transactionMemberPK.transaction))
+                        .join(transactionDetail)
+                        .on(transactionDetail.transaction.eq(transaction))
+                        .where(
+                                transactionDetail
+                                        .group
+                                        .groupId
+                                        .eq(groupId)
+                                        .and(
+                                                transactionMember.transactionMemberPK.member.kakaoId
+                                                        .eq(memberId)))
+                        .fetchOne();
+
+        log.info("sumOfTotalAmount: {}", res);
+        return res;
+    }
+
+    public int sumOfRemainder(int groupId) {
+        int res =
+                jpaQueryFactory
+                        .select(transactionDetail.remainder.sum())
+                        .from(transaction)
+                        .join(transactionDetail)
+                        .on(transaction.eq(transactionDetail.transaction))
+                        .where(transactionDetail.group.groupId.eq(groupId))
+                        .fetchOne();
+
+        log.info("groupId:{} -> sumOfRemainder: {}", groupId, res);
+        return res;
+    }
 }

@@ -349,12 +349,20 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public void setReceiptDetailMember(
-            int paymentId, int receiptDetailId, List<ReceiptDetailMemberPutDto> req) {
+            int paymentId, int receiptDetailId, List<ReceiptDetailMemberPutDto> req) throws Exception {
         int payAmount = 0;
+        int headCnt = req.size();
 
         Transaction transaction = transactionRepository.findById(paymentId).get();
         ReceiptDetail receiptDetail = receiptDetailRepository.findById(receiptDetailId).get();
         log.info("receiptDetail: {}", receiptDetail);
+
+        Receipt receipt = receiptRepository.findByTransaction(transaction);
+
+        int discount = 0;
+        if(receipt.getApprovalAmount() != receipt.getTotalPrice()){
+            discount = receipt.getTotalPrice() - receipt.getApprovalAmount();
+        }
 
         for (ReceiptDetailMemberPutDto detailMemberDto : req) {
             ReceiptDetailMemberPK pk = new ReceiptDetailMemberPK();
@@ -384,8 +392,8 @@ public class PaymentServiceImpl implements PaymentService {
             int pay =
                     calculateTransactionMember(
                             member.getKakaoId(), receiptDetail.getReceipt().getReceiptId());
-            payAmount += pay;
-            transactionMember.setTotalAmount(pay);
+            payAmount += (pay - discount / headCnt);
+            transactionMember.setTotalAmount(pay - discount / headCnt);
             transactionMemberRepository.save(transactionMember);
         }
 
@@ -396,6 +404,8 @@ public class PaymentServiceImpl implements PaymentService {
         // SINYEONG: 예외처리?
         if (transaction.getTransactionBalance() >= payAmount) {
             transactionDetail.setRemainder((int) (transaction.getTransactionBalance() - payAmount));
+        } else {
+            throw new Exception();
         }
 
         log.info("remainder: {} - {}", transaction.getTransactionBalance(), payAmount);
