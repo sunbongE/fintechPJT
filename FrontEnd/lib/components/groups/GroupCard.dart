@@ -8,7 +8,8 @@ class GroupCard extends StatelessWidget {
   final Group group;
   final VoidCallback onTap;
 
-  const GroupCard({Key? key, required this.group, required this.onTap}) : super(key: key);
+  const GroupCard({Key? key, required this.group, required this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,22 +23,53 @@ class GroupCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
-        color: groupState ? COMPLETE_COLOR : TRAVELING,
+        color: groupState
+            ? Color(0xffFF3D00).withOpacity(0.5)
+            : Color(0xffFF9E44).withOpacity(0.8),
         child: ListTile(
           onTap: onTap,
-          title: Text(
-            group.groupName,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 13.sp,
-            ),
+          title: Row(
+            children: [
+              Text(
+                group.startDate,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 13.sp,
+                ),
+              ),
+              SizedBox(
+                width: 5.w,
+              ),
+              Text(
+                '~',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 13.sp,
+                ),
+              ),
+              SizedBox(
+                width: 5.w,
+              ),
+              Text(
+                group.endDate,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 13.sp,
+                ),
+              ),
+            ],
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(group.theme),
-              Text('시작일: ${group.startDate}'),
-              Text('종료일: ${group.endDate}'),
+              Text(
+                group.groupName,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ],
           ),
           trailing: StateContainer(groupState: groupState),

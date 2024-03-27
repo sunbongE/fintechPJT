@@ -24,13 +24,13 @@ class _PastTravelListState extends State<PastTravelList> {
   @override
   Widget build(BuildContext context) {
     final filteredGroups = widget.groups.where((group) => group.isCalculateDone).toList();
-    // if (filteredGroups.isEmpty) {
-    //   return Scaffold(
-    //     body: Center(
-    //       child: Text('이전 여행이 없습니다.'),
-    //     ),
-    //   );
-    // }
+    if (filteredGroups.isEmpty) {
+      return Scaffold(
+        body: Center(
+          child: Text('이전 여행이 없습니다.'),
+        ),
+      );
+    }
 
     return Scaffold(
       body: CarouselSlider.builder(

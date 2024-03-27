@@ -6,21 +6,20 @@ import 'dart:convert';
 
 class GroupEmailFindField extends StatefulWidget {
   final TextEditingController controller;
+  // final Function(GroupMember?) onFound;
 
   const GroupEmailFindField({
     Key? key,
     required this.controller,
+    // required this.onFound,
   }) : super(key: key);
 
   @override
   _GroupEmailFindFieldState createState() => _GroupEmailFindFieldState();
 }
-
 class _GroupEmailFindFieldState extends State<GroupEmailFindField> {
   final _formKey = GlobalKey<FormState>();
-  String? _searchResult;
-  List<Member> _searchResults = []; // 검색 결과를 저장할 리스트
-
+  Member? _searchResult; // 변경된 부분: String?에서 Member?로 타입 변경
 
   @override
   Widget build(BuildContext context) {
@@ -36,24 +35,26 @@ class _GroupEmailFindFieldState extends State<GroupEmailFindField> {
                 icon: Icon(Icons.search),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    final response = await getMemberByEmail(widget.controller.text);
-                    if (response != null) {
-                      final Map<String, dynamic> responseData = json.decode(response.data);
-                      // 상태를 업데이트하고, 검색 결과를 표시합니다.
-                      final Member member = Member.fromJson(responseData);
-
-                      // 상태를 업데이트하고, 검색 결과를 List에 추가합니다.
+                    try {
+                      final response = await getMemberByEmail(widget.controller.text);
+                      if (response != null) {
+                        setState(() {
+                          _searchResult = Member.fromJson(response.data);
+                        });
+                      } else {
+                        setState(() {
+                          _searchResult = null;
+                        });
+                      }
+                    } catch (e) {
+                      print("멤버 검색 중 오류 발생: $e");
                       setState(() {
-                        _searchResults.add(member);
-                        _searchResult = member.name; // 예를 들어 멤버의 이름으로 검색 결과를 표시
-                      });
-                    } else {
-                      setState(() {
-                        _searchResult = "멤버를 찾을 수 없습니다.";
+                        _searchResult = null;
                       });
                     }
                   }
                 },
+
               ),
             ),
             validator: (value) {
@@ -66,7 +67,7 @@ class _GroupEmailFindFieldState extends State<GroupEmailFindField> {
         ),
         if (_searchResult != null) ...[
           SizedBox(height: 20),
-          Text(_searchResult!, style: TextStyle(fontSize: 16)),
+          Text(_searchResult!.name, style: TextStyle(fontSize: 16)),
         ],
       ],
     );
