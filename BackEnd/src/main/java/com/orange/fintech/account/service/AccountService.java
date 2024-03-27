@@ -5,12 +5,10 @@ import com.orange.fintech.account.dto.ReqHeader;
 import com.orange.fintech.account.dto.TransactionResDto;
 import com.orange.fintech.account.dto.UpdateAccountDto;
 import com.orange.fintech.account.entity.Account;
-
-import java.time.LocalTime;
-import java.util.List;
-
 import com.orange.fintech.member.entity.Member;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalTime;
+import java.util.List;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -33,7 +31,9 @@ public interface AccountService {
             String accountNo,
             String startDate,
             String endDate,
-            ReqHeader reqHeader, Member member, @NotNull LocalTime transactionTime)
+            ReqHeader reqHeader,
+            Member member,
+            @NotNull LocalTime transactionTime)
             throws ParseException;
 
     List<TransactionResDto> readAllOrUpdateTransation(String memberId) throws ParseException;

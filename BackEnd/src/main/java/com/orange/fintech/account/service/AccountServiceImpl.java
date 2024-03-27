@@ -17,11 +17,9 @@ import com.orange.fintech.payment.repository.TransactionDetailRepository;
 import com.orange.fintech.payment.repository.TransactionRepository;
 import com.orange.fintech.util.AccountDateTimeUtil;
 import jakarta.transaction.Transactional;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
-
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -39,12 +37,9 @@ public class AccountServiceImpl implements AccountService {
     @Autowired AccountRepository accountRepository;
     @Autowired MemberRepository memberRepository;
 
-    @Autowired
-    TransactionRepository transactionRepository;
-    @Autowired
-    TransactionDetailRepository transactionDetailRepository;
-    @Autowired
-    AccountQueryRepository accountQueryRepository;
+    @Autowired TransactionRepository transactionRepository;
+    @Autowired TransactionDetailRepository transactionDetailRepository;
+    @Autowired AccountQueryRepository accountQueryRepository;
 
     @Autowired MemberService memberService;
 
@@ -187,13 +182,14 @@ public class AccountServiceImpl implements AccountService {
         LatestDateTimeDto latestData = accountQueryRepository.getLatest(memberId);
 
         // 최신 데이터가 있으면 있는 날짜부터 조회
-        if(latestData!=null){
+        if (latestData != null) {
             startDate = AccountDateTimeUtil.localDateToString(latestData.getTransactionDate());
             transactionTime = latestData.getTransactionTime();
         }
 
         reqHeader = createHeader(member.getUserKey(), transactionHistoryUrl);
-        getAllTransaction(bankCode, accountNo, startDate, endDate, reqHeader,member, transactionTime);
+        getAllTransaction(
+                bankCode, accountNo, startDate, endDate, reqHeader, member, transactionTime);
     }
 
     @Override
@@ -209,14 +205,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     *
      * @param bankCode 은행코드
      * @param accountNo 계좌번호
      * @param startDate 조회 시작날짜
      * @param endDate 조회 끝날짜
      * @param reqHeader 요청 바디에 들어갈 헤더
      * @param member
-     * @param transactionTime   DB에 있는 가장 최신 데이터 시간.
+     * @param transactionTime DB에 있는 가장 최신 데이터 시간.
      * @throws ParseException
      */
     @Override
@@ -225,7 +220,9 @@ public class AccountServiceImpl implements AccountService {
             String accountNo,
             String startDate,
             String endDate,
-            ReqHeader reqHeader, Member member, LocalTime transactionTime)
+            ReqHeader reqHeader,
+            Member member,
+            LocalTime transactionTime)
             throws ParseException {
         Map<String, Object> req = new HashMap<>();
         req.put("Header", reqHeader);
@@ -235,16 +232,16 @@ public class AccountServiceImpl implements AccountService {
         req.put("endDate", endDate);
         req.put("transactionType", "A");
         req.put("orderByType", "DESC");
-        log.info("startDate ====>>>> {}",startDate);
+        log.info("startDate ====>>>> {}", startDate);
         // 처음 주계좌를 등록한것인지 확인하는 용도.
         boolean isInit = accountQueryRepository.transactionIsExists(accountNo);
-        log.info("isInit : {} ",isInit);
+        log.info("isInit : {} ", isInit);
 
         // 거래 내역이 이미 있는지 확인한다.
 
         // 지금 계좌로 연결된 거래내역이 없으면.
 
-        LocalDate startDateValue = AccountDateTimeUtil.StringToLocalDate(startDate) ;
+        LocalDate startDateValue = AccountDateTimeUtil.StringToLocalDate(startDate);
 
         RestClient restClient = RestClient.create();
         RestClient.ResponseSpec response =
@@ -264,23 +261,30 @@ public class AccountServiceImpl implements AccountService {
         List<Transaction> saveDataList = new ArrayList<>();
 
         // 여기서 처음인지 아닌지에 따라서 값을 비교해서 가져오든 전부 가져오든 할듯.
-        for (Object element : jsonArray){
-            JSONObject tmp = (JSONObject)element;
-            Transaction transaction = new Transaction(tmp,curAccount,member);
+        for (Object element : jsonArray) {
+            JSONObject tmp = (JSONObject) element;
+            Transaction transaction = new Transaction(tmp, curAccount, member);
 
-            if(isInit){
-    //            log.info("el:{}",element);// 여기서 입금 출금 각각 dto가 달라요. 차이: 출금에만 transactionAccountNo가 있다.
-                if(tmp.get("transactionTypeName").equals("출금(이체)") || tmp.get("transactionTypeName").equals("입금(이체)")){
+            if (isInit) {
+                //            log.info("el:{}",element);// 여기서 입금 출금 각각 dto가 달라요. 차이: 출금에만
+                // transactionAccountNo가 있다.
+                if (tmp.get("transactionTypeName").equals("출금(이체)")
+                        || tmp.get("transactionTypeName").equals("입금(이체)")) {
                     transaction.setTransactionAccountNo(tmp.get("transactionAccountNo").toString());
                 }
 
-                log.info("객체결과->> {}",transaction.toString());
+                log.info("객체결과->> {}", transaction.toString());
                 saveDataList.add(transaction);
-            }
-            else { // 새로고침인 경우.
-                log.info("{} | {} | {} | {}",transaction.getTransactionDate(),startDateValue,transaction.getTransactionTime(),transactionTime);
+            } else { // 새로고침인 경우.
+                log.info(
+                        "{} | {} | {} | {}",
+                        transaction.getTransactionDate(),
+                        startDateValue,
+                        transaction.getTransactionTime(),
+                        transactionTime);
                 // 날짜가 같으면 시간을 비교해서 가져온다.
-                if(transaction.getTransactionDate().isEqual(startDateValue) && transaction.getTransactionTime().isAfter(transactionTime)){
+                if (transaction.getTransactionDate().isEqual(startDateValue)
+                        && transaction.getTransactionTime().isAfter(transactionTime)) {
                     saveDataList.add(transaction);
                     log.info("여긴가?!");
                 } else if (transaction.getTransactionDate().isAfter(startDateValue)) {
@@ -291,35 +295,34 @@ public class AccountServiceImpl implements AccountService {
 
         }
 
-        log.info("저장할 데이터 => {}",saveDataList);
+        log.info("저장할 데이터 => {}", saveDataList);
         // 저장할 데이터가 있으면 저장.
-        if (!saveDataList.isEmpty()){
+        if (!saveDataList.isEmpty()) {
             List<Transaction> savedAll = transactionRepository.saveAll(saveDataList);
 
             // 디테일 생성.
             List<TransactionDetail> transactionDetailList = new ArrayList<>();
-            for (Transaction data : savedAll){
+            for (Transaction data : savedAll) {
                 TransactionDetail detail = new TransactionDetail();
                 detail.setTransactionId(data.getTransactionId());
                 transactionDetailList.add(detail);
             }
             transactionDetailRepository.saveAll(transactionDetailList);
         }
-
-
     }
 
     @Override
-    public List<TransactionResDto> readAllOrUpdateTransation(String memberId) throws ParseException {
+    public List<TransactionResDto> readAllOrUpdateTransation(String memberId)
+            throws ParseException {
         log.info("impl call");
 
         // DB에서 가장 최근의 데이터의 날짜와 시간을 가져온다.
         LatestDateTimeDto latestData = accountQueryRepository.getLatest(memberId);
-//        log.info("latestData:{}",latestData); // LatestDateTimeDto(transactionDate=2024-03-27, transactionTime=11:14:59)
+        //        log.info("latestData:{}",latestData); //
+        // LatestDateTimeDto(transactionDate=2024-03-27, transactionTime=11:14:59)
         Member member = memberRepository.findById(memberId).get();
         List<Account> accountList = accountRepository.findByMemberAndIsPrimaryAccountIsTrue(member);
-        Account account =accountList.get(0); // 주계좌
-
+        Account account = accountList.get(0); // 주계좌
 
         // 최근값 이후로 데이터 받아서 저장하기.
         RestClient restClient = RestClient.create();
@@ -331,21 +334,26 @@ public class AccountServiceImpl implements AccountService {
         String endDate = "20241231";
         ReqHeader reqHeader = createHeader(member.getUserKey(), transactionHistoryUrl);
 
-//        log.info("reqHeader:{}, date,time :{}, {}",reqHeader,startDate,endDate);
-        getAllTransaction(bankCode, accountNo, startDate, endDate, reqHeader,member, latestData.getTransactionTime());
-
+        //        log.info("reqHeader:{}, date,time :{}, {}",reqHeader,startDate,endDate);
+        getAllTransaction(
+                bankCode,
+                accountNo,
+                startDate,
+                endDate,
+                reqHeader,
+                member,
+                latestData.getTransactionTime());
 
         // ========= DB에 저장된 데이터를 반환
         List<TransactionResDto> response = new ArrayList<>();
 
         // 회원아이디로 주계좌 회원, 계좌 조인해서 회원의 주계좌 가져온다.
         List<Transaction> transactions = accountQueryRepository.readAllOrUpdateTransation(memberId);
-//        log.info("transactions:{}",transactions);
-        for (Transaction transaction : transactions){
+        //        log.info("transactions:{}",transactions);
+        for (Transaction transaction : transactions) {
             TransactionResDto data = new TransactionResDto(transaction);
             response.add(data);
         }
-
 
         return response;
     }
