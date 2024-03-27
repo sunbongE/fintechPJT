@@ -1,9 +1,12 @@
 package com.orange.fintech.account.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.orange.fintech.account.dto.LatestDateTimeDto;
 import com.orange.fintech.account.dto.ReqHeader;
+import com.orange.fintech.account.dto.TransactionResDto;
 import com.orange.fintech.account.dto.UpdateAccountDto;
 import com.orange.fintech.account.entity.Account;
+import com.orange.fintech.account.repository.AccountQueryRepository;
 import com.orange.fintech.account.repository.AccountRepository;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
@@ -31,6 +34,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     TransactionRepository transactionRepository;
+    @Autowired
+    AccountQueryRepository accountQueryRepository;
 
     @Autowired MemberService memberService;
 
@@ -135,8 +140,8 @@ public class AccountServiceImpl implements AccountService {
 
         Map<String, Object> req = new HashMap<>();
         req.put("Header", reqHeader);
-        req.put("bankCode", dto.getBankcode());
-        req.put("accountNo", dto.getAcountNo());
+        req.put("bankCode", dto.getBankCode());
+        req.put("accountNo", dto.getAccountNo());
 
         response = restClient.post().uri(mainAccountsUrl).body(req).retrieve();
         String responseBody = response.body(String.class);
@@ -233,5 +238,31 @@ public class AccountServiceImpl implements AccountService {
         }
 
 
+    }
+
+    @Override
+    public List<TransactionResDto> readAllOrUpdateTransation(String memberId) {
+        log.info("impl call");
+
+        // DB에서 가장 최근의 데이터의 날짜와 시간을 가져온다.
+        LatestDateTimeDto latestData = accountQueryRepository.getLatest(memberId);
+        log.info("latestData:{}",latestData); // LatestDateTimeDto(transactionDate=2024-03-27, transactionTime=11:14:59)
+
+
+        //
+
+        // ========= DB에 저장된 데이터를 반환
+        List<TransactionResDto> response = new ArrayList<>();
+
+        // 회원아이디로 주계좌 회원, 계좌 조인해서 회원의 주계좌 가져온다.
+        List<Transaction> transactions = accountQueryRepository.readAllOrUpdateTransation(memberId);
+        log.info("transactions:{}",transactions);
+        for (Transaction transaction : transactions){
+            TransactionResDto data = new TransactionResDto(transaction);
+            response.add(data);
+        }
+        log.info("response : {}",response);
+
+        return response;
     }
 }

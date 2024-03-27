@@ -1,5 +1,6 @@
 package com.orange.fintech.account.controller;
 
+import com.orange.fintech.account.dto.TransactionResDto;
 import com.orange.fintech.account.dto.UpdateAccountDto;
 import com.orange.fintech.account.service.AccountService;
 import com.orange.fintech.common.BaseResponseBody;
@@ -70,21 +71,40 @@ public class AccountController {
     }
 
     @GetMapping("/transaction")
-    @Operation(summary = "거래내역 조회", description = "<string>회원의 <strong>거래내역</strong>을 조회한다.")
+    @Operation(summary = "거래내역 조회", description = "거래내역을 전부 조회하거나 일부 조회하여 저장 후 거래내역을 반환한다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "성공"),
         @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<?> findAllTransation(
-            @PathVariable("bankId") String bankId, Principal principal) {
+    public ResponseEntity<?> readAllOrUpdateTransation(
+             Principal principal) {
 
         String memberId = principal.getName();
         try {
-            String result = "아직 구현안함";
+            List<TransactionResDto> result = accountService.readAllOrUpdateTransation(memberId);
             return ResponseEntity.ok().body(result);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(BaseResponseBody.of(500, "서버 에러"));
         }
     }
+//
+//    @GetMapping("/transaction/reload")
+//    @Operation(summary = "거래내역 새로고침", description = "회원의 거래내역에서 새로운 내역을 조회하여 저장한다.")
+//    @ApiResponses({
+//            @ApiResponse(responseCode = "200", description = "성공"),
+//            @ApiResponse(responseCode = "500", description = "서버 에러")
+//    })
+//    public ResponseEntity<?> transactionReload(
+//            Principal principal) {
+//        String memberId = principal.getName();
+//
+//        try {
+//            String result =
+//            return ResponseEntity.ok().body(result);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.internalServerError().body(BaseResponseBody.of(500, "서버 에러"));
+//        }
+//    }
 }
