@@ -4,8 +4,9 @@ import 'MoneyRequestItem.dart';
 
 class MoneyRequestList extends StatefulWidget {
   final List<Expense> expenses;
+  final int groupId;
 
-  MoneyRequestList({Key? key, required this.expenses}) : super(key: key);
+  MoneyRequestList({Key? key, required this.expenses, required this.groupId}) : super(key: key);
 
   @override
   _MoneyRequestListState createState() => _MoneyRequestListState();
@@ -24,7 +25,7 @@ class _MoneyRequestListState extends State<MoneyRequestList> {
       itemBuilder: (context, index) {
         return Column(
           children: [
-            MoneyRequestItem(expense: widget.expenses[index]),
+            MoneyRequestItem(expense: widget.expenses[index],groupId: widget.groupId),
             Container(
               height: 1.0,
               color: Colors.grey.shade300,

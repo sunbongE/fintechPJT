@@ -8,13 +8,15 @@ import 'package:front/entities/Expense.dart';
 import 'package:intl/intl.dart';
 
 import '../../const/colors/Colors.dart';
+import '../../repository/api/ApiMoneyRequest.dart';
 import '../../screen/MoneyRequests/MoneyRequestDetail.dart';
 
 class MoneyRequestItem extends StatefulWidget {
   final Expense expense;
   final bool isToggle;
+  final int groupId;
 
-  MoneyRequestItem({Key? key, required this.expense, this.isToggle = true})
+  MoneyRequestItem({Key? key, required this.expense, this.isToggle = true, required this.groupId})
       : super(key: key);
 
   @override
@@ -43,7 +45,7 @@ class _MoneyRequestItemState extends State<MoneyRequestItem> {
                         setState(() {
                           isSettled = newState;
                         });
-                      },
+                      }, groupId: widget.groupId,
                     )));
       },
       child: Container(
@@ -108,6 +110,7 @@ class _MoneyRequestItemState extends State<MoneyRequestItem> {
                   onChanged: (bool value) {
                     setState(() {
                       isSettled = value;
+                      putPaymentsInclude(widget.groupId,widget.expense.transactionId);
                     });
                   },
                 ),

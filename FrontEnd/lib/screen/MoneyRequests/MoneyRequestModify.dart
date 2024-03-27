@@ -9,6 +9,8 @@ import 'package:lottie/lottie.dart';
 import '../../components/moneyrequests/MoneyRequestDetailBottom.dart';
 import '../../components/moneyrequests/RequestModifyList.dart';
 import '../../const/colors/Colors.dart';
+import '../../entities/RequestDetailModifyRequest.dart';
+import '../../entities/RequestMember.dart';
 import '../../models/button/SizedButton.dart';
 import '../../models/button/Toggle.dart';
 import '../../components/moneyrequests/RequestMemberList.dart';
@@ -18,8 +20,11 @@ import '../../utils/RequestModifyUtil.dart';
 
 class MoneyRequestModify extends StatefulWidget {
   final Expense expense;
+  final int groupId;
 
-  const MoneyRequestModify({Key? key, required this.expense}) : super(key: key);
+  const MoneyRequestModify(
+      {Key? key, required this.expense, required this.groupId})
+      : super(key: key);
 
   @override
   _MoneyRequestModifyState createState() => _MoneyRequestModifyState();
@@ -43,18 +48,16 @@ class _MoneyRequestModifyState extends State<MoneyRequestModify> {
   }
 
   void fetchMyGroupPaymentsDetail() async {
-    final MyGroupPaymentsDetailJson = await getMyGroupPaymentsDetail(1, 17);
+    final MyGroupPaymentsDetailJson = await getMyGroupPaymentsDetail(
+        widget.groupId, widget.expense.transactionId);
     print(MyGroupPaymentsDetailJson.data);
     if (MyGroupPaymentsDetailJson != null) {
       setState(() {
         request = RequestDetail.fromJson(MyGroupPaymentsDetailJson.data);
-        print(request);
-        memoController = TextEditingController(
-          text: widget.expense.memo.toString(),
-        );
+        memoController.text = request.memo;
         personalRequestAmount =
             request.members.map((member) => member.amount).toList();
-        remainderAmount = 5; // 백엔드에서 받아오는 값으로 바뀔 때는 생길 예정
+        remainderAmount = request.remainder;
         isLockedList = request.members.map((member) => member.lock).toList();
       });
     } else {
@@ -78,8 +81,28 @@ class _MoneyRequestModifyState extends State<MoneyRequestModify> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: SizedButton(
-              onPressed: () {
-                Navigator.pop(context);
+              onPressed: () async {
+                List<RequestMember> newMembers = List<RequestMember>.generate(
+                    request.members.length, (index) {
+                  return RequestMember(
+                    memberId: request.members[index].memberId,
+                    profileUrl: request.members[index].profileUrl,
+                    name: request.members[index].name,
+                    amount: personalRequestAmount[index],
+                    lock: isLockedList[index],
+                  );
+                });
+                RequestDetailModifyRequest newRequestDetail =
+                    RequestDetailModifyRequest(
+                        memo: memoController.text ?? '',
+                        memberList: newMembers);
+                print('-=-------------------------------------');
+                print(newRequestDetail.toString());
+                Map<String, dynamic> response = await putPaymentsMembers(widget.groupId, widget.expense.transactionId,
+                    newRequestDetail);
+                if (response['message'] == 'OK') {
+                  Navigator.pop(context, true);
+                }
               },
               btnText: '완료',
               size: ButtonSize.xs,
@@ -98,6 +121,7 @@ class _MoneyRequestModifyState extends State<MoneyRequestModify> {
             MoneyRequestItem(
               expense: widget.expense,
               isToggle: false,
+              groupId: widget.expense.groupId ?? 0,
             ),
             if (request.members.isNotEmpty) ...[
               Row(
