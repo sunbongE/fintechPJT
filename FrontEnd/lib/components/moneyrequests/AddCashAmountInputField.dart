@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
+import 'package:front/const/colors/Colors.dart';
 
-import '../../const/colors/Colors.dart';
+import 'NumberFormatInputFormatter.dart';
 
 class AddCashAmountInputField extends StatefulWidget {
   final TextEditingController controller;
-  final String label;
-  final String hint;
-  final TextInputType keyboardType;
+  final Function(String) onSubmitted;
+  final String labelText;
+  final String hintText;
 
   const AddCashAmountInputField({
     Key? key,
     required this.controller,
-    required this.label,
-    required this.hint,
-    this.keyboardType = TextInputType.text,
+    required this.onSubmitted, required this.labelText, required this.hintText,
   }) : super(key: key);
 
   @override
@@ -22,60 +23,49 @@ class AddCashAmountInputField extends StatefulWidget {
 }
 
 class _AddCashAmountInputFieldState extends State<AddCashAmountInputField> {
-  bool _isFocused = false;
-
   @override
-  void initState() {
-    super.initState();
-    widget.controller.addListener(_updateFocus);
+  void initState(){
+    if (widget.controller.text.isNotEmpty) {
+      final formattedValue = formatInitialValue(widget.controller.text);
+      widget.controller.text = formattedValue;
+    }
   }
-
   @override
-  void dispose() {
-    widget.controller.removeListener(_updateFocus);
-    super.dispose();
-  }
-
-  void _updateFocus() {
-    if (_isFocused != widget.controller.text.isNotEmpty) {
+  void didUpdateWidget(covariant AddCashAmountInputField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
       setState(() {
-        _isFocused = widget.controller.text.isNotEmpty;
+        final formattedValue = formatInitialValue(widget.controller.text);
+        widget.controller.text = formattedValue;
       });
     }
   }
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(widget.label, style: const TextStyle(fontSize: 12, color: Colors.black54)),
-        Container(
-          height: 70.h,
-          child: TextField(
-            controller: widget.controller,
-            decoration: InputDecoration(
-              hintText: _isFocused ? '' : widget.hint,
-              suffixText: '원',
-              hintStyle: const TextStyle(color: Colors.grey),
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: const BorderSide(color: GREY_COLOR)
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15),
-                borderSide: const BorderSide(color: GREY_COLOR),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15),
-                borderSide: BorderSide(color: RANGE_COLOR),
-              ),
-            ),
-            keyboardType: widget.keyboardType,
-            focusNode: FocusNode()..addListener(_updateFocus),
-          ),
-        ),
+    return TextField(
+      controller: widget.controller,
+      keyboardType: TextInputType.number,
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        NumberFormatInputFormatter(),
       ],
+      decoration: InputDecoration(
+        suffixText: '원',
+        border: OutlineInputBorder(),
+        label: Text(widget.labelText),
+        hintText: widget.hintText,
+      ),
+      style: TextStyle(
+        color: TEXT_COLOR,
+        fontSize: 18.sp,
+      ),
+      onSubmitted: widget.onSubmitted,
+
     );
   }
+}
+String formatInitialValue(String initialValue) {
+  if (initialValue.isEmpty) return '';
+  final formatter = NumberFormat('#,###');
+  return formatter.format(int.tryParse(initialValue.replaceAll(',', '')) ?? 0);
 }

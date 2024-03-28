@@ -189,9 +189,9 @@ class _AddCashRequestState extends State<AddCashRequest> {
             ),
 
             SizedBox(height: 10),
-            AmountInputField(
+            AddCashAmountInputField(
               controller: _priceController,
-              onSubmitted: (String) {},
+              onSubmitted: (String) {}, labelText: '가격', hintText: 'ex)10000',
             ),
             if (requestCash.members?.isNotEmpty ?? false) ...[
               Flexible(
