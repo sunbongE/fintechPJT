@@ -434,7 +434,6 @@ public class PaymentServiceImpl implements PaymentService {
         transactionDetailRepository.save(transactionDetail);
     }
 
-
     public int calculateTransactionMember(String memberId, int receiptId) {
         return transactionQueryRepository.getTransactionTotalAmount(memberId, receiptId);
     }
@@ -475,13 +474,13 @@ public class PaymentServiceImpl implements PaymentService {
 
             // 3-3. Receipt 레코드 업데이트
             receipt.setTransaction(transaction);
-            receipt.setBusinessName(receiptRequestDto.getStoreName());
+            receipt.setBusinessName(receiptRequestDto.getBusinessName());
             receipt.setSubName(receiptRequestDto.getSubName());
-            receipt.setLocation(receiptRequestDto.getAddresses());
+            receipt.setLocation(receiptRequestDto.getLocation());
             receipt.setTransactionDate(transactionDate);
             receipt.setTransactionTime(transactionTime);
             receipt.setTotalPrice(receiptRequestDto.getTotalPrice());
-            receipt.setApprovalAmount(receiptRequestDto.getTotalPrice());
+            receipt.setApprovalAmount(receiptRequestDto.getApprovalAmount());
 
             // 3-4. Receipt 테이블에 레코드 추가
             Receipt savedReceiptRecord =
