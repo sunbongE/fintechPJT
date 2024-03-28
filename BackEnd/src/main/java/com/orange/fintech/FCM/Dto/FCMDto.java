@@ -1,6 +1,5 @@
 package com.orange.fintech.FCM.Dto;
 
-
 import lombok.Data;
 
 @Data
