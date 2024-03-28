@@ -50,7 +50,7 @@ public class TransactionQueryRepository {
                                         transaction.transactionAfterBalance,
                                         transaction.transactionSummary,
                                         transactionDetail.group.groupId,
-                                        // transactionDetail.memo,
+                                        transactionDetail.memo, //
                                         transactionDetail.receiptEnrolled))
                         .from(transaction)
                         .leftJoin(transactionDetail)
@@ -109,7 +109,7 @@ public class TransactionQueryRepository {
 
         log.info("queryRepository getGroupTransaction start");
 
-        BooleanExpression expression = null;
+        BooleanExpression expression;
         if ("my".equals(condition)) {
             expression =
                     transactionMember
@@ -222,6 +222,67 @@ public class TransactionQueryRepository {
                         .fetchOne();
 
         log.info("groupId:{} -> sumOfRemainder: {}", groupId, res);
+        return res;
+    }
+
+    /**
+     * 내가 otherId에게 받아야할 금액 구하기
+     *
+     * @param myId 내 아이디
+     * @param otherId 다른 사람의 아이디
+     * @return 받아야할 금액
+     */
+    public long getReceiveAmount(String myId, String otherId) {
+        long res =
+                jpaQueryFactory
+                        .select(transactionMember.totalAmount.sum())
+                        .from(transaction)
+                        .join(transactionMember)
+                        .on(transaction.eq(transactionMember.transactionMemberPK.transaction))
+                        .where(
+                                transactionMember
+                                        .transactionMemberPK
+                                        .member
+                                        .kakaoId
+                                        .eq(otherId)
+                                        .and(transaction.member.kakaoId.eq(myId)))
+                        .fetchOne();
+
+        return res;
+    }
+
+    public List<TransactionDto> getReceivedRequest(
+            int groupId, String memberId, String otherMemberId) {
+        List<TransactionDto> res =
+                jpaQueryFactory
+                        .select(
+                                Projections.bean(
+                                        TransactionDto.class,
+                                        transaction.transactionId,
+                                        transaction.transactionDate,
+                                        transaction.transactionTime,
+                                        transaction.transactionType,
+                                        transaction.transactionTypeName,
+                                        transaction.transactionBalance,
+                                        transaction.transactionAfterBalance,
+                                        transaction.transactionSummary,
+                                        transactionDetail.receiptEnrolled))
+                        .from(transaction)
+                        .join(transactionDetail)
+                        .on(transaction.eq(transactionDetail.transaction))
+                        .join(transactionMember)
+                        .on(transaction.eq(transactionMember.transactionMemberPK.transaction))
+                        .where(
+                                transaction
+                                        .member
+                                        .kakaoId
+                                        .eq(otherMemberId)
+                                        .and(transactionDetail.group.groupId.eq(groupId))
+                                        .and(
+                                                transactionMember.transactionMemberPK.member.kakaoId
+                                                        .eq(memberId)))
+                        .fetch();
+
         return res;
     }
 }

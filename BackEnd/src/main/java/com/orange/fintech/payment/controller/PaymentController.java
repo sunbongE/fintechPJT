@@ -4,6 +4,7 @@ import com.orange.fintech.auth.dto.CustomUserDetails;
 import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.common.exception.RelatedTransactionNotFoundException;
 import com.orange.fintech.payment.dto.*;
+import com.orange.fintech.payment.service.CalculateService;
 import com.orange.fintech.payment.service.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 public class PaymentController {
 
     private final PaymentService paymentService;
+    private final CalculateService calculateService;
 
     @GetMapping("/my")
     @Operation(
@@ -305,6 +307,62 @@ public class PaymentController {
 
             return ResponseEntity.internalServerError()
                     .body(BaseResponseBody.of(500, "영수증 저장에 실패했습니다."));
+        }
+    }
+
+    @GetMapping("/yeojung")
+    @Operation(summary = "여정 페이지", description = "groupId로 이번 여정 불러오기")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "403", description = "권한 없음"),
+        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<List<YeojungDto>> getYeojung(
+            @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
+            Principal principal) {
+
+        if (!paymentService.isMyGroup(principal.getName(), groupId)) {
+            return ResponseEntity.status(403).body(null);
+        }
+
+        try {
+            List<YeojungDto> res = calculateService.yeojungCalculator(groupId, principal.getName());
+
+            return ResponseEntity.status(200).body(res);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(404).body(null);
+        }
+    }
+
+    @GetMapping("/yeojung")
+    @Operation(
+            summary = "여정 정산 내역 페이지",
+            description = "<strong>groupId, otherMemberId, type</strong>으로 여정 정산내역 불러오기")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "403", description = "권한 없음"),
+        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<List<TransactionDto>> getYeojungDetail(
+            @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
+            @RequestBody YeojungDetailReq req,
+            Principal principal) {
+
+        if (!paymentService.isMyGroup(principal.getName(), groupId)) {
+            return ResponseEntity.status(403).body(null);
+        }
+
+        try {
+            List<TransactionDto> res =
+                    calculateService.getRequest(
+                            groupId, req.getType(), principal.getName(), req.getOtherMemberId());
+            return ResponseEntity.status(200).body(res);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(404).body(null);
         }
     }
 }
