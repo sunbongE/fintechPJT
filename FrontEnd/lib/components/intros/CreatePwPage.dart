@@ -61,6 +61,7 @@ class _CreatePwPageState extends State<CreatePwPage> {
         // 핀 번호 post API
         await postPassWord(_confirmPassWord);
         // FCM토큰 post api
+        print("66666666: ${userManager.fcmToken}");
         await postFcmToken(userManager.fcmToken);
 
         UserManager().saveUserInfo(newPassword: _confirmPassWord);

@@ -45,14 +45,13 @@ class UserManager with ChangeNotifier {
     String? newSelectedBank,
     String? newSelectedAccount,
     bool? newIsLogin,
-
   }) async {
     name = newName ?? name;
     email = newEmail ?? email;
     thumbnailImageUrl = newThumbnailImageUrl ?? thumbnailImageUrl;
     profileImageUrl = newProfileImageUrl ?? profileImageUrl;
     jwtToken = newJwtToken ?? jwtToken;
-    fcmToken = newFcmToken ?? jwtToken;
+    fcmToken = newFcmToken ?? fcmToken;
     password = newPassword ?? password;
     selectedBank = newSelectedBank ?? selectedBank;
     selectedAccount = newSelectedAccount ?? selectedAccount;

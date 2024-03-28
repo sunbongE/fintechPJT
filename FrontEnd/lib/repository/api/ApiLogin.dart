@@ -39,7 +39,7 @@ Future<void> postPassWord(data) async {
 Future<void> postFcmToken(data) async {
   try {
     final res = await api.post('/members/fcmtoken', data: data);
-    print(res.data);
+    print('postFcmToken: ${res.data}');
     return res.data;
   } catch (err) {
     print(err);
