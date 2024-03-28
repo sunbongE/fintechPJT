@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.orange.fintech.member.entity.Roles.ROLE_USER;
+
 @Slf4j
 @Transactional
 @RequiredArgsConstructor
@@ -55,6 +57,7 @@ public class JoinServiceImpl implements JoinService {
             member.setName(name);
             member.setProfileImage(profileImageUrl);
             member.setThumbnailImage(thumbnailImageUrl);
+            member.setRole(ROLE_USER);
 
             if (joinDto.getFcmToken() != null) {
                 member.setFcmToken(joinDto.getFcmToken());
