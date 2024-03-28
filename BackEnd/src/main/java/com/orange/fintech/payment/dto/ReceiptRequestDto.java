@@ -11,13 +11,13 @@ import lombok.*;
 @Schema(description = "<strong>CLOVA OCR</strong> 영수증 Dto")
 public class ReceiptRequestDto {
     @Schema(description = "상호")
-    private String storeName;
+    private String businessName;
 
     @Schema(description = "지점")
     private String subName;
 
     @Schema(description = "위치")
-    private String addresses;
+    private String location;
 
     @Schema(description = "거래일시 (거래일자 + 거래시각)")
     private String date;
@@ -25,8 +25,11 @@ public class ReceiptRequestDto {
     @Schema(description = "영수증 항목 리스트")
     private List<Item> items;
 
-    @Schema(description = "승인 금액")
+    @Schema(description = "합계 금액")
     private int totalPrice;
+
+    @Schema(description = "승인 금액")
+    private int approvalAmount;
 
     @Getter
     @Setter

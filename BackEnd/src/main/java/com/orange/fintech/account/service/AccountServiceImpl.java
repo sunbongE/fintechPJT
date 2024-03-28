@@ -8,7 +8,6 @@ import com.orange.fintech.account.dto.UpdateAccountDto;
 import com.orange.fintech.account.entity.Account;
 import com.orange.fintech.account.repository.AccountQueryRepository;
 import com.orange.fintech.account.repository.AccountRepository;
-import com.orange.fintech.account.entity.Account;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.member.service.MemberService;

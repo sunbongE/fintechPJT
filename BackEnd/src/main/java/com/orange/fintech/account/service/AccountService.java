@@ -11,7 +11,6 @@ import java.time.LocalTime;
 import java.util.List;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import com.orange.fintech.account.entity.Account;
 
 public interface AccountService {
     boolean insertAccount(String kakaoId, Account account);
