@@ -6,9 +6,6 @@ import com.orange.fintech.jwt.JWTUtil;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.redis.service.RedisService;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.orange.fintech.member.entity.Roles.ROLE_USER;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 
 @Slf4j
 @Transactional
@@ -52,26 +51,16 @@ public class JoinServiceImpl implements JoinService {
                 member = new Member();
             }
 
-            member.setKakaoId(id);
-            member.setEmail(email);
-            member.setName(name);
-            member.setProfileImage(profileImageUrl);
-            member.setThumbnailImage(thumbnailImageUrl);
-            member.setRole(ROLE_USER);
-
             if (joinDto.getFcmToken() != null) {
                 member.setFcmToken(joinDto.getFcmToken());
             }
 
-            member = new Member();
-
             member.setKakaoId(id);
             member.setEmail(email);
             member.setName(name);
             member.setProfileImage(profileImageUrl);
             member.setThumbnailImage(thumbnailImageUrl);
 
-            member.setFcmToken(joinDto.getFcmToken());
             memberRepository.save(member);
 
             Date expiredDate = Date.from(Instant.now().plus(30, ChronoUnit.DAYS)); // 30일
