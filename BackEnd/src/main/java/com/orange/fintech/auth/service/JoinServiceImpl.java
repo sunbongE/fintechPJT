@@ -39,19 +39,35 @@ public class JoinServiceImpl implements JoinService {
         String email = kakaoAccount.getEmail();
 
         Member member = null;
+        HttpHeaders responseHeaders = new HttpHeaders();
+        boolean doesFCMTokenExists = joinDto.getFcmToken() == null ? false : true;
 
         try {
-            // 이미 존재하는 회원이 있는 경우 토큰만 발급 (회원가입 진행 X)
-            if (!memberRepository.existsByKakaoId(id)) {
+            member = memberRepository.findByKakaoId(id);
 
+            // 이미 존재하는 회원이 있는 경우 액세스 토큰 발급, FCM 토큰 저장 (회원가입 진행 X)
+            if (member == null) {
                 member = new Member();
-
-                member.setKakaoId(id);
-                member.setEmail(email);
-                member.setName(name);
-                member.setProfileImage(profileImageUrl);
-                member.setThumbnailImage(thumbnailImageUrl);
             }
+
+            member.setKakaoId(id);
+            member.setEmail(email);
+            member.setName(name);
+            member.setProfileImage(profileImageUrl);
+            member.setThumbnailImage(thumbnailImageUrl);
+
+            if (joinDto.getFcmToken() != null) {
+                member.setFcmToken(joinDto.getFcmToken());
+            }
+
+            member = new Member();
+
+            member.setKakaoId(id);
+            member.setEmail(email);
+            member.setName(name);
+            member.setProfileImage(profileImageUrl);
+            member.setThumbnailImage(thumbnailImageUrl);
+        }
 
             member.setFcmToken(joinDto.getFcmToken());
             memberRepository.save(member);
@@ -73,12 +89,17 @@ public class JoinServiceImpl implements JoinService {
 
             redisService.save(id, refreshToken);
 
-            HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.set("Authorization", "Bearer " + accessToken);
 
-            return ResponseEntity.ok()
-                    .headers(responseHeaders)
-                    .body(BaseResponseBody.of(200, "정상 가입"));
+            if (doesFCMTokenExists) {
+                return ResponseEntity.ok()
+                        .headers(responseHeaders)
+                        .body(BaseResponseBody.of(200, "정상 가입"));
+            } else {
+                return ResponseEntity.ok()
+                        .headers(responseHeaders)
+                        .body(BaseResponseBody.of(200, "FCM 토큰 없이 가입"));
+            }
         } catch (Exception e) {
             log.info(e.getMessage());
             return ResponseEntity.internalServerError()

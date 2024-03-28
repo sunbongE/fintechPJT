@@ -491,13 +491,13 @@ public class PaymentServiceImpl implements PaymentService {
             receiptDetailRepository.flush(); // 즉시 삭제 (flush를 호출하지 않으면 새로 추가한 메뉴도 함께 삭제됨)
 
             // 4-2. ReceiptDetail 테이블에 레코드 추가
-            List<ReceiptRequestDto.Item> items = receiptRequestDto.getItems();
+            List<ReceiptRequestDto.Item> items = receiptRequestDto.getDetailList();
 
             for (ReceiptRequestDto.Item item : items) {
                 ReceiptDetail receiptDetail = new ReceiptDetail();
                 receiptDetail.setReceipt(savedReceiptRecord);
 
-                receiptDetail.setMenu(item.getName());
+                receiptDetail.setMenu(item.getMenu());
                 receiptDetail.setCount(item.getCount());
                 receiptDetail.setUnitPrice(item.getPrice() / item.getCount()); // 소수점 오차 생길 수 있음
 
