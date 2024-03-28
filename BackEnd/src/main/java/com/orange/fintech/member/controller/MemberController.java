@@ -279,9 +279,8 @@ public class MemberController {
         @ApiResponse(responseCode = "409", description = "중복 레코드"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    public ResponseEntity<?> saveFcmToken(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails, String fcmToken) {
-        String kakaoId = customUserDetails.getUsername();
+    public ResponseEntity<?> saveFcmToken(Principal principal, String fcmToken) {
+        String kakaoId = principal.getName();
 
         try {
             memberService.saveFcmToken(kakaoId, fcmToken);
