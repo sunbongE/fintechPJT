@@ -6,8 +6,7 @@ final api = ApiClient();
 //그룹에서 내 결제 목록 조회
 Future<Response> getMyGroupPayments(groupId, page, size) async {
   try {
-    final res = await api.get('/groups/$groupId/payments/my',
-        queryParameters: {'page': 0, 'size': 10});
+    final res = await api.get('/groups/$groupId/payments/my', queryParameters: {'page': 0, 'size': 10});
     return res;
   } catch (err) {
     print(err);
@@ -17,10 +16,6 @@ Future<Response> getMyGroupPayments(groupId, page, size) async {
 
 //정산 상세보기
 Future<Response> getMyGroupPaymentsDetail(groupId, paymentId) async {
-  print('--------정산 상세보기api--------');
-  print(groupId);
-  print(paymentId);
-  print('-----------정산 상세보기api-----------');
   try {
     final res = await api.get('/groups/$groupId/payments/$paymentId');
     return res;
@@ -31,7 +26,7 @@ Future<Response> getMyGroupPaymentsDetail(groupId, paymentId) async {
 }
 
 // 현금 추가
-Future<Response> postAddCash(groupId,data) async {
+Future<Response> postAddCash(groupId, data) async {
   try {
     final res = await api.post('/groups/$groupId/payments/cash', data: data);
     return res;
@@ -55,7 +50,7 @@ Future<void> putPaymentsInclude(groupId, paymentId) async {
 // 내 결제 상세보기에서 참여인원 토글 on/off or 수기입력 수정
 Future<Map<String, dynamic>> putPaymentsMembers(groupId, paymentId, data) async {
   try {
-    final res = await api.put('/groups/$groupId/payments/$paymentId',data: data);
+    final res = await api.put('/groups/$groupId/payments/$paymentId', data: data);
     print('putPaymentsMember: ${res.data}');
     return res.data;
   } catch (err) {

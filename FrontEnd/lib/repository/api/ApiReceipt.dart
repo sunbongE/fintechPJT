@@ -26,10 +26,10 @@ Future<Response> postReceiptImage(FormData formData) async {
   }
 }
 
-Future<Response> postYjReceipt(List<Receipt> data) async {
+Future<dynamic> postYjReceipt(groupId, data) async {
   try {
-    final res = api.post('/members/test', data: data);
-    return res;
+    final res = await api.post('/groups/${groupId}/payments/receipt', data: data);
+    return res.data;
   } catch (err) {
     print(err);
     throw (err);
@@ -37,10 +37,12 @@ Future<Response> postYjReceipt(List<Receipt> data) async {
 }
 
 // 영수증 더미데이터 추가하기~~
-Future<Response> postReceiptFakeData(List<Receipt> data) async {
+Future<dynamic> postReceiptFakeData(data) async {
   try {
-    final res = api.post('/members/test', data: data);
-    return res;
+    print(data);
+    final res = await api.post('/account/dummyTransaction', data: data);
+    print(res.data);
+    return res.data;
   } catch (err) {
     print(err);
     throw (err);

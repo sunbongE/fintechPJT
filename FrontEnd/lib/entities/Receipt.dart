@@ -7,11 +7,6 @@ class Receipt {
   final int totalPrice;
   final int? approvalAmount;
 
-  @override
-  String toString() {
-    return 'Receipt(businessName: $businessName, subName: $subName, location: $location, date: $date, detailList: $detailList, totalPrice: $totalPrice, approvalAmount: $approvalAmount)';
-  }
-
   Receipt({
     required this.businessName,
     this.subName,
@@ -98,5 +93,17 @@ class Receipt {
       // 승인금액
       approvalAmount: int.parse(json['images'][0]['receipt']['result']['totalPrice']['price']['formatted']['value']),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'businessName': businessName,
+      'subName': subName,
+      'location': location,
+      'date': date,
+      'detailList': detailList,
+      'totalPrice': totalPrice,
+      'approvalAmount': approvalAmount,
+    };
   }
 }
