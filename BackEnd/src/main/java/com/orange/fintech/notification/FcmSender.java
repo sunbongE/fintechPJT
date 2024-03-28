@@ -5,13 +5,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.net.HttpHeaders;
+import com.orange.fintech.notification.Dto.FCMMessageDto;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
-
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class FcmSender {
@@ -20,8 +22,8 @@ public class FcmSender {
             "https://fcm.googleapis.com/v1/projects/yeojung-3d522/messages:send";
     private final ObjectMapper objectMapper;
 
-    public void sendMessageTo(String targetToken, String title, String body) throws IOException {
-        String message = makeMessage(targetToken, title, body);
+    public void sendMessageTo(FCMMessageDto fcmMessageDto) throws IOException {
+        String message = makeMessage(fcmMessageDto);
 
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody =
@@ -36,21 +38,22 @@ public class FcmSender {
 
         Response response = client.newCall(request).execute();
 
-        System.out.println(response.body().string());
+        log.info("[FCM_Log] => {}",response.body().string());
     }
 
-    private String makeMessage(String targetToken, String title, String body)
+    private String makeMessage(FCMMessageDto fcmMessageDto)
             throws JsonParseException, JsonProcessingException {
         FcmMSG fcmMessage =
                 FcmMSG.builder()
                         .message(
                                 FcmMSG.Message.builder()
-                                        .token(targetToken)
+                                        .token(fcmMessageDto.getTargetToken())
+                                        .data(fcmMessageDto.getData())
                                         .notification(
                                                 FcmMSG.Notification.builder()
-                                                        .title(title)
-                                                        .body(body)
-                                                        .image(null)
+                                                        .title(fcmMessageDto.getTitle())
+                                                        .body(fcmMessageDto.getBody())
+                                                        .image(fcmMessageDto.getImage())
                                                         .build())
                                         .build())
                         .validateOnly(false)
