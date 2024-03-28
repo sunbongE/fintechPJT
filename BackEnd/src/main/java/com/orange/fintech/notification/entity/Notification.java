@@ -55,7 +55,7 @@ public class Notification {
             int groupId,
             String title,
             String content) {
-//        System.out.println("content = " + content);
+        //        System.out.println("content = " + content);
         this.member = memeber;
         this.type = notificationType;
         Group tmp = new Group();

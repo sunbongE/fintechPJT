@@ -42,11 +42,9 @@ public class FcmServiceImpl implements FcmService {
         }
         String sender = memberRepository.findById(memberId).get().getName();
 
-
         List<String> kakaoIdList = dto.getInviteMembers();
         List<String> inviteMembersFcmToken =
                 notificationQueryRepository.getMembersFcmToken(kakaoIdList);
-
 
         // 그룹초대인경우.
         if (dto.getNotificationType().equals(NotificationType.INVITE)) {
@@ -59,7 +57,7 @@ public class FcmServiceImpl implements FcmService {
                                 dto.getNotificationType(),
                                 dto.getGroupId(),
                                 NotificationResponseTitle.INVITE,
-                                (sender+NotificationResponseDescription.INVITE));
+                                (sender + NotificationResponseDescription.INVITE));
                 notificationRepository.save(notification);
             }
             // FCM 보내기
@@ -67,10 +65,10 @@ public class FcmServiceImpl implements FcmService {
                 fcmSender.sendMessageTo(
                         fcmToken,
                         NotificationResponseTitle.INVITE,
-                        (sender+NotificationResponseDescription.INVITE));
+                        (sender + NotificationResponseDescription.INVITE));
             }
         }
-//        log.info("fcm {}번 발생 ",cnt,sender);
+        //        log.info("fcm {}번 발생 ",cnt,sender);
         return ResponseEntity.ok().body(BaseResponseBody.of(200, "DB저장 후, FCM 보냈습니다."));
     }
 }
