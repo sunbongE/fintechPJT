@@ -14,6 +14,6 @@ public class YeojungDetailReq {
     @Schema(description = "다른 멤버 id")
     String otherMemberId;
 
-    @Schema(description = "요정 타입", example = "send(보낼 금액) || receive(받을 금액)")
+    @Schema(description = "요정 타입", example = "SEND(보낼 금액) || RECEIVE(받을 금액)")
     String type;
 }
