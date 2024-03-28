@@ -336,7 +336,7 @@ public class PaymentController {
         }
     }
 
-    @GetMapping("/yeojung")
+    @GetMapping("/yeojung/detail")
     @Operation(
             summary = "여정 정산 내역 페이지",
             description = "<strong>groupId, otherMemberId, type</strong>으로 여정 정산내역 불러오기")
