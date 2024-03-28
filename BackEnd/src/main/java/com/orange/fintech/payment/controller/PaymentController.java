@@ -358,8 +358,7 @@ public class PaymentController {
 
         try {
             List<TransactionDto> res =
-                    calculateService.getRequest(
-                            groupId, type, principal.getName(), otherMemberId);
+                    calculateService.getRequest(groupId, type, principal.getName(), otherMemberId);
             return ResponseEntity.status(200).body(res);
         } catch (Exception e) {
             e.printStackTrace();
