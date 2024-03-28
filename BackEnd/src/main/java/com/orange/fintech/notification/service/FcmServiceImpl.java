@@ -6,14 +6,20 @@ import com.orange.fintech.common.notification.NotificationResponseTitle;
 import com.orange.fintech.group.repository.GroupRepository;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
+import com.orange.fintech.notification.Dto.FCMMessageDto;
 import com.orange.fintech.notification.Dto.messageListDataReqDto;
 import com.orange.fintech.notification.FcmSender;
 import com.orange.fintech.notification.entity.Notification;
 import com.orange.fintech.notification.entity.NotificationType;
 import com.orange.fintech.notification.repository.NotificationQueryRepository;
 import com.orange.fintech.notification.repository.NotificationRepository;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -61,11 +67,17 @@ public class FcmServiceImpl implements FcmService {
                 notificationRepository.save(notification);
             }
             // FCM 보내기
+            Map<String, String> dataSet = new HashMap<>();
+            dataSet.put("groupId", String.valueOf(dto.getGroupId()));
+
             for (String fcmToken : inviteMembersFcmToken) {
-                fcmSender.sendMessageTo(
-                        fcmToken,
-                        NotificationResponseTitle.INVITE,
-                        (sender + NotificationResponseDescription.INVITE));
+                FCMMessageDto fcmMessageDto =
+                        new FCMMessageDto(
+                                fcmToken,
+                                NotificationResponseTitle.INVITE,
+                                (sender + NotificationResponseDescription.INVITE),
+                                dataSet);
+                fcmSender.sendMessageTo(fcmMessageDto);
             }
         }
         //        log.info("fcm {}번 발생 ",cnt,sender);

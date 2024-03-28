@@ -201,10 +201,11 @@ public class GroupServiceImpl implements GroupService {
         Optional<GroupMember> Optarget = groupMemberRepository.findById(groupMemberPK);
         if (Optarget.isEmpty()) return false;
 
-        GroupMember target = Optarget.get();
-        target.setFistCallDone(!target.getFistCallDone());
+        GroupMember targetGroupMember = Optarget.get();
+        targetGroupMember.setFistCallDone(!targetGroupMember.getFistCallDone());
 
-        groupMemberRepository.save(target);
+        groupMemberRepository.save(targetGroupMember);
+        // Todo : 여행정산요청을 그룹에 포함된 모든 회원들에게 보낸다.(DATA : groupId)
 
         return true;
     }
@@ -220,13 +221,13 @@ public class GroupServiceImpl implements GroupService {
         Optional<GroupMember> Optarget = groupMemberRepository.findById(groupMemberPK);
         if (Optarget.isEmpty()) return false;
 
-        GroupMember target = Optarget.get();
+        GroupMember targetGroupMember = Optarget.get();
 
-        if (!target.getFistCallDone()) return false;
+        if (!targetGroupMember.getFistCallDone()) return false;
 
-        target.setSecondCallDone(!target.getSecondCallDone());
+        targetGroupMember.setSecondCallDone(!targetGroupMember.getSecondCallDone());
 
-        groupMemberRepository.save(target);
+        groupMemberRepository.save(targetGroupMember);
 
         return true;
     }
