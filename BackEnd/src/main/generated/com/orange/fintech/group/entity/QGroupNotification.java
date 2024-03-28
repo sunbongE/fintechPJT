@@ -32,7 +32,7 @@ public class QGroupNotification extends EntityPathBase<GroupNotification> {
 
     public final StringPath title = createString("title");
 
-    public final EnumPath<com.orange.fintech.common.NotificationType> type = createEnum("type", com.orange.fintech.common.NotificationType.class);
+    public final EnumPath<com.orange.fintech.notification.entity.NotificationType> type = createEnum("type", com.orange.fintech.notification.entity.NotificationType.class);
 
     public QGroupNotification(String variable) {
         this(GroupNotification.class, forVariable(variable), INITS);
