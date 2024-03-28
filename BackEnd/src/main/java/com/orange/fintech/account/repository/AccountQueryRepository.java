@@ -73,7 +73,7 @@ public class AccountQueryRepository {
                                 transaction.transactionTime.desc())
                         .limit(1)
                         .fetch();
-        if (result == null) return null;
+        if (result.isEmpty()) return null;
         Transaction latestData = result.get(0);
         LatestDateTimeDto dto = new LatestDateTimeDto(latestData);
 
