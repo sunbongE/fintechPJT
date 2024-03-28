@@ -5,7 +5,7 @@ import com.orange.fintech.group.entity.Group;
 import java.util.List;
 
 public interface GroupService {
-    boolean createGroup(GroupCreateDto dto, String memberId);
+    int createGroup(GroupCreateDto dto, String memberId);
 
     List<Group> findGroups(String memberId);
 

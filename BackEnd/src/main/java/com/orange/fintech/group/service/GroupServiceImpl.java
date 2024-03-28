@@ -41,13 +41,13 @@ public class GroupServiceImpl implements GroupService {
     private final TransactionMemberRepository transactionMemberRepository;
 
     @Override
-    public boolean createGroup(GroupCreateDto dto, String memberId) {
+    public int createGroup(GroupCreateDto dto, String memberId) {
         Group data = new Group(dto);
         Group group = groupRepository.save(data);
 
         joinGroup(group.getGroupId(), memberId);
 
-        return true;
+        return group.getGroupId();
     }
 
     @Override
