@@ -67,7 +67,6 @@ public class JoinServiceImpl implements JoinService {
             member.setName(name);
             member.setProfileImage(profileImageUrl);
             member.setThumbnailImage(thumbnailImageUrl);
-        }
 
             member.setFcmToken(joinDto.getFcmToken());
             memberRepository.save(member);
