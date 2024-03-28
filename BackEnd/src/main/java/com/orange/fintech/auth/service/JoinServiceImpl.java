@@ -53,7 +53,7 @@ public class JoinServiceImpl implements JoinService {
                 member.setThumbnailImage(thumbnailImageUrl);
             }
 
-            member.setFcmToken(joinDto.getFcmToken());
+            //            member.setFcmToken(joinDto.getFcmToken());
             memberRepository.save(member);
 
             Date expiredDate = Date.from(Instant.now().plus(30, ChronoUnit.DAYS)); // 30일
