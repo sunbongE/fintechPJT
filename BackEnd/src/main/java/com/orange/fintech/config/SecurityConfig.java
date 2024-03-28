@@ -81,10 +81,10 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/","/swagger-resources/**", "/v3/api-docs/**", "/swagger-ui/**", "/api/v1/auth/**","/api/v1/auth/test","/api/v1/fcm").permitAll()
+                        .requestMatchers("/","/swagger-resources/**", "/v3/api-docs/**", "/swagger-ui/**", "/api/v1/auth/**","/api/v1/auth/test").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
 
-                        .requestMatchers("/api/v1/groups/**","/api/v1/members/**","/api/v1/payments/**","/api/v1/account/**","/api/v1/maps/**").hasRole("USER")
+                        .requestMatchers("/api/v1/groups/**","/api/v1/members/**","/api/v1/payments/**","/api/v1/account/**","/api/v1/maps/**","/api/v1/notification").hasRole("USER")
                         .anyRequest().authenticated());
 
 

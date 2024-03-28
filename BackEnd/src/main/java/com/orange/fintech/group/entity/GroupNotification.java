@@ -1,7 +1,7 @@
 package com.orange.fintech.group.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.orange.fintech.common.NotificationType;
+import com.orange.fintech.notification.entity.NotificationType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;

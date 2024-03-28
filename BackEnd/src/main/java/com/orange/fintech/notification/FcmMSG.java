@@ -1,4 +1,4 @@
-package com.orange.fintech.FCM;
+package com.orange.fintech.notification;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

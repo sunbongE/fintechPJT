@@ -1,4 +1,4 @@
-package com.orange.fintech.FCM;
+package com.orange.fintech.notification;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class FCMService {
+public class FcmSender {
 
     private final String API_URL =
             "https://fcm.googleapis.com/v1/projects/yeojung-3d522/messages:send";
