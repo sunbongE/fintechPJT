@@ -10,9 +10,54 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+@pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("Handling a background message: ${message.messageId}");
+  await Firebase.initializeApp();
+}
+
+@pragma('vm:entry-point')
+void backgroundHandler(NotificationResponse details) {
+  print("2222메세지 받고싶다..: ${details}");
+}
+
+void initializeNotification() async {
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print("포그라운드에서 메시지 수신: ${message.messageId}");
+  });
+
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(
+      const AndroidNotificationChannel('high_importance_chanel', 'high_importance_notification', importance: Importance.max));
+  await flutterLocalNotificationsPlugin.initialize(
+      const InitializationSettings(
+        android: AndroidInitializationSettings("@ipmap/ic_launcher"),
+      ), onDidReceiveNotificationResponse: (details) {
+    print("1111메세지 받고싶다..: ${details}");
+  }, onDidReceiveBackgroundNotificationResponse: backgroundHandler);
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    RemoteNotification? notification = message.notification;
+    if (notification != null) {
+      flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          const NotificationDetails(
+            android: AndroidNotificationDetails('high_importance_chanel', 'high_importance_notification', importance: Importance.max),
+          ),
+          payload: message.data['test_params1']);
+      print("메세지 받았슴다~~~~~~~");
+    }
+  });
+
+  RemoteMessage? message = await FirebaseMessaging.instance.getInitialMessage();
+  if (message != null) {
+    print("메세지 받았슴다22222");
+  }
 }
 
 Future<void> main() async {
@@ -30,27 +75,6 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  // Background 메시지 핸들러 설정
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  // Foreground 메시지 핸들러 설정
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print("Got a message whilst in the foreground!");
-    print("Message data: ${message.data}");
-    if (message.notification != null) {
-      print("Message also contained a notification: ${message.notification}");
-    }
-  });
-
-  // Terminated 상태에서 메시지 핸들링을 위한 초기 설정
-  RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
-  if (initialMessage != null) {
-    // 앱이 Terminated 상태에서 시작되었을 때 처리
-    print("Initial message: ${initialMessage.messageId}");
-  }
 
   runApp(
     ChangeNotifierProvider(

@@ -41,7 +41,12 @@ class _AddReceiptState extends State<AddReceipt> {
               child: Text("예"),
               onPressed: () async {
                 setState(() {
-                  isLoading = true;
+                  // isLoading = true;
+                  receiptData?.forEach((receipt) {
+                    print(receipt.toString());
+                  });
+
+                  Navigator.of(context).pop();
                 });
                 // final res = await postYjReceipt(receiptData!);
                 // print("1111111111: ${res}");
@@ -93,7 +98,7 @@ class _AddReceiptState extends State<AddReceipt> {
             child: Text(
               "영수증 정보 받아~느~~",
               style: TextStyle(
-                color: receiptData != null && receiptData!.isNotEmpty ? TEXT_COLOR : Colors.grey,
+                color: TEXT_COLOR,
                 fontWeight: FontWeight.bold,
                 fontSize: 20.sp,
               ),
@@ -127,6 +132,7 @@ class _AddReceiptState extends State<AddReceipt> {
                     onReceiptsUpdated: (updatedReceipts) {
                       setState(() {
                         receiptData = updatedReceipts;
+                        updateReceiptSavedState(true);
                       });
                     },
                   )),

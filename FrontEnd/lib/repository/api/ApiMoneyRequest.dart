@@ -17,11 +17,15 @@ Future<Response> getMyGroupPayments(groupId, page, size) async {
 
 //정산 상세보기
 Future<Response> getMyGroupPaymentsDetail(groupId, paymentId) async {
+  print('--------정산 상세보기api--------');
+  print(groupId);
+  print(paymentId);
+  print('-----------정산 상세보기api-----------');
   try {
     final res = await api.get('/groups/$groupId/payments/$paymentId');
     return res;
   } catch (err) {
-    //print(err);
+    print(err);
     throw Exception('정산 상세보기 실패');
   }
 }

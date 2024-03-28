@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:front/providers/store.dart';
 import 'package:front/repository/api/ApiLogin.dart';
@@ -39,7 +38,6 @@ Future<User?> SocialKakao() async {
 Future<void> logoutKakao() async {
   try {
     await UserApi.instance.logout();
-    await postLogOut();
     print("카카오 로그아웃 성공");
     await UserManager().clearUserInfo();
   } catch (error) {

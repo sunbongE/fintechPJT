@@ -2,11 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:front/components/intros/ServiceIntro.dart';
 import 'package:front/components/login/SocialKakao.dart';
-import 'package:front/main.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:lottie/lottie.dart';
-import 'package:provider/provider.dart';
-
 import '../providers/store.dart';
 import '../repository/api/ApiLogin.dart';
 

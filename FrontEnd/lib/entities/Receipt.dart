@@ -1,34 +1,26 @@
 class Receipt {
-  final String storeName;
+  final String businessName;
   final String? subName;
-  final String? addresses;
+  final String? location;
   final String date;
-  final List<Map<String, dynamic>>? items;
+  final List<Map<String, dynamic>>? detailList;
   final int totalPrice;
+  final int? approvalAmount;
+
+  @override
+  String toString() {
+    return 'Receipt(businessName: $businessName, subName: $subName, location: $location, date: $date, detailList: $detailList, totalPrice: $totalPrice, approvalAmount: $approvalAmount)';
+  }
 
   Receipt({
-    required this.storeName,
+    required this.businessName,
     this.subName,
-    this.addresses,
+    this.location,
     required this.date,
-    required this.items,
+    required this.detailList,
     required this.totalPrice,
+    this.approvalAmount,
   });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'storeName': storeName,
-      'subName': subName ?? "",
-      'addresses': addresses ?? "",
-      'date': date,
-      'items': items?.map((item) => {
-        'name': item['name'],
-        'count': item['count'],
-        'price': item['price'],
-      }).toList(),
-      'totalPrice': totalPrice,
-    };
-  }
 
   factory Receipt.fromJson(Map<String, dynamic> json) {
     String year, month, day, hour, minute, second;
@@ -45,37 +37,32 @@ class Receipt {
     String formattedDate = "$year-$month-$day $hour:$minute:$second";
 
     List<Map<String, dynamic>> items = [];
+    int itemsTotalPrice = 0;
     List<dynamic>? subResults = json['images'][0]['receipt']['result']['subResults'];
     if (subResults != null) {
       for (var subResult in subResults) {
         var itemsList = subResult['items'] as List<dynamic>?;
         if (itemsList != null) {
           for (var item in itemsList) {
-            String? name, count;
-            int price;
+            String? name;
+            int count, price;
             try {
               name = item['name']['formatted']['value'];
-              count = item['count']['formatted']['value'];
+              count = int.parse(item['count']['formatted']['value']);
               price = int.parse(item['price']['price']['formatted']['value']);
+              itemsTotalPrice += price;
             } catch (e) {
-              name = count = "인식오류";
-              price = 0;
+              name = "인식오류";
+              count = price = 0;
             }
             items.add({
-              'name': name ?? 'Unknown',
-              'count': count ?? '0',
+              'menu': name ?? 'Unknown',
+              'count': count,
               'price': price,
             });
           }
         }
       }
-    }
-
-    int totalPrice;
-    try {
-      totalPrice = int.parse(json['images'][0]['receipt']['result']['totalPrice']['price']['formatted']['value']);
-    } catch (e) {
-      totalPrice = 0;
     }
 
     String? addresses;
@@ -101,12 +88,15 @@ class Receipt {
     }
 
     return Receipt(
-      storeName: json['images'][0]['receipt']['result']['storeInfo']['name']['formatted']['value'] ?? "인식오류",
+      businessName: json['images'][0]['receipt']['result']['storeInfo']['name']['formatted']['value'] ?? "인식오류",
       subName: subName,
-      addresses: addresses,
+      location: addresses,
       date: formattedDate,
-      items: items.isNotEmpty ? items : null,
-      totalPrice: totalPrice,
+      detailList: items.isNotEmpty ? items : null,
+      // 합계금액
+      totalPrice: itemsTotalPrice,
+      // 승인금액
+      approvalAmount: int.parse(json['images'][0]['receipt']['result']['totalPrice']['price']['formatted']['value']),
     );
   }
 }

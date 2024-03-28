@@ -30,7 +30,6 @@ class _JjaturyState extends State<Jjatury> {
               style: TextStyle(fontWeight: FontWeight.w900, fontSize: 36.sp, color: PRIMARY_COLOR),
             ),
             Lottie.asset('assets/lotties/jjatury.json'),
-            // Lottie.asset('assets/lotties/orangewalking.json'),
             SizedButton(
               btnText: "확인",
               size: ButtonSize.s,

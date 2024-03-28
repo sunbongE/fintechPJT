@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:front/components/login/SocialKakao.dart';
+import 'package:front/providers/store.dart';
+import 'package:front/repository/api/ApiLogin.dart';
 import '../../main.dart';
+import '../../repository/api/ApiMyPage.dart';
 
 void LogoutModal(BuildContext context) {
   showDialog(
@@ -19,6 +22,9 @@ void LogoutModal(BuildContext context) {
           TextButton(
             child: Text('네'),
             onPressed: () async {
+              var userManager = UserManager();
+              userManager.loadUserInfo();
+              await postLogOut(userManager.fcmToken);
               await logoutKakao();
               Navigator.pushAndRemoveUntil(
                 context,
