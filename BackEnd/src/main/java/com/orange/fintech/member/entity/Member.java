@@ -30,8 +30,6 @@ public class Member {
 
     private String pin;
 
-    private String fcmToken;
-
     @Column(unique = true)
     private String userKey; // ssafy_Bank 서비스를 이용하는데 사용될 키.
 
@@ -70,9 +68,6 @@ public class Member {
                 + '\''
                 + ", pin='"
                 + pin
-                + '\''
-                + ", fcmToken='"
-                + fcmToken
                 + '\''
                 + ", userKey='"
                 + userKey

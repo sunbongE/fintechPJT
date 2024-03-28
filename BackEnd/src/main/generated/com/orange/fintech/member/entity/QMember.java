@@ -24,8 +24,6 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath email = createString("email");
 
-    public final StringPath fcmToken = createString("fcmToken");
-
     public final StringPath kakaoId = createString("kakaoId");
 
     public final StringPath name = createString("name");
