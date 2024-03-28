@@ -348,7 +348,8 @@ public class PaymentController {
     })
     public ResponseEntity<List<TransactionDto>> getYeojungDetail(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
-            @RequestBody YeojungDetailReq req,
+            @Parameter(description = "SEND(보낼 금액) || RECEIVE(받을 금액)") @RequestParam String type,
+            @Parameter(description = "상세보기할 멤버 아이디") @RequestParam String otherMemberId,
             Principal principal) {
 
         if (!paymentService.isMyGroup(principal.getName(), groupId)) {
@@ -358,7 +359,7 @@ public class PaymentController {
         try {
             List<TransactionDto> res =
                     calculateService.getRequest(
-                            groupId, req.getType(), principal.getName(), req.getOtherMemberId());
+                            groupId, type, principal.getName(), otherMemberId);
             return ResponseEntity.status(200).body(res);
         } catch (Exception e) {
             e.printStackTrace();
