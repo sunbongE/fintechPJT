@@ -1,6 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/models/Biometrics.dart';
 import 'package:front/models/PassWordCertification.dart';
 import 'package:front/providers/store.dart';
@@ -50,17 +49,24 @@ class _LoadingPageState extends State<LoadingPage> {
 
   // 메시지 처리 로직
   void _handleMessage(RemoteMessage message) {
-    // 메시지에 'type' 키가 있다고 가정하고 처리
     if (message.data.containsKey('notificationType')) {
       print("푸시알림 데이터: ${message.data}");
-      setState(() {
-        messageString = message.data.toString();
-      });
-      // 여기서 필요한 로직을 추가하세요.
-      // 예: 특정 groupId로 이동
-      // if (message.data['type'] == 'group') {
-      //   print(9999);
-      // }
+      setState(
+        () {
+          messageString = message.data.toString();
+        },
+      );
+
+      // 알림 타입에 따라 다른 페이지로 이동
+      String notificationType = message.data['notificationType'];
+      switch (notificationType) {
+        case 'group':
+          print("groupgroupgroupgroup");
+        case 'message':
+          print("messagemessagemessagemessage");
+        default:
+          print("defaultdefaultdefaultdefault");
+      }
     }
   }
 
@@ -75,22 +81,27 @@ class _LoadingPageState extends State<LoadingPage> {
       postFcmToken(userManager.fcmToken);
       bool authenticated = await _authenticate();
       if (authenticated) {
-        // 만약 푸시알림으로 입장한 사용자면, groupId 처럼 특정 데이터가 있을 거임. 그 곳으로 이동해야함.
         if (mounted) {
           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()));
         }
       } else {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => PassWordCertification(onSuccess: () {
-                      // 만약 푸시알림으로 입장한 사용자면, groupId 처럼 특정 데이터가 있을 거임. 그 곳으로 이동해야함.
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) {
+            if (mounted) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => PassWordCertification(
+                    onSuccess: () {
                       if (mounted) {
                         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()));
                       }
-                    })));
-          }
-        });
+                    },
+                  ),
+                ),
+              );
+            }
+          },
+        );
       }
     } else {
       if (mounted) {

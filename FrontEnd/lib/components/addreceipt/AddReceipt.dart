@@ -11,7 +11,9 @@ import '../../entities/Receipt.dart';
 import '../../models/FlutterToastMsg.dart';
 
 class AddReceipt extends StatefulWidget {
-  const AddReceipt({super.key});
+  final int groupId;
+
+  const AddReceipt({required this.groupId, super.key});
 
   @override
   State<AddReceipt> createState() => _AddReceiptState();
@@ -40,22 +42,28 @@ class _AddReceiptState extends State<AddReceipt> {
             TextButton(
               child: Text("예"),
               onPressed: () async {
+                Navigator.of(context).pop();
                 setState(() {
-                  // isLoading = true;
-                  receiptData?.forEach((receipt) {
-                    print(receipt.toString());
-                  });
-
-                  Navigator.of(context).pop();
+                  isLoading = true;
                 });
-                // final res = await postYjReceipt(receiptData!);
-                // print("1111111111: ${res}");
+                List<Map<String, dynamic>> jsonReceiptData = receiptData!.map((receipt) => receipt.toJson()).toList();
+                await postYjReceipt(widget.groupId, jsonReceiptData);
+                setState(() {
+                  isLoading = false;
+                });
+                Navigator.of(context).pop(true);
               },
             ),
           ],
         );
       },
     );
+  }
+
+  // 더미데이터 post요청
+  void sendReceiptFakeData() async {
+    List<Map<String, dynamic>> jsonReceiptData = receiptData!.map((receipt) => receipt.toJson()).toList();
+    await postReceiptFakeData(jsonReceiptData);
   }
 
   // 모두 저장을 했으면 "추가"버튼 활성화
@@ -94,7 +102,7 @@ class _AddReceiptState extends State<AddReceipt> {
 
           // 더미데이터 추가하기!!!!!!!
           TextButton(
-            onPressed: () => postReceiptFakeData(receiptData!),
+            onPressed: () => sendReceiptFakeData(),
             child: Text(
               "영수증 정보 받아~느~~",
               style: TextStyle(

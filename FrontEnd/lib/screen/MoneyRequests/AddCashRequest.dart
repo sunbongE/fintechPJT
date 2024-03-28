@@ -7,6 +7,7 @@ import 'package:front/components/moneyrequests/MoneyRequestList.dart';
 import 'package:front/components/moneyrequests/RequestMemberList.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../components/addreceipt/SelectLocation.dart';
 import '../../components/moneyrequests/AddCashAmountInputField.dart';
 import '../../components/moneyrequests/AddCashTextInputField.dart';
 import '../../components/moneyrequests/MoneyRequestDetailBottom.dart';
@@ -36,7 +37,6 @@ class _AddCashRequestState extends State<AddCashRequest> {
   List<int> amountList = [];
   late List<bool> isLockList;
 
-
   @override
   void initState() {
     super.initState();
@@ -48,8 +48,7 @@ class _AddCashRequestState extends State<AddCashRequest> {
 
   void _updateState() {
     setState(() {
-      requestCash.transactionBalance =
-          int.tryParse(_priceController.text.replaceAll(',', '')) ?? 0;
+      requestCash.transactionBalance = int.tryParse(_priceController.text.replaceAll(',', '')) ?? 0;
     });
   }
 
@@ -62,18 +61,13 @@ class _AddCashRequestState extends State<AddCashRequest> {
   }
 
   bool _isFormFilled() {
-    return _titleController.text.isNotEmpty &&
-        _locationController.text.isNotEmpty &&
-        _priceController.text.isNotEmpty;
+    return _titleController.text.isNotEmpty && _locationController.text.isNotEmpty && _priceController.text.isNotEmpty;
   }
 
   void fetchMyGroupMemberList() async {
     final MyGroupMemberListJson = await getGroupMemberList(widget.groupId);
-    final members = List<RequestMember>.from(
-        MyGroupMemberListJson.data['groupMembersDtos'].map((x) =>
-            RequestMember.fromCashJson(x)));
-    String currentDate = DateTime.now().toString().split(
-        ' ')[0]; // YYYY-MM-DD 형식
+    final members = List<RequestMember>.from(MyGroupMemberListJson.data['groupMembersDtos'].map((x) => RequestMember.fromCashJson(x)));
+    String currentDate = DateTime.now().toString().split(' ')[0]; // YYYY-MM-DD 형식
     String currentTime = DateTime.now().toString().split(' ')[1].split('.')[0]; // 시간
     int exampleRemainder = 0;
     if (MyGroupMemberListJson != null) {
@@ -108,40 +102,40 @@ class _AddCashRequestState extends State<AddCashRequest> {
               btnText: '완료',
               size: ButtonSize.xs,
               borderRadius: 10,
-              onPressed: _isFormFilled() ? () async {
-                final groupId = widget.groupId;
+              onPressed: _isFormFilled()
+                  ? () async {
+                      final groupId = widget.groupId;
 
-                List<RequestMember> newMembers = List<RequestMember>.generate(
-                    requestCash.members.length, (index) {
-                  return RequestMember(
-                    memberId: requestCash.members[index].memberId,
-                    profileUrl: requestCash.members[index].profileUrl,
-                    name: requestCash.members[index].name,
-                    amount: amountList[index],
-                    lock: isLockList[index],
-                  );
-                });
+                      List<RequestMember> newMembers = List<RequestMember>.generate(requestCash.members.length, (index) {
+                        return RequestMember(
+                          memberId: requestCash.members[index].memberId,
+                          profileUrl: requestCash.members[index].profileUrl,
+                          name: requestCash.members[index].name,
+                          amount: amountList[index],
+                          lock: isLockList[index],
+                        );
+                      });
 
-                RequestCash newRequestCash = RequestCash(
-                    transactionSummary: _titleController.text,
-                    location: _locationController.text,
-                    transactionBalance: int.tryParse(_priceController.text.replaceAll(',', '')) ?? 0,
-                    transactionDate: requestCash.transactionDate,
-                    transactionTime: requestCash.transactionTime,
-                    members: newMembers,
-                    remainder: remainderAmount);
+                      RequestCash newRequestCash = RequestCash(
+                          transactionSummary: _titleController.text,
+                          location: _locationController.text,
+                          transactionBalance: int.tryParse(_priceController.text.replaceAll(',', '')) ?? 0,
+                          transactionDate: requestCash.transactionDate,
+                          transactionTime: requestCash.transactionTime,
+                          members: newMembers,
+                          remainder: remainderAmount);
 
+                      final data = newRequestCash.toJson();
 
-                final data = newRequestCash.toJson();
-
-                try {
-                  final response = await postAddCash(groupId, data);
-                  print('현금 등록 post 요청 성공: $response');
-                  Navigator.pop(context, true);
-                } catch (e) {
-                  print('오류: $e');
-                }
-              } : null,
+                      try {
+                        final response = await postAddCash(groupId, data);
+                        print('현금 등록 post 요청 성공: $response');
+                        Navigator.pop(context, true);
+                      } catch (e) {
+                        print('오류: $e');
+                      }
+                    }
+                  : null,
               enable: _isFormFilled(),
             ),
           ),
@@ -163,14 +157,37 @@ class _AddCashRequestState extends State<AddCashRequest> {
               ),
             ),
             SizedBox(height: 10),
-            TextField(
-              controller: _locationController,
-              decoration: InputDecoration(
-                labelText: '장소',
-                hintText: '장소를 입력하세요',
-                border: OutlineInputBorder(),
-              ),
+
+            // 지도에서 마커로 가져와서 장소 value 입력하게 해둠~~
+            // 근데.. 밑에 가격입력하는 창이 너무 눈에 안띔.. 일단 난 못찾았었어. 처음에 . 코드보고 알았음..
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _locationController,
+                    decoration: InputDecoration(
+                      labelText: '장소',
+                      hintText: '장소를 입력하세요',
+                      border: OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.map),
+                        onPressed: () async {
+                          final result = await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => SelectLocation(),
+                            ),
+                          );
+                          if (result is String) {
+                            _locationController.text = result;
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
+
             SizedBox(height: 10),
             AmountInputField(
               controller: _priceController,
@@ -187,12 +204,9 @@ class _AddCashRequestState extends State<AddCashRequest> {
                       callbackAmountList: (List<int> value) {
                         setState(() {
                           amountList = value;
-                          amountList = reCalculateAmount(
-                              requestCash.transactionBalance, amountList,
-                              isLockList);
+                          amountList = reCalculateAmount(requestCash.transactionBalance, amountList, isLockList);
                           print(amountList);
-                          remainderAmount = reCalculateRemainder(
-                              requestCash.transactionBalance, amountList);
+                          remainderAmount = reCalculateRemainder(requestCash.transactionBalance, amountList);
                           print(remainderAmount);
                         });
                       },
@@ -203,15 +217,14 @@ class _AddCashRequestState extends State<AddCashRequest> {
               MoneyRequestDetailBottom(
                 amount: remainderAmount,
               ),
-            ] else
-              ...[
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: Center(
-                    child: Lottie.asset('assets/lotties/orangewalking.json'),
-                  ),
+            ] else ...[
+              Flexible(
+                fit: FlexFit.loose,
+                child: Center(
+                  child: Lottie.asset('assets/lotties/orangewalking.json'),
                 ),
-              ],
+              ),
+            ],
           ],
         ),
       ),
