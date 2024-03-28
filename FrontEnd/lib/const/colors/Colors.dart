@@ -15,4 +15,6 @@ final COMPLETE_BUTTON_COLOR = Color(0xffFF3D00);
 final BOX_COLOR = Color(0xffDFE6E9);
 final MY_PAGE_BTN = Color(0xFFFDA085);
 const GREY_COLOR = Color(0xffE9E9E9);
+const RECIVE_ICON_COLOR = Color(0xFF4ECD8A);
+const SEND_ICON_COLOR = Color(0xFFFF6565);
 
