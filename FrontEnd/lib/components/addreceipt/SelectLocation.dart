@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/const/colors/Colors.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:lottie/lottie.dart';
 
 class SelectLocation extends StatefulWidget {
   const SelectLocation({Key? key}) : super(key: key);
@@ -18,9 +19,13 @@ class _SelectLocationState extends State<SelectLocation> {
   LatLng? _lastMapPosition;
   String address = "";
   Timer? _debounce;
+  bool _isLoading = true;
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void _onCameraMove(CameraPosition position) {
@@ -99,6 +104,8 @@ class _SelectLocationState extends State<SelectLocation> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                if (_isLoading)
+                  Lottie.asset("assets/lotties/orangewalking.json"),
                 FittedBox(
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),

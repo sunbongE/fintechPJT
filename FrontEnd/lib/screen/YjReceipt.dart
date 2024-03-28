@@ -40,7 +40,6 @@ class CustomResultStyle {
 }
 
 class _YjReceiptState extends State<YjReceipt> {
-
   List<TextEditingController> priceControllers = [];
   int approvalAmount = 0;
 
@@ -52,8 +51,8 @@ class _YjReceiptState extends State<YjReceipt> {
 
   void calculateTotalAmount() {
     int totalAmount = 0;
-    if (widget.spend.items != null) {
-      for (var item in widget.spend.items!) {
+    if (widget.spend.detailList != null) {
+      for (var item in widget.spend.detailList!) {
         int price = item['price'];
         totalAmount += price;
       }
@@ -103,7 +102,7 @@ class _YjReceiptState extends State<YjReceipt> {
                   Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text(
-                        "${widget.spend.storeName} ${widget.spend.subName}",
+                        "${widget.spend.businessName} ${widget.spend.subName}",
                         textAlign: TextAlign.end,
                       )),
                 ]),
@@ -117,7 +116,7 @@ class _YjReceiptState extends State<YjReceipt> {
                   Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text(
-                        "${widget.spend.addresses}",
+                        "${widget.spend.location}",
                         textAlign: TextAlign.end,
                         softWrap: true,
                       )),
@@ -175,14 +174,14 @@ class _YjReceiptState extends State<YjReceipt> {
                 1: FlexColumnWidth(3),
                 2: FlexColumnWidth(3),
               },
-              children: widget.spend.items?.isNotEmpty ?? false
-                  ? widget.spend.items!.map<TableRow>((item) {
+              children: widget.spend.detailList?.isNotEmpty ?? false
+                  ? widget.spend.detailList!.map<TableRow>((item) {
                       return TableRow(
                         children: [
                           Padding(
                             padding: EdgeInsets.symmetric(vertical: 8.0.h),
                             child: Text(
-                              "${item['name']}",
+                              "${item['menu']}",
                               style: CustomMenuStyle.receiptTextStyle(context, includeLetterSpacing: false),
                             ),
                           ),
@@ -243,35 +242,36 @@ class _YjReceiptState extends State<YjReceipt> {
                 1: FlexColumnWidth(2),
               },
               children: [
-                TableRow(children: [
-                  Padding(
-                      padding: EdgeInsets.all(8.0),
+                TableRow(
+                  children: [
+                    Padding(
+                        padding: EdgeInsets.all(8.0),
 
-                      // 에누리 제외한 물건의 총 금액 => approvalAmount
-                      child: Text(
-                        "합계금액",
-                        style: CustomTextStyle.receiptTextStyle(context),
-                      )),
-                  Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        '${NumberFormat('#,###').format(approvalAmount)}원',
-                        textAlign: TextAlign.end,
-                        style: CustomResultStyle.receiptTextStyle(context),
-                      )),
-                ]),
+                        // 에누리 제외한 물건의 총 금액 => approvalAmount
+                        child: Text(
+                          "합계금액",
+                          style: CustomTextStyle.receiptTextStyle(context),
+                        )),
+                    Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          '${NumberFormat('#,###').format(widget.spend.totalPrice)}원',
+                          textAlign: TextAlign.end,
+                          style: CustomResultStyle.receiptTextStyle(context),
+                        )),
+                  ],
+                ),
                 TableRow(children: [
                   Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text(
-                        // 실제 내가 카드로 긁은 금액(에누리라는 반례가 있음..)
                         "승인금액",
                         style: CustomTextStyle.receiptTextStyle(context),
                       )),
                   Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text(
-                        '${NumberFormat('#,###').format(widget.spend.totalPrice)}원',
+                        '${NumberFormat('#,###').format(widget.spend.approvalAmount)}원',
                         textAlign: TextAlign.end,
                         style: CustomResultStyle.receiptTextStyle(context),
                       )),

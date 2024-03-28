@@ -32,8 +32,7 @@ class _CreatePwPageState extends State<CreatePwPage> {
         if (val.length <= 6) {
           _passWord = val;
           if (_passWord.length == 6) {
-            _pageController.nextPage(
-                duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+            _pageController.nextPage(duration: Duration(milliseconds: 300), curve: Curves.easeIn);
           }
         }
       },
@@ -50,6 +49,9 @@ class _CreatePwPageState extends State<CreatePwPage> {
 
     if (_confirmPassWord.length == 6) {
       if (_confirmPassWord == _passWord) {
+        var userManager = UserManager();
+        userManager.loadUserInfo();
+
         bool? authenticated = await CheckBiometrics();
         if (authenticated == true) {
           FlutterToastMsg("생체 인증이 등록되었습니다.");
@@ -58,6 +60,9 @@ class _CreatePwPageState extends State<CreatePwPage> {
         }
         // 핀 번호 post API
         await postPassWord(_confirmPassWord);
+        // FCM토큰 post api
+        await postFcmToken(userManager.fcmToken);
+
         UserManager().saveUserInfo(newPassword: _confirmPassWord);
         buttonSlideAnimation(context, SelectBank());
       } else {
@@ -109,8 +114,7 @@ class _CreatePwPageState extends State<CreatePwPage> {
     );
   }
 
-  Widget buildPasswordPage(String title, String subTitle, int idx,
-      String password, Function(String) onKeyTap) {
+  Widget buildPasswordPage(String title, String subTitle, int idx, String password, Function(String) onKeyTap) {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -128,8 +132,7 @@ class _CreatePwPageState extends State<CreatePwPage> {
           SizedBox(height: 50.h),
           Text(
             subTitle,
-            style: TextStyle(
-                fontSize: 16.sp, color: Colors.black.withOpacity(0.8)),
+            style: TextStyle(fontSize: 16.sp, color: Colors.black.withOpacity(0.8)),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 50.h),

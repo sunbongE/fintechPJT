@@ -53,26 +53,26 @@ class _ModifyReceiptState extends State<ModifyReceipt> {
   late List<TextEditingController> priceControllers;
   int totalPrice = 0;
 
-  @override
   // textField 컨트롤러 생성
+  @override
   void initState() {
     super.initState();
-    storeNameController = TextEditingController(text: widget.receipt.storeName + ' ' + (widget.receipt.subName ?? ''));
-    addressesController = TextEditingController(text: widget.receipt.addresses);
+    storeNameController = TextEditingController(text: widget.receipt.businessName + ' ' + (widget.receipt.subName ?? ''));
+    addressesController = TextEditingController(text: widget.receipt.location);
     dataController = TextEditingController(text: widget.receipt.date);
-    int itemsLength = widget.receipt.items?.length ?? 0;
+    int itemsLength = widget.receipt.detailList?.length ?? 0;
     nameControllers = List.generate(
       itemsLength,
-      (index) => TextEditingController(text: widget.receipt.items?[index]['name']),
+      (index) => TextEditingController(text: widget.receipt.detailList?[index]['menu']),
     );
     countControllers = List.generate(
       itemsLength,
-      (index) => TextEditingController(text: widget.receipt.items?[index]['count'].toString()),
+      (index) => TextEditingController(text: widget.receipt.detailList?[index]['count'].toString()),
     );
     priceControllers = List.generate(
       itemsLength,
       (index) {
-        final controller = TextEditingController(text: widget.receipt.items?[index]['price'].toString());
+        final controller = TextEditingController(text: widget.receipt.detailList?[index]['price'].toString());
         controller.addListener(() {
           updateTotalPrice();
         });
@@ -82,7 +82,7 @@ class _ModifyReceiptState extends State<ModifyReceipt> {
     updateTotalPrice();
   }
 
-  // 총 합계를 자동으로 계산하는 코드
+  // 총 합계 자동으로 계산하는 코드
   void updateTotalPrice() {
     int newTotalPrice = 0;
     for (TextEditingController controller in priceControllers) {
@@ -106,7 +106,7 @@ class _ModifyReceiptState extends State<ModifyReceipt> {
       nameControllers.add(TextEditingController());
       countControllers.add(TextEditingController());
       priceControllers.add(TextEditingController()..addListener(updateTotalPrice));
-      widget.receipt.items?.add({'name': '', 'count': 0, 'price': 0});
+      widget.receipt.detailList?.add({'menu': '', 'count': 0, 'price': 0});
     });
   }
 
@@ -193,6 +193,7 @@ class _ModifyReceiptState extends State<ModifyReceipt> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.receipt.approvalAmount);
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
@@ -362,8 +363,8 @@ class _ModifyReceiptState extends State<ModifyReceipt> {
                   2: FlexColumnWidth(3),
                   3: FixedColumnWidth(40),
                 },
-                children: widget.receipt.items?.isNotEmpty ?? false
-                    ? widget.receipt.items!.asMap().entries.map<TableRow>((entry) {
+                children: widget.receipt.detailList?.isNotEmpty ?? false
+                    ? widget.receipt.detailList!.asMap().entries.map<TableRow>((entry) {
                         int index = entry.key;
                         var item = entry.value;
                         return TableRow(
@@ -390,6 +391,7 @@ class _ModifyReceiptState extends State<ModifyReceipt> {
                               padding: EdgeInsets.all(5.w),
                               child: TextField(
                                 controller: countControllers[index],
+                                keyboardType: TextInputType.number,
                                 style: TextStyle(
                                   fontSize: 16.sp,
                                   color: Colors.black,
@@ -427,7 +429,7 @@ class _ModifyReceiptState extends State<ModifyReceipt> {
                               icon: Icon(Icons.delete, color: PRIMARY_COLOR),
                               onPressed: () {
                                 setState(() {
-                                  widget.receipt.items!.removeAt(index);
+                                  widget.receipt.detailList!.removeAt(index);
                                   nameControllers.removeAt(index);
                                   countControllers.removeAt(index);
                                   priceControllers.removeAt(index);
@@ -494,17 +496,36 @@ class _ModifyReceiptState extends State<ModifyReceipt> {
                   1: FlexColumnWidth(2),
                 },
                 children: [
+                  TableRow(
+                    children: [
+                      Padding(
+                          padding: EdgeInsets.all(8.0),
+
+                          // 에누리 제외한 물건의 총 금액 => approvalAmount
+                          child: Text(
+                            "합계금액",
+                            style: CustomTextStyle.receiptTextStyle(context),
+                          )),
+                      Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            '${NumberFormat('#,###').format(totalPrice)}원',
+                            textAlign: TextAlign.end,
+                            style: CustomResultStyle.receiptTextStyle(context),
+                          )),
+                    ],
+                  ),
                   TableRow(children: [
                     Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Text(
-                          "합계금액",
+                          "승인금액",
                           style: CustomTextStyle.receiptTextStyle(context),
                         )),
                     Padding(
                         padding: EdgeInsets.all(8.0.w),
                         child: Text(
-                          '${NumberFormat('#,###').format(totalPrice)}원',
+                          '${NumberFormat('#,###').format(widget.receipt.approvalAmount)}원',
                           textAlign: TextAlign.end,
                           style: CustomResultStyle.receiptTextStyle(context),
                         )),
@@ -522,19 +543,20 @@ class _ModifyReceiptState extends State<ModifyReceipt> {
                   List<Map<String, dynamic>> modifiedItems = [];
                   for (int i = 0; i < nameControllers.length; i++) {
                     modifiedItems.add({
-                      'name': nameControllers[i].text,
+                      'menu': nameControllers[i].text,
                       'count': countControllers[i].text,
                       'price': int.tryParse(priceControllers[i].text.replaceAll(',', '').trim()) ?? 0,
                     });
                   }
 
                   Receipt modifiedReceipt = Receipt(
-                    storeName: storeNameController.text,
+                    businessName: storeNameController.text,
                     subName: '',
-                    addresses: addressesController.text,
+                    location: addressesController.text,
                     date: dataController.text,
-                    items: modifiedItems.isNotEmpty ? modifiedItems : null,
+                    detailList: modifiedItems.isNotEmpty ? modifiedItems : null,
                     totalPrice: totalPrice,
+                    approvalAmount: widget.receipt.approvalAmount,
                   );
 
                   Navigator.pop(context, modifiedReceipt);
