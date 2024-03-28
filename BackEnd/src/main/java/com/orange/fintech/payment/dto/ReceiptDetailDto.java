@@ -26,12 +26,16 @@ public class ReceiptDetailDto {
     @Schema(description = "단가")
     private int unitPrice;
 
+    @Schema(description = "금액")
+    private int price;
+
     public static ReceiptDetailDto of(ReceiptDetail receiptDetail) {
         ReceiptDetailDto res = new ReceiptDetailDto();
         res.setReceiptDetailId(receiptDetail.getReceiptDetailId());
         res.setMenu(receiptDetail.getMenu());
         res.setCount(receiptDetail.getCount());
         res.setUnitPrice(receiptDetail.getUnitPrice());
+        res.setPrice(receiptDetail.getCount() * receiptDetail.getUnitPrice());
         return res;
     }
 }
