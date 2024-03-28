@@ -31,6 +31,7 @@ public class Transaction {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Account account;
 
     @NotNull

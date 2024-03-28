@@ -27,6 +27,17 @@ Future<void> putMyAccount(data) async {
   }
 }
 
+// 회원 본인의 FCM Token 삭제
+Future<void> deleteFcmToken(data) async {
+  try {
+    final res = await api.delete('', data: data);
+    print('deleteFcmToken: ${res.data}');
+    return res.data;
+  } catch (err) {
+    print(err);
+  }
+}
+
 // groupId로 그룹의 결제 내역을 조회한다.
 Future<dynamic> getGroupSpend(groupId, queryParameters) async {
   try {

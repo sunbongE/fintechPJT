@@ -33,7 +33,7 @@ class _MySpendListState extends State<MySpendList> {
                     //   context,
                     //   MySpendItem(spend: spend),
                     // );
-                    print("ㅠㅠ api 만들어조ㅠ");
+                    print("ㅠㅠ 만들어조ㅠ");
                   },
                   child: Column(
                     children: [
@@ -56,7 +56,7 @@ class _MySpendListState extends State<MySpendList> {
                                   ),
                                   SizedBox(width: 25.w),
                                   Text(
-                                    spend.storeName,
+                                    spend.businessName,
                                     style: TextStyle(fontSize: 20.sp),
                                   ),
                                 ],

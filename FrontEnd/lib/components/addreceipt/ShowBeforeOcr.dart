@@ -138,7 +138,6 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
   // 선택된 이미지를 네이버 클로바로 보내는 api 호출
   Future<void> onImageSelected(XFile image) async {
     setState(() {
-      print(111111);
       isLoading = true;
     });
 
@@ -162,13 +161,13 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
     // API 호출 및 응답 처리
     final res = await postReceiptImage(formData);
     Receipt receipt = Receipt.fromJson(res.data);
-    debugPrint("2222222222 data: ${receipt.storeName}");
+    debugPrint("2222222222 data: ${receipt.businessName}");
     debugPrint("3333333333 data: ${receipt.subName}");
-    debugPrint("4444444444 data: ${receipt.addresses}");
+    debugPrint("4444444444 data: ${receipt.location}");
     debugPrint("5555555555 data: ${receipt.date}");
-    debugPrint("6666666666 data: ${receipt.items}");
+    debugPrint("6666666666 data: ${receipt.detailList}");
     debugPrint("7777777777 data: ${receipt.totalPrice}");
-
+    debugPrint("7777777777 data: ${receipt.approvalAmount}");
     setState(() {
       receiptData.add(receipt);
       receiptSavedStates.add(false);
@@ -251,7 +250,7 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
                                           style: TextStyle(fontSize: 14.sp, color: RECEIPT_TEXT_COLOR),
                                         ),
                                         SizedButton(
-                                          btnText: receiptSavedStates[index] ? "영수증 저장 취소" : "영수증 저장",
+                                          btnText: receiptSavedStates[index] ? "취소" : "확인",
                                           onPressed: () => countCheckedReceipt(index),
                                         )
                                       ],

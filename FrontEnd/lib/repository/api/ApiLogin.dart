@@ -35,6 +35,17 @@ Future<void> postPassWord(data) async {
   }
 }
 
+// FCM Token post
+Future<void> postFcmToken(data) async {
+  try {
+    final res = await api.post('/members/fcmtoken', data: data);
+    print(res.data);
+    return res.data;
+  } catch (err) {
+    print(err);
+  }
+}
+
 // 사용자가 선택한 은행과 연결된 계좌 목록 get
 Future<List<Map<String, dynamic>>> getBankInfo(String code) async {
   try {
@@ -59,11 +70,9 @@ Future<void> postBankInfo(data) async {
 }
 
 // 로그아웃을 한다.
-Future<void> postLogOut() async {
+Future<void> postLogOut(data) async {
   try {
-    final res = await api.post(
-      '/auth/logout',
-    );
+    final res = await api.post('/auth/logout', data: data);
     return res.data;
   } catch (err) {
     print(err);

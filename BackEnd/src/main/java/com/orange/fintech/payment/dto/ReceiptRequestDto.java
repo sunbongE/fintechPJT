@@ -23,7 +23,7 @@ public class ReceiptRequestDto {
     private String date;
 
     @Schema(description = "영수증 항목 리스트")
-    private List<Item> items;
+    private List<Item> detailList;
 
     @Schema(description = "합계 금액")
     private int totalPrice;
@@ -37,7 +37,7 @@ public class ReceiptRequestDto {
     @RequiredArgsConstructor
     public static class Item {
         @Schema(description = "메뉴명")
-        private String name;
+        private String menu;
 
         @Schema(description = "수량")
         private int count;
