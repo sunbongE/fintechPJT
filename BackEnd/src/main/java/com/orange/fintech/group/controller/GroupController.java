@@ -53,7 +53,7 @@ public class GroupController {
         try {
             String memberId = principal.getName();
             int groupId = groupService.createGroup(dto, memberId);
-            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "성공"));
+            return ResponseEntity.status(HttpStatus.OK).body(groupId);
         } catch (Exception e) {
             log.info("[ERROR] :{}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
