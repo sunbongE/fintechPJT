@@ -38,20 +38,23 @@ public class JoinServiceImpl implements JoinService {
         String name = kakaoAccount.getName();
         String email = kakaoAccount.getEmail();
 
+        Member member = null;
+
         try {
             // 이미 존재하는 회원이 있는 경우 토큰만 발급 (회원가입 진행 X)
             if (!memberRepository.existsByKakaoId(id)) {
 
-                Member member = new Member();
+                member = new Member();
 
                 member.setKakaoId(id);
                 member.setEmail(email);
                 member.setName(name);
                 member.setProfileImage(profileImageUrl);
                 member.setThumbnailImage(thumbnailImageUrl);
-
-                memberRepository.save(member);
             }
+
+            member.setFcmToken(joinDto.getFcmToken());
+            memberRepository.save(member);
 
             Date expiredDate = Date.from(Instant.now().plus(30, ChronoUnit.DAYS)); // 30일
             // 엑세스 토큰
