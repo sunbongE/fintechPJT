@@ -48,4 +48,35 @@ public class Receipt {
     @NotNull
     @ColumnDefault("true")
     private Boolean visibility;
+
+    @Override
+    public String toString() {
+        return "Receipt{"
+                + "receiptId="
+                + receiptId
+                + ", transaction="
+                + transaction
+                + ", businessName='"
+                + businessName
+                + '\''
+                + ", subName='"
+                + subName
+                + '\''
+                + ", location='"
+                + location
+                + '\''
+                + ", transactionDate="
+                + transactionDate
+                + ", transactionTime="
+                + transactionTime
+                + ", totalPrice="
+                + totalPrice
+                + ", approvalAmount="
+                + approvalAmount
+                + ", authNumber="
+                + authNumber
+                + ", visibility="
+                + visibility
+                + '}';
+    }
 }

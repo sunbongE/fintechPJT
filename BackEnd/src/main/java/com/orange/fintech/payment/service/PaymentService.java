@@ -1,5 +1,6 @@
 package com.orange.fintech.payment.service;
 
+import com.orange.fintech.common.exception.RelatedTransactionNotFoundException;
 import com.orange.fintech.payment.dto.*;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -37,4 +38,10 @@ public interface PaymentService {
     void setReceiptDetailMember(
             int paymentId, int receiptDetailId, List<ReceiptDetailMemberPutDto> req)
             throws Exception;
+
+    void addSingleReceipt(String kakaoId, ReceiptRequestDto receiptRequestDto)
+            throws RelatedTransactionNotFoundException;
+
+    void addMultipleReceipt(String kakaoId, List<ReceiptRequestDto> receiptRequestDtoList)
+            throws RelatedTransactionNotFoundException;
 }

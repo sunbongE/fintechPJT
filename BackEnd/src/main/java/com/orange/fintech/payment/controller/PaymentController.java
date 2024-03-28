@@ -1,6 +1,8 @@
 package com.orange.fintech.payment.controller;
 
+import com.orange.fintech.auth.dto.CustomUserDetails;
 import com.orange.fintech.common.BaseResponseBody;
+import com.orange.fintech.common.exception.RelatedTransactionNotFoundException;
 import com.orange.fintech.payment.dto.*;
 import com.orange.fintech.payment.service.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +16,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -272,6 +276,35 @@ public class PaymentController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(404).body(BaseResponseBody.of(404, "NOT_FOUND"));
+        }
+    }
+
+    @PostMapping("/receipt")
+    @Operation(summary = "영수증 일괄 등록", description = "<strong>groupId</strong>로 다수의 영수증을 등록한다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "403", description = "권한 없음"),
+        @ApiResponse(responseCode = "404", description = "일치하는 결제 내역 없음"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> addMultipleReceipt(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
+            @RequestBody List<ReceiptRequestDto> receiptRequestDtoList) {
+        String kakaoId = customUserDetails.getUsername();
+
+        try {
+            paymentService.addMultipleReceipt(kakaoId, receiptRequestDtoList);
+
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "영수증이 정상 등록되었습니다."));
+        } catch (RelatedTransactionNotFoundException e) {
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("업로드한 영수증에 해당하는 결제 정보를 Transaction 테이블에서 찾을 수 없습니다.");
+        } catch (Exception e) {
+
+            return ResponseEntity.internalServerError()
+                    .body(BaseResponseBody.of(500, "영수증 저장에 실패했습니다."));
         }
     }
 }
