@@ -26,8 +26,8 @@ class GroupNoCal extends StatelessWidget {
           child: Card(
             color: BUTTON_COLOR,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 16.0.h),
                 Text(
                   '여행이 끝나지 않아도',
                   style: TextStyle(
@@ -44,7 +44,6 @@ class GroupNoCal extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 5.0.h),
                 ElevatedButton(
                   onPressed: () => buttonSlideAnimation(context, MoneyRequest(groupId: groupId,)),
                   style: ElevatedButton.styleFrom(

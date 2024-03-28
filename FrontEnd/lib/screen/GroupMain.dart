@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/groups/GroupList.dart';
 import 'package:front/screen/groupscreens/GroupAdd.dart';
 import 'package:front/models/button/GroupAddButton2.dart';
+import 'package:lottie/lottie.dart';
+
 import '../entities/Group.dart';
 import 'package:front/repository/api/ApiGroup.dart';
 

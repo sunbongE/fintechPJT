@@ -1,5 +1,6 @@
 package com.orange.fintech.payment.service;
 
+import com.orange.fintech.common.exception.RelatedTransactionNotFoundException;
 import com.orange.fintech.group.dto.GroupMembersDto;
 import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.group.entity.GroupMemberPK;
@@ -13,13 +14,16 @@ import com.orange.fintech.payment.entity.*;
 import com.orange.fintech.payment.repository.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
@@ -40,6 +44,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final GroupQueryRepository groupQueryRepository;
     private final GroupMemberRepository groupMemberRepository;
+
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public boolean addTransaction(String memberId, int groupId, AddCashTransactionReq req) {
@@ -430,5 +436,94 @@ public class PaymentServiceImpl implements PaymentService {
 
     public int calculateTransactionMember(String memberId, int receiptId) {
         return transactionQueryRepository.getTransactionTotalAmount(memberId, receiptId);
+    }
+
+    @Override
+    //    @Transactional(rollbackFor = Exception.class)
+    //    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
+    public void addSingleReceipt(String kakaoId, ReceiptRequestDto receiptRequestDto)
+            throws RelatedTransactionNotFoundException {
+        try {
+            // 1. 거래일시 파싱 (예: 2024-01-23 22:51:01 -> 2024-01-23 / 22:51:01)
+            // 1-1. 문자열을 LocalDate 객체로 파싱
+            LocalDate transactionDate =
+                    LocalDate.parse(receiptRequestDto.getDate(), dateTimeFormatter);
+
+            // 1-2. 문자열을 LocalTime 객체로 파싱
+            LocalTime transactionTime =
+                    LocalTime.parse(receiptRequestDto.getDate(), dateTimeFormatter);
+
+            Transaction transaction =
+                    transactionRepository.findReceiptApostropheForeignkey(
+                            transactionDate, transactionTime, kakaoId);
+
+            // 2-1. 업로드한 영수증에 해당하는 결제 정보 (Record)를 Transaction 테이블에서 찾을 수 없는 경우 예외 발생
+            if (transaction == null) {
+                throw new RelatedTransactionNotFoundException();
+            }
+
+            // 2-2. 업로드한 영수증에 해당하는 결제 정보 (Record)를 Transaction 테이블에서 찾는 경우
+
+            // 3-1. Receipt테이블에서 Transaction 레코드를 FK로 가지는 레코드가 있는지 확인
+            Receipt receipt = receiptRepository.findByTransaction(transaction);
+
+            // 3-2. 레코드가 없으면 생성
+            if (receipt == null) {
+                receipt = new Receipt();
+            }
+
+            // 3-3. Receipt 레코드 업데이트
+            receipt.setTransaction(transaction);
+            receipt.setBusinessName(receiptRequestDto.getBusinessName());
+            receipt.setSubName(receiptRequestDto.getSubName());
+            receipt.setLocation(receiptRequestDto.getLocation());
+            receipt.setTransactionDate(transactionDate);
+            receipt.setTransactionTime(transactionTime);
+            receipt.setTotalPrice(receiptRequestDto.getTotalPrice());
+            receipt.setApprovalAmount(receiptRequestDto.getApprovalAmount());
+
+            // 3-4. Receipt 테이블에 레코드 추가
+            Receipt savedReceiptRecord =
+                    receiptRepository.save(receipt); // 추가한 영수증 레코드 (PK 값이 지정되어 있음)
+
+            // 4-1. 기존 ReceiptDetail 테이블의 레코드 삭제 (업데이트 대신 삭제 (메뉴 이름 변경))
+            receiptDetailRepository.deleteRecordsByReceipt(receipt);
+            receiptDetailRepository.flush(); // 즉시 삭제 (flush를 호출하지 않으면 새로 추가한 메뉴도 함께 삭제됨)
+
+            // 4-2. ReceiptDetail 테이블에 레코드 추가
+            List<ReceiptRequestDto.Item> items = receiptRequestDto.getItems();
+
+            for (ReceiptRequestDto.Item item : items) {
+                ReceiptDetail receiptDetail = new ReceiptDetail();
+                receiptDetail.setReceipt(savedReceiptRecord);
+
+                receiptDetail.setMenu(item.getName());
+                receiptDetail.setCount(item.getCount());
+                receiptDetail.setUnitPrice(item.getPrice() / item.getCount()); // 소수점 오차 생길 수 있음
+
+                receiptDetailRepository.save(receiptDetail);
+            }
+        } catch (DataIntegrityViolationException | UnexpectedRollbackException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    //    @Transactional(rollbackFor = Exception.class)
+    //    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
+    //    @Transactional(rollbackFor = Exception.class, propagation = Propagation.NESTED)
+    //    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void addMultipleReceipt(String kakaoId, List<ReceiptRequestDto> receiptRequestDtoList)
+            throws RelatedTransactionNotFoundException {
+        for (ReceiptRequestDto receiptRequestDto : receiptRequestDtoList) {
+            try {
+                addSingleReceipt(kakaoId, receiptRequestDto);
+            } catch (RelatedTransactionNotFoundException e) {
+                throw e;
+            } catch (DataIntegrityViolationException
+                    | UnexpectedRollbackException e) { // 중복 레코드 발생 -> 저장 스킵
+            } catch (Exception e) {
+            }
+        }
     }
 }

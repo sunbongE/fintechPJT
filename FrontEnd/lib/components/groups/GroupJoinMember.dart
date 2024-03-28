@@ -69,8 +69,11 @@ class _GroupJoinMemberState extends State<GroupJoinMember> {
                   child: Column(
                     // mainAxisSize: MainAxisSize.min,
                     children: [
-                      Lottie.asset('assets/lotties/orangewalking.json'),
-                      SizedBox(height: 20.h),
+                      Lottie.asset(
+                          'assets/lotties/orangewalking.json',
+                        width: 90.w,
+                        height: 90.h,
+                      ),
                       Text("멤버를 불러오고 있습니다"),
                     ],
                   ),

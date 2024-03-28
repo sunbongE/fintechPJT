@@ -47,8 +47,8 @@ public class MemberController {
 
     @GetMapping("/account")
     @Operation(
-            summary = "회원 본인의 계좌 정보 조회",
-            description = "<string>회원 본인의 <strong>계좌정보</strong>를 조회한다.")
+            summary = "서비스에 등록된 회원 본인의 계좌 정보 조회",
+            description = "<strong>서비스에 등록된</strong> 회원 본인의 계좌정보</strong>를 조회한다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "정상 반환"),
         @ApiResponse(responseCode = "404", description = "계좌 정보 없음 (DB 레코드 유실)"),

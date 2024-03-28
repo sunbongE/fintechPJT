@@ -387,7 +387,9 @@ public class GroupController {
     @PostMapping(
             value = "/{groupId}/payments/{paymentId}/singlereceipt",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    @Operation(summary = "영수증 단건 등록", description = "영수증 1개를 업로드한다.")
+    @Operation(
+            summary = "영수증 단건 등록",
+            description = "<strong>(클로바 OCR API요청)</strong> 영수증 1개를 업로드한다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "정상 등록"),
         @ApiResponse(responseCode = "400", description = "비어있는 파일"),
