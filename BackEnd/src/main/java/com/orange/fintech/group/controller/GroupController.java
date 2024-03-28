@@ -52,7 +52,7 @@ public class GroupController {
 
         try {
             String memberId = principal.getName();
-            groupService.createGroup(dto, memberId);
+            int groupId = groupService.createGroup(dto, memberId);
             return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "성공"));
         } catch (Exception e) {
             log.info("[ERROR] :{}", e.getMessage());
