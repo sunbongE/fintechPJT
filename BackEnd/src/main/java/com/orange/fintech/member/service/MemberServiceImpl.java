@@ -10,12 +10,15 @@ import com.orange.fintech.common.exception.BigFileException;
 import com.orange.fintech.common.exception.EmptyFileException;
 import com.orange.fintech.common.exception.NotValidExtensionException;
 import com.orange.fintech.jwt.JWTUtil;
+import com.orange.fintech.member.entity.FcmToken;
 import com.orange.fintech.member.entity.Member;
+import com.orange.fintech.member.repository.FcmTokenRepository;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.member.repository.ProfileImageRepository;
 import com.orange.fintech.oauth.dto.MemberSearchResponseDto;
 import com.orange.fintech.redis.service.RedisService;
 import com.orange.fintech.util.FileService;
+import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +48,9 @@ public class MemberServiceImpl implements MemberService {
     @Autowired FileService fileService;
 
     @Autowired ProfileImageRepository profileImageRepository;
+
+    @Autowired FcmTokenRepository fcmTokenRepository;
+
     static final String SUCCESS = "\"succeed\"";
 
     @Value("${ssafy.bank.search}")
@@ -114,10 +120,15 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public boolean logout(String accessToken) {
+    @Transactional
+    public boolean logout(String accessToken, String fcmToken) {
         String id = jWTUtil.getKakaoId(accessToken);
 
-        return redisService.delete(id);
+        if (redisService.delete(id) && fcmTokenRepository.deleteByFcmToken(fcmToken) == 1) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -169,5 +180,15 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public String getSelfProfileURL(String kakaoId) {
         return fileService.getProfileAndThumbnailImageUrl(kakaoId);
+    }
+
+    @Override
+    public void saveFcmToken(String kakaoId, String fcmTokenString) {
+        FcmToken fcmTokenRecord = new FcmToken();
+
+        fcmTokenRecord.setMember(memberRepository.findByKakaoId(kakaoId));
+        fcmTokenRecord.setFcmToken(fcmTokenString);
+
+        fcmTokenRepository.save(fcmTokenRecord);
     }
 }

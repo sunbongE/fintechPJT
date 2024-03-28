@@ -23,10 +23,12 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.multipart.MultipartFile;
@@ -266,6 +268,29 @@ public class MemberController {
 
         } catch (Exception e) {
             e.printStackTrace();
+            return ResponseEntity.internalServerError().body(BaseResponseBody.of(500, "서버 에러"));
+        }
+    }
+
+    @PostMapping("/fcmtoken")
+    @Operation(summary = "FCM Token 저장", description = "서비스 서버에 FCM Token을 저장한다")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "409", description = "중복 레코드"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> saveFcmToken(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails, String fcmToken) {
+        String kakaoId = customUserDetails.getUsername();
+
+        try {
+            memberService.saveFcmToken(kakaoId, fcmToken);
+
+            return ResponseEntity.ok(BaseResponseBody.of(200, "정상적으로 저장되었습니다."));
+        } catch (DataIntegrityViolationException | UnexpectedRollbackException e) {
+            return ResponseEntity.status(409)
+                    .body(BaseResponseBody.of(409, "이미 등록된 FCM Token 입니다."));
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body(BaseResponseBody.of(500, "서버 에러"));
         }
     }

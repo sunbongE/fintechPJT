@@ -19,7 +19,7 @@ public interface MemberService {
 
     Member findByKakaoId(String id);
 
-    boolean logout(String accessToken);
+    boolean logout(String accessToken, String fcmToken);
 
     boolean updatePin(String kakaoId, String pin);
 
@@ -33,4 +33,6 @@ public interface MemberService {
     String getSelfProfileURL(String kakaoId);
 
     ResponseEntity<?> searchMember(String email) throws JsonProcessingException;
+
+    void saveFcmToken(String kakaoId, String fcmTokenString);
 }

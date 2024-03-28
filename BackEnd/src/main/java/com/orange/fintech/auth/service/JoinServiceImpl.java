@@ -3,20 +3,23 @@ package com.orange.fintech.auth.service;
 import com.orange.fintech.auth.dto.JoinDto;
 import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.jwt.JWTUtil;
+import com.orange.fintech.member.entity.FcmToken;
 import com.orange.fintech.member.entity.Member;
+import com.orange.fintech.member.repository.FcmTokenRepository;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.redis.service.RedisService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.UnexpectedRollbackException;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Transactional
@@ -25,6 +28,7 @@ import java.util.Date;
 public class JoinServiceImpl implements JoinService {
 
     @Autowired private final MemberRepository memberRepository;
+    @Autowired private final FcmTokenRepository fcmTokenRepository;
     @Autowired private final RedisService redisService;
     @Autowired private final JWTUtil jWTUtil;
 
@@ -44,15 +48,12 @@ public class JoinServiceImpl implements JoinService {
         boolean doesFCMTokenExists = joinDto.getFcmToken() == null ? false : true;
 
         try {
+            // 1. Member 저장
             member = memberRepository.findByKakaoId(id);
 
             // 이미 존재하는 회원이 있는 경우 액세스 토큰 발급, FCM 토큰 저장 (회원가입 진행 X)
             if (member == null) {
                 member = new Member();
-            }
-
-            if (joinDto.getFcmToken() != null) {
-                member.setFcmToken(joinDto.getFcmToken());
             }
 
             member.setKakaoId(id);
@@ -61,7 +62,23 @@ public class JoinServiceImpl implements JoinService {
             member.setProfileImage(profileImageUrl);
             member.setThumbnailImage(thumbnailImageUrl);
 
-            memberRepository.save(member);
+            member = memberRepository.save(member);
+
+            // 2. FCM Token 저장
+            if (joinDto.getFcmToken() != null
+                    && !fcmTokenRepository.existsByFcmToken(joinDto.getFcmToken())) {
+                FcmToken fcmToken = new FcmToken();
+
+                fcmToken.setFcmToken(joinDto.getFcmToken());
+                fcmToken.setMember(member);
+
+                try {
+                    fcmTokenRepository.save(fcmToken);
+                } catch (DataIntegrityViolationException
+                        | UnexpectedRollbackException e) { // 중복 레코드 발생 -> 저장 스킵
+                    e.printStackTrace();
+                }
+            }
 
             Date expiredDate = Date.from(Instant.now().plus(30, ChronoUnit.DAYS)); // 30일
             // 엑세스 토큰
