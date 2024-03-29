@@ -8,9 +8,11 @@ import com.orange.fintech.account.dto.UpdateAccountDto;
 import com.orange.fintech.account.entity.Account;
 import com.orange.fintech.account.repository.AccountQueryRepository;
 import com.orange.fintech.account.repository.AccountRepository;
+import com.orange.fintech.common.exception.AccountWithdrawalException;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.member.service.MemberService;
+import com.orange.fintech.payment.dto.ReceiptRequestDto;
 import com.orange.fintech.payment.entity.Transaction;
 import com.orange.fintech.payment.entity.TransactionDetail;
 import com.orange.fintech.payment.repository.TransactionDetailRepository;
@@ -19,6 +21,7 @@ import com.orange.fintech.util.AccountDateTimeUtil;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
@@ -27,7 +30,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.web.client.RestClient;
 
 @Slf4j
@@ -43,6 +50,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired MemberService memberService;
 
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    private String[] cardCompanyList = {"신한", "하나", "국민"};
+
     @Value("${ssafy.bank.search.accounts}")
     private String searchAccountsUrl;
 
@@ -54,6 +65,14 @@ public class AccountServiceImpl implements AccountService {
 
     @Value("${ssafy.bank.api-key}")
     private String apiKey;
+
+    @Value("${ssafy.bank.inquire.account.balance}")
+    private String inquireAccountBalanceUrl;
+
+    @Value("${ssafy.bank.drawing.transfer}")
+    private String drawingTransferUrl;
+
+    Random random = new Random();
 
     @Override
     public boolean insertAccount(String kakaoId, Account account) {
@@ -356,5 +375,160 @@ public class AccountServiceImpl implements AccountService {
         }
 
         return response;
+    }
+
+    @Override
+    public String inquireAccountBalance(Member member, Account primaryAccount)
+            throws ParseException {
+        // 1-1. SSAFY Bank API 호출을 위한 Body 객체 생성
+        Map<String, Object> requestBody = new HashMap<>();
+
+        // 1-2. 'Body에 넣을' Header value 객체 생성 및 추가
+        ReqHeader reqHeader = createHeader(member.getUserKey(), inquireAccountBalanceUrl);
+        requestBody.put("Header", reqHeader);
+
+        // 1-3. Body에 "Header"를 제외한 다른 key-value 쌍 추가
+        requestBody.put("bankCode", primaryAccount.getBankCode());
+        requestBody.put("accountNo", primaryAccount.getAccountNo());
+
+        // 2-1. SSAFY Bank API 호출
+        RestClient restClient = RestClient.create();
+        RestClient.ResponseSpec response =
+                restClient.post().uri(inquireAccountBalanceUrl).body(requestBody).retrieve();
+
+        // 2-2. 응답 코드 해석
+        ResponseEntity<?> responseEntity = response.toEntity(String.class);
+        String responseBody = responseEntity.getBody().toString();
+
+        return responseBody;
+    }
+
+    @Override
+    public void addSingleDummyTranactionRecord(String kakaoId, ReceiptRequestDto receiptRequestDto)
+            throws ParseException, AccountWithdrawalException {
+        Member member = memberService.findByKakaoId(kakaoId);
+
+        try {
+            // 1. 거래일시 파싱 (예: 2024-01-23 22:51:01 -> 2024-01-23 / 22:51:01)
+            // 1-1. 문자열을 LocalDate 객체로 파싱
+            LocalDate transactionDate =
+                    LocalDate.parse(receiptRequestDto.getDate(), dateTimeFormatter);
+
+            // 1-2. 문자열을 LocalTime 객체로 파싱
+            LocalTime transactionTime =
+                    LocalTime.parse(receiptRequestDto.getDate(), dateTimeFormatter);
+
+            Transaction transaction =
+                    transactionRepository.findReceiptApostropheForeignkey(
+                            transactionDate, transactionTime, kakaoId);
+
+            // 2. 업로드한 영수증에 해당하는 결제 정보 (Record)를 Transaction 테이블에서 찾을 수 없는 경우 추가
+            if (transaction == null) {
+                // 2-1-1. SSAFY Bank API 호출을 위한 Body 객체 생성
+                Map<String, Object> requestBody = new HashMap<>();
+
+                // 2-1-2. 'Body에 넣을' Header value 객체 생성 및 추가
+                ReqHeader reqHeader = createHeader(member.getUserKey(), drawingTransferUrl);
+                requestBody.put("Header", reqHeader);
+
+                // 2-1-3. Body에 "Header"를 제외한 다른 key-value 쌍 추가
+                Account primaryAccount = accountRepository.findPrimaryAccountByKakaoId(member);
+                random.setSeed(System.currentTimeMillis());
+                String transactionSummary = cardCompanyList[random.nextInt(3)] + "체크승인";
+
+                requestBody.put("bankCode", primaryAccount.getBankCode());
+                requestBody.put("accountNo", primaryAccount.getAccountNo());
+                requestBody.put("transactionBalance", receiptRequestDto.getApprovalAmount());
+                requestBody.put(
+                        "transactionSummary",
+                        transactionSummary); // "신한", "하나", "국민" 중 1개 카드사 + "체크승인" (예: 신한체크승인)
+
+                // 2-1-4. SSAFY Bank API 호출
+                RestClient restClient = RestClient.create();
+                RestClient.ResponseSpec response =
+                        restClient.post().uri(drawingTransferUrl).body(requestBody).retrieve();
+
+                ResponseEntity<?> responseEntity = response.toEntity(String.class);
+                String responseBody = responseEntity.getBody().toString();
+                HttpStatusCode statusCode = responseEntity.getStatusCode();
+
+                // 2-1-5. drawingTransferParser 추출
+                JSONParser drawingTransferParser = new JSONParser();
+                JSONObject drawingTransferJsonObject =
+                        (JSONObject) drawingTransferParser.parse(responseBody);
+                JSONObject drawingTransferRec = (JSONObject) drawingTransferJsonObject.get("REC");
+                String drawingTransferTransactionUniqueNo =
+                        (String) drawingTransferRec.get("transactionUniqueNo");
+
+                // 2-2. 출금 성공
+                log.info("//2-2. 출금 성공");
+                if (statusCode.is2xxSuccessful()) {
+                    JSONParser parser = new JSONParser();
+                    JSONObject jsonObject = (JSONObject) parser.parse(responseBody);
+                    JSONObject responseHeader = (JSONObject) jsonObject.get("Header");
+
+                    // 2-2-1. 잔액 조회 응답 Body 해석
+                    String inquireAccountBalanceResponseBody =
+                            inquireAccountBalance(member, primaryAccount);
+
+                    JSONParser inquireAccountBalanceParser = new JSONParser();
+                    JSONObject inquireAccountJsonObject =
+                            (JSONObject)
+                                    inquireAccountBalanceParser.parse(
+                                            inquireAccountBalanceResponseBody);
+                    JSONObject inquireAccountResponseHeader =
+                            (JSONObject) inquireAccountJsonObject.get("Header");
+                    String inquireAccountResponseCode =
+                            (String) inquireAccountResponseHeader.get("responseCode");
+
+                    JSONObject REC = (JSONObject) inquireAccountJsonObject.get("REC");
+
+                    // Transaction 테이블에 결제 정보 레코드 추가
+                    transaction = new Transaction();
+
+                    try {
+                        transaction.setMember(member);
+                        transaction.setAccount(primaryAccount);
+                        transaction.setTransactionUniqueNo(
+                                Integer.parseInt(drawingTransferTransactionUniqueNo));
+                        // transaction.setTransactionAccountNo();    //Null
+                        transaction.setTransactionDate(transactionDate);
+                        transaction.setTransactionTime(transactionTime);
+                        transaction.setTransactionType(String.valueOf(2)); // 1: 입금, 2: 출금
+                        transaction.setTransactionTypeName("출금");
+                        transaction.setTransactionBalance(
+                                Long.valueOf(receiptRequestDto.getApprovalAmount()));
+                        transaction.setTransactionAfterBalance(
+                                Long.parseLong(REC.get("accountBalance").toString()));
+                        transaction.setTransactionSummary(transactionSummary);
+                        // transaction.setTransactionDetail();   //Null
+
+                        transactionRepository.save(transaction);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    throw new AccountWithdrawalException();
+                }
+            }
+
+            // 3. 업로드한 영수증에 해당하는 결제 정보 (Record)를 Transaction 테이블에서 찾은 경우 -> 스킵
+        } catch (DataIntegrityViolationException | UnexpectedRollbackException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void addDummyTranactionRecord(
+            String kakaoId, List<ReceiptRequestDto> receiptRequestDtoList) throws ParseException {
+        for (ReceiptRequestDto receiptRequestDto : receiptRequestDtoList) {
+            try {
+                addSingleDummyTranactionRecord(kakaoId, receiptRequestDto);
+            } catch (DataIntegrityViolationException
+                    | UnexpectedRollbackException e) { // 중복 레코드 발생 -> 저장 스킵
+            } catch (Exception e) {
+            }
+        }
     }
 }

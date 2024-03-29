@@ -46,6 +46,7 @@ public class JoinServiceImpl implements JoinService {
         Member member = null;
         HttpHeaders responseHeaders = new HttpHeaders();
         boolean doesFCMTokenExists = joinDto.getFcmToken() == null ? false : true;
+        boolean isNewMember = false;
 
         try {
             // 1. Member 저장
@@ -54,6 +55,8 @@ public class JoinServiceImpl implements JoinService {
             // 이미 존재하는 회원이 있는 경우 액세스 토큰 발급, FCM 토큰 저장 (회원가입 진행 X)
             if (member == null) {
                 member = new Member();
+
+                isNewMember = true;
             }
 
             member.setKakaoId(id);
@@ -98,15 +101,32 @@ public class JoinServiceImpl implements JoinService {
             redisService.save(id, refreshToken);
 
             responseHeaders.set("Authorization", "Bearer " + accessToken);
+            log.info("accessToken: " + accessToken);
 
             if (doesFCMTokenExists) {
-                return ResponseEntity.ok()
-                        .headers(responseHeaders)
-                        .body(BaseResponseBody.of(200, "정상 가입"));
+                if (isNewMember) {
+                    // FCM Token 있음 + 신규 가입
+                    return ResponseEntity.status(201)
+                            .headers(responseHeaders)
+                            .body(BaseResponseBody.of(201, "신규 가입"));
+                } else {
+                    // FCM Token 있음 + 기존 회원 로그인
+                    return ResponseEntity.status(200)
+                            .headers(responseHeaders)
+                            .body(BaseResponseBody.of(200, "정상 로그인"));
+                }
             } else {
-                return ResponseEntity.ok()
-                        .headers(responseHeaders)
-                        .body(BaseResponseBody.of(200, "FCM 토큰 없이 가입"));
+                if (isNewMember) {
+                    // FCM Token 없음 + 신규 가입
+                    return ResponseEntity.status(201)
+                            .headers(responseHeaders)
+                            .body(BaseResponseBody.of(201, "신규 가입 (FCM 토큰 없음)"));
+                } else {
+                    // FCM Token 없음 + 기존 회원 로그인
+                    return ResponseEntity.status(200)
+                            .headers(responseHeaders)
+                            .body(BaseResponseBody.of(200, "정상 로그인 (FCM 토큰 없음)"));
+                }
             }
         } catch (Exception e) {
             log.info(e.getMessage());

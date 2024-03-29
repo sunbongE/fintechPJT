@@ -33,7 +33,7 @@ void backgroundHandler(NotificationResponse details) {
 void initializeNotification() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print("포그라운드에서 메시지 수신: ${message.messageId}");
+    print("포그라운드에서 1212메시지 수신: ${message}");
   });
 
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -97,7 +97,6 @@ Future<void> main() async {
   }, onError: (Object err) {
     log("err: $err");
   });
-
   print('키 해시: ${await KakaoSdk.origin}');
   // LD8/P2w/Yz8/Pz8K
 

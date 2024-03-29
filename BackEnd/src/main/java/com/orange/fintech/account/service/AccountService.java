@@ -5,7 +5,9 @@ import com.orange.fintech.account.dto.ReqHeader;
 import com.orange.fintech.account.dto.TransactionResDto;
 import com.orange.fintech.account.dto.UpdateAccountDto;
 import com.orange.fintech.account.entity.Account;
+import com.orange.fintech.common.exception.AccountWithdrawalException;
 import com.orange.fintech.member.entity.Member;
+import com.orange.fintech.payment.dto.ReceiptRequestDto;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalTime;
 import java.util.List;
@@ -36,5 +38,14 @@ public interface AccountService {
             @NotNull LocalTime transactionTime)
             throws ParseException;
 
-    List<TransactionResDto> readAllOrUpdateTransation(String memberId) throws ParseException;
+    List<TransactionResDto> readAllOrUpdateTransation(String memberId)
+            throws ParseException, AccountWithdrawalException;
+
+    String inquireAccountBalance(Member member, Account primaryAccount) throws ParseException;
+
+    void addSingleDummyTranactionRecord(String kakaoId, ReceiptRequestDto receiptRequestDto)
+            throws ParseException, AccountWithdrawalException;
+
+    void addDummyTranactionRecord(String kakaoId, List<ReceiptRequestDto> receiptRequestDtoList)
+            throws ParseException;
 }

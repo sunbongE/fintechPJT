@@ -1,9 +1,14 @@
 import "package:flutter/material.dart";
+import 'package:front/components/split/SplitDoing.dart';
+import 'package:front/screen/SplitMain.dart';
 import 'package:front/screen/groupscreens/GroupAdd.dart'; // Group 클래스를 import
 import 'package:front/screen/groupscreens/GroupItem.dart';
 import 'package:front/components/groups/GroupCard.dart';
 import 'package:front/const/colors/Colors.dart';
 import '../../entities/Group.dart';
+import '../../models/LoadingDialog.dart';
+import '../../repository/api/ApiGroup.dart';
+import '../split/SplitDone.dart';
 
 
 class GroupList extends StatefulWidget {
@@ -33,10 +38,44 @@ class _GroupListState extends State<GroupList> {
 
 
   void navigateToGroupDetail(Group group) async {
-    final modifiedGroup = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
+    showDialog(
+      context: context,
+      barrierDismissible: false, // 사용자가 다이얼로그 바깥을 탭해도 닫히지 않도록 설정
+      builder: (BuildContext context) => const LoadingDialog(),
     );
+    String status = await fetchGroupStatus(group.groupId!);
+    Navigator.pop(context);
+
+    var modifiedGroup;
+    switch (status) {
+      case 'before':
+        modifiedGroup = await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
+        );
+        break;
+      case 'ready':
+        modifiedGroup = await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
+        );
+        break;
+      case 'doing':
+        modifiedGroup = await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
+        );
+        break;
+      case 'done':
+        modifiedGroup = await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
+        );
+        break;
+      default:
+      // 예외 처리
+        break;
+    }
 
     if (modifiedGroup != null) {
       setState(() {

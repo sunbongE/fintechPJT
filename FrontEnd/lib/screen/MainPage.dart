@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/mains/MainPastTravel.dart';
 import 'package:front/components/mains/MainNowTravel.dart';
 import 'package:lottie/lottie.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../entities/Group.dart';
 import 'package:front/repository/api/ApiGroup.dart';
 
@@ -45,6 +46,14 @@ class _MainPageState extends State<MainPage> {
       print("그룹 데이터를 불러오는 데 실패했습니다.");
     }
   }
+  // void _launchURL() async {
+  //   final Uri _url = Uri.parse('yeojung://example.com');
+  //   if (await canLaunchUrl(_url)) {
+  //     await launchUrl(_url);
+  //   } else {
+  //     throw 'Could not launch $_url';
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +97,10 @@ class _MainPageState extends State<MainPage> {
             Expanded(
               child: NowTravelList(groups: groups),
             ),
+            // Expanded(child: ElevatedButton(
+            //   onPressed: _launchURL,
+            //   child: Text('Open yeojung://example.com'),
+            // ),),
             Expanded(
               child: PastTravelList(groups: groups),
             ),

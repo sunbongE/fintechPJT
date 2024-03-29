@@ -41,21 +41,18 @@ class _LoginState extends State<Login> {
                       print(user);
                       if (user != null) {
                         Response res = await postUserInfo(user);
-                        print(res);
+                        print(1111111);
                         print(res.headers['Authorization']!.first);
                         UserManager().saveUserInfo(
                           newName: user.kakaoAccount?.name,
                           newEmail: user.kakaoAccount?.email,
-                          newThumbnailImageUrl:
-                              user.kakaoAccount?.profile?.thumbnailImageUrl,
-                          newProfileImageUrl:
-                              user.kakaoAccount?.profile?.profileImageUrl,
+                          newThumbnailImageUrl: user.kakaoAccount?.profile?.thumbnailImageUrl,
+                          newProfileImageUrl: user.kakaoAccount?.profile?.profileImageUrl,
                           newJwtToken: res.headers['Authorization']!.first,
                         );
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => ServiceIntro()),
+                          MaterialPageRoute(builder: (context) => ServiceIntro()),
                           (Route<dynamic> route) => false,
                         );
                       } else {
@@ -72,8 +69,7 @@ class _LoginState extends State<Login> {
                       width: 500,
                     ),
                     style: ButtonStyle(
-                      overlayColor: MaterialStateColor.resolveWith(
-                          (states) => Colors.transparent),
+                      overlayColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
                     ),
                   ),
                 ),

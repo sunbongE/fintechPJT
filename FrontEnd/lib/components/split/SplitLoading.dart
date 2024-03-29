@@ -4,7 +4,8 @@ import 'package:lottie/lottie.dart';
 import '../../const/colors/Colors.dart';
 
 class SplitLoading extends StatefulWidget {
-  const SplitLoading({super.key});
+  final groupId;
+  const SplitLoading({super.key, this.groupId});
 
   @override
   State<SplitLoading> createState() => _SplitLoadingState();
