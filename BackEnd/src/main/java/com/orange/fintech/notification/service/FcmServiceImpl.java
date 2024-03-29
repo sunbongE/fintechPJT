@@ -1,6 +1,5 @@
 package com.orange.fintech.notification.service;
 
-import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.common.notification.NotificationResponseDescription;
 import com.orange.fintech.common.notification.NotificationResponseTitle;
 import com.orange.fintech.group.repository.GroupRepository;
@@ -20,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,14 +34,13 @@ public class FcmServiceImpl implements FcmService {
     @Autowired NotificationQueryRepository notificationQueryRepository;
 
     @Override
-    public ResponseEntity<?> pushListDataMSG(messageListDataReqDto dto, String memberId)
-            throws IOException {
+    public void pushListDataMSG(messageListDataReqDto dto, String memberId) throws IOException {
         // fcmToken이 없는 사람은 없다고 알려줘야하는데 이건 DB에만 알려줘야겠다.
         // 토큰이 없는 경우는 없다고 가정한다.
 
-        if (!groupRepository.existsById(dto.getGroupId())) {
-            return ResponseEntity.badRequest().body(BaseResponseBody.of(400, "그룹이 없습니다"));
-        }
+        //        if (!groupRepository.existsById(dto.getGroupId())) {
+        //            return ResponseEntity.badRequest().body(BaseResponseBody.of(400, "그룹이 없습니다"));
+        //        }
         String sender = memberRepository.findById(memberId).get().getName();
 
         List<String> kakaoIdList = dto.getInviteMembers();
@@ -79,6 +76,6 @@ public class FcmServiceImpl implements FcmService {
             }
         }
         //        log.info("fcm {}번 발생 ",cnt,sender);
-        return ResponseEntity.ok().body(BaseResponseBody.of(200, "DB저장 후, FCM 보냈습니다."));
+        //        return ResponseEntity.ok().body(BaseResponseBody.of(200, "DB저장 후, FCM 보냈습니다."));
     }
 }

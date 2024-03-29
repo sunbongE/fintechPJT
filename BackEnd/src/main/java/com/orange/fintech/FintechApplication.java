@@ -2,7 +2,9 @@ package com.orange.fintech;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 
+@EnableAsync
 @SpringBootApplication
 public class FintechApplication {
     // 에러 1) java.net.SocketException: Network is unreachable
