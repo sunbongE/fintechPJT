@@ -6,7 +6,7 @@ import 'package:share_plus/share_plus.dart';
 
 
 class FirstInviteModal {
-  static void showInviteModal(BuildContext context, Group newGroup) {
+  static void showInviteModal(BuildContext context, String response) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -15,18 +15,23 @@ class FirstInviteModal {
           content: Text('링크를 공유해서 친구들을 초대해보세요'),
           actions: [
             ElevatedButton(
-              onPressed: sharePressed,
+              onPressed: () => sharePressed(response),
               child: Text('공유하기'),
             ),
           ],
         );
       },
     );
+
   }
 
-  static void sharePressed() {
-    String message = '공유가 완료되었습니다.';
+  static void sharePressed(String groupId) {
+    String baseUrl = 'https://yourapp.com'; // 여기에 앱이나 웹서비스의 기본 URL을 넣으세요.
+    String inviteLink = 'http://j10c203.p.ssafy.io:8080/api/v1/groups/$groupId/invite';
+
+    String message = '친구를 그룹에 초대하세요! 링크를 클릭하면 그룹에 참여하게 됩니다: $inviteLink';
     Share.share(message);
+
   }
 }
 //   static void _kakaoShare(BuildContext context, Group newGroup) async {

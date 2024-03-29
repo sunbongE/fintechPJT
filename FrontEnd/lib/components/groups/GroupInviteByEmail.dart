@@ -17,16 +17,7 @@ void groupInviteByEmail(BuildContext context, Group group) {
             children: <Widget>[
               GroupEmailFindField(
                 controller: _emailController,
-                // onFound: (GroupMember? member) {
-                //   invitedMember = member;
-                // },
               ),
-              // 멤버 정보가 있으면 표시
-              // if (invitedMember != null) ...[
-              //   Text('이름: ${invitedMember.name}'),
-              //   SizedBox(height: 10),
-              //   Image.network(invitedMember.thumbnailImage),
-              // ]
             ],
           ),
         ),
@@ -40,11 +31,7 @@ void groupInviteByEmail(BuildContext context, Group group) {
           TextButton(
             child: Text('초대하기'),
             onPressed: () {
-              // if (invitedMember != null) {
-              //   // 초대 알림 보내기 로직 구현
-              //   print('${invitedMember.name}에게 초대 알림을 보냈습니다.');
-              //   Navigator.of(context).pop();
-              // }
+              Navigator.of(context).pop();
             },
           ),
         ],

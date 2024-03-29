@@ -72,13 +72,7 @@ class _MainPageState extends State<MainPage> {
               ],
             ),
           ),
-          // if (groups.isEmpty) // isLoading 대신 groups.isEmpty 조건을 사용합니다.
-          //   Expanded(
-          //     child: Center(
-          //       child: CircularProgressIndicator(),
-          //     ),
-          //   )
-          // else ...[
+
           isLoading?
           Center(
             child: Column(

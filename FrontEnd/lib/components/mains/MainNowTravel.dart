@@ -21,7 +21,7 @@ class _NowTravelListState extends State<NowTravelList> {
   void navigateToGroupDetail(Group group) async {
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => GroupItem(group: group)),
+      MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
     );
   }
 
