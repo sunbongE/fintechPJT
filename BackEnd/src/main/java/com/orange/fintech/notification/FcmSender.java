@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -38,7 +39,7 @@ public class FcmSender {
 
         Response response = client.newCall(request).execute();
 
-        log.info("[FCM_Log] => {}",response.body().string());
+        log.info("[FCM_Log] => {}", response.body().string());
     }
 
     private String makeMessage(FCMMessageDto fcmMessageDto)

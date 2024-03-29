@@ -42,8 +42,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
 
     @Autowired FileService fileService;
-    @Autowired
-    GroupRedisService groupRedisService;
+    @Autowired GroupRedisService groupRedisService;
 
     @Autowired MemberService memberService;
 

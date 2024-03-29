@@ -13,9 +13,7 @@ import com.orange.fintech.notification.entity.Notification;
 import com.orange.fintech.notification.entity.NotificationType;
 import com.orange.fintech.notification.repository.NotificationQueryRepository;
 import com.orange.fintech.notification.repository.NotificationRepository;
-
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
