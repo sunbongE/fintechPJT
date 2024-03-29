@@ -1,12 +1,16 @@
 package com.orange.fintech.notification.controller;
 
+import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.notification.Dto.MessageListDataReqDto;
 import com.orange.fintech.notification.FcmSender;
 import com.orange.fintech.notification.service.FcmService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.io.IOException;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +46,25 @@ public class FCMController {
         } catch (Exception e) {
             e.printStackTrace();
             //            return ResponseEntity.internalServerError().body("서버 에러");
+        }
+    }
+
+    @GetMapping()
+    @Operation(summary = "개인 알림 받기.", description = "받은알림을 모두 조회한다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "정상 반환"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> getIndividualNotification(Principal principal) throws IOException {
+        String memberId = principal.getName();
+        try {
+
+            return fcmService.getIndividualNotification(memberId);
+            //            return fcmService.pushListDataMSG(dto, memberId);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(BaseResponseBody.of(500, "서버 에러"));
         }
     }
 

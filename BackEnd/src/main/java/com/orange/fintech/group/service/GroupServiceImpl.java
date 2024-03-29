@@ -208,34 +208,7 @@ public class GroupServiceImpl implements GroupService {
         targetGroupMember.setFistCallDone(!targetGroupMember.getFistCallDone());
 
         groupMemberRepository.save(targetGroupMember);
-        // Todo : 여행정산요청을 그룹에 포함된 모든 회원들에게 보낸다.(DATA : groupId)
-        // A : 같은 그룹에 1차 정산 내역 요청을 누른 사람들
-        int countFirstcallGroupMembers = groupQueryRepository.countFirstcallGroupMembers(groupId);
-        // T : 같은 그룹에 전체 인원수
-        int countGroupMembers = groupQueryRepository.countGroupMembers(groupId);
-
-        log.info("전체인원 : {}, 1차 누른 인원: {}", countGroupMembers, countFirstcallGroupMembers);
-
-        // A와 T가 같은지 비교해서 같으면 알림fcm 함수를 실행시킨다.
-        if (countGroupMembers == countFirstcallGroupMembers) {
-            // Todo : fcm보내기! 현재회원이 들어간 그룹의 그룹원들의 kakaoId를 이용해서 fcm_token추출
-
-            List<GroupMembersDto> groupMembersDtos =
-                    groupQueryRepository.firstcallMembersOnlyKakaoId(groupId);
-            List<String> kakaoIdList = new ArrayList<>();
-            for (GroupMembersDto groupMembersDto : groupMembersDtos) {
-                kakaoIdList.add(groupMembersDto.getKakaoId());
-            }
-            log.info("결과들 : {}", kakaoIdList);
-            MessageListDataReqDto messageListDataReqDto = new MessageListDataReqDto();
-            messageListDataReqDto.setGroupId(groupId);
-            messageListDataReqDto.setInviteMembers(kakaoIdList);
-            messageListDataReqDto.setNotificationType(NotificationType.SPLIT);
-
-            fcmService.pushListDataMSG(messageListDataReqDto);
-            group.setGroupStatus(GroupStatus.SPLIT);
-            log.info("다 보냈어 ");
-        }
+        groupStatusChangeAndFcm(group);
         //        throw new RuntimeException("일단 멈춰봐.");
         //        return true;
     }
@@ -316,5 +289,37 @@ public class GroupServiceImpl implements GroupService {
             return false;
         }
         return true;
+    }
+
+    public void groupStatusChangeAndFcm(Group group) throws IOException {
+        // Todo : 여행정산요청을 그룹에 포함된 모든 회원들에게 보낸다.(DATA : groupId)
+        // A : 같은 그룹에 1차 정산 내역 요청을 누른 사람들
+        int countFirstcallGroupMembers =
+                groupQueryRepository.countFirstcallGroupMembers(group.getGroupId());
+        // T : 같은 그룹에 전체 인원수
+        int countGroupMembers = groupQueryRepository.countGroupMembers(group.getGroupId());
+
+        log.info("전체인원 : {}, 1차 누른 인원: {}", countGroupMembers, countFirstcallGroupMembers);
+
+        // A와 T가 같은지 비교해서 같으면 알림fcm 함수를 실행시킨다.
+        if (countGroupMembers == countFirstcallGroupMembers) {
+            // Todo : fcm보내기! 현재회원이 들어간 그룹의 그룹원들의 kakaoId를 이용해서 fcm_token추출
+
+            List<GroupMembersDto> groupMembersDtos =
+                    groupQueryRepository.firstcallMembersOnlyKakaoId(group.getGroupId());
+            List<String> kakaoIdList = new ArrayList<>();
+            for (GroupMembersDto groupMembersDto : groupMembersDtos) {
+                kakaoIdList.add(groupMembersDto.getKakaoId());
+            }
+            log.info("결과들 : {}", kakaoIdList);
+            MessageListDataReqDto messageListDataReqDto = new MessageListDataReqDto();
+            messageListDataReqDto.setGroupId(group.getGroupId());
+            messageListDataReqDto.setInviteMembers(kakaoIdList);
+            messageListDataReqDto.setNotificationType(NotificationType.SPLIT);
+
+            fcmService.pushListDataMSG(messageListDataReqDto);
+            group.setGroupStatus(GroupStatus.SPLIT);
+            log.info("다 보냈어 ");
+        }
     }
 }
