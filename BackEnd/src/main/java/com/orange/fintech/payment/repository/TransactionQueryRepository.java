@@ -188,27 +188,50 @@ public class TransactionQueryRepository {
         return res;
     }
 
-    public long sumOfTotalAmount(int groupId, String memberId) {
-        long res =
-                jpaQueryFactory
-                        .select(transactionMember.totalAmount.sum())
-                        .from(transaction)
-                        .join(transactionMember)
-                        .on(transaction.eq(transactionMember.transactionMemberPK.transaction))
-                        .join(transactionDetail)
-                        .on(transactionDetail.transaction.eq(transaction))
-                        .where(
-                                transactionDetail
-                                        .group
-                                        .groupId
-                                        .eq(groupId)
-                                        .and(
-                                                transactionMember.transactionMemberPK.member.kakaoId
-                                                        .eq(memberId)))
-                        .fetchOne();
+    /**
+     * @param condition 조건 (SEND-보내야할 금액, RECEIVE-줘야할 금액)
+     * @return
+     */
+    public BooleanExpression getSumOfTotalAmountCondition(
+            int groupId, String memberId, String condition) {
+        BooleanExpression expression;
+        if (condition.equals("SEND")) {
+            expression =
+                    transactionDetail
+                            .group
+                            .groupId
+                            .eq(groupId)
+                            .and(transactionMember.transactionMemberPK.member.kakaoId.eq(memberId))
+                            .and(transaction.member.kakaoId.ne(memberId));
+        } else { // "RECEIVE"
+            expression =
+                    transactionDetail
+                            .group
+                            .groupId
+                            .eq(groupId)
+                            .and(transactionMember.transactionMemberPK.member.kakaoId.ne(memberId))
+                            .and(transaction.member.kakaoId.eq(memberId));
+        }
 
-        log.info("sumOfTotalAmount: {}", res);
-        return res;
+        return expression;
+    }
+
+    /**
+     * @param groupId 계산할 그룹 아이디
+     * @param memberId 내 아이디
+     * @param expression 조건 (SEND-보내야할 금액, RECEIVE-줘야할 금액)
+     * @return
+     */
+    public long sumOfTotalAmount(int groupId, String memberId, BooleanExpression expression) {
+        return jpaQueryFactory
+                .select(transactionMember.totalAmount.sum())
+                .from(transaction)
+                .join(transactionMember)
+                .on(transaction.eq(transactionMember.transactionMemberPK.transaction))
+                .join(transactionDetail)
+                .on(transactionDetail.transaction.eq(transaction))
+                .where(expression)
+                .fetchOne();
     }
 
     public int sumOfRemainder(int groupId) {
