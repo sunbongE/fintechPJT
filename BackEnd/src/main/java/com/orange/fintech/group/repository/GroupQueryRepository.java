@@ -8,7 +8,6 @@ import static com.orange.fintech.member.entity.QMember.*;
 import com.orange.fintech.group.dto.GroupMembersDto;
 import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.member.entity.FcmToken;
-import com.orange.fintech.member.repository.MemberRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -25,9 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class GroupQueryRepository {
 
-    private final GroupRepository groupRepository;
     private final JPAQueryFactory queryFactory;
-    private final MemberRepository memberRepository;
 
     public List<Group> findAllMyGroup(String kakaoId) {
 

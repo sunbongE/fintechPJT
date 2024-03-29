@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -124,5 +125,14 @@ public class FcmServiceImpl implements FcmService {
                 fcmSender.sendMessageTo(fcmMessageDto);
             }
         }
+    }
+
+    @Override
+    public ResponseEntity<?> getIndividualNotification(String memberId) {
+        Member member = new Member();
+        member.setKakaoId(memberId);
+        List<Notification> individualNotifications = notificationRepository.findAllByMember(member);
+
+        return ResponseEntity.ok().body(individualNotifications);
     }
 }

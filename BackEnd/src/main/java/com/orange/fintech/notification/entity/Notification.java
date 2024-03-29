@@ -1,6 +1,7 @@
 package com.orange.fintech.notification.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.member.entity.Member;
 import jakarta.persistence.*;
@@ -20,12 +21,14 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int individualNotificationId;
 
-    @ManyToOne
+    @JsonIgnore()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "kakao_id")
     private Member member;
 
     @NotNull
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
 
@@ -40,7 +43,7 @@ public class Notification {
     @NotNull
     @JsonFormat(
             shape = JsonFormat.Shape.STRING,
-            pattern = "yyyyMMdd HHmmss",
+            pattern = "yyyy-MM-dd HH:mm:ss",
             timezone = "Asia/Seoul")
     @CreationTimestamp
     private LocalDateTime time;
@@ -48,6 +51,8 @@ public class Notification {
     @NotNull
     @Enumerated(EnumType.STRING)
     private NotificationType type;
+
+    public Notification() {}
 
     public Notification(
             Member memeber,
