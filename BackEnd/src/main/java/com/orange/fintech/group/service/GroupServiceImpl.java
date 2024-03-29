@@ -18,6 +18,7 @@ import com.orange.fintech.payment.entity.TransactionMember;
 import com.orange.fintech.payment.entity.TransactionMemberPK;
 import com.orange.fintech.payment.repository.TransactionDetailRepository;
 import com.orange.fintech.payment.repository.TransactionMemberRepository;
+import com.orange.fintech.payment.service.CalculateService;
 import com.orange.fintech.redis.service.GroupRedisService;
 import java.io.IOException;
 import java.util.ArrayList;

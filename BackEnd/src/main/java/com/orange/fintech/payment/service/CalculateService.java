@@ -18,6 +18,8 @@ public interface CalculateService {
 
     public void transactionSimulation(int[] np, List<Member> plus, List<Member> minus);
 
+    public void transfer(List<CalculateResultDto> calResults, int groupId);
+
     public class Member {
         long amount;
         String kakaoId;
