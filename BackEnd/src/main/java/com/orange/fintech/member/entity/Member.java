@@ -6,12 +6,14 @@ import jakarta.persistence.*;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
 @Setter
+@ToString
 @DynamicInsert
 @Table(name = "member")
 public class Member {
@@ -46,34 +48,5 @@ public class Member {
         this.email = joinDto.getKakaoAccount().getEmail();
         this.name = joinDto.getKakaoAccount().getName();
         this.profileImage = joinDto.getKakaoAccount().getProfile().getProfileImageUrl();
-    }
-
-    @Override
-    public String toString() {
-        return "Member{"
-                + "kakaoId='"
-                + kakaoId
-                + '\''
-                + ", email='"
-                + email
-                + '\''
-                + ", name='"
-                + name
-                + '\''
-                + ", profileImage='"
-                + profileImage
-                + '\''
-                + ", thumbnailImage='"
-                + thumbnailImage
-                + '\''
-                + ", pin='"
-                + pin
-                + '\''
-                + ", userKey='"
-                + userKey
-                + '\''
-                + ", role="
-                + role
-                + '}';
     }
 }

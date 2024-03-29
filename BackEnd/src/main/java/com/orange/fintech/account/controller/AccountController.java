@@ -3,8 +3,10 @@ package com.orange.fintech.account.controller;
 import com.orange.fintech.account.dto.TransactionResDto;
 import com.orange.fintech.account.dto.UpdateAccountDto;
 import com.orange.fintech.account.service.AccountService;
+import com.orange.fintech.auth.dto.CustomUserDetails;
 import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.member.repository.MemberRepository;
+import com.orange.fintech.payment.dto.ReceiptRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -16,7 +18,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -109,4 +113,35 @@ public class AccountController {
     // 에러"));
     //        }
     //    }
+
+    @PostMapping("/dummytransaction")
+    @Operation(
+            summary = "<strong>더미 데이터</strong>결제 내역 추가",
+            description = "<strong>더미 데이터용</strong> 결제 내역을 추가한다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "409", description = "일치하는 결제 내역 없음"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> addDummyTranactionRecord(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestBody List<ReceiptRequestDto> receiptRequestDtoList) {
+        String kakaoId = customUserDetails.getUsername();
+
+        try {
+            accountService.addDummyTranactionRecord(kakaoId, receiptRequestDtoList);
+
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "더미 데이터가 정상 추가되었습니다."));
+        } catch (ParseException e) {
+            e.printStackTrace();
+
+            return ResponseEntity.internalServerError()
+                    .body(BaseResponseBody.of(500, "영수증 저장에 실패했습니다."));
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return ResponseEntity.internalServerError()
+                    .body(BaseResponseBody.of(500, "영수증 저장에 실패했습니다."));
+        }
+    }
 }
