@@ -121,7 +121,7 @@ class _MoneyRequestModifyState extends State<MoneyRequestModify> {
             MoneyRequestItem(
               expense: widget.expense,
               isToggle: false,
-              groupId: widget.expense.groupId ?? 0,
+              groupId: widget.expense.groupId ?? 0, clickable: false,
             ),
             if (request.members.isNotEmpty) ...[
               Row(

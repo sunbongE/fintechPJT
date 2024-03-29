@@ -14,9 +14,10 @@ import '../../screen/MoneyRequests/MoneyRequestDetail.dart';
 class MoneyRequestItem extends StatefulWidget {
   final Expense expense;
   final bool isToggle;
+  final bool clickable;
   final int groupId;
 
-  MoneyRequestItem({Key? key, required this.expense, this.isToggle = true, required this.groupId})
+  MoneyRequestItem({Key? key, required this.expense, this.isToggle = true, required this.groupId, required this.clickable})
       : super(key: key);
 
   @override
@@ -35,19 +36,22 @@ class _MoneyRequestItemState extends State<MoneyRequestItem> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
+      onTap: widget.clickable
+          ? () {
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => MoneyRequestDetail(
-                      expense: widget.expense,
-                      onSuccess: (bool newState) {
-                        setState(() {
-                          isSettled = newState;
-                        });
-                      }, groupId: widget.groupId,
-                    )));
-      },
+                  expense: widget.expense,
+                  onSuccess: (bool newState) {
+                    setState(() {
+                      isSettled = newState;
+                    });
+                  },
+                  groupId: widget.groupId,
+                )));
+      }
+          : null,
       child: Container(
         width: 380.w,
         height: 80.h,

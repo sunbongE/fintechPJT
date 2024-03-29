@@ -25,7 +25,7 @@ class _MoneyRequestListState extends State<MoneyRequestList> {
       itemBuilder: (context, index) {
         return Column(
           children: [
-            MoneyRequestItem(expense: widget.expenses[index],groupId: widget.groupId),
+            MoneyRequestItem(expense: widget.expenses[index],groupId: widget.groupId, clickable: true,),
             Container(
               height: 1.0,
               color: Colors.grey.shade300,
