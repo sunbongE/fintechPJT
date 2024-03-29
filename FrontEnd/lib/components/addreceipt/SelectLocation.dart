@@ -15,7 +15,7 @@ class SelectLocation extends StatefulWidget {
 
 class _SelectLocationState extends State<SelectLocation> {
   late GoogleMapController mapController;
-  final LatLng _center = const LatLng(37.566, 126.978);
+  final LatLng _center = const LatLng(35.202740932924, 126.80713293526);
   LatLng? _lastMapPosition;
   String address = "";
   Timer? _debounce;
@@ -94,7 +94,7 @@ class _SelectLocationState extends State<SelectLocation> {
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(
               target: _center,
-              zoom: 11.0,
+              zoom: 14.0,
             ),
             onCameraMove: _onCameraMove,
             minMaxZoomPreference: MinMaxZoomPreference(5, 20),
@@ -104,8 +104,7 @@ class _SelectLocationState extends State<SelectLocation> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (_isLoading)
-                  Lottie.asset("assets/lotties/orangewalking.json"),
+                if (_isLoading) Lottie.asset("assets/lotties/orangewalking.json"),
                 FittedBox(
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),

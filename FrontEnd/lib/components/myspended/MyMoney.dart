@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:front/const/colors/Colors.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../repository/api/ApiMySpend.dart';
 
@@ -16,8 +17,31 @@ class MyMoney extends StatefulWidget {
 }
 
 class _MyMoneyState extends State<MyMoney> {
-  // 현재 잔액 불러오는 api
-  int myMoneyAmount = 0;
+  List<Map<String, dynamic>> bankInfo = [];
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getMyBankInfo();
+  }
+
+  void getMyBankInfo() async {
+    setState(() {
+      isLoading = true;
+    });
+    final res = await getMyAccount();
+    if (res.data != null && mounted) {
+      setState(() {
+        bankInfo = List<Map<String, dynamic>>.from(res.data).cast<Map<String, dynamic>>();
+        isLoading = false;
+      });
+    } else if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +67,18 @@ class _MyMoneyState extends State<MyMoney> {
               ),
             ),
           ),
-          Text(
-            '${NumberFormat('#,###').format(myMoneyAmount)}원',
-            style: TextStyle(
-              color: TEXT_COLOR,
-              fontSize: 36.sp,
-              fontWeight: FontWeight.bold,
-            ),
-          )
+          isLoading
+              ? SizedBox.shrink()
+              : bankInfo.isNotEmpty
+                  ? Text(
+                      '${NumberFormat('#,###').format(bankInfo[0]['transactionAfterBalance'])}원',
+                      style: TextStyle(
+                        color: TEXT_COLOR,
+                        fontSize: 36.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  : Text('데이터를 불러오는데 실패했습니다.'),
         ],
       ),
     );

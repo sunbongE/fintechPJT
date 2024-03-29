@@ -42,7 +42,15 @@ Future<void> postFcmToken(data) async {
     print('postFcmToken: ${res.data}');
     return res.data;
   } catch (err) {
-    print(err);
+    if (err is DioError) {
+      if (err.response?.statusCode == 409) {
+        print('이미 등록된 FCM 토큰입니다.');
+      } else {
+        print('Error Status Code: ${err.response?.statusCode}');
+      }
+    } else {
+      print(err);
+    }
   }
 }
 

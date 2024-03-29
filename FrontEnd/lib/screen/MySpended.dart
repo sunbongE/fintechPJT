@@ -45,7 +45,7 @@ class _MySpendedState extends State<MySpended> {
                 MyAccount: userManager.selectedAccount!,
               ),
             ),
-            // MySpendList(),
+            MySpendList(),
           ],
         ),
       ),

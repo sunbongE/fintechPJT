@@ -29,9 +29,30 @@ class _LoadingPageState extends State<LoadingPage> {
   @override
   void initState() {
     super.initState();
+    requestPermission();
     _checkForInitialMessage();
     _checkLoginStatus();
     _listenForForegroundMessages();
+  }
+
+  void requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+    print('User granted permission: ${settings.authorizationStatus}');
+    FirebaseMessaging.onMessage.listen(
+      (RemoteMessage message) {
+        print("포그라운드에서 메시지 수신111122121: ${message.messageId}, 데이터: ${message.notification!.title}");
+      },
+    );
   }
 
   // 푸시알림으로 앱이 시작됐을 때 초기 메시지 처리
@@ -54,6 +75,7 @@ class _LoadingPageState extends State<LoadingPage> {
       setState(
         () {
           messageString = message.data.toString();
+          print(messageString);
         },
       );
 
