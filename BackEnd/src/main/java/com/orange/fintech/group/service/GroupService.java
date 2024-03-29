@@ -2,6 +2,7 @@ package com.orange.fintech.group.service;
 
 import com.orange.fintech.group.dto.*;
 import com.orange.fintech.group.entity.Group;
+import java.io.IOException;
 import java.util.List;
 
 public interface GroupService {
@@ -21,7 +22,7 @@ public interface GroupService {
 
     GroupMembersListDto findGroupMembers(int groupId);
 
-    boolean firstcall(int groupId, String memberId);
+    void firstcall(int groupId, String memberId) throws IOException;
 
     boolean secondcall(int groupId, String memberId);
 

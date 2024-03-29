@@ -1,6 +1,6 @@
 package com.orange.fintech.notification.controller;
 
-import com.orange.fintech.notification.Dto.messageListDataReqDto;
+import com.orange.fintech.notification.Dto.MessageListDataReqDto;
 import com.orange.fintech.notification.FcmSender;
 import com.orange.fintech.notification.service.FcmService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +31,7 @@ public class FCMController {
     @Async
     @PostMapping("/group")
     @Operation(summary = "단체 알림 보내기.", description = "알림DB저장, fcm으로 그룹 초대, 단체 알림을 보낸다.")
-    public void pushListDataMSG(@RequestBody messageListDataReqDto dto, Principal principal)
+    public void pushListDataMSG(@RequestBody MessageListDataReqDto dto, Principal principal)
             throws IOException {
         String memberId = principal.getName();
         try {

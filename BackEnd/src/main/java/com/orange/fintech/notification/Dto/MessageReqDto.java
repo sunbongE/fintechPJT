@@ -1,13 +1,13 @@
 package com.orange.fintech.notification.Dto;
 
 import com.orange.fintech.notification.entity.NotificationType;
-import java.util.List;
 import lombok.Data;
 
 @Data
-public class messageListDataReqDto {
+public class MessageReqDto {
 
-    private List<String> inviteMembers;
-    private int groupId;
+    //    private String senderId; principal에서 추출.
+    private String receiverId;
+    private String groupId;
     private NotificationType notificationType;
 }
