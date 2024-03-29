@@ -253,6 +253,9 @@ public class CalculateServiceImpl implements CalculateService {
         }
     }
 
+    @Override
+    public void transfer(List<CalculateResultDto> calResults, int groupId) {}
+
     private boolean np(int[] p) {
         int N = p.length;
         int i = N - 1;

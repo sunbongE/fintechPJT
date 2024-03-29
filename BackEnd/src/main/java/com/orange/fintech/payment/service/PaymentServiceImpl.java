@@ -501,6 +501,13 @@ public class PaymentServiceImpl implements PaymentService {
 
                 receiptDetailRepository.save(receiptDetail);
             }
+
+            // transactionDetail의 receiptEnrolled값 true로 변경
+            TransactionDetail transactionDetail =
+                    transactionDetailRepository.findById(transaction.getTransactionId()).get();
+            transactionDetail.setReceiptEnrolled(true);
+            transactionDetailRepository.save(transactionDetail);
+
         } catch (DataIntegrityViolationException | UnexpectedRollbackException e) {
             e.printStackTrace();
         }
