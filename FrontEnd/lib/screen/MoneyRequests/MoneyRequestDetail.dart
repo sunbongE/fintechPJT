@@ -94,7 +94,7 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
           children: <Widget>[
             MoneyRequestItem(
               expense: widget.expense,
-              isToggle: false, groupId: widget.groupId,
+              isToggle: false, groupId: widget.groupId, clickable: false,
             ),
             if (request.members.isNotEmpty) ...[
               SizedBox(
@@ -106,6 +106,7 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
                 ),
               ),
               Padding(padding: EdgeInsets.symmetric(vertical: 5.w)),
+              SizedButton(btnText: '영수증 보기',size: ButtonSize.l,),
               Expanded(
                 child: SizedBox(
                   //width: 368.w,

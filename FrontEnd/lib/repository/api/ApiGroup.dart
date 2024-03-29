@@ -111,7 +111,7 @@ Future<Response> getMemberByEmail(email) async {
 Future<String> fetchGroupStatus(int groupId) async {
   //현재는 백엔드 코드가 없어서 랜덤으로 출력하는 함수를 만들었습니다.
   var random = Random();
-  List<String> statuses = ['before', 'ready', 'doing', 'done'];
-  await Future.delayed(Duration(milliseconds: 300));
+  List<String> statuses = ['before', 'split', 'doing', 'done'];
+  await Future.delayed(Duration(milliseconds: 200));
   return statuses[random.nextInt(statuses.length)];
 }

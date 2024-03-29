@@ -23,7 +23,7 @@ class Group {
   factory Group.fromJson(Map<String, dynamic> json) {
     // groupMembers 필드가 JSON에 없기 때문에 빈 리스트로 초기화
     List<GroupMember> membersList = [];
-
+    bool isDone = json['groupStatus'] == 'DONE';
     return Group(
       groupId: json['groupId'],
       groupName: json['groupName'],
@@ -31,7 +31,7 @@ class Group {
       startDate: json['startDate'],
       endDate: json['endDate'],
       groupState: json['groupState'],
-      isCalculateDone: json['isCalculateDone'],
+      isCalculateDone: isDone,
       groupMembers: membersList,
     );
   }
