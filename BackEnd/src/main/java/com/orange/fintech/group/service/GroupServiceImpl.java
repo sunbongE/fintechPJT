@@ -13,11 +13,13 @@ import com.orange.fintech.notification.FcmSender;
 import com.orange.fintech.notification.entity.NotificationType;
 import com.orange.fintech.notification.repository.NotificationQueryRepository;
 import com.orange.fintech.notification.service.FcmService;
+import com.orange.fintech.payment.dto.CalculateResultDto;
 import com.orange.fintech.payment.entity.TransactionDetail;
 import com.orange.fintech.payment.entity.TransactionMember;
 import com.orange.fintech.payment.entity.TransactionMemberPK;
 import com.orange.fintech.payment.repository.TransactionDetailRepository;
 import com.orange.fintech.payment.repository.TransactionMemberRepository;
+import com.orange.fintech.payment.service.CalculateService;
 import com.orange.fintech.redis.service.GroupRedisService;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,6 +46,7 @@ public class GroupServiceImpl implements GroupService {
     private final TransactionDetailRepository transactionDetailRepository;
     private final TransactionMemberRepository transactionMemberRepository;
     private final NotificationQueryRepository notificationQueryRepository;
+    private final CalculateService calculateService;
 
     @Override
     public int createGroup(GroupCreateDto dto, String memberId) {
@@ -260,6 +263,12 @@ public class GroupServiceImpl implements GroupService {
         groupMemberRepository.save(targetGroupMember);
 
         return true;
+    }
+
+    @Override
+    public void finalCalculate(int groupId, String memberId) {
+        // 송금하기
+        List<CalculateResultDto> calRes = calculateService.finalCalculator(groupId, memberId);
     }
 
     @Override

@@ -26,6 +26,8 @@ public interface GroupService {
 
     boolean secondcall(int groupId, String memberId);
 
+    void finalCalculate(int groupId, String memberId);
+
     List<GroupMembersDto> firstcallMembers(int groupId);
 
     List<GroupMembersDto> secondcallMembers(int groupId);

@@ -171,6 +171,17 @@ public class GroupQueryRepository {
                         .fetchCount();
     }
 
+    public int countSecondcallGroupMembers(int groupId) {
+        return (int)
+                queryFactory
+                        .select(groupMember)
+                        .from(groupMember)
+                        .where(
+                                groupMember.groupMemberPK.group.groupId.eq(groupId),
+                                groupMember.secondCallDone)
+                        .fetchCount();
+    }
+
     /**
      * @param groupId
      * @return 그룹에 있는 모든 회원의 fcmToken을 보내준다.

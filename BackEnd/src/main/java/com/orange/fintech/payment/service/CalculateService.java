@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class CalculateService {
 
     private final GroupService groupService;
-    private final PaymentService paymentService;
     private final TransactionQueryRepository transactionQueryRepository;
 
     public class Member {
