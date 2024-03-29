@@ -124,7 +124,7 @@ public class MemberServiceImpl implements MemberService {
     public boolean logout(String accessToken, String fcmToken) {
         String id = jWTUtil.getKakaoId(accessToken);
 
-        if (redisService.delete(id) && fcmTokenRepository.deleteByFcmToken(fcmToken) == 1) {
+        if (redisService.delete(id)) {
             return true;
         }
 
