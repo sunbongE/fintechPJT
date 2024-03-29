@@ -31,8 +31,10 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(summary = "회원가입 및 로그인", description = "회원가입/로그인을 한다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "정상 가입/로그인"),
-        @ApiResponse(responseCode = "200", description = "FCM 토큰 없이 가입"),
+        @ApiResponse(responseCode = "200", description = "정상 로그인"),
+        @ApiResponse(responseCode = "200", description = "정상 로그인 (FCM 토큰 없음)"),
+        @ApiResponse(responseCode = "201", description = "신규 가입"),
+        @ApiResponse(responseCode = "201", description = "신규 가입 (FCM 토큰 없음)"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> login(@RequestBody JoinDto user) {
@@ -50,6 +52,7 @@ public class AuthController {
             @RequestHeader("Authorization") String authorization, String fcmToken) {
         String accessToken = authorization.substring("Bearer ".length());
 
+        // FCM Token은 삭제하지 않는다.
         if (memberService.logout(accessToken, fcmToken)) {
             return ResponseEntity.ok(BaseResponseBody.of(200, "로그아웃 되었습니다."));
         }
