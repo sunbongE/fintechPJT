@@ -112,4 +112,24 @@ public class GroupQueryRepository {
 
         return result;
     }
+
+    public List<Group> findAllMyGroupId(String kakaoId) {
+        return queryFactory
+                .select(
+                        Projections.bean(
+                                Group.class,
+                                group.groupId
+                                ))
+                .from(group)
+                .leftJoin(groupMember)
+                .on(group.groupId.eq(groupMember.groupMemberPK.group.groupId))
+                .where(
+                        groupMember
+                                .groupMemberPK
+                                .member
+                                .kakaoId
+                                .eq(kakaoId)
+                                )
+                .fetch();
+    }
 }

@@ -11,6 +11,7 @@ import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.member.service.MemberService;
 import com.orange.fintech.oauth.dto.MemberSearchResponseDto;
+import com.orange.fintech.redis.service.GroupRedisService;
 import com.orange.fintech.util.FileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -41,6 +42,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
 
     @Autowired FileService fileService;
+    @Autowired
+    GroupRedisService groupRedisService;
 
     @Autowired MemberService memberService;
 
@@ -188,7 +191,7 @@ public class MemberController {
 
         try {
             memberService.updateProfileImage(profileImage, member);
-
+            groupRedisService.deleteAllData(kakaoId);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(memberService.getSelfProfileURL(kakaoId));
         } catch (EmptyFileException e) {
@@ -241,6 +244,7 @@ public class MemberController {
         String kakaoId = customUserDetails.getUsername();
 
         if (fileService.deleteProfileImageFilesOnAmazonS3(kakaoId)) {
+            groupRedisService.deleteAllData(kakaoId);
             return ResponseEntity.ok(BaseResponseBody.of(200, "정상적으로 삭제되었습니다."));
         }
 

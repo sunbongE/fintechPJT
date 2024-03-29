@@ -133,7 +133,6 @@ public class GroupServiceImpl implements GroupService {
 
         groupMemberRepository.save(data);
 
-        log.info("여기서부터");
         addAllTransactionMember(group, member);
 
         // 여기서 캐시 날려주셈
