@@ -162,13 +162,52 @@
   // }
 // }
 
+// import 'package:flutter/material.dart';
+// import 'package:url_launcher/url_launcher.dart';
+// import '../../entities/Group.dart';
+// import 'package:share_plus/share_plus.dart';
+//
+// class FirstInviteModal {
+//   static void showInviteModal(BuildContext context, String response) {
+//     showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return AlertDialog(
+//           title: Text('그룹을 만드셨네요!'),
+//           content: Text('링크를 공유해서 친구들을 초대해보세요'),
+//           actions: [
+//             ElevatedButton(
+//               onPressed: () => sharePressed(),
+//               child: Text('공유하기'),
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   }
+//
+//   static void _launchURL() async {
+//     final Uri _url = Uri.parse('yeojung://example.com');
+//     if (await canLaunchUrl(_url)) {
+//       await launchUrl(_url);
+//     } else {
+//       throw 'Could not launch $_url';
+//     }
+//   }
+//
+//   static void sharePressed() {
+//     _launchURL();
+//     Share.share('yeojung://example.com');
+//   }
+// }
+
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../entities/Group.dart';
+import '../../entities/Group.dart'; // 이 예제에서는 사용되지 않습니다.
 import 'package:share_plus/share_plus.dart';
 
 class FirstInviteModal {
-  static void showInviteModal(BuildContext context, String response) {
+  static void showInviteModal(BuildContext context, String groupId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -178,6 +217,8 @@ class FirstInviteModal {
           actions: [
             ElevatedButton(
               onPressed: () => sharePressed(),
+              // onPressed: () => sharePressed(groupId),
+
               child: Text('공유하기'),
             ),
           ],
@@ -186,18 +227,19 @@ class FirstInviteModal {
     );
   }
 
-  static void _launchURL() async {
-    final Uri _url = Uri.parse('yeojung://example.com');
-    if (await canLaunchUrl(_url)) {
-      await launchUrl(_url);
-    } else {
-      throw 'Could not launch $_url';
-    }
-  }
+  // static void _launchURL(String url) async {
+  //   final Uri _url = Uri.parse(url);
+  //   if (await canLaunchUrl(_url)) {
+  //     await launchUrl(_url);
+  //   } else {
+  //     throw 'Could not launch $_url';
+  //   }
+  // }
 
   static void sharePressed() {
-    _launchURL();
-    Share.share('yeojung://example.com');
+    // String inviteLink = 'yeojung://example.com/group/$groupId'; // 예시로 사용된 딥링크 형식입니다.
+    String inviteLink = 'yeojung://example.com';
+    // 해당 링크를 공유합니다.
+    Share.share('그룹에 초대하려면 다음 링크를 클릭하세요: $inviteLink');
   }
 }
-
