@@ -349,7 +349,8 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public ReceiptDto getGroupReceipt(int receiptId) {
         Receipt receipt = receiptRepository.findById(receiptId).get();
-        return ReceiptDto.of(receipt);
+        List<ReceiptDetail> receiptDetails = receiptDetailRepository.findByReceipt(receipt);
+        return ReceiptDto.of(receipt, receiptDetails);
     }
 
     @Override
