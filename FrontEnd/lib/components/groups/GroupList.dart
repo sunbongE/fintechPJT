@@ -35,7 +35,7 @@ class _GroupListState extends State<GroupList> {
   void navigateToGroupDetail(Group group) async {
     final modifiedGroup = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => GroupItem(group: group)),
+      MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
     );
 
     if (modifiedGroup != null) {
@@ -64,6 +64,7 @@ class _GroupListState extends State<GroupList> {
           );
         },
       ),
+
 
       floatingActionButton: FloatingActionButton(
         onPressed: navigateToGroupAdd,

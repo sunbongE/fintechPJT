@@ -17,7 +17,7 @@ class _PastTravelListState extends State<PastTravelList> {
   void navigateToGroupDetail(Group group) async {
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => GroupItem(group: group)),
+      MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
     );
   }
 

@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import '../../entities/Member.dart';
 import 'package:front/repository/api/ApiGroup.dart';
-import 'dart:convert';
 
 class GroupEmailFindField extends StatefulWidget {
   final TextEditingController controller;
-  // final Function(GroupMember?) onFound;
 
   const GroupEmailFindField({
     Key? key,
     required this.controller,
-    // required this.onFound,
   }) : super(key: key);
 
   @override
@@ -19,7 +16,7 @@ class GroupEmailFindField extends StatefulWidget {
 }
 class _GroupEmailFindFieldState extends State<GroupEmailFindField> {
   final _formKey = GlobalKey<FormState>();
-  Member? _searchResult; // 변경된 부분: String?에서 Member?로 타입 변경
+  Member? _searchResult;
 
   @override
   Widget build(BuildContext context) {
