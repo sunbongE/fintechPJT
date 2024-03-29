@@ -14,7 +14,8 @@ import '../models/button/ButtonSlideAnimation.dart';
 import 'MoneyRequest.dart';
 
 class SplitMain extends StatefulWidget {
-  const SplitMain({super.key});
+  final int groupId;
+  const SplitMain({super.key, required this.groupId});
 
   @override
   _SplitMainState createState() => _SplitMainState();

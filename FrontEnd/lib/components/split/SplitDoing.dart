@@ -5,7 +5,8 @@ import 'package:front/const/colors/Colors.dart';
 import 'package:lottie/lottie.dart';
 
 class SplitDoing extends StatefulWidget {
-  const SplitDoing({super.key});
+  final groupId;
+  const SplitDoing({super.key, this.groupId});
 
   @override
   State<SplitDoing> createState() => _SplitDoingState();

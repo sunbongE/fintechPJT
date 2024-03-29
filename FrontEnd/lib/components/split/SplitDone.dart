@@ -4,7 +4,8 @@ import 'package:front/components/split/SplitResult.dart';
 import 'package:front/const/colors/Colors.dart';
 
 class SplitDone extends StatefulWidget {
-  const SplitDone({super.key});
+  final groupId;
+  const SplitDone({super.key, this.groupId});
 
   @override
   State<SplitDone> createState() => _SplitDoneState();

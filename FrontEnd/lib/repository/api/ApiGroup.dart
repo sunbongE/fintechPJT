@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dio/dio.dart';
 import 'package:front/repository/commons.dart';
 import 'package:front/entities/Group.dart';
@@ -104,3 +106,12 @@ Future<Response> getMemberByEmail(email) async {
 //     return null;
 //   }
 // }
+
+//그룹의 상태를 조회
+Future<String> fetchGroupStatus(int groupId) async {
+  //현재는 백엔드 코드가 없어서 랜덤으로 출력하는 함수를 만들었습니다.
+  var random = Random();
+  List<String> statuses = ['before', 'ready', 'doing', 'done'];
+  await Future.delayed(Duration(milliseconds: 300));
+  return statuses[random.nextInt(statuses.length)];
+}
