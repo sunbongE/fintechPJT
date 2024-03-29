@@ -12,6 +12,7 @@ import 'package:lottie/lottie.dart';
 import '../../models/Biometrics.dart';
 import '../../models/FlutterToastMsg.dart';
 import '../../models/PassWordCertification.dart';
+import '../../models/button/SizedButton.dart';
 import '../../repository/api/ApiMyPage.dart';
 import '../selectbank/AccountList.dart';
 
@@ -25,7 +26,7 @@ class ChangeAccount extends StatefulWidget {
 }
 
 class _ChangeAccountState extends State<ChangeAccount> {
-  List<Map<String, dynamic>>? accountList = [];
+  List<Map<String, dynamic>> accountList = [];
   int? selectedAccountIndex;
   String? selectAccount = '';
   bool isLoading = true;
@@ -37,20 +38,16 @@ class _ChangeAccountState extends State<ChangeAccount> {
   }
 
   void getAccounts() async {
-    try {
-      setState(() {
-        isLoading = true;
-      });
-      List<Map<String, dynamic>> res = await getBankInfo(widget.selectedBank['code']!);
-      setState(() {
-        isLoading = false;
-        accountList = res;
-      });
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-    }
+    setState(() {
+      isLoading = true;
+    });
+
+    List<Map<String, dynamic>> res = await getBankInfo(widget.selectedBank['code']!);
+
+    setState(() {
+      isLoading = false;
+      accountList = res;
+    });
   }
 
   @override
@@ -65,7 +62,7 @@ class _ChangeAccountState extends State<ChangeAccount> {
         child: Center(
           child: isLoading
               ? Lottie.asset('assets/lotties/orangewalking.json')
-              : accountList == []
+              : accountList.isEmpty ?? true
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -79,7 +76,7 @@ class _ChangeAccountState extends State<ChangeAccount> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        Button(
+                        SizedButton(
                           btnText: "뒤로 가기",
                           onPressed: () => Navigator.pop(context),
                         )
@@ -96,9 +93,7 @@ class _ChangeAccountState extends State<ChangeAccount> {
                               letterSpacing: 1.0.w,
                             ),
                             children: <TextSpan>[
-                              TextSpan(
-                                  text:
-                                      "${widget.selectedBank['name']}에서\n여정과 함께할 계좌를 "),
+                              TextSpan(text: "${widget.selectedBank['name']}에서\n여정과 함께할 계좌를 "),
                               TextSpan(
                                 text: "한 개",
                                 style: TextStyle(color: TEXT_COLOR),

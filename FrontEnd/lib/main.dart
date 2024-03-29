@@ -33,7 +33,7 @@ void backgroundHandler(NotificationResponse details) {
 void initializeNotification() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print("포그라운드에서 메시지 수신: ${message.messageId}");
+    print("포그라운드에서 1212메시지 수신: ${message}");
   });
 
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
