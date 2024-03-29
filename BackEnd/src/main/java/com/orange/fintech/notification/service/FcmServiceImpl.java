@@ -2,17 +2,16 @@ package com.orange.fintech.notification.service;
 
 import com.orange.fintech.common.notification.NotificationResponseDescription;
 import com.orange.fintech.common.notification.NotificationResponseTitle;
-import com.orange.fintech.group.repository.GroupRepository;
+import com.orange.fintech.group.repository.GroupQueryRepository;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.notification.Dto.FCMMessageDto;
-import com.orange.fintech.notification.Dto.messageListDataReqDto;
+import com.orange.fintech.notification.Dto.MessageListDataReqDto;
 import com.orange.fintech.notification.FcmSender;
 import com.orange.fintech.notification.entity.Notification;
 import com.orange.fintech.notification.entity.NotificationType;
 import com.orange.fintech.notification.repository.NotificationQueryRepository;
 import com.orange.fintech.notification.repository.NotificationRepository;
-import java.awt.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -29,12 +28,12 @@ public class FcmServiceImpl implements FcmService {
 
     @Autowired MemberRepository memberRepository;
     @Autowired FcmSender fcmSender;
-    @Autowired GroupRepository groupRepository;
+    @Autowired GroupQueryRepository groupQueryRepository;
     @Autowired NotificationRepository notificationRepository;
     @Autowired NotificationQueryRepository notificationQueryRepository;
 
     @Override
-    public void pushListDataMSG(messageListDataReqDto dto, String memberId) throws IOException {
+    public void pushListDataMSG(MessageListDataReqDto dto, String memberId) throws IOException {
         // fcmToken이 없는 사람은 없다고 알려줘야하는데 이건 DB에만 알려줘야겠다.
         // 토큰이 없는 경우는 없다고 가정한다.
 
@@ -77,5 +76,53 @@ public class FcmServiceImpl implements FcmService {
         }
         //        log.info("fcm {}번 발생 ",cnt,sender);
         //        return ResponseEntity.ok().body(BaseResponseBody.of(200, "DB저장 후, FCM 보냈습니다."));
+    }
+
+    /**
+     * MEMBERID가 필요없는 알림.
+     *
+     * @param dto
+     * @throws IOException
+     */
+    @Override
+    public void pushListDataMSG(MessageListDataReqDto dto) throws IOException {
+        List<String> kakaoIdList = dto.getInviteMembers();
+        List<String> inviteMembersFcmToken =
+                notificationQueryRepository.getMembersFcmToken(kakaoIdList);
+
+        String sendGroup = groupQueryRepository.getGroupName(dto.getGroupId());
+
+        //        log.info("sendGroup => {}", sendGroup);
+        //         firstCall인경우
+
+        if (dto.getNotificationType().equals(NotificationType.SPLIT)) {
+            // DB에 저장
+            for (String kakaoId : kakaoIdList) {
+                Member member = memberRepository.findById(kakaoId).get();
+                Notification notification =
+                        new Notification(
+                                member,
+                                dto.getNotificationType(),
+                                dto.getGroupId(),
+                                NotificationResponseTitle.SPLIT,
+                                (sendGroup + NotificationResponseDescription.SPLIT));
+                notificationRepository.save(notification);
+            }
+            // FCM 보내기
+
+            // 필요한 데이터 입력부.
+            Map<String, String> dataSet = new HashMap<>();
+            dataSet.put("groupId", String.valueOf(dto.getGroupId()));
+
+            for (String fcmToken : inviteMembersFcmToken) {
+                FCMMessageDto fcmMessageDto =
+                        new FCMMessageDto(
+                                fcmToken,
+                                NotificationResponseTitle.SPLIT,
+                                (sendGroup + NotificationResponseDescription.SPLIT),
+                                dataSet);
+                fcmSender.sendMessageTo(fcmMessageDto);
+            }
+        }
     }
 }

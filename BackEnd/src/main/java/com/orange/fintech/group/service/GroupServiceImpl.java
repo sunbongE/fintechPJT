@@ -1,22 +1,25 @@
 package com.orange.fintech.group.service;
 
 import com.orange.fintech.group.dto.*;
-import com.orange.fintech.group.entity.CalculateResult;
-import com.orange.fintech.group.entity.Group;
-import com.orange.fintech.group.entity.GroupMember;
-import com.orange.fintech.group.entity.GroupMemberPK;
+import com.orange.fintech.group.entity.*;
 import com.orange.fintech.group.repository.CalculateResultRepository;
 import com.orange.fintech.group.repository.GroupMemberRepository;
 import com.orange.fintech.group.repository.GroupQueryRepository;
 import com.orange.fintech.group.repository.GroupRepository;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
+import com.orange.fintech.notification.Dto.MessageListDataReqDto;
+import com.orange.fintech.notification.FcmSender;
+import com.orange.fintech.notification.entity.NotificationType;
+import com.orange.fintech.notification.repository.NotificationQueryRepository;
+import com.orange.fintech.notification.service.FcmService;
 import com.orange.fintech.payment.entity.TransactionDetail;
 import com.orange.fintech.payment.entity.TransactionMember;
 import com.orange.fintech.payment.entity.TransactionMemberPK;
 import com.orange.fintech.payment.repository.TransactionDetailRepository;
 import com.orange.fintech.payment.repository.TransactionMemberRepository;
 import com.orange.fintech.redis.service.GroupRedisService;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
-
+    private final FcmSender fcmSender;
+    private final FcmService fcmService;
     private final GroupRepository groupRepository;
     private final GroupMemberRepository groupMemberRepository;
     private final MemberRepository memberRepository;
@@ -39,6 +43,7 @@ public class GroupServiceImpl implements GroupService {
     private final GroupRedisService groupRedisService;
     private final TransactionDetailRepository transactionDetailRepository;
     private final TransactionMemberRepository transactionMemberRepository;
+    private final NotificationQueryRepository notificationQueryRepository;
 
     @Override
     public int createGroup(GroupCreateDto dto, String memberId) {
@@ -105,7 +110,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public boolean leaveGroup(int groupId, String memberId) {
         Group group = groupRepository.findById(groupId).get();
-        if (group.getIsCalculateDone()
+        if (group.getGroupStatus().equals(GroupStatus.DONE)
                 || groupMemberRepository.countByGroupMemberPKGroup(group) == 1) {
             Member member = memberRepository.findById(memberId).get();
             GroupMemberPK groupMemberPK = new GroupMemberPK(member, group);
@@ -189,8 +194,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public boolean firstcall(int groupId, String memberId) {
-
+    public void firstcall(int groupId, String memberId) throws IOException {
         Group group = new Group();
         Member member = new Member();
         group.setGroupId(groupId);
@@ -198,15 +202,42 @@ public class GroupServiceImpl implements GroupService {
 
         GroupMemberPK groupMemberPK = new GroupMemberPK(member, group);
         Optional<GroupMember> Optarget = groupMemberRepository.findById(groupMemberPK);
-        if (Optarget.isEmpty()) return false;
+        if (Optarget.isEmpty()) return;
 
         GroupMember targetGroupMember = Optarget.get();
         targetGroupMember.setFistCallDone(!targetGroupMember.getFistCallDone());
 
         groupMemberRepository.save(targetGroupMember);
         // Todo : 여행정산요청을 그룹에 포함된 모든 회원들에게 보낸다.(DATA : groupId)
+        // A : 같은 그룹에 1차 정산 내역 요청을 누른 사람들
+        int countFirstcallGroupMembers = groupQueryRepository.countFirstcallGroupMembers(groupId);
+        // T : 같은 그룹에 전체 인원수
+        int countGroupMembers = groupQueryRepository.countGroupMembers(groupId);
 
-        return true;
+        log.info("전체인원 : {}, 1차 누른 인원: {}", countGroupMembers, countFirstcallGroupMembers);
+
+        // A와 T가 같은지 비교해서 같으면 알림fcm 함수를 실행시킨다.
+        if (countGroupMembers == countFirstcallGroupMembers) {
+            // Todo : fcm보내버리기~~~~~~~~ 현재회원이 들어간 그룹의 그룹원들의 kakaoId를 이용해서 fcm_token추출
+
+            List<GroupMembersDto> groupMembersDtos =
+                    groupQueryRepository.firstcallMembersOnlyKakaoId(groupId);
+            List<String> kakaoIdList = new ArrayList<>();
+            for (GroupMembersDto groupMembersDto : groupMembersDtos) {
+                kakaoIdList.add(groupMembersDto.getKakaoId());
+            }
+            log.info("결과들 : {}", kakaoIdList);
+            MessageListDataReqDto messageListDataReqDto = new MessageListDataReqDto();
+            messageListDataReqDto.setGroupId(groupId);
+            messageListDataReqDto.setInviteMembers(kakaoIdList);
+            messageListDataReqDto.setNotificationType(NotificationType.SPLIT);
+
+            fcmService.pushListDataMSG(messageListDataReqDto);
+
+            log.info("다 보냈어 ");
+        }
+        //        throw new RuntimeException("일단 멈춰봐.");
+        //        return true;
     }
 
     @Override

@@ -38,8 +38,11 @@ public class Group {
     private String theme;
 
     @NotNull
-    @ColumnDefault("false")
-    private Boolean isCalculateDone;
+    @ColumnDefault("'BEFORE'")
+    @Enumerated(EnumType.STRING)
+    private GroupStatus groupStatus;
+
+    public Group() {}
 
     public Group(GroupCreateDto dto) {
         this.groupName = dto.getGroupName();
@@ -47,8 +50,6 @@ public class Group {
         this.endDate = dto.getEndDate();
         this.theme = dto.getTheme();
     }
-
-    public Group() {}
 
     @Override
     public String toString() {
@@ -65,8 +66,8 @@ public class Group {
                 + ", theme='"
                 + theme
                 + '\''
-                + ", isCalculateDone="
-                + isCalculateDone
+                + ", groupStatus="
+                + groupStatus
                 + '}';
     }
 }

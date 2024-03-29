@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -226,34 +227,37 @@ public class GroupController {
         }
     }
 
+    @Async
     @PutMapping("/{groupId}/firstcall")
     @Operation(summary = "정산 내역 요청 및 취소", description = "정산 요청을 하여 회원의 상태가 변경된다.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
-    })
-    public ResponseEntity<BaseResponseBody> firstcall(
-            @PathVariable("groupId") int groupId, Principal principal) {
+    //    @ApiResponses({
+    //        @ApiResponse(responseCode = "200", description = "성공"),
+    //        @ApiResponse(responseCode = "500", description = "서버 오류")
+    //    })
+    public void firstcall(@PathVariable("groupId") int groupId, Principal principal) {
         String memberId = principal.getName();
 
         try {
             if (!groupService.isExistMember(memberId, groupId)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
+                throw new RuntimeException("해당 멤버는 그룹에 속해 있지 않습니다.");
+                //                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                //                        .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
             }
 
-            boolean result = groupService.firstcall(groupId, memberId);
-            if (result) {
-                return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "성공"));
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(BaseResponseBody.of(400, "실패"));
-            }
+            groupService.firstcall(groupId, memberId);
+            //            if (result) {
+            //                return
+            // ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "성공"));
+            //            } else {
+            //                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            //                        .body(BaseResponseBody.of(400, "실패"));
+            //            }
 
         } catch (Exception e) {
             log.info("[ERROR] :{}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(BaseResponseBody.of(500, "서버 오류"));
+            //            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            //                    .body(BaseResponseBody.of(500, "서버 오류"));
+            return;
         }
     }
 

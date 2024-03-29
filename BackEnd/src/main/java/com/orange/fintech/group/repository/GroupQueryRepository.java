@@ -2,12 +2,15 @@ package com.orange.fintech.group.repository;
 
 import static com.orange.fintech.group.entity.QGroup.*;
 import static com.orange.fintech.group.entity.QGroupMember.*;
+import static com.orange.fintech.member.entity.QFcmToken.*;
 import static com.orange.fintech.member.entity.QMember.*;
 
 import com.orange.fintech.group.dto.GroupMembersDto;
 import com.orange.fintech.group.entity.Group;
+import com.orange.fintech.member.entity.FcmToken;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +40,7 @@ public class GroupQueryRepository {
                                 group.theme,
                                 group.startDate,
                                 group.endDate,
-                                group.isCalculateDone))
+                                group.groupStatus))
                 .from(group)
                 .leftJoin(groupMember)
                 .on(group.groupId.eq(groupMember.groupMemberPK.group.groupId))
@@ -91,6 +94,23 @@ public class GroupQueryRepository {
         return result;
     }
 
+    public List<GroupMembersDto> firstcallMembersOnlyKakaoId(int groupId) {
+        List<GroupMembersDto> result = new ArrayList<>();
+
+        result =
+                queryFactory
+                        .select(Projections.bean(GroupMembersDto.class, member.kakaoId))
+                        .from(member)
+                        .leftJoin(groupMember)
+                        .on(groupMember.groupMemberPK.member.kakaoId.eq(member.kakaoId))
+                        .where(
+                                groupMember.groupMemberPK.group.groupId.eq(groupId),
+                                groupMember.fistCallDone.eq(true))
+                        .fetch();
+
+        return result;
+    }
+
     public List<GroupMembersDto> secondcallMembers(int groupId) {
         List<GroupMembersDto> result = new ArrayList<>();
 
@@ -121,5 +141,69 @@ public class GroupQueryRepository {
                 .on(group.groupId.eq(groupMember.groupMemberPK.group.groupId))
                 .where(groupMember.groupMemberPK.member.kakaoId.eq(kakaoId))
                 .fetch();
+    }
+
+    /**
+     * @param groupId
+     * @return 그룹에 있는 전체 인원수를 리턴안다.
+     */
+    public int countGroupMembers(int groupId) {
+
+        return (int)
+                queryFactory
+                        .select(groupMember)
+                        .from(groupMember)
+                        .where(groupMember.groupMemberPK.group.groupId.eq(groupId))
+                        .fetchCount();
+    }
+    /**
+     * @param groupId
+     * @return 그룹에 있는 1차 정산요청을 보낸 인원수를 리턴안다.
+     */
+    public int countFirstcallGroupMembers(int groupId) {
+        return (int)
+                queryFactory
+                        .select(groupMember)
+                        .from(groupMember)
+                        .where(
+                                groupMember.groupMemberPK.group.groupId.eq(groupId),
+                                groupMember.fistCallDone)
+                        .fetchCount();
+    }
+
+    /**
+     * @param groupId
+     * @return 그룹에 있는 모든 회원의 fcmToken을 보내준다.
+     */
+    public List<String> findAllGroupMembersFcmToken(int groupId) {
+        List<FcmToken> fcmTokens =
+                queryFactory
+                        .select(fcmToken1)
+                        .from(fcmToken1)
+                        .where(
+                                fcmToken1.member.kakaoId.in(
+                                        JPAExpressions.select(
+                                                        groupMember.groupMemberPK.member.kakaoId)
+                                                .from(groupMember)
+                                                .where(
+                                                        groupMember.groupMemberPK.group.groupId.eq(
+                                                                groupId))))
+                        .fetch();
+
+        List<String> result = new ArrayList<>();
+        for (FcmToken fcmToken : fcmTokens) {
+            result.add(fcmToken.getFcmToken());
+        }
+
+        log.info("토큰들 잘 나오나? =>{}", result);
+        return result;
+    }
+
+    public String getGroupName(int groupId) {
+        return queryFactory
+                .select(group.groupName)
+                .from(group)
+                .where(group.groupId.eq(groupId))
+                .fetchFirst();
     }
 }

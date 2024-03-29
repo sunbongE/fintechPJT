@@ -25,7 +25,7 @@ public class QGroup extends EntityPathBase<Group> {
 
     public final StringPath groupName = createString("groupName");
 
-    public final BooleanPath isCalculateDone = createBoolean("isCalculateDone");
+    public final EnumPath<GroupStatus> groupStatus = createEnum("groupStatus", GroupStatus.class);
 
     public final DatePath<java.time.LocalDate> startDate = createDate("startDate", java.time.LocalDate.class);
 
