@@ -1,39 +1,49 @@
-import 'package:flutter/material.dart';
-import '../../entities/Group.dart';
-// import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
-// import 'package:kakao_flutter_sdk_template/kakao_flutter_sdk_template.dart';
-import 'package:share_plus/share_plus.dart';
-
-
-class FirstInviteModal {
-  static void showInviteModal(BuildContext context, String response) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('그룹을 만드셨네요!'),
-          content: Text('링크를 공유해서 친구들을 초대해보세요'),
-          actions: [
-            ElevatedButton(
-              onPressed: () => sharePressed(response),
-              child: Text('공유하기'),
-            ),
-          ],
-        );
-      },
-    );
-
-  }
-
-  static void sharePressed(String groupId) {
-    String baseUrl = 'https://yourapp.com'; // 여기에 앱이나 웹서비스의 기본 URL을 넣으세요.
-    String inviteLink = 'http://j10c203.p.ssafy.io:8080/api/v1/groups/$groupId/invite';
-
-    String message = '친구를 그룹에 초대하세요! 링크를 클릭하면 그룹에 참여하게 됩니다: $inviteLink';
-    Share.share(message);
-
-  }
-}
+// import 'package:flutter/material.dart';
+// import 'package:url_launcher/url_launcher.dart';
+// import '../../entities/Group.dart';
+// // import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
+// // import 'package:kakao_flutter_sdk_template/kakao_flutter_sdk_template.dart';
+// import 'package:share_plus/share_plus.dart';
+//
+//
+// class FirstInviteModal {
+//   static void showInviteModal(BuildContext context, String response) {
+//     showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return AlertDialog(
+//           title: Text('그룹을 만드셨네요!'),
+//           content: Text('링크를 공유해서 친구들을 초대해보세요'),
+//           actions: [
+//             ElevatedButton(
+//               onPressed: () => sharePressed(response),
+//               child: Text('공유하기'),
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//
+//   }
+//
+//   void _launchURL() async {
+//     final Uri _url = Uri.parse('yeojung://example.com');
+//     if (await canLaunchUrl(_url)) {
+//       await launchUrl(_url);
+//     } else {
+//       throw 'Could not launch $_url';
+//     }
+//   }
+//
+//   static void sharePressed(String groupId) {
+//     String baseUrl = 'https://yourapp.com'; // 여기에 앱이나 웹서비스의 기본 URL을 넣으세요.
+//     String inviteLink = 'http://j10c203.p.ssafy.io:8080/api/v1/groups/$groupId/invite';
+//
+//     String message = '친구를 그룹에 초대하세요! 링크를 클릭하면 그룹에 참여하게 됩니다: $inviteLink';
+//     Share.share(message);
+//
+//   }
+// }
 //   static void _kakaoShare(BuildContext context, Group newGroup) async {
 //     try {
 //       final CalendarTemplate calendarTemplate = CalendarTemplate(
@@ -151,3 +161,43 @@ class FirstInviteModal {
   //   }
   // }
 // }
+
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../entities/Group.dart';
+import 'package:share_plus/share_plus.dart';
+
+class FirstInviteModal {
+  static void showInviteModal(BuildContext context, String response) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('그룹을 만드셨네요!'),
+          content: Text('링크를 공유해서 친구들을 초대해보세요'),
+          actions: [
+            ElevatedButton(
+              onPressed: () => sharePressed(),
+              child: Text('공유하기'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  static void _launchURL() async {
+    final Uri _url = Uri.parse('yeojung://example.com');
+    if (await canLaunchUrl(_url)) {
+      await launchUrl(_url);
+    } else {
+      throw 'Could not launch $_url';
+    }
+  }
+
+  static void sharePressed() {
+    _launchURL();
+    Share.share('yeojung://example.com');
+  }
+}
+

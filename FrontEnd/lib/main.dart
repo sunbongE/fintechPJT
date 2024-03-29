@@ -97,7 +97,6 @@ Future<void> main() async {
   }, onError: (Object err) {
     log("err: $err");
   });
-
   print('키 해시: ${await KakaoSdk.origin}');
   // LD8/P2w/Yz8/Pz8K
 
