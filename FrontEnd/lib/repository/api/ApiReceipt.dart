@@ -40,7 +40,7 @@ Future<dynamic> postYjReceipt(groupId, data) async {
 Future<dynamic> postReceiptFakeData(data) async {
   try {
     print(data);
-    final res = await api.post('/account/dummyTransaction', data: data);
+    final res = await api.post('/account/dummytransaction', data: data);
     print(res.data);
     return res.data;
   } catch (err) {
