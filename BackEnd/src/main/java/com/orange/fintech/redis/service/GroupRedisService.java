@@ -8,4 +8,6 @@ public interface GroupRedisService {
     void deleteData(Integer key);
 
     void saveDataExpire(int groupId, GroupMembersListDto result);
+
+    void deleteAllData(String kakaoId);
 }
