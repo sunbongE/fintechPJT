@@ -5,7 +5,8 @@ import 'package:front/const/colors/Colors.dart';
 import '../../providers/store.dart';
 
 class SplitMembers extends StatefulWidget {
-  const SplitMembers({super.key});
+  final groupId;
+  const SplitMembers({super.key, this.groupId});
 
   @override
   State<SplitMembers> createState() => _SplitMembersState();
