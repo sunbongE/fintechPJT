@@ -195,9 +195,8 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void firstcall(int groupId, String memberId) throws IOException {
-        Group group = new Group();
+        Group group = groupRepository.findById(groupId).get();
         Member member = new Member();
-        group.setGroupId(groupId);
         member.setKakaoId(memberId);
 
         GroupMemberPK groupMemberPK = new GroupMemberPK(member, group);
@@ -205,6 +204,7 @@ public class GroupServiceImpl implements GroupService {
         if (Optarget.isEmpty()) return;
 
         GroupMember targetGroupMember = Optarget.get();
+
         targetGroupMember.setFistCallDone(!targetGroupMember.getFistCallDone());
 
         groupMemberRepository.save(targetGroupMember);
@@ -218,7 +218,7 @@ public class GroupServiceImpl implements GroupService {
 
         // A와 T가 같은지 비교해서 같으면 알림fcm 함수를 실행시킨다.
         if (countGroupMembers == countFirstcallGroupMembers) {
-            // Todo : fcm보내버리기~~~~~~~~ 현재회원이 들어간 그룹의 그룹원들의 kakaoId를 이용해서 fcm_token추출
+            // Todo : fcm보내기! 현재회원이 들어간 그룹의 그룹원들의 kakaoId를 이용해서 fcm_token추출
 
             List<GroupMembersDto> groupMembersDtos =
                     groupQueryRepository.firstcallMembersOnlyKakaoId(groupId);
@@ -233,7 +233,7 @@ public class GroupServiceImpl implements GroupService {
             messageListDataReqDto.setNotificationType(NotificationType.SPLIT);
 
             fcmService.pushListDataMSG(messageListDataReqDto);
-
+            group.setGroupStatus(GroupStatus.SPLIT);
             log.info("다 보냈어 ");
         }
         //        throw new RuntimeException("일단 멈춰봐.");
