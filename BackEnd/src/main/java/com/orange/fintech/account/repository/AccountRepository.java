@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface AccountRepository extends JpaRepository<Account, String> {
     List<Account> findByMember(Member member);
 
-    List<Account> findByMemberAndIsPrimaryAccountIsTrue(Member member);
+    Account findByMemberAndIsPrimaryAccountIsTrue(Member member);
 
     Account findByAccountNo(String accountNo);
 

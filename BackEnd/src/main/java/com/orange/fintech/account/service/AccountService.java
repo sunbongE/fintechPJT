@@ -52,4 +52,6 @@ public interface AccountService {
 
     void addDummyTranactionRecord(String kakaoId, List<ReceiptRequestDto> receiptRequestDtoList)
             throws ParseException;
+
+    void transfer(String sendMemberId, String receiveMemberId, Long transactionBalance);
 }
