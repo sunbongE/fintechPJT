@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/const/colors/Colors.dart';
@@ -42,11 +43,13 @@ class _ChangeAccountState extends State<ChangeAccount> {
       isLoading = true;
     });
 
-    List<Map<String, dynamic>> res = await getBankInfo(widget.selectedBank['code']!);
+    Response<dynamic> res = await getBankInfo(widget.selectedBank['code']!);
+
+    List<Map<String, dynamic>> accountListes = List<Map<String, dynamic>>.from(res.data);
 
     setState(() {
       isLoading = false;
-      accountList = res;
+      accountList = accountListes;
     });
   }
 
@@ -136,6 +139,7 @@ class _ChangeAccountState extends State<ChangeAccount> {
 
                                     UserManager().saveUserInfo(
                                       newSelectedBank: widget.selectedBank['name'],
+                                      newSelectBankCode: widget.selectedBank['code'],
                                       newSelectedAccount: selectAccount,
                                     );
                                     buttonSlideAnimationPushAndRemoveUntil(context, 3);
@@ -154,6 +158,7 @@ class _ChangeAccountState extends State<ChangeAccount> {
 
                                           UserManager().saveUserInfo(
                                             newSelectedBank: widget.selectedBank['name'],
+                                            newSelectBankCode: widget.selectedBank['code'],
                                             newSelectedAccount: selectAccount,
                                           );
                                           buttonSlideAnimationPushAndRemoveUntil(context, 3);

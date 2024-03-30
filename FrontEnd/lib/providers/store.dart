@@ -17,6 +17,7 @@ class UserManager with ChangeNotifier {
 
   // 주 거래 은행 및 계좌 정보
   String? selectedBank;
+  String? selectBankCode;
   String? selectedAccount;
 
   // 로그인 상태
@@ -39,6 +40,7 @@ class UserManager with ChangeNotifier {
     String? newJwtToken,
     String? newFcmToken,
     String? newSelectedBank,
+    String? newSelectBankCode,
     String? newSelectedAccount,
     bool? newIsLogin,
   }) async {
@@ -49,6 +51,7 @@ class UserManager with ChangeNotifier {
     jwtToken = newJwtToken ?? jwtToken;
     fcmToken = newFcmToken ?? fcmToken;
     selectedBank = newSelectedBank ?? selectedBank;
+    selectBankCode = newSelectBankCode ?? selectBankCode;
     selectedAccount = newSelectedAccount ?? selectedAccount;
     isLogin = newIsLogin ?? isLogin;
 
@@ -59,6 +62,7 @@ class UserManager with ChangeNotifier {
     await storage.write(key: 'jwtToken', value: jwtToken);
     await storage.write(key: 'fcmToken', value: fcmToken);
     await storage.write(key: 'selectedBank', value: selectedBank);
+    await storage.write(key: 'selectBankCode', value: selectBankCode);
     await storage.write(key: 'selectedAccount', value: selectedAccount);
     await storage.write(key: 'isLogin', value: isLogin.toString());
 
@@ -74,6 +78,7 @@ class UserManager with ChangeNotifier {
     jwtToken = await storage.read(key: 'jwtToken');
     fcmToken = await storage.read(key: 'fcmToken');
     selectedBank = await storage.read(key: 'selectedBank');
+    selectBankCode = await storage.read(key: 'selectBankCode');
     selectedAccount = await storage.read(key: 'selectedAccount');
     String? isLoginStr = await storage.read(key: 'isLogin');
     isLogin = isLoginStr == 'true';
@@ -90,6 +95,7 @@ class UserManager with ChangeNotifier {
     jwtToken = null;
     fcmToken = null;
     selectedBank = null;
+    selectBankCode = null;
     selectedAccount = null;
     isLogin = false;
     await storage.deleteAll();

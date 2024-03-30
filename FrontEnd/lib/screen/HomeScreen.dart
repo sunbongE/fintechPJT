@@ -1,11 +1,13 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:front/screen/GroupMain.dart';
 import 'package:front/screen/MainPage.dart';
 import 'package:front/screen/MyPage.dart';
 import 'package:front/screen/MySpended.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'groupscreens/GroupItem.dart';
 
 class HomeScreen extends StatefulWidget {
   final int initialIndex;
@@ -24,6 +26,21 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _index = widget.initialIndex;
+    _checkForGroupAndNavigate();
+  }
+
+  Future<void> _checkForGroupAndNavigate() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? groupId = prefs.getInt('groupId');
+    String? type = prefs.getString('type');
+    if (groupId != null && type != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => GroupItem(groupId: groupId)),
+      );
+      await prefs.remove('groupId');
+      await prefs.remove('type');
+    }
   }
 
   List<Widget> _pages = [
@@ -45,8 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return WillPopScope(
       onWillPop: () async {
         final now = DateTime.now();
-        if (lastPressed == null ||
-            now.difference(lastPressed!) > Duration(seconds: 2)) {
+        if (lastPressed == null || now.difference(lastPressed!) > Duration(seconds: 2)) {
           lastPressed = DateTime.now();
           final snackBar = SnackBar(
             content: Text('뒤로 가기 버튼을 한 번 더 누르면 앱이 종료됩니다.'),
@@ -69,8 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
               BottomNavigationBarItem(icon: Icon(Icons.home), label: '나의 여행'),
               BottomNavigationBarItem(icon: Icon(Icons.group), label: '그룹'),
               BottomNavigationBarItem(icon: Icon(Icons.poll), label: '내 소비내역'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.account_circle), label: '마이페이지'),
+              BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: '마이페이지'),
             ],
             selectedIconTheme: IconThemeData(color: Color(0xffFF9E44)),
             selectedItemColor: Color(0xffFF9E44),

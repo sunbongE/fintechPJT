@@ -64,8 +64,14 @@ class _LoginState extends State<Login> {
         await userManager.saveUserInfo(
           newSelectedAccount: res.data['accountNo'],
           newSelectedBank: bankName,
+          newSelectBankCode: bankCode,
         );
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()));
+        UserManager().updateLoginState(true);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+          (Route<dynamic> route) => false,
+        );
       }
     } else {
       WidgetsBinding.instance.addPostFrameCallback(
@@ -77,6 +83,7 @@ class _LoginState extends State<Login> {
                   onSuccess: () async {
                     if (mounted) {
                       Response res = await getMyPrimary();
+                      print('1111111111111:${res}');
 
                       String bankCode = res.data['bankCode'];
                       String bankName = '';
@@ -89,8 +96,14 @@ class _LoginState extends State<Login> {
                       await userManager.saveUserInfo(
                         newSelectedAccount: res.data['accountNo'],
                         newSelectedBank: bankName,
+                        newSelectBankCode: bankCode,
                       );
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()));
+                      UserManager().updateLoginState(true);
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                        (Route<dynamic> route) => false,
+                      );
                     }
                   },
                 ),

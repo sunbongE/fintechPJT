@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +6,8 @@ import 'package:front/const/colors/Colors.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../providers/store.dart';
+import '../../repository/api/ApiLogin.dart';
 import '../../repository/api/ApiMySpend.dart';
 
 class MyMoney extends StatefulWidget {
@@ -19,7 +22,7 @@ class MyMoney extends StatefulWidget {
 class _MyMoneyState extends State<MyMoney> {
   List<Map<String, dynamic>> bankInfo = [];
   bool isLoading = false;
-
+  UserManager userManager = UserManager();
   @override
   void initState() {
     super.initState();
@@ -30,17 +33,14 @@ class _MyMoneyState extends State<MyMoney> {
     setState(() {
       isLoading = true;
     });
-    final res = await getMyAccount();
-    if (res.data != null && mounted) {
-      setState(() {
-        bankInfo = List<Map<String, dynamic>>.from(res.data).cast<Map<String, dynamic>>();
-        isLoading = false;
-      });
-    } else if (mounted) {
-      setState(() {
-        isLoading = false;
-      });
-    }
+    Response<dynamic> res = await getBankInfo(userManager.selectBankCode!);
+    List<Map<String, dynamic>> bankInfoList = List<Map<String, dynamic>>.from(res.data);
+    List<Map<String, dynamic>> filteredBankInfo = bankInfoList.where((account) => account['accountNo'].toString() == widget.MyAccount).toList();
+
+    setState(() {
+      bankInfo = filteredBankInfo;
+      isLoading = false;
+    });
   }
 
   @override
@@ -51,7 +51,7 @@ class _MyMoneyState extends State<MyMoney> {
         children: [
           GestureDetector(
             onTap: () {
-              if (widget.MyAccount != null) {
+              if (widget.MyAccount.isNotEmpty) {
                 Clipboard.setData(ClipboardData(text: widget.MyAccount));
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('클립보드에 복사되었습니다')),
@@ -68,10 +68,10 @@ class _MyMoneyState extends State<MyMoney> {
             ),
           ),
           isLoading
-              ? SizedBox.shrink()
+              ? CircularProgressIndicator()
               : bankInfo.isNotEmpty
                   ? Text(
-                      '${NumberFormat('#,###').format(bankInfo[0]['transactionAfterBalance'])}원',
+                      '${NumberFormat('#,###').format(int.tryParse(bankInfo[0]['accountBalance'].toString()) ?? 0)}원',
                       style: TextStyle(
                         color: TEXT_COLOR,
                         fontSize: 36.sp,

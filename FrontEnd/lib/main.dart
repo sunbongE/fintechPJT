@@ -17,10 +17,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+// SharedPreferences는 간단한 데이터를 로컬에 저장할 때 사용
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("백그라운드에서 오는 메세지: ${message.data}");
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setInt('groupId', int.parse(message.data['groupId']));
+  await prefs.setString('type', message.data['type']);
+  print('SharedPreferences에 저장됨: groupId = ${message.data['groupId']}, type = ${message.data['type']}');
 }
 
 @pragma('vm:entry-point')
@@ -31,10 +37,10 @@ void backgroundHandler(NotificationResponse details) {
 void initializeNotification() async {
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(
-      const AndroidNotificationChannel('high_importance_chanel', 'high_importance_notification', importance: Importance.max));
+      const AndroidNotificationChannel('high_importance_channel', 'high_importance_notification', importance: Importance.max));
   await flutterLocalNotificationsPlugin.initialize(
       const InitializationSettings(
-        android: AndroidInitializationSettings("@ipmap/ic_launcher"),
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       ), onDidReceiveNotificationResponse: (details) {
     print("1111메세지 받고싶다..: ${details}");
   }, onDidReceiveBackgroundNotificationResponse: backgroundHandler);
@@ -51,15 +57,8 @@ void initializeNotification() async {
             android: AndroidNotificationDetails('high_importance_channel', 'high_importance_notification', importance: Importance.max),
           ),
           payload: message.data['test_params1']);
-
-      print("메세지 받았슴다~~~~~~~");
     }
   });
-
-  RemoteMessage? message = await FirebaseMessaging.instance.getInitialMessage();
-  if (message != null) {
-    print("메세지 받았슴다22222");
-  }
 }
 
 Future<void> main() async {

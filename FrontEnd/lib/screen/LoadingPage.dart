@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:front/models/Biometrics.dart';
 import 'package:front/models/PassWordCertification.dart';
 import 'package:front/providers/store.dart';
@@ -18,7 +19,7 @@ class LoadingPage extends StatefulWidget {
 }
 
 class _LoadingPageState extends State<LoadingPage> {
-  var messageString = "";
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   void getMyDeviceToken() async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
@@ -29,27 +30,48 @@ class _LoadingPageState extends State<LoadingPage> {
   @override
   void initState() {
     super.initState();
+    var initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
     requestPermission();
     _checkLoginStatus();
+    _listenToForegroundMessages();
+  }
+
+  void _listenToForegroundMessages() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print("포그라운드에서 메시지 수신: 데이터: ${message.data}");
+      _showNotificationWithDefaultSound(message);
+    });
+  }
+
+  Future<void> _showNotificationWithDefaultSound(RemoteMessage message) async {
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'high_importance_channel',
+      'high_importance_notification',
+      importance: Importance.max,
+    );
+
+    var platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      message.notification?.title,
+      message.notification?.body,
+      platformChannelSpecifics,
+    );
   }
 
   void requestPermission() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
-
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
-      announcement: false,
       badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
       sound: true,
-    );
-    print('User granted permission: ${settings.authorizationStatus}');
-    FirebaseMessaging.onMessage.listen(
-      (RemoteMessage message) {
-        print("포그라운드에서 메시지 수신111122121: 데이터: ${message.data}");
-      },
     );
   }
 
@@ -65,7 +87,11 @@ class _LoadingPageState extends State<LoadingPage> {
       bool authenticated = await _authenticate();
       if (authenticated) {
         if (mounted) {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()));
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+            (Route<dynamic> route) => false,
+          );
         }
       } else {
         WidgetsBinding.instance.addPostFrameCallback(
@@ -76,7 +102,11 @@ class _LoadingPageState extends State<LoadingPage> {
                   builder: (_) => PassWordCertification(
                     onSuccess: () {
                       if (mounted) {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()));
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomeScreen()),
+                          (Route<dynamic> route) => false,
+                        );
                       }
                     },
                   ),

@@ -56,7 +56,6 @@ Future<Response> putPassWord(data) async {
 Future<void> postFcmToken(data) async {
   try {
     final res = await api.post('/members/fcmtoken', data: data);
-    print('postFcmToken: ${res.data}');
     return res.data;
   } catch (err) {
     if (err is DioError) {
@@ -72,14 +71,13 @@ Future<void> postFcmToken(data) async {
 }
 
 // 사용자가 선택한 은행과 연결된 계좌 목록 get
-Future<List<Map<String, dynamic>>> getBankInfo(String code) async {
+Future<Response> getBankInfo(String code) async {
   try {
-    final res = await api.get('/account/list/$code');
-    final List<Map<String, dynamic>> formattedRes = (res.data as List).map((e) => e as Map<String, dynamic>).toList();
-    return formattedRes;
+    final res = await api.get('/account/list/${code}');
+    return res;
   } catch (err) {
     print('err: $err');
-    throw Exception('Failed to get bank info');
+    throw Exception('111111111111111');
   }
 }
 
@@ -98,7 +96,6 @@ Future<Response> getMyPrimary() async {
 Future<void> postBankInfo(data) async {
   try {
     final res = await api.post('/bank/myAccount', data: data);
-    print('postBankInfo: ${res.data}');
     return res.data;
   } catch (err) {
     print(err);

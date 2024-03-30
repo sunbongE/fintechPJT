@@ -17,10 +17,8 @@ Future<void> putProfileImage(data) async {
 
 // 회원 본인의 계좌 정보를 수정한다.
 Future<void> putMyAccount(data) async {
-  print('11111111: ${data}');
   try {
     final res = await api.put('/account/update', data: data);
-    print('putMyAccount: ${res.data}');
     return res.data;
   } catch (err) {
     print(err);
@@ -31,7 +29,6 @@ Future<void> putMyAccount(data) async {
 Future<void> deleteFcmToken(data) async {
   try {
     final res = await api.delete('', data: data);
-    print('deleteFcmToken: ${res.data}');
     return res.data;
   } catch (err) {
     print(err);
@@ -42,7 +39,6 @@ Future<void> deleteFcmToken(data) async {
 Future<dynamic> getGroupSpend(groupId, queryParameters) async {
   try {
     final res = await api.get('/groups/${groupId}/payments', queryParameters: queryParameters);
-    print('putMyAccount: ${res.data}');
     return res.data;
   } catch (err) {
     print(err);
