@@ -7,10 +7,14 @@ import static com.orange.fintech.member.entity.QMember.*;
 
 import com.orange.fintech.group.dto.GroupMembersDto;
 import com.orange.fintech.group.entity.Group;
+import com.orange.fintech.group.entity.GroupStatus;
 import com.orange.fintech.member.entity.FcmToken;
+import com.orange.fintech.notification.Dto.UrgeTargetDto;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -213,5 +217,33 @@ public class GroupQueryRepository {
                 .from(group)
                 .where(group.groupId.eq(groupId))
                 .fetchFirst();
+    }
+
+    public List<UrgeTargetDto> findAllUrgeFcmtoken() {
+        LocalDate currentDate = LocalDate.now();
+
+        List<Tuple> fetch =
+                queryFactory
+                        .select(fcmToken1.fcmToken, groupMember.groupMemberPK)
+                        .from(fcmToken1)
+                        .innerJoin(groupMember)
+                        .on(groupMember.groupMemberPK.member.eq(fcmToken1.member))
+                        .leftJoin(group)
+                        .on(groupMember.groupMemberPK.group.groupId.eq(group.groupId))
+                        .where(
+                                group.groupStatus
+                                        .eq(GroupStatus.DONE)
+                                        .and(group.endDate.before(currentDate)))
+                        .fetch();
+
+        List<UrgeTargetDto> result = new ArrayList<>();
+        for (Tuple tuple : fetch) {
+            UrgeTargetDto dto = new UrgeTargetDto();
+            dto.setFcmToken(tuple.get(fcmToken1.fcmToken));
+            dto.setGroupMemberPK(tuple.get(groupMember.groupMemberPK));
+            result.add(dto);
+        }
+
+        return result;
     }
 }

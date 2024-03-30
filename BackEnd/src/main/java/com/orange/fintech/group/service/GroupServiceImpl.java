@@ -329,7 +329,7 @@ public class GroupServiceImpl implements GroupService {
             log.info("결과들 : {}", kakaoIdList);
             MessageListDataReqDto messageListDataReqDto = new MessageListDataReqDto();
             messageListDataReqDto.setGroupId(group.getGroupId());
-            messageListDataReqDto.setInviteMembers(kakaoIdList);
+            messageListDataReqDto.setTargetMembers(kakaoIdList);
             messageListDataReqDto.setNotificationType(NotificationType.SPLIT);
 
             fcmService.pushListDataMSG(messageListDataReqDto);

@@ -10,10 +10,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.io.IOException;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/notification")
 @RequiredArgsConstructor
@@ -68,43 +70,9 @@ public class FCMController {
         }
     }
 
-    //    @PostMapping("/individual")
-    //    @Operation(summary = "개인 알림 보내기.", description = "알림DB저장, fcm으로 단일 알림을 보낸다.")
-    //    @ApiResponses({
-    //        @ApiResponse(responseCode = "200", description = "정상 반환"),
-    //        @ApiResponse(responseCode = "404", description = "계좌 정보 없음 (DB 레코드 유실)"),
-    //        @ApiResponse(responseCode = "500", description = "서버 오류")
-    //    })
-    //    public ResponseEntity<?> pushDataMSG(
-    //            @RequestBody messageReqDto dto, Principal principal) throws IOException {
-    //        String memberId = principal.getName();
-    //        try {
-    //
-    ////            return fcmService.pushDataMSG(dto, memberId);
-    //
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            return ResponseEntity.internalServerError().body("서버 에러");
-    //        }
-    //    }
-    //
-    //    @PostMapping("/individual")
-    //    @Operation(summary = "개인 알림 조회.", description = "회원이 받은 알림을 조회한다.")
-    //    @ApiResponses({
-    //        @ApiResponse(responseCode = "200", description = "정상 반환"),
-    //        @ApiResponse(responseCode = "404", description = "계좌 정보 없음 (DB 레코드 유실)"),
-    //        @ApiResponse(responseCode = "500", description = "서버 오류")
-    //    })
-    //    public ResponseEntity<?> pushDataMSG(
-    //            @RequestBody messageReqDto dto, Principal principal) throws IOException {
-    //        String memberId = principal.getName();
-    //        try {
-    //
-    ////            return fcmService.pushDataMSG(dto, memberId);
-    //
-    //        } catch (Exception e) {
-    //            e.printStackTrace();
-    //            return ResponseEntity.internalServerError().body("서버 에러");
-    //        }
+    //    @GetMapping("/test")
+    //    public ResponseEntity<?> test() throws IOException {
+    //        fcmService.test();
+    //        return ResponseEntity.ok().build();
     //    }
 }
