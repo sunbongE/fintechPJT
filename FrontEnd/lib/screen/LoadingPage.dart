@@ -30,9 +30,7 @@ class _LoadingPageState extends State<LoadingPage> {
   void initState() {
     super.initState();
     requestPermission();
-    _checkForInitialMessage();
     _checkLoginStatus();
-    _listenForForegroundMessages();
   }
 
   void requestPermission() async {
@@ -50,46 +48,9 @@ class _LoadingPageState extends State<LoadingPage> {
     print('User granted permission: ${settings.authorizationStatus}');
     FirebaseMessaging.onMessage.listen(
       (RemoteMessage message) {
-        print("포그라운드에서 메시지 수신111122121: ${message.messageId}, 데이터: ${message.notification!.title}");
+        print("포그라운드에서 메시지 수신111122121: 데이터: ${message.data}");
       },
     );
-  }
-
-  // 푸시알림으로 앱이 시작됐을 때 초기 메시지 처리
-  void _checkForInitialMessage() async {
-    RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
-    if (initialMessage != null) {
-      _handleMessage(initialMessage);
-    }
-  }
-
-  // 앱이 백그라운드 상태에서 푸시알림을 통해 열렸을 때 메시지 처리
-  void _listenForForegroundMessages() {
-    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
-  }
-
-  // 메시지 처리 로직
-  void _handleMessage(RemoteMessage message) {
-    if (message.data.containsKey('notificationType')) {
-      print("푸시알림 데이터: ${message.data}");
-      setState(
-        () {
-          messageString = message.data.toString();
-          print(messageString);
-        },
-      );
-
-      // 알림 타입에 따라 다른 페이지로 이동
-      String notificationType = message.data['notificationType'];
-      switch (notificationType) {
-        case 'group':
-          print("groupgroupgroupgroup");
-        case 'message':
-          print("messagemessagemessagemessage");
-        default:
-          print("defaultdefaultdefaultdefault");
-      }
-    }
   }
 
   Future<void> _checkLoginStatus() async {

@@ -14,8 +14,7 @@ class ApiClient {
     dio.options.baseUrl = dotenv.env['BASE_URL']!;
     // dio.options.baseUrl = "http://10.0.2.2:8080/api/v1";
     dio.options.headers['Content-Type'] = 'application/json';
-    dio.interceptors
-        .add(InterceptorsWrapper(onRequest: (options, handler) async {
+    dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) async {
       final jwtToken = await userManager.jwtToken;
 
       if (jwtToken != null) {
@@ -36,8 +35,8 @@ class ApiClient {
   }
 
   // PUT 요청
-  Future<Response> put(String path, {dynamic data}) async {
-    return dio.put(path, data: data);
+  Future<Response> put(String path, {dynamic data, Options? options}) async {
+    return dio.put(path, data: data, options: options);
   }
 
   // DELETE 요청
@@ -57,8 +56,7 @@ class ApiFileClient {
     print("간다간다apiFile요청~~~");
     dio.options.baseUrl = dotenv.env['BASE_URL']!;
     dio.options.headers['Content-Type'] = 'multipart/form-data';
-    dio.interceptors
-        .add(InterceptorsWrapper(onRequest: (options, handler) async {
+    dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) async {
       final jwtToken = await userManager.jwtToken;
 
       if (jwtToken != null) {

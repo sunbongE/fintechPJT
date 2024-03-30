@@ -1,9 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/models/FlutterToastMsg.dart';
 import 'package:front/components/intros/KeyBoardBoard.dart';
 import 'package:front/components/intros/ShowPassWord.dart';
+import 'package:front/repository/api/ApiLogin.dart';
 import 'package:lottie/lottie.dart';
 import '../../providers/store.dart';
 
@@ -20,15 +22,7 @@ class _PassWordCertificationState extends State<PassWordCertification> {
   PageController pageController = PageController();
   String passWord = '';
   String? confirmPassWord = '';
-  bool isLoading = true;
-
-  final userManager = UserManager();
-
-  @override
-  void initState() {
-    super.initState();
-    loadUserInfo();
-  }
+  bool isLoading = false;
 
   @override
   void dispose() {
@@ -36,64 +30,66 @@ class _PassWordCertificationState extends State<PassWordCertification> {
     super.dispose();
   }
 
-  void loadUserInfo() async {
-    await userManager.loadUserInfo();
-    if (mounted) {
-      setState(() {
-        confirmPassWord = userManager.password;
-        isLoading = false;
-      });
-    }
-  }
-
-  void updatePassword(String val) {
+  void updatePassword(String val) async {
     setState(() {
       if (val.length <= 6) {
         passWord = val;
-        if (passWord.length == 6) {
-          if (userManager.password == passWord) {
-            widget.onSuccess();
-          } else {
-            FlutterToastMsg("비밀번호가 일치하지 않습니다.\n다시 입력해주세요.");
-
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                  builder: (context) =>
-                      PassWordCertification(onSuccess: widget.onSuccess)),
-            );
-          }
-        }
       }
     });
+
+    if (passWord.length == 6) {
+      setState(() {
+        isLoading = true;
+      });
+
+      Response res = await putPassWord(passWord);
+      print('res.statusCode: ${res.statusCode}');
+
+      if (res.statusCode == 200) {
+        widget.onSuccess();
+      } else {
+        setState(() {
+          isLoading = false;
+          passWord = '';
+        });
+        FlutterToastMsg("비밀번호가 일치하지 않습니다.\n다시 입력해주세요.");
+
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => PassWordCertification(onSuccess: widget.onSuccess)),
+        );
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(0, 100.h, 0, 0),
-        child: Container(
-          child: isLoading
-              ? Center(child: Lottie.asset('assets/lotties/orangewalking.json'))
-              : PageView(
-                  controller: pageController,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    buildPasswordPage(
-                      "비밀번호를 입력하세요",
-                      "숫자 6자리",
-                      passWord,
-                      updatePassword,
-                    ),
-                  ],
-                ),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: Padding(
+          padding: EdgeInsets.fromLTRB(0, 100.h, 0, 0),
+          child: Container(
+            child: isLoading
+                ? Center(child: Lottie.asset('assets/lotties/orangewalking.json'))
+                : PageView(
+                    controller: pageController,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
+                      buildPasswordPage(
+                        "비밀번호를 입력하세요",
+                        "숫자 6자리",
+                        passWord,
+                        updatePassword,
+                      ),
+                    ],
+                  ),
+          ),
         ),
       ),
     );
   }
 
-  Widget buildPasswordPage(String title, String subTitle, String password,
-      Function(String) onKeyTap) {
+  Widget buildPasswordPage(String title, String subTitle, String password, Function(String) onKeyTap) {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -111,8 +107,7 @@ class _PassWordCertificationState extends State<PassWordCertification> {
           SizedBox(height: 50.h),
           Text(
             subTitle,
-            style: TextStyle(
-                fontSize: 16.sp, color: Colors.black.withOpacity(0.8)),
+            style: TextStyle(fontSize: 16.sp, color: Colors.black.withOpacity(0.8)),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 50.h),
