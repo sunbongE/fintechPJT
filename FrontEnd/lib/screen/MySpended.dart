@@ -32,22 +32,20 @@ class _MySpendedState extends State<MySpended> {
         ),
         backgroundColor: BG_COLOR,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              width: 430.w,
-              height: 200.h,
-              decoration: BoxDecoration(
-                color: BG_COLOR,
-              ),
-              child: MyMoney(
-                MyAccount: userManager.selectedAccount!,
-              ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            width: 430.w,
+            height: 200.h,
+            decoration: BoxDecoration(
+              color: BG_COLOR,
             ),
-            MySpendList(),
-          ],
-        ),
+            child: MyMoney(
+              MyAccount: userManager.selectedAccount!,
+            ),
+          ),
+          MySpendList(),
+        ],
       ),
     );
   }
