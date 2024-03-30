@@ -347,8 +347,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<TransactionResDto> readAllOrUpdateTransation(String memberId)
-            throws ParseException {
+    public List<TransactionResDto> readAllOrUpdateTransation(
+            String memberId, int page, int pageSize) throws ParseException {
         log.info("impl call");
 
         // DB에서 가장 최근의 데이터의 날짜와 시간을 가져온다.
@@ -384,7 +384,8 @@ public class AccountServiceImpl implements AccountService {
         List<TransactionResDto> response = new ArrayList<>();
 
         // 회원아이디로 주계좌 회원, 계좌 조인해서 회원의 주계좌 가져온다.
-        List<Transaction> transactions = accountQueryRepository.readAllOrUpdateTransation(memberId);
+        List<Transaction> transactions =
+                accountQueryRepository.readAllOrUpdateTransation(memberId, page, pageSize);
         //        log.info("transactions:{}",transactions);
         for (Transaction transaction : transactions) {
             TransactionResDto data = new TransactionResDto(transaction);
