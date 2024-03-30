@@ -9,11 +9,15 @@ import com.orange.fintech.group.repository.CalculateResultRepository;
 import com.orange.fintech.group.repository.GroupRepository;
 import com.orange.fintech.group.service.GroupService;
 import com.orange.fintech.member.repository.MemberRepository;
+import com.orange.fintech.notification.Dto.MessageListDataReqDto;
+import com.orange.fintech.notification.entity.NotificationType;
+import com.orange.fintech.notification.service.FcmService;
 import com.orange.fintech.payment.dto.CalculateResultDto;
 import com.orange.fintech.payment.dto.TransactionDto;
 import com.orange.fintech.payment.dto.YeojungDto;
 import com.orange.fintech.payment.repository.TransactionQueryRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import java.io.IOException;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +33,7 @@ public class CalculateServiceImpl implements CalculateService {
 
     private final AccountService accountService;
     private final GroupService groupService;
+    private final FcmService fcmService;
 
     private final TransactionQueryRepository transactionQueryRepository;
     private final MemberRepository memberRepository;
@@ -266,13 +271,17 @@ public class CalculateServiceImpl implements CalculateService {
     }
 
     @Override
-    public void transfer(List<CalculateResultDto> calResults, int groupId) {
+    public void transfer(List<CalculateResultDto> calResults, int groupId) throws IOException {
+        // 회원 목록
+        HashMap<String, String> getdistinctMemberId = new HashMap<>();
         // 송금
         for (CalculateResultDto calResult : calResults) {
             accountService.transfer(
                     calResult.getSendMemberId(),
                     calResult.getReceiveMemberId(),
                     calResult.getAmount());
+            getdistinctMemberId.put(calResult.getReceiveMemberId(), calResult.getReceiveMemberId());
+            getdistinctMemberId.put(calResult.getSendMemberId(), calResult.getSendMemberId());
         }
 
         Group group = groupRepository.findById(groupId).get();
@@ -288,6 +297,16 @@ public class CalculateServiceImpl implements CalculateService {
                     memberRepository.findById(calResult.getReceiveMemberId()).get());
             calculateResultRepository.save(calculateResult);
         }
+
+        // 정산했던 회원들 아이디 추출
+        Collection<String> distinctMemberId = getdistinctMemberId.values();
+        List<String> calculateMembers = new ArrayList<>(distinctMemberId);
+
+        MessageListDataReqDto messageListDataReqDto = new MessageListDataReqDto();
+        messageListDataReqDto.setTargetMembers(calculateMembers);
+        messageListDataReqDto.setGroupId(groupId);
+        messageListDataReqDto.setNotificationType(NotificationType.TRANSFER);
+        fcmService.pushListDataMSG(messageListDataReqDto);
     }
 
     private boolean np(int[] p) {

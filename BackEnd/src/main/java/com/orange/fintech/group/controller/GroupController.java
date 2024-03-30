@@ -254,7 +254,6 @@ public class GroupController {
         }
     }
 
-    @Async
     @PutMapping("/{groupId}/secondcall")
     @Operation(summary = "정산 내역 요청 및 취소", description = "정산 요청을 하여 회원의 상태가 변경된다.")
     public ResponseEntity<?> secondcall(@PathVariable("groupId") int groupId, Principal principal) {

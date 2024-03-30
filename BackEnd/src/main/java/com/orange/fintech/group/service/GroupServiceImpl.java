@@ -241,10 +241,6 @@ public class GroupServiceImpl implements GroupService {
             remainder = transactionQueryRepository.sumOfRemainder(groupId);
         }
 
-        // Todo : 여기서 잔액충분한지 확인.
-        //        boolean isNoMoney = 어떤 함수..
-        if (false) {}
-
         groupMemberRepository.save(targetGroupMember);
 
         return remainder;
