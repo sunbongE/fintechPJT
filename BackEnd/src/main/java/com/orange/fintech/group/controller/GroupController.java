@@ -251,34 +251,19 @@ public class GroupController {
         }
     }
 
+    @Async
     @PutMapping("/{groupId}/secondcall")
     @Operation(summary = "정산 내역 요청 및 취소", description = "정산 요청을 하여 회원의 상태가 변경된다.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
-    })
-    public ResponseEntity<BaseResponseBody> secondcall(
-            @PathVariable("groupId") int groupId, Principal principal) {
+    public void secondcall(@PathVariable("groupId") int groupId, Principal principal) {
         String memberId = principal.getName();
 
         try {
-            if (!groupService.isExistMember(memberId, groupId)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
-            }
 
             boolean result = groupService.secondcall(groupId, memberId);
-            if (result) {
-                return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "성공"));
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(BaseResponseBody.of(400, "실패"));
-            }
 
         } catch (Exception e) {
+            e.printStackTrace();
             log.info("[ERROR] :{}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(BaseResponseBody.of(500, "서버 오류"));
         }
     }
 

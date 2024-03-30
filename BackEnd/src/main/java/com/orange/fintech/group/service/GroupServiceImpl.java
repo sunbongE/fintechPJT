@@ -18,7 +18,6 @@ import com.orange.fintech.payment.entity.TransactionMember;
 import com.orange.fintech.payment.entity.TransactionMemberPK;
 import com.orange.fintech.payment.repository.TransactionDetailRepository;
 import com.orange.fintech.payment.repository.TransactionMemberRepository;
-import com.orange.fintech.payment.service.CalculateService;
 import com.orange.fintech.redis.service.GroupRedisService;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -227,9 +226,21 @@ public class GroupServiceImpl implements GroupService {
 
         GroupMember targetGroupMember = Optarget.get();
 
-        if (!targetGroupMember.getFistCallDone()) return false;
+        //        if (!targetGroupMember.getSecondCallDone()) return false;
 
         targetGroupMember.setSecondCallDone(!targetGroupMember.getSecondCallDone());
+
+        int countSecondcallGroupMembers = groupQueryRepository.countSecondcallGroupMembers(groupId);
+        int countGroupMembers = groupQueryRepository.countGroupMembers(groupId);
+
+        if (countGroupMembers == countSecondcallGroupMembers) {
+            // 마지막으로 누른 사람 -> 자투리 당첨
+
+        }
+
+        // Todo : 여기서 잔액충분한지 확인.
+        //        boolean isNoMoney = 어떤 함수..
+        if (false) {}
 
         groupMemberRepository.save(targetGroupMember);
 
