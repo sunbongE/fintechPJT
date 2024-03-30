@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:front/components/groups/GroupJoinMemberCard.dart';
 import 'package:front/entities/GroupMember.dart';
@@ -18,12 +20,13 @@ class _GroupJoinMemberCarouselState extends State<GroupJoinMemberCarousel> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 120.h,
+      height: 100.h,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: widget.members.length,
         itemBuilder: (context, index) {
           return Container(
+            height: MediaQuery.of(context).size.height * 0.15,
             width: MediaQuery.of(context).size.width * 0.15,
             margin: EdgeInsets.symmetric(horizontal: 5.0), // 좌우 마진 설정
             child: GroupJoinMemberCard(member: widget.members[index]), // 멤버 카드 위젯 사용

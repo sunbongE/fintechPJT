@@ -34,7 +34,7 @@ class MainNowTravelCard extends StatelessWidget {
                 width: 6.w,
               ),
               Text(
-                group.groupName,
+                group.groupName.length > 5 ? '${group.groupName.substring(0, 4)}..' : group.groupName,
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: fontSize,
@@ -51,7 +51,7 @@ class MainNowTravelCard extends StatelessWidget {
                   height: 6.h,
                 ),
                 Text(
-                  group.theme,
+                  group.theme.length > 4 ? '${group.theme.substring(0, 4)}..' : group.theme,
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: themeSize,

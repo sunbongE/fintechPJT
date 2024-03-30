@@ -24,12 +24,12 @@ class _ButtonState extends State<Button> {
       style: ElevatedButton.styleFrom(
         backgroundColor: BUTTON_COLOR,
         minimumSize: Size(
-          298.w,
-          66.h,
+          280.w,
+          50.h,
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
-            15,
+            30,
           ),
         ),
       ),
@@ -37,6 +37,7 @@ class _ButtonState extends State<Button> {
         style: TextStyle(
           color: Colors.white,
           fontSize: 20.sp,
+          fontWeight: FontWeight.w800,
         ),
       ),
     );

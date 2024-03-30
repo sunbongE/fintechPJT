@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/groups/GroupJoinMember.dart';
 import 'package:front/components/groups/GroupYesCal.dart';
 import 'package:front/components/groups/GroupNoCal.dart';
@@ -12,6 +13,7 @@ class GroupItem extends StatelessWidget {
 
   GroupItem({required this.groupId});
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +24,6 @@ class GroupItem extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData) {
-                // 데이터가 성공적으로 로드되면 AppBar의 title에 그룹 이름을 표시
                 return Text(snapshot.data!.groupName);
               } else if (snapshot.hasError) {
                 return Text('그룹 정보 조회 실패');
@@ -40,7 +41,14 @@ class GroupItem extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.menu),
             onPressed: () {
-              // 메뉴 버튼 로직
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => GroupDetail(
+                    groupId: groupId,
+                  ),
+                ),
+              );
             },
           ),
         ],
@@ -56,9 +64,14 @@ class GroupItem extends StatelessWidget {
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GroupJoinMember(group: group),
 
+                    children: [
+                      Container(
+                        constraints: BoxConstraints(minHeight: 150.h),
+                        child: SizedBox(
+                          child: GroupJoinMember(group: group),
+                        ),
+                      ),
                       // 정산하기 버튼
                       Button(
                         btnText: '정산하기',
