@@ -5,6 +5,7 @@ import com.orange.fintech.account.entity.Account;
 import com.orange.fintech.common.exception.BigFileException;
 import com.orange.fintech.common.exception.EmptyFileException;
 import com.orange.fintech.common.exception.NotValidExtensionException;
+import com.orange.fintech.member.dto.PrimaryAccountRes;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.oauth.dto.MemberSearchResponseDto;
 import java.io.IOException;
@@ -16,6 +17,8 @@ public interface MemberService {
     MemberSearchResponseDto findByEmail(String email);
 
     List<Account> findAccountsByKakaoId(Member member);
+
+    PrimaryAccountRes findMyPrimaryAccount(Member member);
 
     Member findByKakaoId(String id);
 
