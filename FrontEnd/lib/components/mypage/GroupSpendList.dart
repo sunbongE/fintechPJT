@@ -1,8 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:front/components/myspended/MySpendItem.dart';
 import 'package:front/const/colors/Colors.dart';
-import 'package:front/entities/Receipt.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 import '../../models/CustomDivider.dart';
 import '../../models/button/ButtonSlideAnimation.dart';
@@ -22,121 +22,140 @@ class GroupSpendList extends StatefulWidget {
 }
 
 class _GroupSpendListState extends State<GroupSpendList> {
-  List<Map<String, dynamic>> getMySpended = [];
-  bool isLoading = false;
-  int nextPage = 1;
-  final int size = 10;
+  static const _pageSize = 10;
   String option = 'all';
-  final ScrollController _scrollController = ScrollController();
+  final PagingController<int, Map<String, dynamic>> _pagingController = PagingController(firstPageKey: 0);
 
   @override
   void initState() {
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
     super.initState();
-    getGroupSpendList();
-    _scrollController.addListener(
-      () {
-        if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !isLoading) {
-          getGroupSpendList();
-        }
-      },
-    );
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _pagingController.dispose();
     super.dispose();
   }
 
-  void getGroupSpendList() async {
-    if (isLoading) return;
-    setState(() {
-      isLoading = true;
-    });
-
-    Map<String, dynamic> queryParameters = {
-      'page': nextPage,
-      'size': size,
-      'option': option,
-    };
-
+  Future<void> _fetchPage(int pageKey) async {
     try {
-      final res = await getGroupSpend(widget.groupId, queryParameters);
-      List<Map<String, dynamic>>? receipts = res.data;
+      Map<String, dynamic> queryParameters = {
+        'page': pageKey,
+        'size': _pageSize,
+        'option': option,
+      };
+      Response res = await getGroupSpend(widget.groupId, queryParameters);
+      if (res.data != null) {
+        List<Map<String, dynamic>> newData = List<Map<String, dynamic>>.from(res.data).cast<Map<String, dynamic>>();
 
-      if (receipts != null && receipts.isNotEmpty) {
-        setState(() {
-          getMySpended.addAll(receipts);
-          nextPage++;
-        });
+        final isLastPage = newData.length < _pageSize;
+        if (isLastPage) {
+          _pagingController.appendLastPage(newData);
+        } else {
+          final nextPageKey = pageKey + 1;
+          _pagingController.appendPage(newData, nextPageKey);
+        }
+      } else {
+        _pagingController.appendLastPage([]);
       }
-    } catch (e) {
-      print(e);
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
+    } catch (error) {
+      _pagingController.error = error;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: getMySpended!
-            .map((spend) => InkWell(
-                  onTap: () {
-                    buttonSlideAnimation(
-                      context,
-                      GroupSpendItem(groupId: spend['groupId'], paymentId: spend['transactionId']),
-                    );
-                    print(spend);
-                  },
-                  child: Column(
-                    children: [
-                      Container(
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(
-                            10.w,
-                            30.h,
-                            10.w,
-                            30.h,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
+    return Expanded(
+      child: RefreshIndicator(
+        onRefresh: () => Future.sync(
+          () => _pagingController.refresh(),
+        ),
+        child: PagedListView<int, Map<String, dynamic>>(
+          pagingController: _pagingController,
+          builderDelegate: PagedChildBuilderDelegate<Map<String, dynamic>>(
+            itemBuilder: (context, item, index) => InkWell(
+              onTap: () {
+                buttonSlideAnimation(
+                  context,
+                  GroupSpendItem(groupId: item['groupId'], paymentId: item['transactionId']),
+                );
+                print(item);
+              },
+              child: Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 20.h),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              item['transactionDate'],
+                              style: TextStyle(fontSize: 13.sp),
+                            ),
+                            SizedBox(width: 25.w),
+                            Text(
+                              item['transactionSummary'],
+                              style: TextStyle(fontSize: 20.sp),
+                            ),
+                          ],
+                        ),
+                        item['transactionType'] == "1"
+                            ? Column(
                                 children: [
                                   Text(
-                                    spend['transactionDate'],
-                                    style: TextStyle(fontSize: 13.sp),
+                                    '${NumberFormat('#,###').format(int.parse(item['transactionBalance'].toString()))}원',
+                                    style: TextStyle(
+                                      fontSize: 20.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: TEXT_COLOR,
+                                    ),
                                   ),
-                                  SizedBox(width: 25.w),
                                   Text(
-                                    spend['transactionSummary'],
-                                    style: TextStyle(fontSize: 20.sp),
+                                    '${NumberFormat('#,###').format(int.parse(item['transactionAfterBalance'].toString()))}원',
+                                    style: TextStyle(
+                                      color: RECEIPT_TEXT_COLOR,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Column(
+                                children: [
+                                  Text(
+                                    '-${NumberFormat('#,###').format(int.parse(item['transactionBalance'].toString()))}원',
+                                    style: TextStyle(
+                                      fontSize: 20.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: RECEIPT_TEXT_COLOR,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${NumberFormat('#,###').format(int.parse(item['transactionAfterBalance'].toString()))}원',
+                                    style: TextStyle(
+                                      color: RECEIPT_TEXT_COLOR,
+                                    ),
                                   ),
                                 ],
                               ),
-                              Text(
-                                '-${NumberFormat('#,###').format(spend['transactionBalance'])}원',
-                                style: TextStyle(
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: TEXT_COLOR,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      CustomDivider(),
-                    ],
+                      ],
+                    ),
                   ),
-                ))
-            .toList(),
+                  CustomDivider(),
+                ],
+              ),
+            ),
+            firstPageErrorIndicatorBuilder: (context) => Center(
+              child: Text('에러 발생'),
+            ),
+            noItemsFoundIndicatorBuilder: (context) => Center(
+              child: Text('아이템이 없습니다'),
+            ),
+          ),
+        ),
       ),
     );
   }

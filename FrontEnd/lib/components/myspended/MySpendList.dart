@@ -1,143 +1,154 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:front/components/myspended/MySpendItem.dart';
-import 'package:front/const/colors/Colors.dart';
-import 'package:front/entities/Receipt.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import '../../const/colors/Colors.dart';
 import '../../models/CustomDivider.dart';
 import '../../models/button/ButtonSlideAnimation.dart';
 import '../../repository/api/ApiMySpend.dart';
+import 'MySpendItem.dart';
 
 class MySpendList extends StatefulWidget {
-  const MySpendList({
-    super.key,
-  });
+  const MySpendList({Key? key}) : super(key: key);
 
   @override
   State<MySpendList> createState() => _MySpendListState();
 }
 
 class _MySpendListState extends State<MySpendList> {
-  List<Map<String, dynamic>> getMySpended = [];
-  bool isLoading = false;
-  int nextPage = 0;
-  int size = 50;
+  static const _pageSize = 10;
+  final PagingController<int, Map<String, dynamic>> _pagingController = PagingController(firstPageKey: 0);
 
   @override
   void initState() {
-    getAccount();
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
     super.initState();
   }
 
-  void getAccount() async {
-    Map<String, dynamic> queryParameters = {
-      'page': nextPage,
-      'size': size,
-    };
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
 
-    setState(() {
-      isLoading = true;
-    });
-    final res = await getMyAccount(queryParameters);
-    if (res.data != null) {
-      getMySpended = List<Map<String, dynamic>>.from(res.data).cast<Map<String, dynamic>>();
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+      Map<String, dynamic> queryParameters = {
+        'page': pageKey,
+        'size': _pageSize,
+      };
+      Response res = await getMyAccount(queryParameters);
+      if (res.data != null) {
+        List<Map<String, dynamic>> newData = List<Map<String, dynamic>>.from(res.data).cast<Map<String, dynamic>>();
+
+        final isLastPage = newData.length < _pageSize;
+        if (isLastPage) {
+          _pagingController.appendLastPage(newData);
+        } else {
+          final nextPageKey = pageKey + 1;
+          _pagingController.appendPage(newData, nextPageKey);
+        }
+      } else {
+        _pagingController.appendLastPage([]);
+      }
+    } catch (error) {
+      _pagingController.error = error;
     }
-    setState(() {
-      isLoading = false;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10.w),
-      child: isLoading
-          ? Center(child: Lottie.asset('assets/lotties/orangewalking.json'))
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: getMySpended!
-                  .map((spend) => InkWell(
-                        onTap: () {
-                          buttonSlideAnimation(
-                            context,
-                            MySpendItem(spend: spend),
-                          );
-                        },
-                        child: Column(
+    return Expanded(
+      child: RefreshIndicator(
+        onRefresh: () => Future.sync(
+          () => _pagingController.refresh(),
+        ),
+        child: PagedListView<int, Map<String, dynamic>>(
+          pagingController: _pagingController,
+          builderDelegate: PagedChildBuilderDelegate<Map<String, dynamic>>(
+            itemBuilder: (context, item, index) => InkWell(
+              onTap: () {
+                buttonSlideAnimation(
+                  context,
+                  MySpendItem(spend: item),
+                );
+              },
+              child: Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 20.h),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
                           children: [
-                            Container(
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(
-                                  10.w,
-                                  20.h,
-                                  10.w,
-                                  20.h,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          spend['transactionDate'],
-                                          style: TextStyle(fontSize: 13.sp),
-                                        ),
-                                        SizedBox(width: 25.w),
-                                        Text(
-                                          spend['transactionSummary'],
-                                          style: TextStyle(fontSize: 20.sp),
-                                        ),
-                                      ],
-                                    ),
-                                    if (spend['transactionTypeName'] == '입금')
-                                      Column(
-                                        children: [
-                                          Text(
-                                            '${NumberFormat('#,###').format(spend['transactionBalance'])}원',
-                                            style: TextStyle(
-                                              fontSize: 20.sp,
-                                              fontWeight: FontWeight.bold,
-                                              color: TEXT_COLOR,
-                                            ),
-                                          ),
-                                          Text(
-                                            '${NumberFormat('#,###').format(spend['transactionAfterBalance'])}원',
-                                            style: TextStyle(
-                                              color: RECEIPT_TEXT_COLOR,
-                                            ),
-                                          )
-                                        ],
-                                      )
-                                    else
-                                      Column(
-                                        children: [
-                                          Text(
-                                            '-${NumberFormat('#,###').format(spend['transactionBalance'])}원',
-                                            style: TextStyle(
-                                              fontSize: 20.sp,
-                                              fontWeight: FontWeight.bold,
-                                              color: RECEIPT_TEXT_COLOR,
-                                            ),
-                                          ),
-                                          Text(
-                                            '${NumberFormat('#,###').format(spend['transactionAfterBalance'])}원',
-                                            style: TextStyle(
-                                              color: RECEIPT_TEXT_COLOR,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                  ],
-                                ),
-                              ),
+                            Text(
+                              item['transactionDate'],
+                              style: TextStyle(fontSize: 13.sp),
                             ),
-                            CustomDivider(),
+                            SizedBox(width: 25.w),
+                            Text(
+                              item['transactionSummary'],
+                              style: TextStyle(fontSize: 20.sp),
+                            ),
                           ],
                         ),
-                      ))
-                  .toList(),
+                        item['transactionType'] == "1"
+                            ? Column(
+                                children: [
+                                  Text(
+                                    '${NumberFormat('#,###').format(int.parse(item['transactionBalance'].toString()))}원',
+                                    style: TextStyle(
+                                      fontSize: 20.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: TEXT_COLOR,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${NumberFormat('#,###').format(int.parse(item['transactionAfterBalance'].toString()))}원',
+                                    style: TextStyle(
+                                      color: RECEIPT_TEXT_COLOR,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Column(
+                                children: [
+                                  Text(
+                                    '-${NumberFormat('#,###').format(int.parse(item['transactionBalance'].toString()))}원',
+                                    style: TextStyle(
+                                      fontSize: 20.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: RECEIPT_TEXT_COLOR,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${NumberFormat('#,###').format(int.parse(item['transactionAfterBalance'].toString()))}원',
+                                    style: TextStyle(
+                                      color: RECEIPT_TEXT_COLOR,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                      ],
+                    ),
+                  ),
+                  CustomDivider(),
+                ],
+              ),
             ),
+            firstPageErrorIndicatorBuilder: (context) => Center(
+              child: Text('에러 발생'),
+            ),
+            noItemsFoundIndicatorBuilder: (context) => Center(
+              child: Text('아이템이 없습니다'),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
