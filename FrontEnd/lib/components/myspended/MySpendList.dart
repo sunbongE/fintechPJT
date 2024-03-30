@@ -21,6 +21,8 @@ class MySpendList extends StatefulWidget {
 class _MySpendListState extends State<MySpendList> {
   List<Map<String, dynamic>> getMySpended = [];
   bool isLoading = false;
+  int nextPage = 0;
+  int size = 50;
 
   @override
   void initState() {
@@ -29,11 +31,15 @@ class _MySpendListState extends State<MySpendList> {
   }
 
   void getAccount() async {
+    Map<String, dynamic> queryParameters = {
+      'page': nextPage,
+      'size': size,
+    };
+
     setState(() {
       isLoading = true;
     });
-    final res = await getMyAccount();
-    print(res.data);
+    final res = await getMyAccount(queryParameters);
     if (res.data != null) {
       getMySpended = List<Map<String, dynamic>>.from(res.data).cast<Map<String, dynamic>>();
     }

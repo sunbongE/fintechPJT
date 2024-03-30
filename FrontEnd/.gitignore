@@ -44,3 +44,6 @@ app.*.map.json
 
 # Submodule
 /yeojung-env/
+
+# .jks카카오 init 할 때 오리지널 코드로 하기
+.jks

@@ -41,11 +41,13 @@ class _SelectAccountState extends State<SelectAccount> {
       isLoading = true;
     });
 
-    List<Map<String, dynamic>> res = await getBankInfo(widget.selectedBank['code']!);
+    Response<dynamic> res = await getBankInfo(widget.selectedBank['code']!);
+
+    List<Map<String, dynamic>> accountListRes = List<Map<String, dynamic>>.from(res.data);
 
     setState(() {
       isLoading = false;
-      accountList = res;
+      accountList = accountListRes;
     });
   }
 
@@ -119,7 +121,6 @@ class _SelectAccountState extends State<SelectAccount> {
                             ? Button(
                                 btnText: "Next",
                                 onPressed: () async {
-
                                   Map<String, String> accountInfo = {
                                     "bankCode": widget.selectedBank['code']!,
                                     "accountNo": selectAccount!,
@@ -129,6 +130,7 @@ class _SelectAccountState extends State<SelectAccount> {
 
                                   UserManager().saveUserInfo(
                                     newSelectedBank: widget.selectedBank['name'],
+                                    newSelectBankCode: widget.selectedBank['code'],
                                     newSelectedAccount: selectAccount,
                                   );
                                   buttonSlideAnimation(context, TermsPage());

@@ -23,9 +23,8 @@ class GroupSpendList extends StatefulWidget {
 
 class _GroupSpendListState extends State<GroupSpendList> {
   List<Map<String, dynamic>> getMySpended = [];
-
   bool isLoading = false;
-  int nextPage = 0;
+  int nextPage = 1;
   final int size = 10;
   String option = 'all';
   final ScrollController _scrollController = ScrollController();
@@ -36,7 +35,7 @@ class _GroupSpendListState extends State<GroupSpendList> {
     getGroupSpendList();
     _scrollController.addListener(
       () {
-        if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+        if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !isLoading) {
           getGroupSpendList();
         }
       },
@@ -51,22 +50,32 @@ class _GroupSpendListState extends State<GroupSpendList> {
 
   void getGroupSpendList() async {
     if (isLoading) return;
-    isLoading = true;
+    setState(() {
+      isLoading = true;
+    });
 
-    Map<String, dynamic> queryParameters = {'page': nextPage, 'size': size, 'option': option};
+    Map<String, dynamic> queryParameters = {
+      'page': nextPage,
+      'size': size,
+      'option': option,
+    };
 
     try {
       final res = await getGroupSpend(widget.groupId, queryParameters);
       List<Map<String, dynamic>>? receipts = res.data;
 
-      setState(() {
-        getMySpended!.addAll(receipts ?? []);
-        nextPage++;
-        isLoading = false;
-      });
+      if (receipts != null && receipts.isNotEmpty) {
+        setState(() {
+          getMySpended.addAll(receipts);
+          nextPage++;
+        });
+      }
     } catch (e) {
       print(e);
-      isLoading = false;
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 

@@ -26,9 +26,11 @@ class _KeyBoardKeyState extends State<KeyBoardKey> {
     });
 
     Future.delayed(Duration(milliseconds: 200), () {
-      setState(() {
-        textColor = Colors.black;
-      });
+      if (mounted) {
+        setState(() {
+          textColor = Colors.black;
+        });
+      }
     });
   }
 
