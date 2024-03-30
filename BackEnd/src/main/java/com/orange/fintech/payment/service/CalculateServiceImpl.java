@@ -3,6 +3,10 @@ package com.orange.fintech.payment.service;
 import com.orange.fintech.account.service.AccountService;
 import com.orange.fintech.group.dto.GroupMembersDto;
 import com.orange.fintech.group.dto.GroupMembersListDto;
+import com.orange.fintech.group.entity.CalculateResult;
+import com.orange.fintech.group.entity.Group;
+import com.orange.fintech.group.repository.CalculateResultRepository;
+import com.orange.fintech.group.repository.GroupRepository;
 import com.orange.fintech.group.service.GroupService;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.payment.dto.CalculateResultDto;
@@ -28,6 +32,8 @@ public class CalculateServiceImpl implements CalculateService {
 
     private final TransactionQueryRepository transactionQueryRepository;
     private final MemberRepository memberRepository;
+    private final GroupRepository groupRepository;
+    private final CalculateResultRepository calculateResultRepository;
 
     @Value("${ssafy.bank.transfer")
     private String transferUri;
@@ -261,8 +267,26 @@ public class CalculateServiceImpl implements CalculateService {
 
     @Override
     public void transfer(List<CalculateResultDto> calResults, int groupId) {
+        // 송금
         for (CalculateResultDto calResult : calResults) {
-            accountService.transfer(calResult.getSendMemberId(), calResult.getReceiveMemberId(), calResult.getAmount());
+            accountService.transfer(
+                    calResult.getSendMemberId(),
+                    calResult.getReceiveMemberId(),
+                    calResult.getAmount());
+        }
+
+        Group group = groupRepository.findById(groupId).get();
+
+        // 송금 후 저장
+        for (CalculateResultDto calResult : calResults) {
+            CalculateResult calculateResult = new CalculateResult();
+            calculateResult.setGroup(group);
+            calculateResult.setAmount(calResult.getAmount());
+            calculateResult.setSendMember(
+                    memberRepository.findById(calResult.getSendMemberId()).get());
+            calculateResult.setReceiveMember(
+                    memberRepository.findById(calResult.getReceiveMemberId()).get());
+            calculateResultRepository.save(calculateResult);
         }
     }
 
