@@ -18,6 +18,7 @@ import com.orange.fintech.payment.entity.TransactionMember;
 import com.orange.fintech.payment.entity.TransactionMemberPK;
 import com.orange.fintech.payment.repository.TransactionDetailRepository;
 import com.orange.fintech.payment.repository.TransactionMemberRepository;
+import com.orange.fintech.payment.repository.TransactionQueryRepository;
 import com.orange.fintech.redis.service.GroupRedisService;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class GroupServiceImpl implements GroupService {
     private final TransactionDetailRepository transactionDetailRepository;
     private final TransactionMemberRepository transactionMemberRepository;
     private final NotificationQueryRepository notificationQueryRepository;
+    private final TransactionQueryRepository transactionQueryRepository;
 
     @Override
     public int createGroup(GroupCreateDto dto, String memberId) {
@@ -214,7 +216,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public boolean secondcall(int groupId, String memberId) {
+    public int secondcall(int groupId, String memberId) {
         Group group = new Group();
         Member member = new Member();
         group.setGroupId(groupId);
@@ -222,7 +224,7 @@ public class GroupServiceImpl implements GroupService {
 
         GroupMemberPK groupMemberPK = new GroupMemberPK(member, group);
         Optional<GroupMember> Optarget = groupMemberRepository.findById(groupMemberPK);
-        if (Optarget.isEmpty()) return false;
+        if (Optarget.isEmpty()) return -1;
 
         GroupMember targetGroupMember = Optarget.get();
 
@@ -233,9 +235,10 @@ public class GroupServiceImpl implements GroupService {
         int countSecondcallGroupMembers = groupQueryRepository.countSecondcallGroupMembers(groupId);
         int countGroupMembers = groupQueryRepository.countGroupMembers(groupId);
 
+        int remainder = -1;
         if (countGroupMembers == countSecondcallGroupMembers) {
             // 마지막으로 누른 사람 -> 자투리 당첨
-
+            remainder = transactionQueryRepository.sumOfRemainder(groupId);
         }
 
         // Todo : 여기서 잔액충분한지 확인.
@@ -244,7 +247,7 @@ public class GroupServiceImpl implements GroupService {
 
         groupMemberRepository.save(targetGroupMember);
 
-        return true;
+        return remainder;
     }
 
     @Override

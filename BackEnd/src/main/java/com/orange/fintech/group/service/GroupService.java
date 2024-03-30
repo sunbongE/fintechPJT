@@ -24,7 +24,7 @@ public interface GroupService {
 
     void firstcall(int groupId, String memberId) throws IOException;
 
-    boolean secondcall(int groupId, String memberId);
+    int secondcall(int groupId, String memberId);
 
     void finalCalculate(int groupId, String memberId);
 

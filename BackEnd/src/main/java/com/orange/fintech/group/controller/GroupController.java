@@ -4,6 +4,8 @@ import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.group.dto.*;
 import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.group.service.GroupService;
+import com.orange.fintech.payment.dto.CalculateResultDto;
+import com.orange.fintech.payment.service.CalculateService;
 import com.orange.fintech.util.ReceiptOcrService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 public class GroupController {
 
     private final GroupService groupService;
+    private final CalculateService calculateService;
 
     @Autowired private final ReceiptOcrService receiptOcrService;
 
@@ -254,17 +257,58 @@ public class GroupController {
     @Async
     @PutMapping("/{groupId}/secondcall")
     @Operation(summary = "정산 내역 요청 및 취소", description = "정산 요청을 하여 회원의 상태가 변경된다.")
-    public void secondcall(@PathVariable("groupId") int groupId, Principal principal) {
+    public ResponseEntity<?> secondcall(@PathVariable("groupId") int groupId, Principal principal) {
         String memberId = principal.getName();
 
         try {
+            int result = groupService.secondcall(groupId, memberId);
 
-            boolean result = groupService.secondcall(groupId, memberId);
-
+            return ResponseEntity.status(HttpStatus.OK).body(result);
         } catch (Exception e) {
             e.printStackTrace();
             log.info("[ERROR] :{}", e.getMessage());
         }
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @PostMapping("/{groupId}/calculate")
+    @Operation(summary = "최종 정산", description = "최종정산을 진행한다.")
+    public ResponseEntity<?> finalCalculate(
+            @PathVariable("groupId") int groupId, Principal principal) {
+        String memberId = principal.getName();
+
+        try {
+            List<CalculateResultDto> calRes = calculateService.finalCalculator(groupId, memberId);
+            calculateService.transfer(calRes, groupId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "OK"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("[ERROR] :{}", e.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(BaseResponseBody.of(400, "BAD_REQUEST"));
+    }
+
+    // TODO: 최종정산결과
+    @GetMapping("/{groupId}/calculate")
+    @Operation(summary = "최종 정산 결과", description = "최종정산결과를 조회한다.")
+    public ResponseEntity<?> getFinalCalculate(
+            @PathVariable("groupId") int groupId, Principal principal) {
+        String memberId = principal.getName();
+
+        try {
+            // 내 정산에 대한 결과?
+            return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "OK"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("[ERROR] :{}", e.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(BaseResponseBody.of(400, "BAD_REQUEST"));
     }
 
     @GetMapping("/{groupId}/members/firstcall")
