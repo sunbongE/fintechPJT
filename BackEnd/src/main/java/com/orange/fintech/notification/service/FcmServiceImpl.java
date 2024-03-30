@@ -48,7 +48,7 @@ public class FcmServiceImpl implements FcmService {
         String sender = memberRepository.findById(memberId).get().getName();
 
         List<String> kakaoIdList = dto.getTargetMembers();
-        List<String> inviteMembersFcmToken =
+        List<String> targetMembersFcmToken =
                 notificationQueryRepository.getMembersFcmToken(kakaoIdList);
 
         // 그룹초대인경우.
@@ -68,9 +68,9 @@ public class FcmServiceImpl implements FcmService {
             // FCM 보내기
             Map<String, String> dataSet = new HashMap<>();
             dataSet.put("groupId", String.valueOf(dto.getGroupId()));
-            dataSet.put("type", NotificationResponseTitle.INVITE);
+            dataSet.put("type", "INVITE");
 
-            for (String fcmToken : inviteMembersFcmToken) {
+            for (String fcmToken : targetMembersFcmToken) {
                 FCMMessageDto fcmMessageDto =
                         new FCMMessageDto(
                                 fcmToken,
@@ -93,43 +93,43 @@ public class FcmServiceImpl implements FcmService {
     @Override
     public void pushListDataMSG(MessageListDataReqDto dto) throws IOException {
         List<String> kakaoIdList = dto.getTargetMembers();
-        List<String> inviteMembersFcmToken =
+        List<String> targetMembersFcmToken =
                 notificationQueryRepository.getMembersFcmToken(kakaoIdList);
 
         String sendGroup = groupQueryRepository.getGroupName(dto.getGroupId());
+        String title = "";
+        String content = "";
+        // 필요한 데이터 입력부.
+        Map<String, String> dataSet = new HashMap<>();
+
+        if (dto.getNotificationType().equals(NotificationType.SPLIT)) {
+            title = NotificationResponseTitle.SPLIT;
+            content = (sendGroup + NotificationResponseDescription.SPLIT);
+            dataSet.put("groupId", String.valueOf(dto.getGroupId()));
+            dataSet.put("type", "SPLIT");
+        } else if (dto.getNotificationType().equals(NotificationType.TRANSFER)) {
+            title = NotificationResponseTitle.TRANSFER;
+            content = (sendGroup + NotificationResponseDescription.TRANSFER);
+            dataSet.put("groupId", String.valueOf(dto.getGroupId()));
+            dataSet.put("type", "TRANSFER");
+        }
 
         //        log.info("sendGroup => {}", sendGroup);
         //         firstCall인경우
 
-        if (dto.getNotificationType().equals(NotificationType.SPLIT)) {
-            // DB에 저장
-            for (String kakaoId : kakaoIdList) {
-                Member member = memberRepository.findById(kakaoId).get();
-                Notification notification =
-                        new Notification(
-                                member,
-                                dto.getNotificationType(),
-                                dto.getGroupId(),
-                                NotificationResponseTitle.SPLIT,
-                                (sendGroup + NotificationResponseDescription.SPLIT));
-                notificationRepository.save(notification);
-            }
-            // FCM 보내기
+        // DB에 저장
+        for (String kakaoId : kakaoIdList) {
+            Member member = memberRepository.findById(kakaoId).get();
+            Notification notification =
+                    new Notification(
+                            member, dto.getNotificationType(), dto.getGroupId(), title, content);
+            notificationRepository.save(notification);
+        }
 
-            // 필요한 데이터 입력부.
-            Map<String, String> dataSet = new HashMap<>();
-            dataSet.put("groupId", String.valueOf(dto.getGroupId()));
-            dataSet.put("type", NotificationResponseTitle.SPLIT);
-
-            for (String fcmToken : inviteMembersFcmToken) {
-                FCMMessageDto fcmMessageDto =
-                        new FCMMessageDto(
-                                fcmToken,
-                                NotificationResponseTitle.SPLIT,
-                                (sendGroup + NotificationResponseDescription.SPLIT),
-                                dataSet);
-                fcmSender.sendMessageTo(fcmMessageDto);
-            }
+        // FCM 보내기
+        for (String fcmToken : targetMembersFcmToken) {
+            FCMMessageDto fcmMessageDto = new FCMMessageDto(fcmToken, title, content, dataSet);
+            fcmSender.sendMessageTo(fcmMessageDto);
         }
     }
 
@@ -184,7 +184,7 @@ public class FcmServiceImpl implements FcmService {
             FCMMessageDto fcmMessageDto = new FCMMessageDto();
             Map<String, String> dataSet = new HashMap<>();
             dataSet.put("groupId", String.valueOf(groupId));
-            dataSet.put("type", type.toString());
+            dataSet.put("type", "URGE");
 
             fcmMessageDto.setData(dataSet);
             fcmMessageDto.setTitle(title);

@@ -3,6 +3,7 @@ package com.orange.fintech.payment.service;
 import com.orange.fintech.payment.dto.CalculateResultDto;
 import com.orange.fintech.payment.dto.TransactionDto;
 import com.orange.fintech.payment.dto.YeojungDto;
+import java.io.IOException;
 import java.util.List;
 
 public interface CalculateService {
@@ -18,7 +19,7 @@ public interface CalculateService {
 
     public void transactionSimulation(int[] np, List<CalMember> plus, List<CalMember> minus);
 
-    public void transfer(List<CalculateResultDto> calResults, int groupId);
+    public void transfer(List<CalculateResultDto> calResults, int groupId) throws IOException;
 
     public class CalMember {
         long amount;
