@@ -90,6 +90,7 @@ public class FcmServiceImpl implements FcmService {
      * @param dto
      * @throws IOException
      */
+    @Async
     @Override
     public void pushListDataMSG(MessageListDataReqDto dto) throws IOException {
         List<String> kakaoIdList = dto.getTargetMembers();
@@ -112,6 +113,11 @@ public class FcmServiceImpl implements FcmService {
             content = (sendGroup + NotificationResponseDescription.TRANSFER);
             dataSet.put("groupId", String.valueOf(dto.getGroupId()));
             dataSet.put("type", "TRANSFER");
+        } else if (dto.getNotificationType().equals(NotificationType.NO_MONEY)) {
+            title = NotificationResponseTitle.NO_MONEY;
+            content = (sendGroup + NotificationResponseDescription.NO_MONEY);
+            dataSet.put("groupId", String.valueOf(dto.getGroupId()));
+            dataSet.put("type", "NO_MONEY");
         }
 
         //        log.info("sendGroup => {}", sendGroup);
@@ -140,6 +146,18 @@ public class FcmServiceImpl implements FcmService {
         List<Notification> individualNotifications = notificationRepository.findAllByMember(member);
 
         return ResponseEntity.ok().body(individualNotifications);
+    }
+
+    @Async
+    @Override
+    public void noMoneyFcm(List<String> noMoneysKakaoId, int groupId) throws IOException {
+        // fcm보낸거.
+        MessageListDataReqDto messageListDataReqDto = new MessageListDataReqDto();
+        messageListDataReqDto.setTargetMembers(noMoneysKakaoId);
+        messageListDataReqDto.setGroupId(groupId);
+        messageListDataReqDto.setNotificationType(NotificationType.NO_MONEY);
+
+        pushListDataMSG(messageListDataReqDto);
     }
 
     /** 여행이 끝난 그룹중에서 정산을 완료안한 사람들에게 알림을 보낸다. */
