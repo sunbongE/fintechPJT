@@ -63,7 +63,6 @@ class _CreatePwPageState extends State<CreatePwPage> {
         // FCM토큰 post api
         await postFcmToken(userManager.fcmToken);
 
-        UserManager().saveUserInfo(newPassword: _confirmPassWord);
         buttonSlideAnimation(context, SelectBank());
       } else {
         FlutterToastMsg("비밀번호가 일치하지 않습니다.\n다시 입력해주세요.");

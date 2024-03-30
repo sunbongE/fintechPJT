@@ -12,9 +12,6 @@ class UserManager with ChangeNotifier {
   String? profileImageUrl;
   String? jwtToken;
 
-  // 비밀번호
-  String? password;
-
   // FCM 토큰
   String? fcmToken;
 
@@ -41,7 +38,6 @@ class UserManager with ChangeNotifier {
     String? newProfileImageUrl,
     String? newJwtToken,
     String? newFcmToken,
-    String? newPassword,
     String? newSelectedBank,
     String? newSelectedAccount,
     bool? newIsLogin,
@@ -52,7 +48,6 @@ class UserManager with ChangeNotifier {
     profileImageUrl = newProfileImageUrl ?? profileImageUrl;
     jwtToken = newJwtToken ?? jwtToken;
     fcmToken = newFcmToken ?? fcmToken;
-    password = newPassword ?? password;
     selectedBank = newSelectedBank ?? selectedBank;
     selectedAccount = newSelectedAccount ?? selectedAccount;
     isLogin = newIsLogin ?? isLogin;
@@ -63,7 +58,6 @@ class UserManager with ChangeNotifier {
     await storage.write(key: 'profileImageUrl', value: profileImageUrl);
     await storage.write(key: 'jwtToken', value: jwtToken);
     await storage.write(key: 'fcmToken', value: fcmToken);
-    await storage.write(key: 'password', value: password);
     await storage.write(key: 'selectedBank', value: selectedBank);
     await storage.write(key: 'selectedAccount', value: selectedAccount);
     await storage.write(key: 'isLogin', value: isLogin.toString());
@@ -79,7 +73,6 @@ class UserManager with ChangeNotifier {
     profileImageUrl = await storage.read(key: 'profileImageUrl');
     jwtToken = await storage.read(key: 'jwtToken');
     fcmToken = await storage.read(key: 'fcmToken');
-    password = await storage.read(key: 'password');
     selectedBank = await storage.read(key: 'selectedBank');
     selectedAccount = await storage.read(key: 'selectedAccount');
     String? isLoginStr = await storage.read(key: 'isLogin');
@@ -96,7 +89,6 @@ class UserManager with ChangeNotifier {
     profileImageUrl = null;
     jwtToken = null;
     fcmToken = null;
-    password = null;
     selectedBank = null;
     selectedAccount = null;
     isLogin = false;

@@ -36,7 +36,7 @@ class SplitMainList extends StatelessWidget {
                 Row(
                   children: [
                     Icon(
-                      Icons.arrow_circle_left_rounded,
+                      Icons.arrow_circle_right_rounded,
                       color: RECIVE_ICON_COLOR,
                       size: 40,
                     ),
@@ -48,9 +48,7 @@ class SplitMainList extends StatelessWidget {
                     Spacer(),
                     Text(
                       "+${NumberFormat('#,###').format(member.receiveAmount)}원",
-                      style: TextStyle(
-                          fontSize: 18.sp,
-                          color: RECIVE_ICON_COLOR),
+                      style: TextStyle(fontSize: 18.sp, color: RECIVE_ICON_COLOR),
                     ),
                   ],
                 ),
@@ -58,7 +56,7 @@ class SplitMainList extends StatelessWidget {
                 Row(
                   children: [
                     Icon(
-                      Icons.arrow_circle_right_rounded,
+                      Icons.arrow_circle_left_rounded,
                       color: SEND_ICON_COLOR,
                       size: 40,
                     ),
@@ -70,9 +68,7 @@ class SplitMainList extends StatelessWidget {
                     Spacer(),
                     Text(
                       "-${NumberFormat('#,###').format(member.sendAmount)}원",
-                      style: TextStyle(
-                          fontSize: 18.sp,
-                          color: SEND_ICON_COLOR),
+                      style: TextStyle(fontSize: 18.sp, color: SEND_ICON_COLOR),
                     ),
                   ],
                 ),

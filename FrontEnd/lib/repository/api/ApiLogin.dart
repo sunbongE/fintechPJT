@@ -35,6 +35,23 @@ Future<void> postPassWord(data) async {
   }
 }
 
+// 6자리 핀번호 확인(put)
+Future<Response> putPassWord(data) async {
+  try {
+    final res = await api.put(
+      '/members/pin',
+      data: data,
+      options: Options(
+        validateStatus: (status) => true,
+      ),
+    );
+    return res;
+  } catch (err) {
+    print(err);
+    throw Exception('Failed to post user info');
+  }
+}
+
 // FCM Token post
 Future<void> postFcmToken(data) async {
   try {
@@ -60,6 +77,17 @@ Future<List<Map<String, dynamic>>> getBankInfo(String code) async {
     final res = await api.get('/account/list/$code');
     final List<Map<String, dynamic>> formattedRes = (res.data as List).map((e) => e as Map<String, dynamic>).toList();
     return formattedRes;
+  } catch (err) {
+    print('err: $err');
+    throw Exception('Failed to get bank info');
+  }
+}
+
+// 서비스에 등록된 주 거래계좌를 조회한다.
+Future<Response> getMyPrimary() async {
+  try {
+    final res = await api.get('/members/account/primary');
+    return res;
   } catch (err) {
     print('err: $err');
     throw Exception('Failed to get bank info');

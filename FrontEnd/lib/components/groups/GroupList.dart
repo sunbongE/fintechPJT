@@ -10,7 +10,6 @@ import '../../models/LoadingDialog.dart';
 import '../../repository/api/ApiGroup.dart';
 import '../split/SplitDone.dart';
 
-
 class GroupList extends StatefulWidget {
   final List<Group> groups;
   const GroupList({Key? key, required this.groups}) : super(key: key);
@@ -20,8 +19,6 @@ class GroupList extends StatefulWidget {
 }
 
 class _GroupListState extends State<GroupList> {
-
-
   void navigateToGroupAdd() async {
     // Navigator.push()의 결과를 newGroup에 저장
     Group? newGroup = await Navigator.push(
@@ -35,7 +32,6 @@ class _GroupListState extends State<GroupList> {
       });
     }
   }
-
 
   void navigateToGroupDetail(Group group) async {
     showDialog(
@@ -51,29 +47,29 @@ class _GroupListState extends State<GroupList> {
       case 'before':
         modifiedGroup = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
+          MaterialPageRoute(builder: (context) => SplitMain(groupId: group.groupId!)),
         );
         break;
       case 'split':
         modifiedGroup = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
+          MaterialPageRoute(builder: (context) => SplitMain(groupId: group.groupId!)),
         );
         break;
       case 'doing':
         modifiedGroup = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
+          MaterialPageRoute(builder: (context) => SplitMain(groupId: group.groupId!)),
         );
         break;
       case 'done':
         modifiedGroup = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
+          MaterialPageRoute(builder: (context) => SplitMain(groupId: group.groupId!)),
         );
         break;
       default:
-      // 예외 처리
+        // 예외 처리
         break;
     }
 
@@ -87,7 +83,6 @@ class _GroupListState extends State<GroupList> {
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -103,8 +98,6 @@ class _GroupListState extends State<GroupList> {
           );
         },
       ),
-
-
       floatingActionButton: FloatingActionButton(
         onPressed: navigateToGroupAdd,
         child: Icon(Icons.add, color: Colors.white), // Icon의 color 속성에 Colors.white를 추가
@@ -112,5 +105,4 @@ class _GroupListState extends State<GroupList> {
       ),
     );
   }
-
 }
