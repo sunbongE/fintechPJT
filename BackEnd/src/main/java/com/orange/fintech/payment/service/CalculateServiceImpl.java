@@ -1,18 +1,19 @@
 package com.orange.fintech.payment.service;
 
+import com.orange.fintech.account.service.AccountService;
 import com.orange.fintech.group.dto.GroupMembersDto;
 import com.orange.fintech.group.dto.GroupMembersListDto;
 import com.orange.fintech.group.service.GroupService;
+import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.payment.dto.CalculateResultDto;
 import com.orange.fintech.payment.dto.TransactionDto;
 import com.orange.fintech.payment.dto.YeojungDto;
 import com.orange.fintech.payment.repository.TransactionQueryRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +23,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CalculateServiceImpl implements CalculateService {
 
+    private final AccountService accountService;
     private final GroupService groupService;
+
     private final TransactionQueryRepository transactionQueryRepository;
+    private final MemberRepository memberRepository;
+
+    @Value("${ssafy.bank.transfer")
+    private String transferUri;
 
     /**
      * memberId가 다른 그룹원들에게 얼마를 주고받아야하는지
@@ -101,8 +108,8 @@ public class CalculateServiceImpl implements CalculateService {
     public List<CalculateResultDto> finalCalculator(int groupId, String lastMemberId) {
         GroupMembersListDto listDto = groupService.findGroupMembers(groupId);
 
-        List<Member> plus = new ArrayList<>();
-        List<Member> minus = new ArrayList<>();
+        List<CalMember> plus = new ArrayList<>();
+        List<CalMember> minus = new ArrayList<>();
 
         int remainder = transactionQueryRepository.sumOfRemainder(groupId);
 
@@ -113,9 +120,9 @@ public class CalculateServiceImpl implements CalculateService {
             }
 
             if (amount >= 0) {
-                plus.add(new Member(amount, dto.getKakaoId()));
+                plus.add(new CalMember(amount, dto.getKakaoId()));
             } else {
-                minus.add(new Member(amount, dto.getKakaoId()));
+                minus.add(new CalMember(amount, dto.getKakaoId()));
             }
         }
 
@@ -207,8 +214,7 @@ public class CalculateServiceImpl implements CalculateService {
     int minTransaction[];
 
     @Override
-    public void transactionSimulation(
-            int[] np, List<CalculateService.Member> plus, List<CalculateService.Member> minus) {
+    public void transactionSimulation(int[] np, List<CalMember> plus, List<CalMember> minus) {
         long[] remains = new long[plus.size()];
         for (int i = 0; i < plus.size(); i++) {
             remains[i] = plus.get(i).amount;
@@ -254,7 +260,11 @@ public class CalculateServiceImpl implements CalculateService {
     }
 
     @Override
-    public void transfer(List<CalculateResultDto> calResults, int groupId) {}
+    public void transfer(List<CalculateResultDto> calResults, int groupId) {
+        for (CalculateResultDto calResult : calResults) {
+            accountService.transfer(calResult.getSendMemberId(), calResult.getReceiveMemberId(), calResult.getAmount());
+        }
+    }
 
     private boolean np(int[] p) {
         int N = p.length;

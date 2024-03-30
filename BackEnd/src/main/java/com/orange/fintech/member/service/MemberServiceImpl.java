@@ -117,9 +117,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public PrimaryAccountRes findMyPrimaryAccount(Member member) {
-        List<Account> accountList = accountRepository.findByMemberAndIsPrimaryAccountIsTrue(member);
-        log.info("accountList: {}", accountList);
-        return PrimaryAccountRes.of(accountList.get(0));
+        Account account = accountRepository.findByMemberAndIsPrimaryAccountIsTrue(member);
+        log.info("account: {}", account);
+        return PrimaryAccountRes.of(account);
     }
 
     @Override
