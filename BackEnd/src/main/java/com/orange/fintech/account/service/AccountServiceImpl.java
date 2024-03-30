@@ -223,6 +223,25 @@ public class AccountServiceImpl implements AccountService {
         return reqHeader;
     }
 
+    @Override
+    public ReqHeader createDummyTransactionHeader(
+            String userKey, String reqUrl, LocalDate transactionDate, LocalTime transactionTime) {
+        ReqHeader reqHeader = createHeader(userKey, reqUrl);
+
+        String transactionDateString = transactionDate.toString().replace("-", "");
+        String transactionTimeString = transactionTime.toString().replace(":", "");
+
+        // 225000인 경우 2250으로 처리됨 -> 보간
+        if (transactionTimeString.length() == 4) {
+            transactionDateString = transactionDateString + "00";
+        }
+
+        reqHeader.setTransmissionDate(transactionDateString);
+        reqHeader.setTransmissionTime(transactionTimeString);
+
+        return reqHeader;
+    }
+
     /**
      * @param bankCode 은행코드
      * @param accountNo 계좌번호
@@ -424,11 +443,17 @@ public class AccountServiceImpl implements AccountService {
 
             // 2. 업로드한 영수증에 해당하는 결제 정보 (Record)를 Transaction 테이블에서 찾을 수 없는 경우 추가
             if (transaction == null) {
+                log.info("transaction == null 진입");
                 // 2-1-1. SSAFY Bank API 호출을 위한 Body 객체 생성
                 Map<String, Object> requestBody = new HashMap<>();
 
                 // 2-1-2. 'Body에 넣을' Header value 객체 생성 및 추가
-                ReqHeader reqHeader = createHeader(member.getUserKey(), drawingTransferUrl);
+                ReqHeader reqHeader =
+                        createDummyTransactionHeader(
+                                member.getUserKey(),
+                                drawingTransferUrl,
+                                transactionDate,
+                                transactionTime);
                 requestBody.put("Header", reqHeader);
 
                 // 2-1-3. Body에 "Header"를 제외한 다른 key-value 쌍 추가
@@ -444,24 +469,31 @@ public class AccountServiceImpl implements AccountService {
                         transactionSummary); // "신한", "하나", "국민" 중 1개 카드사 + "체크승인" (예: 신한체크승인)
 
                 // 2-1-4. SSAFY Bank API 호출
-                RestClient restClient = RestClient.create();
-                RestClient.ResponseSpec response =
-                        restClient.post().uri(drawingTransferUrl).body(requestBody).retrieve();
+                // TODO: 삭제
+                HttpStatusCode statusCode = null;
+                String responseBody = null;
+                try {
+                    RestClient restClient = RestClient.create();
+                    RestClient.ResponseSpec response =
+                            restClient.post().uri(drawingTransferUrl).body(requestBody).retrieve();
 
-                ResponseEntity<?> responseEntity = response.toEntity(String.class);
-                String responseBody = responseEntity.getBody().toString();
-                HttpStatusCode statusCode = responseEntity.getStatusCode();
+                    ResponseEntity<?> responseEntity = response.toEntity(String.class);
+                    responseBody = responseEntity.getBody().toString();
+                    statusCode = responseEntity.getStatusCode();
 
-                // 2-1-5. drawingTransferParser 추출
-                JSONParser drawingTransferParser = new JSONParser();
-                JSONObject drawingTransferJsonObject =
-                        (JSONObject) drawingTransferParser.parse(responseBody);
-                JSONObject drawingTransferRec = (JSONObject) drawingTransferJsonObject.get("REC");
-                String drawingTransferTransactionUniqueNo =
-                        (String) drawingTransferRec.get("transactionUniqueNo");
+                    // 2-1-5. drawingTransferParser 추출
+                    JSONParser drawingTransferParser = new JSONParser();
+                    JSONObject drawingTransferJsonObject =
+                            (JSONObject) drawingTransferParser.parse(responseBody);
+                    JSONObject drawingTransferRec =
+                            (JSONObject) drawingTransferJsonObject.get("REC");
+                    String drawingTransferTransactionUniqueNo =
+                            (String) drawingTransferRec.get("transactionUniqueNo");
+                } catch (Exception e) {
+                    throw e;
+                }
 
                 // 2-2. 출금 성공
-                log.info("//2-2. 출금 성공");
                 if (statusCode.is2xxSuccessful()) {
                     JSONParser parser = new JSONParser();
                     JSONObject jsonObject = (JSONObject) parser.parse(responseBody);
@@ -484,6 +516,7 @@ public class AccountServiceImpl implements AccountService {
                     JSONObject REC = (JSONObject) inquireAccountJsonObject.get("REC");
 
                     // Transaction 테이블에 결제 정보 레코드 추가
+                    /*
                     transaction = new Transaction();
 
                     try {
@@ -508,6 +541,7 @@ public class AccountServiceImpl implements AccountService {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    */
                 } else {
                     throw new AccountWithdrawalException();
                 }
