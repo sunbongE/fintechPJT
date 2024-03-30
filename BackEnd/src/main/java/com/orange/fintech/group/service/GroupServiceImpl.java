@@ -226,9 +226,21 @@ public class GroupServiceImpl implements GroupService {
 
         GroupMember targetGroupMember = Optarget.get();
 
-        if (!targetGroupMember.getFistCallDone()) return false;
+        //        if (!targetGroupMember.getSecondCallDone()) return false;
 
         targetGroupMember.setSecondCallDone(!targetGroupMember.getSecondCallDone());
+
+        int countSecondcallGroupMembers = groupQueryRepository.countSecondcallGroupMembers(groupId);
+        int countGroupMembers = groupQueryRepository.countGroupMembers(groupId);
+
+        if (countGroupMembers == countSecondcallGroupMembers) {
+            // 마지막으로 누른 사람 -> 자투리 당첨
+
+        }
+
+        // Todo : 여기서 잔액충분한지 확인.
+        //        boolean isNoMoney = 어떤 함수..
+        if (false) {}
 
         groupMemberRepository.save(targetGroupMember);
 
