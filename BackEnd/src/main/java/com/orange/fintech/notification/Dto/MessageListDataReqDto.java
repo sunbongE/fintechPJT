@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class MessageListDataReqDto {
 
-    private List<String> inviteMembers;
+    private List<String> targetMembers;
     private int groupId;
     private NotificationType notificationType;
 }
