@@ -9,6 +9,7 @@ import com.orange.fintech.common.exception.AccountWithdrawalException;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.payment.dto.ReceiptRequestDto;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import org.json.simple.JSONObject;
@@ -27,6 +28,9 @@ public interface AccountService {
     void updateMainAccount(String memberId, UpdateAccountDto dto) throws ParseException;
 
     ReqHeader createHeader(String userKey, String reqUrl);
+
+    ReqHeader createDummyTransactionHeader(
+            String userKey, String reqUrl, LocalDate transactionDate, LocalTime transactionTime);
 
     void getAllTransaction(
             String bankCode,
