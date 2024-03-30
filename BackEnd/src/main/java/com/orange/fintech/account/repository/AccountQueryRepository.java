@@ -22,7 +22,7 @@ public class AccountQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<Transaction> readAllOrUpdateTransation(String kakaoId) {
+    public List<Transaction> readAllOrUpdateTransation(String kakaoId, int page, int pageSize) {
 
         return queryFactory
                 .select(
@@ -47,6 +47,8 @@ public class AccountQueryRepository {
                                                 QAccount.account.member.kakaoId.eq(kakaoId),
                                                 QAccount.account.isPrimaryAccount.isTrue())))
                 .orderBy(transaction.transactionDate.desc(), transaction.transactionTime.desc())
+                .offset(pageSize * page)
+                .limit(pageSize)
                 .fetch();
     }
 

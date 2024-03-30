@@ -8,6 +8,7 @@ import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.payment.dto.ReceiptRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -82,11 +83,15 @@ public class AccountController {
         @ApiResponse(responseCode = "200", description = "성공"),
         @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<?> readAllOrUpdateTransation(Principal principal) {
+    public ResponseEntity<?> readAllOrUpdateTransation(
+            @Parameter(description = "페이지 번호(0부터 시작)") @RequestParam int page,
+            @Parameter(description = "페이지당 항목 수") @RequestParam int size,
+            Principal principal) {
 
         String memberId = principal.getName();
         try {
-            List<TransactionResDto> result = accountService.readAllOrUpdateTransation(memberId);
+            List<TransactionResDto> result =
+                    accountService.readAllOrUpdateTransation(memberId, page, size);
             return ResponseEntity.ok().body(result);
         } catch (Exception e) {
             e.printStackTrace();

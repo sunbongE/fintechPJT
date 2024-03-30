@@ -42,7 +42,7 @@ public interface AccountService {
             @NotNull LocalTime transactionTime)
             throws ParseException;
 
-    List<TransactionResDto> readAllOrUpdateTransation(String memberId)
+    List<TransactionResDto> readAllOrUpdateTransation(String memberId, int page, int pageSize)
             throws ParseException, AccountWithdrawalException;
 
     String inquireAccountBalance(Member member, Account primaryAccount) throws ParseException;
