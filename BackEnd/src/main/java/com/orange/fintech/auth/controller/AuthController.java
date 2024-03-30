@@ -10,11 +10,14 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -77,7 +80,7 @@ public class AuthController {
     }
 
     @GetMapping("/test")
-    public ResponseEntity<?> test() {
-        return ResponseEntity.ok(BaseResponseBody.of(200, "연결댐"));
+    public ResponseEntity<?> test() throws ParseException, IOException {
+                return ResponseEntity.ok(BaseResponseBody.of(200, "연결댐"));
     }
 }
