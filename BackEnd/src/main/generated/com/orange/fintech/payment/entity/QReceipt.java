@@ -22,7 +22,7 @@ public class QReceipt extends EntityPathBase<Receipt> {
 
     public static final QReceipt receipt = new QReceipt("receipt");
 
-    public final NumberPath<Integer> approvalAmount = createNumber("approvalAmount", Integer.class);
+    public final NumberPath<Long> approvalAmount = createNumber("approvalAmount", Long.class);
 
     public final NumberPath<Long> authNumber = createNumber("authNumber", Long.class);
 
@@ -34,7 +34,7 @@ public class QReceipt extends EntityPathBase<Receipt> {
 
     public final StringPath subName = createString("subName");
 
-    public final NumberPath<Integer> totalPrice = createNumber("totalPrice", Integer.class);
+    public final NumberPath<Long> totalPrice = createNumber("totalPrice", Long.class);
 
     public final QTransaction transaction;
 

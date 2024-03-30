@@ -39,9 +39,9 @@ public class Receipt {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "Asia/Seoul")
     private LocalTime transactionTime;
 
-    @NotNull private int totalPrice;
+    @NotNull private Long totalPrice;
 
-    @NotNull private int approvalAmount;
+    @NotNull private Long approvalAmount;
 
     private long authNumber;
 

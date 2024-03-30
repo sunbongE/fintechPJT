@@ -130,7 +130,7 @@ public class PaymentController {
             Principal principal) {
         log.info("addCash 시작");
         log.info("addTransactionDto {}", addTransactionDto);
-        paymentService.addTransaction(principal.getName(), groupId, addTransactionDto);
+        paymentService.addCashTransaction(principal.getName(), groupId, addTransactionDto);
 
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "OK"));
     }
