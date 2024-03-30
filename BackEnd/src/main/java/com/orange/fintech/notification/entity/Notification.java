@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -24,12 +26,14 @@ public class Notification {
     @JsonIgnore()
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "kakao_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
     @NotNull
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Group group;
 
     @NotNull
