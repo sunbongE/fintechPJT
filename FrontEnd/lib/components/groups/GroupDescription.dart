@@ -36,21 +36,21 @@ class _GroupDescriptionState extends State<GroupDescription> {
             ],
           ),
         ),
-        IconButton(
-          icon: Icon(Icons.edit),
-          onPressed: () async {
-            // 비동기 함수로 변경
-            final modifiedGroup = await Navigator.push<Group>(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => GroupModify(group: widget.group)),
-            );
-
-            if (modifiedGroup != null) {
-              widget.onEdit(); // 수정된 그룹을 처리하는 로직을 여기에 추가하거나, 콜백을 호출
-            }
-          },
-        ),
+        // IconButton(
+        //   icon: Icon(Icons.edit),
+        //   onPressed: () async {
+        //     // 비동기 함수로 변경
+        //     final modifiedGroup = await Navigator.push<Group>(
+        //       context,
+        //       MaterialPageRoute(
+        //           builder: (context) => GroupModify(group: widget.group)),
+        //     );
+        //
+        //     if (modifiedGroup != null) {
+        //       widget.onEdit(); // 수정된 그룹을 처리하는 로직을 여기에 추가하거나, 콜백을 호출
+        //     }
+        //   },
+        // ),
       ],
     );
   }

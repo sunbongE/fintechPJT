@@ -47,25 +47,25 @@ class _GroupListState extends State<GroupList> {
       case 'before':
         modifiedGroup = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SplitMain(groupId: group.groupId!)),
+          MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
         );
         break;
       case 'split':
         modifiedGroup = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SplitMain(groupId: group.groupId!)),
+          MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
         );
         break;
       case 'doing':
         modifiedGroup = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SplitMain(groupId: group.groupId!)),
+          MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
         );
         break;
       case 'done':
         modifiedGroup = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SplitMain(groupId: group.groupId!)),
+          MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
         );
         break;
       default:

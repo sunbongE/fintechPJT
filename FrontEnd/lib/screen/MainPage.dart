@@ -71,13 +71,19 @@ class _MainPageState extends State<MainPage> {
                 IconButton(
                   icon: Icon(Icons.notifications),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AlertList()),
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: false, // 모달창이 전체 화면을 차지하도록 설정
+                      builder: (BuildContext context) {
+                        return Container(
+                          height: MediaQuery.of(context).size.height, // 전체 화면 높이 설정
+                          child: AlertList(), // 여기에는 모달창으로 표시하고자 하는 위젯을 넣습니다.
+                        );
+                      },
                     );
                   },
                 ),
+
               ],
             ),
           ),
