@@ -45,7 +45,7 @@ public class PaymentServiceImpl implements PaymentService {
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
-    public boolean addTransaction(String memberId, int groupId, AddCashTransactionReq req) {
+    public boolean addCashTransaction(String memberId, int groupId, AddCashTransactionReq req) {
         log.info("거래내역 추가 시작");
         Transaction transaction = new Transaction();
         transaction.setTransactionDate(req.getTransactionDate());
@@ -67,7 +67,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         saveTransactionDetail(groupId, transaction, req);
 
-        saveReceipt(transaction, req);
+        saveReceiptWithReq(transaction, req);
 
         for (TransactionMemberDto tm : req.getMemberList()) {
             addTransactionMember(transaction.getTransactionId(), tm);
@@ -109,12 +109,28 @@ public class PaymentServiceImpl implements PaymentService {
         log.info("saveTransactionDetail 끝");
     }
 
-    public void saveReceipt(Transaction transaction, AddCashTransactionReq req) {
+    public void saveReceiptWithTransaction(Transaction transaction) {
+        Receipt receipt = new Receipt();
+        receipt.setTransaction(transaction);
+        receipt.setApprovalAmount(transaction.getTransactionBalance());
+        receipt.setBusinessName(transaction.getTransactionSummary());
+        receipt.setTotalPrice(transaction.getTransactionBalance());
+        receipt.setVisibility(true);
+        receipt.setTransactionDate(transaction.getTransactionDate());
+        receipt.setTransactionTime(transaction.getTransactionTime());
+        //        receipt.setAuthNumber();
+        //        receipt.setLocation();
+        //        receipt.setSubName();
+
+        receiptRepository.save(receipt);
+    }
+
+    public void saveReceiptWithReq(Transaction transaction, AddCashTransactionReq req) {
         log.info("saveReceipt 시작");
         Receipt receipt = new Receipt();
         receipt.setTransaction(transaction);
-        receipt.setTotalPrice(Math.toIntExact(req.getTransactionBalance()));
-        receipt.setApprovalAmount(Math.toIntExact(req.getTransactionBalance()));
+        receipt.setTotalPrice(req.getTransactionBalance());
+        receipt.setApprovalAmount(req.getTransactionBalance());
         receipt.setLocation(req.getLocation());
         if (transaction.getTransactionDate() != null && transaction.getTransactionTime() != null) {
             receipt.setTransactionDate(transaction.getTransactionDate());
@@ -335,6 +351,9 @@ public class PaymentServiceImpl implements PaymentService {
                 receiptRepository.findByTransaction(
                         transactionRepository.findById(transactionId).get());
         log.info("getGroupTransactionDetail - receipt: {}", receipt);
+        if (receipt == null) {
+            saveReceiptWithTransaction(transaction);
+        }
 
         TransactionDetail transactionDetail =
                 transactionDetailRepository.getReferenceById(transactionId);
@@ -380,7 +399,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         int discount = 0;
         if (receipt.getApprovalAmount() != receipt.getTotalPrice()) {
-            discount = receipt.getTotalPrice() - receipt.getApprovalAmount();
+            discount = (int) (receipt.getTotalPrice() - receipt.getApprovalAmount());
         }
 
         for (ReceiptDetailMemberPutDto detailMemberDto : req) {

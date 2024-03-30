@@ -7,7 +7,8 @@ import java.util.NoSuchElementException;
 
 public interface PaymentService {
 
-    boolean addTransaction(String memberId, int groupId, AddCashTransactionReq addTransactionDto);
+    boolean addCashTransaction(
+            String memberId, int groupId, AddCashTransactionReq addTransactionDto);
 
     void addTransactionMember(int transactionId, TransactionMemberDto dto);
 

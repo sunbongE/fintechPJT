@@ -39,10 +39,10 @@ public class GroupTransactionDetailRes {
     private LocalTime transactionTime;
 
     @Schema(description = "총 금액")
-    private int totalPrice;
+    private Long totalPrice;
 
     @Schema(description = "승인 금액")
-    private int approvalAmount;
+    private Long approvalAmount;
 
     @Schema(description = "승인 번호")
     private long authNumber;

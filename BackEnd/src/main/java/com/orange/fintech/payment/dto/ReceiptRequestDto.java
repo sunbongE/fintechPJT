@@ -26,10 +26,10 @@ public class ReceiptRequestDto {
     private List<Item> detailList;
 
     @Schema(description = "합계 금액")
-    private int totalPrice;
+    private Long totalPrice;
 
     @Schema(description = "승인 금액")
-    private int approvalAmount;
+    private Long approvalAmount;
 
     @Getter
     @Setter
