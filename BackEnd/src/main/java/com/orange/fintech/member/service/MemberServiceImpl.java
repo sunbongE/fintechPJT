@@ -10,6 +10,7 @@ import com.orange.fintech.common.exception.BigFileException;
 import com.orange.fintech.common.exception.EmptyFileException;
 import com.orange.fintech.common.exception.NotValidExtensionException;
 import com.orange.fintech.jwt.JWTUtil;
+import com.orange.fintech.member.dto.PrimaryAccountRes;
 import com.orange.fintech.member.entity.FcmToken;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.FcmTokenRepository;
@@ -112,6 +113,13 @@ public class MemberServiceImpl implements MemberService {
         List<Account> accountList = accountRepository.findByMember(member);
 
         return accountList;
+    }
+
+    @Override
+    public PrimaryAccountRes findMyPrimaryAccount(Member member) {
+        List<Account> accountList = accountRepository.findByMemberAndIsPrimaryAccountIsTrue(member);
+        log.info("accountList: {}", accountList);
+        return PrimaryAccountRes.of(accountList.get(0));
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.common.exception.BigFileException;
 import com.orange.fintech.common.exception.EmptyFileException;
 import com.orange.fintech.common.exception.NotValidExtensionException;
+import com.orange.fintech.member.dto.PrimaryAccountRes;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
 import com.orange.fintech.member.service.MemberService;
@@ -92,6 +93,29 @@ public class MemberController {
 
         //        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
         //                .body(BaseResponseBody.of(500, "Pin 번호 수정 중 오류 발생"));
+    }
+
+    @GetMapping("/account/primary")
+    @Operation(
+            summary = "서비스에 등록된 회원 본인의 주 계좌 정보 조회 (로그인)",
+            description = "서비스에 등록된<strong>주거래계좌</strong>를 조회한다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "정상 반환"),
+        @ApiResponse(responseCode = "404", description = "계좌 정보 없음 (DB 레코드 유실)"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> getMyAccount(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        String kakaoId = customUserDetails.getUsername();
+
+        Member member = memberService.findByKakaoId(kakaoId);
+        PrimaryAccountRes myAccount = memberService.findMyPrimaryAccount(member);
+
+        if (myAccount != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(myAccount);
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("일치하는 계좌 정보 없음");
     }
 
     @GetMapping("/{email}")
