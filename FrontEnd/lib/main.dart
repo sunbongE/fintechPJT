@@ -14,6 +14,7 @@ import 'package:front/routes.dart';
 import "package:front/providers/store.dart";
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:uni_links/uni_links.dart';
 import 'firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -40,7 +41,7 @@ void initializeNotification() async {
       const AndroidNotificationChannel('high_importance_channel', 'high_importance_notification', importance: Importance.max));
   await flutterLocalNotificationsPlugin.initialize(
       const InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        android: AndroidInitializationSettings("@ipmap/ic_launcher"),
       ), onDidReceiveNotificationResponse: (details) {
     print("1111메세지 받고싶다..: ${details}");
   }, onDidReceiveBackgroundNotificationResponse: backgroundHandler);
@@ -57,8 +58,15 @@ void initializeNotification() async {
             android: AndroidNotificationDetails('high_importance_channel', 'high_importance_notification', importance: Importance.max),
           ),
           payload: message.data['test_params1']);
+
+      print("메세지 받았슴다~~~~~~~");
     }
   });
+
+  RemoteMessage? message = await FirebaseMessaging.instance.getInitialMessage();
+  if (message != null) {
+    print("메세지 받았슴다22222");
+  }
 }
 
 Future<void> main() async {
