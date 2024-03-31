@@ -36,7 +36,7 @@ class _MoneyRequestItemState extends State<MoneyRequestItem> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: widget.clickable
+      onTap: (widget.clickable && isSettled)
           ? () {
         Navigator.push(
             context,
