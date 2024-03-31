@@ -67,11 +67,13 @@ class _ReceiptItemState extends State<ReceiptItem> {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setModalState) {
-            fetchReceiptDetailData(onSuccess: () {
-              setModalState(() {
-                isLoaded = true;
+            if (!isLoaded) {
+              fetchReceiptDetailData(onSuccess: () {
+                setModalState(() {
+                  isLoaded = true;
+                });
               });
-            });
+            }
             return Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
