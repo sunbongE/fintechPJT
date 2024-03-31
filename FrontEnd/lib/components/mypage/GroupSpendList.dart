@@ -48,6 +48,7 @@ class _GroupSpendListState extends State<GroupSpendList> {
         'option': option,
       };
       Response res = await getGroupSpend(widget.groupId, queryParameters);
+      print(res.data);
       if (res.data != null) {
         List<Map<String, dynamic>> newData = List<Map<String, dynamic>>.from(res.data).cast<Map<String, dynamic>>();
 
@@ -80,9 +81,8 @@ class _GroupSpendListState extends State<GroupSpendList> {
               onTap: () {
                 buttonSlideAnimation(
                   context,
-                  GroupSpendItem(groupId: item['groupId'], paymentId: item['transactionId']),
+                  GroupSpendItem(groupId: widget.groupId, paymentId: item['transactionId']),
                 );
-                print(item);
               },
               child: Column(
                 children: [
