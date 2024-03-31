@@ -61,3 +61,19 @@ Future<Map<String, dynamic>> putPaymentsMembers(groupId, paymentId, data) async 
     throw Exception('상세보기 데이터 갱신을 못 했습니다.');
   }
 }
+
+// 내 영수증에서 메뉴 참여인원 토글 on/off
+Future<Map<String, dynamic>> putPaymentsReceiptDatil(groupId, paymentId, receiptDetailId, data) async {
+  try {
+    print(groupId);
+    print(paymentId);
+    print(receiptDetailId);
+    print(data);
+    final res = await api.put('/groups/$groupId/payments/$paymentId/receipt/$receiptDetailId', data: data);
+    print('putPaymentsReceiptDatil: ${res.data}');
+    return res.data;
+  } catch (err) {
+    print(err);
+    throw Exception('상세보기 데이터 갱신을 못 했습니다.');
+  }
+}

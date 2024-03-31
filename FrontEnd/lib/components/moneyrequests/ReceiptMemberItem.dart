@@ -44,7 +44,6 @@ class _ReceiptMemberItemState extends State<ReceiptMemberItem> {
     setState(() {
       isSettled = value;
       amount = value ? 1 : 0;
-      //widget.onLockedChanged(false);
       widget.amountCallback(amount);
       amount = widget.amount;
     });
