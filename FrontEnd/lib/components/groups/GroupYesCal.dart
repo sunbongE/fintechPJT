@@ -29,7 +29,7 @@ class GroupYesCal extends StatelessWidget {
               Text(
                 '정산 요청 내역',
                 style: TextStyle(
-                  fontSize: min(25.sp, 25.sp),
+                  fontSize: min(15.sp, 15.sp),
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -49,13 +49,13 @@ class GroupYesCal extends StatelessWidget {
                     child: Text(
                       '내가 포함된 정산',
                       style: TextStyle(
-                        fontSize: min(16.sp, 30.sp),
+                        fontSize: min(15.sp, 15.sp),
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  SizedBox(width: 10.w),
+                  SizedBox(width: 5.w),
                   ElevatedButton(
                     onPressed: () => buttonSlideAnimation(
                         context,
@@ -64,15 +64,15 @@ class GroupYesCal extends StatelessWidget {
                         )),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: BUTTON_COLOR,
-                      minimumSize: Size(60.w, 30.h),
+                      minimumSize: Size(20.w, 30.h),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
                     child: Text(
-                      '추가',
+                      '+',
                       style: TextStyle(
-                        fontSize: min(16.sp, 30.sp),
+                        fontSize: min(15.sp, 15.sp),
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
