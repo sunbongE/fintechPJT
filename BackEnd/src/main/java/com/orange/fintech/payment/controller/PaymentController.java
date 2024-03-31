@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -127,12 +126,12 @@ public class PaymentController {
                 messageListDataReqDto.setGroupId(groupId);
                 messageListDataReqDto.setNotificationType(NotificationType.SPLIT_MODIFY);
 
-                List<String> groupMembersKakaoId = groupQueryRepository.findGroupMembersKakaoId(groupId);
+                List<String> groupMembersKakaoId =
+                        groupQueryRepository.findGroupMembersKakaoId(groupId);
 
                 messageListDataReqDto.setTargetMembers(groupMembersKakaoId);
 
                 fcmService.pushListDataMSG(messageListDataReqDto);
-
             }
 
         } catch (NoSuchElementException e) {
@@ -316,7 +315,6 @@ public class PaymentController {
                 messageListDataReqDto.setTargetMembers(groupMembersKakaoId);
 
                 fcmService.pushListDataMSG(messageListDataReqDto);
-
             }
 
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "OK"));

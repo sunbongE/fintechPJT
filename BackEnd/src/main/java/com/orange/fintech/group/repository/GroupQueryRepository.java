@@ -76,16 +76,14 @@ public class GroupQueryRepository {
     public List<String> findGroupMembersKakaoId(int groupId) {
         List<String> groupMembersKakaoId = new ArrayList<>();
 
-        List<GroupMembersDto> groupMembersDtos = queryFactory
-                .select(
-                        Projections.bean(
-                                GroupMembersDto.class,
-                                member.kakaoId))
-                .from(member)
-                .leftJoin(groupMember)
-                .on(groupMember.groupMemberPK.member.eq(member))
-                .where(groupMember.groupMemberPK.group.groupId.eq(groupId))
-                .fetch();
+        List<GroupMembersDto> groupMembersDtos =
+                queryFactory
+                        .select(Projections.bean(GroupMembersDto.class, member.kakaoId))
+                        .from(member)
+                        .leftJoin(groupMember)
+                        .on(groupMember.groupMemberPK.member.eq(member))
+                        .where(groupMember.groupMemberPK.group.groupId.eq(groupId))
+                        .fetch();
         for (GroupMembersDto groupMembersDto : groupMembersDtos) {
             groupMembersKakaoId.add(groupMembersDto.getKakaoId());
         }
