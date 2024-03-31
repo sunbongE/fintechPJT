@@ -14,12 +14,15 @@ public class GroupMember {
 
     @EmbeddedId private GroupMemberPK groupMemberPK;
 
+    @Column(nullable = false)
     @ColumnDefault("true")
     Boolean state;
 
+    @Column(nullable = false)
     @ColumnDefault("false")
     Boolean fistCallDone;
 
+    @Column(nullable = false)
     @ColumnDefault("false")
     Boolean secondCallDone;
 }
