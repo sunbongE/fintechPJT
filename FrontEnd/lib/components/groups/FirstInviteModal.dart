@@ -26,6 +26,7 @@ class FirstInviteModal {
   }
 
   static void sharePressed(context) {
+
     String inviteLink = 'https://halgatewood.com/deeplink?link=yeojung%3A%2F%2Fexample.com';
     Navigator.of(context).pop();
 

@@ -68,44 +68,17 @@ Future<void> inviteMemberToGroup(groupId) async {
   }
 }
 
-//가입되어있는 멤버 조회
+//가입되어있는 멤버 조회(완)
 Future<Response> getMemberByEmail(email) async {
   try {
     final res = await api.get('/members/$email');
-    print(res);
     return res;
   } catch (err) {
     print(err);
     throw Exception('멤버 조회 실패');
   }
 }
-// Future<Map<String, dynamic>?> getMemberByEmail(String email, Map<String, dynamic> queryParameters) async {
-//   try {
-//     final res = await api.get('/members/$email', queryParameters: queryParameters);
-//     return res.data;
-//   } catch (err) {
-//     print(err);
-//     return null;
-//   }
-// }
-// {
-// "kakaoId": "23423423",
-// "email": "SSAFY01@naver.com",
-// "name": "이싸피",
-// "profileImage": "https://k.kakaocdn.net/dn/hQA8L/btr0BClPKjh/YgcBWlcOYigokCVkCLO6pK/img_640x640.jpg",
-// "thumbnailImage": "https://k.kakaocdn.net/dn/hQA8L/btr0BClPKjh/YgcBWlcOYigokCVkCLO6pK/img_110x110.jpg"
-// }
 
-// //그룹 초대링크 생성
-// Future<String?> postUserInfo(data) async {
-//   try {
-//     final res = await api.post('/auth', data: data);
-//     return res.data;
-//   } catch (err) {
-//     print(err);
-//     return null;
-//   }
-// }
 
 //그룹의 상태를 조회
 Future<String> fetchGroupStatus(int groupId) async {
