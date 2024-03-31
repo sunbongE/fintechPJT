@@ -59,7 +59,7 @@ Future<Response> getGroupPaymentlist(groupId, paymentId) async {
 // 그룹 아이디로 위치 목록을 조회한다.
 Future<Response> getGroupLocationList(groupId) async {
   try {
-    final res = await api.get('map/group/${groupId}');
+    final res = await api.get('/maps/group/${groupId}');
     return res;
   } catch (err) {
     print(err);

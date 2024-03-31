@@ -37,11 +37,10 @@ class _MyTripHistoryListState extends State<MyTripHistoryList> {
       isLoading = true;
     });
     var groupsJson = await getGroupList();
+    print(groupsJson);
     if (groupsJson != null && groupsJson.data is List) {
       setState(() {
-        // 이게 진짜코드임~~ 무조건 변경해야함.
         groups = (groupsJson.data as List).map((item) => Group.fromJson(item)).where((group) => group.isCalculateDone!).toList();
-        // groups = (groupsJson.data as List).map((item) => Group.fromJson(item)).where((group) => !group.isCalculateDone!).toList();
         isLoading = false;
       });
     } else {
