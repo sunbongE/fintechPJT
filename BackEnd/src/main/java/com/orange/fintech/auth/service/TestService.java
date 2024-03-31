@@ -1,36 +1,36 @@
-//package com.orange.fintech.auth.service;
+// package com.orange.fintech.auth.service;
 //
-//import com.orange.fintech.account.entity.Account;
-//import com.orange.fintech.account.repository.AccountRepository;
-//import com.orange.fintech.account.service.AccountService;
-//import com.orange.fintech.group.entity.Group;
-//import com.orange.fintech.group.entity.GroupMember;
-//import com.orange.fintech.group.entity.GroupMemberPK;
-//import com.orange.fintech.group.repository.GroupMemberRepository;
-//import com.orange.fintech.member.entity.Member;
-//import com.orange.fintech.member.repository.MemberRepository;
+// import com.orange.fintech.account.entity.Account;
+// import com.orange.fintech.account.repository.AccountRepository;
+// import com.orange.fintech.account.service.AccountService;
+// import com.orange.fintech.group.entity.Group;
+// import com.orange.fintech.group.entity.GroupMember;
+// import com.orange.fintech.group.entity.GroupMemberPK;
+// import com.orange.fintech.group.repository.GroupMemberRepository;
+// import com.orange.fintech.member.entity.Member;
+// import com.orange.fintech.member.repository.MemberRepository;
 //
-//import java.io.IOException;
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Optional;
+// import java.io.IOException;
+// import java.util.ArrayList;
+// import java.util.List;
+// import java.util.Optional;
 //
-//import com.orange.fintech.notification.Dto.MessageListDataReqDto;
-//import com.orange.fintech.notification.entity.NotificationType;
-//import com.orange.fintech.notification.repository.NotificationQueryRepository;
-//import com.orange.fintech.notification.service.FcmService;
-//import lombok.extern.slf4j.Slf4j;
-//import org.json.simple.JSONObject;
-//import org.json.simple.parser.JSONParser;
-//import org.json.simple.parser.ParseException;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.scheduling.annotation.Async;
-//import org.springframework.stereotype.Service;
+// import com.orange.fintech.notification.Dto.MessageListDataReqDto;
+// import com.orange.fintech.notification.entity.NotificationType;
+// import com.orange.fintech.notification.repository.NotificationQueryRepository;
+// import com.orange.fintech.notification.service.FcmService;
+// import lombok.extern.slf4j.Slf4j;
+// import org.json.simple.JSONObject;
+// import org.json.simple.parser.JSONParser;
+// import org.json.simple.parser.ParseException;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.http.ResponseEntity;
+// import org.springframework.scheduling.annotation.Async;
+// import org.springframework.stereotype.Service;
 //
-//@Service
-//@Slf4j
-//public class TestService {
+// @Service
+// @Slf4j
+// public class TestService {
 //    @Autowired MemberRepository memberRepository;
 //    @Autowired AccountRepository accountRepository;
 //    @Autowired AccountService accountService;
@@ -104,4 +104,4 @@
 //
 ////        return ResponseEntity.ok().body(noMoneysKakaoId);
 //    }
-//}
+// }
