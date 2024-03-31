@@ -20,5 +20,4 @@ public interface FcmService {
 
     @Async
     void noMoneyFcm(List<String> noMoneysKakaoId, int groupId) throws IOException;
-
 }
