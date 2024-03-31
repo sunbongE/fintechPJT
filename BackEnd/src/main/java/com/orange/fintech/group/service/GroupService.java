@@ -2,6 +2,7 @@ package com.orange.fintech.group.service;
 
 import com.orange.fintech.group.dto.*;
 import com.orange.fintech.group.entity.Group;
+import com.orange.fintech.group.entity.GroupStatus;
 import java.io.IOException;
 import java.util.List;
 
@@ -35,4 +36,6 @@ public interface GroupService {
     List<GroupCalculateResultDto> getCalculateResult(int groupId);
 
     boolean isExistMember(String memberId, int groupId);
+
+    GroupStatus getGroupStatus(int groupId);
 }

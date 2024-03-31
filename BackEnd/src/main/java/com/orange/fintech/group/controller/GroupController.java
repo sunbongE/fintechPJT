@@ -3,6 +3,7 @@ package com.orange.fintech.group.controller;
 import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.group.dto.*;
 import com.orange.fintech.group.entity.Group;
+import com.orange.fintech.group.entity.GroupStatus;
 import com.orange.fintech.group.service.GroupService;
 import com.orange.fintech.payment.dto.CalculateResultDto;
 import com.orange.fintech.payment.service.CalculateService;
@@ -278,12 +279,21 @@ public class GroupController {
         String memberId = principal.getName();
 
         try {
+            if (groupService.getGroupStatus(groupId).equals(GroupStatus.DONE)) {
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                        .body(BaseResponseBody.of(400, "이미 정산된 내역"));
+            }
+
             List<CalculateResultDto> calRes = calculateService.finalCalculator(groupId, memberId);
             if (calRes == null) {
                 return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
                         .body(BaseResponseBody.of(406, "잔액이 부족해서 취소됨."));
             }
+            log.info("정산 결과: {}", calRes);
+
+            log.info("정산 송금 시작");
             calculateService.transfer(calRes, groupId);
+            log.info("정산 송금 끝");
 
             return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "OK"));
         } catch (Exception e) {
