@@ -52,6 +52,9 @@ class _GroupSpendListState extends State<GroupSpendList> {
       if (res.data != null) {
         List<Map<String, dynamic>> newData = List<Map<String, dynamic>>.from(res.data).cast<Map<String, dynamic>>();
 
+        // transactionTime을 기준으로 내림차순 정렬
+        newData.sort((a, b) => b["transactionTime"].compareTo(a["transactionTime"]));
+
         final isLastPage = newData.length < _pageSize;
         if (isLastPage) {
           _pagingController.appendLastPage(newData);
@@ -65,6 +68,10 @@ class _GroupSpendListState extends State<GroupSpendList> {
     } catch (error) {
       _pagingController.error = error;
     }
+  }
+
+  String formatDate(String date) {
+    return "${date.substring(0, 4)}-${date.substring(4, 6)}-${date.substring(6, 8)}";
   }
 
   @override
@@ -94,7 +101,7 @@ class _GroupSpendListState extends State<GroupSpendList> {
                         Row(
                           children: [
                             Text(
-                              item['transactionDate'],
+                              formatDate(item['transactionDate'].toString()),
                               style: TextStyle(fontSize: 13.sp),
                             ),
                             SizedBox(width: 25.w),
