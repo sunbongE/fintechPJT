@@ -20,7 +20,6 @@ class MyTripHistoryDetail extends StatefulWidget {
 class _MyTripHistoryDetailState extends State<MyTripHistoryDetail> {
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
@@ -30,37 +29,39 @@ class _MyTripHistoryDetailState extends State<MyTripHistoryDetail> {
         ),
         backgroundColor: BG_COLOR,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              width: 430.w,
-              height: 200.h,
-              decoration: BoxDecoration(
-                color: BG_COLOR,
-              ),
-              child: Column(
-                children: [
-                  MyTripHistoryGroupDetail(
-                    startDate: widget.groupData.startDate,
-                    endDate: widget.groupData.endDate,
-                    description: widget.groupData.theme,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        SizedButton(btnText: "지도보기", onPressed: () => buttonSlideAnimation(context, GroupMap(description: widget.groupData.theme, groupId: widget.groupData.groupId!)),),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            width: 430.w,
+            height: 200.h,
+            decoration: BoxDecoration(
+              color: BG_COLOR,
             ),
-            GroupSpendList(groupId: widget.groupData.groupId!),
-          ],
-        ),
+            child: Column(
+              children: [
+                MyTripHistoryGroupDetail(
+                  startDate: widget.groupData.startDate,
+                  endDate: widget.groupData.endDate,
+                  description: widget.groupData.theme,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      SizedButton(
+                        btnText: "지도보기",
+                        onPressed: () =>
+                            buttonSlideAnimation(context, GroupMap(description: widget.groupData.theme, groupId: widget.groupData.groupId!)),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          GroupSpendList(groupId: widget.groupData.groupId!),
+        ],
       ),
     );
   }

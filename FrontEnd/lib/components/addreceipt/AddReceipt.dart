@@ -99,19 +99,6 @@ class _AddReceiptState extends State<AddReceipt> {
               ),
             ),
           ),
-
-          // 더미데이터 추가하기!!!!!!!
-          TextButton(
-            onPressed: () => sendReceiptFakeData(),
-            child: Text(
-              "영수증 정보 받아~느~~",
-              style: TextStyle(
-                color: TEXT_COLOR,
-                fontWeight: FontWeight.bold,
-                fontSize: 20.sp,
-              ),
-            ),
-          )
         ],
       ),
       body: Padding(

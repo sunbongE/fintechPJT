@@ -149,10 +149,10 @@ class _GroupSpendListState extends State<GroupSpendList> {
               ),
             ),
             firstPageErrorIndicatorBuilder: (context) => Center(
-              child: Text('에러 발생'),
+              child: Text('다시 시도해 주세요'),
             ),
             noItemsFoundIndicatorBuilder: (context) => Center(
-              child: Text('아이템이 없습니다'),
+              child: Text('결제내역이 없습니다'),
             ),
           ),
         ),
