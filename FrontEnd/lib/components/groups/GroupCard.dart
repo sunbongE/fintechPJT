@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/groups/StateContainer.dart';
+import 'package:front/components/groups/isDoneContainer.dart';
 import 'package:front/const/colors/Colors.dart';
 import '../../entities/Group.dart';
 
@@ -15,7 +16,7 @@ class GroupCard extends StatelessWidget {
   Widget build(BuildContext context) {
     DateTime today = DateTime.now();
     DateTime endDateParsed = DateTime.parse(group.endDate);
-    bool groupState = today.isAfter(endDateParsed);
+    bool groupNow = today.isAfter(endDateParsed);
 
     return Padding(
       padding: const EdgeInsets.all(10.0),
@@ -23,7 +24,7 @@ class GroupCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
-        color: groupState
+        color: groupNow
             ? Color(0xffFF3D00).withOpacity(0.5)
             : Color(0xffFF9E44).withOpacity(0.8),
         child: ListTile(
@@ -72,7 +73,9 @@ class GroupCard extends StatelessWidget {
               ),
             ],
           ),
-          trailing: StateContainer(groupState: groupState),
+          trailing: group.isCalculateDone
+            ? isDoneContainer(groupState: groupNow)
+          : StateContainer(groupState: groupNow),
         ),
       ),
     );
