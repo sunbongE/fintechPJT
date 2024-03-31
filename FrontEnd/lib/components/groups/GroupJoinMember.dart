@@ -60,7 +60,7 @@ class _GroupJoinMemberState extends State<GroupJoinMember> {
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.add),
-              onPressed: () => groupInviteByEmail(context, widget.group),
+              onPressed: () => groupInviteByEmail(context, widget.group, members),
             ),
           ],
         ),
