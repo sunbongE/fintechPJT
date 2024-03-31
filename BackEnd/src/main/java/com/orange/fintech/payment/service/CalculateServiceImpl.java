@@ -5,10 +5,7 @@ import com.orange.fintech.account.repository.AccountRepository;
 import com.orange.fintech.account.service.AccountService;
 import com.orange.fintech.group.dto.GroupMembersDto;
 import com.orange.fintech.group.dto.GroupMembersListDto;
-import com.orange.fintech.group.entity.CalculateResult;
-import com.orange.fintech.group.entity.Group;
-import com.orange.fintech.group.entity.GroupMember;
-import com.orange.fintech.group.entity.GroupMemberPK;
+import com.orange.fintech.group.entity.*;
 import com.orange.fintech.group.repository.CalculateResultRepository;
 import com.orange.fintech.group.repository.GroupMemberRepository;
 import com.orange.fintech.group.repository.GroupRepository;
@@ -137,7 +134,11 @@ public class CalculateServiceImpl implements CalculateService {
 
         for (GroupMembersDto dto : listDto.getGroupMembersDtos()) {
             long amount = sumOfTotalAmount(groupId, dto.getKakaoId());
+            amount += transactionQueryRepository.sumOfMyRemainder(groupId, dto.getKakaoId());
+
+            log.info("amount: {}", amount);
             if (dto.getKakaoId().equals(lastMemberId)) {
+                log.info("remainder amount: {}", amount);
                 amount -= remainder;
             }
 
@@ -200,7 +201,6 @@ public class CalculateServiceImpl implements CalculateService {
         do {
             System.out.println(Arrays.toString(p));
             transactionSimulation(p, plus, minus);
-            System.out.println("min: " + Arrays.toString(minTransaction));
         } while (np(p));
 
         // minTransaction 으로 누가 누구에게 얼마 보낼지 계산
@@ -209,31 +209,36 @@ public class CalculateServiceImpl implements CalculateService {
             remains[i] = plus.get(i).amount;
         }
 
-        long[][] transaction = new long[plus.size()][minus.size()];
+        long[][] transaction = new long[minus.size()][plus.size()];
 
         int plusIdx = 0;
-        for (int i = 0; i < minTransaction.length; i++) {
+        for (int i = 0; i < transaction.length; i++) {
             long receiveAmount = remains[plusIdx];
-            long sendAmount = minus.get(minTransaction[i]).amount;
+            long sendAmount = -minus.get(minTransaction[i]).amount;
+            //            log.info("receiveAmount: " + receiveAmount + "  sendAmount: " +
+            // sendAmount);
 
             while (sendAmount > 0) {
                 if (receiveAmount > sendAmount) {
-                    transaction[plusIdx][i] += sendAmount;
-
+                    transaction[i][plusIdx] += sendAmount;
                     remains[plusIdx] -= sendAmount;
                     sendAmount = 0;
                 } else {
-                    transaction[plusIdx][i] += receiveAmount;
-
+                    transaction[i][plusIdx] += receiveAmount;
                     sendAmount -= receiveAmount;
                     remains[plusIdx++] = 0;
                 }
             }
         }
 
+        log.info("송금방법 선정 후: ");
+        log.info("transaction[i][j]: i -> j로 송금");
+        for (int i = 0; i < transaction.length; i++) {
+            log.info(Arrays.toString(transaction[i]));
+        }
+
         List<CalculateResultDto> results = new ArrayList<>();
 
-        log.info("transaction[i][j]: i -> j로 송금");
         for (int i = 0; i < transaction.length; i++) {
             log.info("transaction: {}", Arrays.toString(transaction[i]));
             for (int j = 0; j < transaction[0].length; j++) {
@@ -264,10 +269,22 @@ public class CalculateServiceImpl implements CalculateService {
                 transactionQueryRepository.getSumOfTotalAmountCondition(
                         groupId, memberId, "RECEIVE");
 
-        res -= transactionQueryRepository.sumOfTotalAmount(groupId, memberId, sendExpression);
-        res += transactionQueryRepository.sumOfTotalAmount(groupId, memberId, receiveExpression);
+        try {
+            res -= transactionQueryRepository.sumOfTotalAmount(groupId, memberId, sendExpression);
+        } catch (NullPointerException e) {
+            log.info("줄 금액 없음");
+        }
+        log.info("줄 금액: {}", -res);
 
-        log.info("sumOfTotalAmount: {}", res);
+        try {
+            res +=
+                    transactionQueryRepository.sumOfTotalAmount(
+                            groupId, memberId, receiveExpression);
+        } catch (NullPointerException e) {
+            log.info("받을 금액 없음");
+        }
+
+        log.info("memberId: {} sumOfTotalAmount: {}", memberId, res);
 
         return res;
     }
@@ -283,11 +300,18 @@ public class CalculateServiceImpl implements CalculateService {
         }
 
         long[][] transaction = new long[minus.size()][plus.size()];
+
+        log.info("송금 계산 전");
+        for (int i = 0; i < transaction.length; i++) {
+            log.info(Arrays.toString(transaction[i]));
+        }
+
         int transactionCnt = 0;
         int plusIdx = 0;
-        for (int i = 0; i < np.length; i++) {
+        for (int i = 0; i < minus.size(); i++) {
+            log.info("i: {}", i);
             long receiveAmount = remains[plusIdx];
-            long sendAmount = minus.get(np[i]).amount;
+            long sendAmount = -minus.get(np[i]).amount;
 
             while (sendAmount > 0) {
                 if (receiveAmount > sendAmount) {
@@ -298,11 +322,8 @@ public class CalculateServiceImpl implements CalculateService {
                 } else {
                     // 줄수있는만큼 주고 받을 사람 넘기기
                     transaction[i][plusIdx] += receiveAmount;
-
                     sendAmount -= receiveAmount;
-                    remains[plusIdx] = 0;
-
-                    plusIdx++;
+                    remains[plusIdx++] = 0;
                 }
                 transactionCnt++;
             }
@@ -347,7 +368,10 @@ public class CalculateServiceImpl implements CalculateService {
             calculateResult.setReceiveMember(
                     memberRepository.findById(calResult.getReceiveMemberId()).get());
             calculateResultRepository.save(calculateResult);
+            log.info("calculateResultSave: {}", calculateResult);
         }
+
+        group.setGroupStatus(GroupStatus.DONE);
 
         // 정산했던 회원들 아이디 추출
         Collection<String> distinctMemberId = getdistinctMemberId.values();

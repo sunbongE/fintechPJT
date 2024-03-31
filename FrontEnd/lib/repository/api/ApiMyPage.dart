@@ -36,12 +36,13 @@ Future<void> deleteFcmToken(data) async {
 }
 
 // groupId로 그룹의 결제 내역을 조회한다.
-Future<dynamic> getGroupSpend(groupId, queryParameters) async {
+Future<Response> getGroupSpend(groupId, queryParameters) async {
   try {
     final res = await api.get('/groups/${groupId}/payments', queryParameters: queryParameters);
-    return res.data;
+    return res;
   } catch (err) {
     print(err);
+    throw (err);
   }
 }
 

@@ -2,6 +2,7 @@ package com.orange.fintech.group.service;
 
 import com.orange.fintech.group.dto.*;
 import com.orange.fintech.group.entity.Group;
+import com.orange.fintech.group.entity.GroupStatus;
 import java.io.IOException;
 import java.util.List;
 
@@ -37,4 +38,7 @@ public interface GroupService {
     boolean isExistMember(String memberId, int groupId);
 
     String checkMyStatus(int groupId, String memberId);
+
+    GroupStatus getGroupStatus(int groupId);
+
 }

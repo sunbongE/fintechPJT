@@ -181,8 +181,10 @@ public class AccountServiceImpl implements AccountService {
 
         // 이전에 등록되어있던 주계좌는 주계좌가 아닌걸로~
         Account preAccount = accountRepository.findByMemberAndIsPrimaryAccountIsTrue(member);
-        preAccount.setIsPrimaryAccount(false);
-        accountRepository.save(preAccount);
+        if (preAccount != null) {
+            preAccount.setIsPrimaryAccount(false);
+            accountRepository.save(preAccount);
+        }
 
         Account account = new Account();
         account.setAccountNo(REC.get("accountNo").toString());
