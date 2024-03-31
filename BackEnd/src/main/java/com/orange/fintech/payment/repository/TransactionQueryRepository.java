@@ -223,26 +223,63 @@ public class TransactionQueryRepository {
      * @return
      */
     public long sumOfTotalAmount(int groupId, String memberId, BooleanExpression expression) {
-        return jpaQueryFactory
-                .select(transactionMember.totalAmount.sum())
-                .from(transaction)
-                .join(transactionMember)
-                .on(transaction.eq(transactionMember.transactionMemberPK.transaction))
-                .join(transactionDetail)
-                .on(transactionDetail.transaction.eq(transaction))
-                .where(expression)
-                .fetchOne();
+        long res = 0L;
+        try {
+            res =
+                    jpaQueryFactory
+                            .select(transactionMember.totalAmount.sum())
+                            .from(transaction)
+                            .join(transactionMember)
+                            .on(transaction.eq(transactionMember.transactionMemberPK.transaction))
+                            .join(transactionDetail)
+                            .on(transactionDetail.transaction.eq(transaction))
+                            .where(expression)
+                            .fetchOne();
+        } catch (NullPointerException e) {
+            log.info("계산될 금액 없음");
+        }
+
+        return res;
+    }
+
+    public int sumOfMyRemainder(int groupId, String memberId) {
+        int res = 0;
+        try {
+            res =
+                    jpaQueryFactory
+                            .select(transactionDetail.remainder.sum())
+                            .from(transaction)
+                            .join(transactionDetail)
+                            .on(transaction.eq(transactionDetail.transaction))
+                            .where(
+                                    transactionDetail
+                                            .group
+                                            .groupId
+                                            .eq(groupId)
+                                            .and(transaction.member.kakaoId.eq(memberId)))
+                            .fetchOne();
+        } catch (NullPointerException e) {
+            log.info("{}가 받을 나머지 없음", memberId);
+        }
+
+        return res;
     }
 
     public int sumOfRemainder(int groupId) {
-        int res =
-                jpaQueryFactory
-                        .select(transactionDetail.remainder.sum())
-                        .from(transaction)
-                        .join(transactionDetail)
-                        .on(transaction.eq(transactionDetail.transaction))
-                        .where(transactionDetail.group.groupId.eq(groupId))
-                        .fetchOne();
+        int res = 0;
+        try {
+            res =
+                    jpaQueryFactory
+                            .select(transactionDetail.remainder.sum())
+                            .from(transactionDetail)
+                            //                        .join(transactionDetail)
+                            //
+                            // .on(transaction.eq(transactionDetail.transaction))
+                            .where(transactionDetail.group.groupId.eq(groupId))
+                            .fetchOne();
+        } catch (NullPointerException e) {
+            log.info("계산될 나머지 없음");
+        }
 
         log.info("groupId:{} -> sumOfRemainder: {}", groupId, res);
         return res;
@@ -256,20 +293,26 @@ public class TransactionQueryRepository {
      * @return 받아야할 금액
      */
     public long getReceiveAmount(String myId, String otherId) {
-        long res =
-                jpaQueryFactory
-                        .select(transactionMember.totalAmount.sum())
-                        .from(transaction)
-                        .join(transactionMember)
-                        .on(transaction.eq(transactionMember.transactionMemberPK.transaction))
-                        .where(
-                                transactionMember
-                                        .transactionMemberPK
-                                        .member
-                                        .kakaoId
-                                        .eq(otherId)
-                                        .and(transaction.member.kakaoId.eq(myId)))
-                        .fetchOne();
+        long res = 0;
+        try {
+            res =
+                    jpaQueryFactory
+                            .select(transactionMember.totalAmount.sum())
+                            .from(transaction)
+                            .join(transactionMember)
+                            .on(transaction.eq(transactionMember.transactionMemberPK.transaction))
+                            .where(
+                                    transactionMember
+                                            .transactionMemberPK
+                                            .member
+                                            .kakaoId
+                                            .eq(otherId)
+                                            .and(transaction.member.kakaoId.eq(myId)))
+                            .fetchOne();
+
+        } catch (NullPointerException e) {
+            log.info("받을 금액 계산 불가");
+        }
 
         return res;
     }
