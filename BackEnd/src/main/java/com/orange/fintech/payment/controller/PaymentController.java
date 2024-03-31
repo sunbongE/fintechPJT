@@ -3,6 +3,10 @@ package com.orange.fintech.payment.controller;
 import com.orange.fintech.auth.dto.CustomUserDetails;
 import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.common.exception.RelatedTransactionNotFoundException;
+import com.orange.fintech.group.repository.GroupQueryRepository;
+import com.orange.fintech.notification.Dto.MessageListDataReqDto;
+import com.orange.fintech.notification.entity.NotificationType;
+import com.orange.fintech.notification.service.FcmService;
 import com.orange.fintech.payment.dto.*;
 import com.orange.fintech.payment.service.CalculateService;
 import com.orange.fintech.payment.service.PaymentService;
@@ -12,7 +16,9 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +37,8 @@ public class PaymentController {
 
     private final PaymentService paymentService;
     private final CalculateService calculateService;
+    private final FcmService fcmService;
+    private final GroupQueryRepository groupQueryRepository;
 
     @GetMapping("/my")
     @Operation(
@@ -114,11 +122,23 @@ public class PaymentController {
 
             if (!paymentService.isMyTransaction(principal.getName(), paymentId)) {
                 // TODO: 태호 알림
+                MessageListDataReqDto messageListDataReqDto = new MessageListDataReqDto();
+                messageListDataReqDto.setGroupId(groupId);
+                messageListDataReqDto.setNotificationType(NotificationType.SPLIT_MODIFY);
+
+                List<String> groupMembersKakaoId =
+                        groupQueryRepository.findGroupMembersKakaoId(groupId);
+
+                messageListDataReqDto.setTargetMembers(groupMembersKakaoId);
+
+                fcmService.pushListDataMSG(messageListDataReqDto);
             }
 
         } catch (NoSuchElementException e) {
             e.printStackTrace();
             return ResponseEntity.status(404).body(BaseResponseBody.of(404, "NOT_FOUND"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "OK"));
@@ -284,6 +304,17 @@ public class PaymentController {
 
             if (!paymentService.isMyTransaction(principal.getName(), paymentId)) {
                 // TODO: 태호 알림
+                MessageListDataReqDto messageListDataReqDto = new MessageListDataReqDto();
+                messageListDataReqDto.setGroupId(groupId);
+                messageListDataReqDto.setNotificationType(NotificationType.SPLIT_MODIFY);
+
+                List<String> groupMembersKakaoId = new ArrayList<>();
+                for (ReceiptDetailMemberPutDto receiptDetailMemberPutDto : memberList) {
+                    groupMembersKakaoId.add(receiptDetailMemberPutDto.getMemberId());
+                }
+                messageListDataReqDto.setTargetMembers(groupMembersKakaoId);
+
+                fcmService.pushListDataMSG(messageListDataReqDto);
             }
 
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "OK"));

@@ -118,6 +118,11 @@ public class FcmServiceImpl implements FcmService {
             content = (sendGroup + NotificationResponseDescription.NO_MONEY);
             dataSet.put("groupId", String.valueOf(dto.getGroupId()));
             dataSet.put("type", "NO_MONEY");
+        } else if (dto.getNotificationType().equals(NotificationType.SPLIT_MODIFY)) {
+            title = NotificationResponseTitle.SPLIT_MODIFY;
+            content = (sendGroup + NotificationResponseDescription.SPLIT_MODIFY);
+            dataSet.put("groupId", String.valueOf(dto.getGroupId()));
+            dataSet.put("type", "SPLIT_MODIFY");
         }
 
         //        log.info("sendGroup => {}", sendGroup);
