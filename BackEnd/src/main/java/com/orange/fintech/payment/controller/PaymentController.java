@@ -3,7 +3,9 @@ package com.orange.fintech.payment.controller;
 import com.orange.fintech.auth.dto.CustomUserDetails;
 import com.orange.fintech.common.BaseResponseBody;
 import com.orange.fintech.common.exception.RelatedTransactionNotFoundException;
+import com.orange.fintech.group.entity.GroupStatus;
 import com.orange.fintech.group.repository.GroupQueryRepository;
+import com.orange.fintech.group.service.GroupService;
 import com.orange.fintech.notification.Dto.MessageListDataReqDto;
 import com.orange.fintech.notification.entity.NotificationType;
 import com.orange.fintech.notification.service.FcmService;
@@ -36,6 +38,7 @@ import org.springframework.web.bind.annotation.*;
 public class PaymentController {
 
     private final PaymentService paymentService;
+    private final GroupService groupService;
     private final CalculateService calculateService;
     private final FcmService fcmService;
     private final GroupQueryRepository groupQueryRepository;
@@ -113,8 +116,8 @@ public class PaymentController {
 
         try {
             if (!paymentService.isMyTransaction(principal.getName(), paymentId)
-            // || 그룹상태가 여정 영수증이 나온 상태가 아니면
-            ) {
+                    || paymentService.isMyGroupTransaction(groupId, paymentId)
+                    || !groupService.getGroupStatus(groupId).equals(GroupStatus.SPLIT)) {
                 return ResponseEntity.status(403).body(BaseResponseBody.of(403, "FORBIDDEN"));
             }
 
