@@ -39,7 +39,6 @@ class _MySpendListState extends State<MySpendList> {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      // get 요청 시 보낼 쿼리파라미터(페이지 위치, 페이지에 보여질 개수)
       Map<String, dynamic> queryParameters = {
         'page': pageKey,
         'size': _pageSize,
@@ -49,13 +48,13 @@ class _MySpendListState extends State<MySpendList> {
       if (res.data != null) {
         List<Map<String, dynamic>> newData = List<Map<String, dynamic>>.from(res.data).cast<Map<String, dynamic>>();
 
+        newData.sort((a, b) => b["transactionUniqueNo"].compareTo(a["transactionUniqueNo"]));
+
         final isLastPage = newData.length < _pageSize;
         print("isLastPage: ${isLastPage}");
-        // 만약 마지막페이지면? 마지막 데이터들을 추가하고 끝
         if (isLastPage) {
           _pagingController.appendLastPage(newData);
         } else {
-          // 아니면? 페이지 위치를 +1 시키고,  get요청
           final nextPageKey = pageKey + 1;
           print("nextPageKey: ${nextPageKey}");
           _pagingController.appendPage(newData, nextPageKey);
