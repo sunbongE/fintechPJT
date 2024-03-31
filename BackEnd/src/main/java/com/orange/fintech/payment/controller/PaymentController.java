@@ -340,13 +340,16 @@ public class PaymentController {
 
         try {
             paymentService.addMultipleReceipt(kakaoId, receiptRequestDtoList);
+            log.info("영수증 200");
 
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "영수증이 정상 등록되었습니다."));
         } catch (RelatedTransactionNotFoundException e) {
+            log.info("영수증 404");
 
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("업로드한 영수증에 해당하는 결제 정보를 Transaction 테이블에서 찾을 수 없습니다.");
         } catch (Exception e) {
+            log.info("영수증 500");
 
             return ResponseEntity.internalServerError()
                     .body(BaseResponseBody.of(500, "영수증 저장에 실패했습니다."));

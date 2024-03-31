@@ -68,6 +68,7 @@ public class AccountController {
             @RequestBody @Valid UpdateAccountDto dto, Principal principal) {
 
         String memberId = principal.getName();
+        log.info("memberId: {}", memberId);
         try {
             accountService.updateMainAccount(memberId, dto);
             return ResponseEntity.ok().body("주계좌 등록됨");
