@@ -6,7 +6,7 @@ final api = ApiClient();
 //그룹에서 내 결제 목록 조회
 Future<Response> getMyGroupPayments(groupId, page, size) async {
   try {
-    final res = await api.get('/groups/$groupId/payments/my', queryParameters: {'page': 0, 'size': 10});
+    final res = await api.get('/groups/$groupId/payments/my', queryParameters: {'page': 0, 'size': 15});
     return res;
   } catch (err) {
     print(err);
@@ -16,6 +16,9 @@ Future<Response> getMyGroupPayments(groupId, page, size) async {
 
 //정산 상세보기
 Future<Response> getMyGroupPaymentsDetail(groupId, paymentId) async {
+  print('----------------------------------');
+  print(groupId);
+  print(paymentId);
   try {
     final res = await api.get('/groups/$groupId/payments/$paymentId');
     return res;

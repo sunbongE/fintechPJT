@@ -5,7 +5,9 @@ import 'package:front/entities/Expense.dart';
 import 'package:front/screen/MoneyRequests/MoneyRequestModify.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../components/addreceipt/AddReceipt.dart';
 import '../../components/moneyrequests/MoneyRequestDetailBottom.dart';
+import 'ReceiptView.dart';
 import '../../const/colors/Colors.dart';
 import '../../entities/RequestDetailModifyRequest.dart';
 import '../../entities/RequestMember.dart';
@@ -106,7 +108,23 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
                 ),
               ),
               Padding(padding: EdgeInsets.symmetric(vertical: 5.w)),
-              SizedButton(btnText: '영수증 보기',size: ButtonSize.l,),
+              SizedButton(
+                btnText: widget.expense.receiptEnrolled ? '영수증 보기' : '영수증 등록',
+                size: ButtonSize.l,
+                onPressed: () {
+                  if (widget.expense.receiptEnrolled) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ReceiptView(expense: widget.expense, groupId: widget.groupId,expenseDetail: request)),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddReceipt( groupId: widget.groupId,)),
+                    );
+                  }
+                },
+              ),
               Expanded(
                 child: SizedBox(
                   //width: 368.w,

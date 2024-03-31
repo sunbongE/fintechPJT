@@ -48,3 +48,29 @@ Future<dynamic> postReceiptFakeData(data) async {
     throw (err);
   }
 }
+
+Future<Response> getReceipt(groupId, paymentId, receiptId) async {
+  print(groupId);
+  print(paymentId);
+  print(receiptId);
+  try {
+    final res = await api.get('/groups/$groupId/payments/$paymentId/receipt/$receiptId');
+    return res;
+  } catch (err) {
+    print(err);
+    throw Exception('영수증 보기 실패');
+  }
+}
+
+Future<Response> getReceiptDetail(groupId, paymentId, receiptDetailId) async {
+  print(groupId);
+  print(paymentId);
+  print(receiptDetailId);
+  try {
+    final res = await api.get('/groups/$groupId/payments/$paymentId/receipt/receipt-detail/$receiptDetailId');
+    return res;
+  } catch (err) {
+    print(err);
+    throw Exception('영수증 상세 보기 실패');
+  }
+}
