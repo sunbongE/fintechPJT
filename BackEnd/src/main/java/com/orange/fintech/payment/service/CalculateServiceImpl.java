@@ -277,7 +277,9 @@ public class CalculateServiceImpl implements CalculateService {
         log.info("줄 금액: {}", -res);
 
         try {
-            res += transactionQueryRepository.sumOfTotalAmount(groupId, memberId, receiveExpression);
+            res +=
+                    transactionQueryRepository.sumOfTotalAmount(
+                            groupId, memberId, receiveExpression);
         } catch (NullPointerException e) {
             log.info("받을 금액 없음");
         }

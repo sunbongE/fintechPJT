@@ -79,7 +79,6 @@ class _MySpendItemState extends State<MySpendItem> {
                 SizedBox(
                   height: 30.h,
                 ),
-                // 거래 후 잔액 추가
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -109,14 +108,6 @@ class _MySpendItemState extends State<MySpendItem> {
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 50.h,
-                ),
-                CustomDivider(),
-                SizedBox(
-                  height: 10.h,
-                ),
-                // MySpendMap(location: widget.spend.addresses ?? "광주 광산구 하남산단6번로 107"),
               ],
             ),
           ],

@@ -48,8 +48,12 @@ class _GroupSpendListState extends State<GroupSpendList> {
         'option': option,
       };
       Response res = await getGroupSpend(widget.groupId, queryParameters);
+      print(res.data);
       if (res.data != null) {
         List<Map<String, dynamic>> newData = List<Map<String, dynamic>>.from(res.data).cast<Map<String, dynamic>>();
+
+        // transactionTime을 기준으로 내림차순 정렬
+        newData.sort((a, b) => b["transactionTime"].compareTo(a["transactionTime"]));
 
         final isLastPage = newData.length < _pageSize;
         if (isLastPage) {
@@ -66,6 +70,10 @@ class _GroupSpendListState extends State<GroupSpendList> {
     }
   }
 
+  String formatDate(String date) {
+    return "${date.substring(0, 4)}-${date.substring(4, 6)}-${date.substring(6, 8)}";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -80,9 +88,8 @@ class _GroupSpendListState extends State<GroupSpendList> {
               onTap: () {
                 buttonSlideAnimation(
                   context,
-                  GroupSpendItem(groupId: item['groupId'], paymentId: item['transactionId']),
+                  GroupSpendItem(groupId: widget.groupId, paymentId: item['transactionId']),
                 );
-                print(item);
               },
               child: Column(
                 children: [
@@ -94,7 +101,7 @@ class _GroupSpendListState extends State<GroupSpendList> {
                         Row(
                           children: [
                             Text(
-                              item['transactionDate'],
+                              formatDate(item['transactionDate'].toString()),
                               style: TextStyle(fontSize: 13.sp),
                             ),
                             SizedBox(width: 25.w),

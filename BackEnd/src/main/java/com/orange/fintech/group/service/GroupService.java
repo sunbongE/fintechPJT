@@ -23,7 +23,7 @@ public interface GroupService {
 
     GroupMembersListDto findGroupMembers(int groupId);
 
-    void firstcall(int groupId, String memberId) throws IOException;
+    boolean firstcall(int groupId, String memberId) throws IOException;
 
     int secondcall(int groupId, String memberId);
 
@@ -36,6 +36,8 @@ public interface GroupService {
     List<GroupCalculateResultDto> getCalculateResult(int groupId);
 
     boolean isExistMember(String memberId, int groupId);
+
+    String checkMyStatus(int groupId, String memberId);
 
     GroupStatus getGroupStatus(int groupId);
 }
