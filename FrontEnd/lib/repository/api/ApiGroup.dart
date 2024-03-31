@@ -80,11 +80,14 @@ Future<Response> getMemberByEmail(email) async {
 }
 
 
-//그룹의 상태를 조회
-Future<String> fetchGroupStatus(int groupId) async {
-  //현재는 백엔드 코드가 없어서 랜덤으로 출력하는 함수를 만들었습니다.
-  var random = Random();
-  List<String> statuses = ['before', 'split', 'doing', 'done'];
-  await Future.delayed(Duration(milliseconds: 200));
-  return statuses[random.nextInt(statuses.length)];
+//그룹에서 회원의 상태를 조회
+Future<String> fetchGroupMemberStatus(int groupId) async {
+  try {
+    final res = await api.get('/groups/$groupId/status');
+    print(res.data);
+    return res.data;
+  } catch (err) {
+    print(err);
+    throw Exception('멤버 조회 실패');
+  }
 }

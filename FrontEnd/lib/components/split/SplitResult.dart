@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../const/colors/Colors.dart';
+import '../../entities/SplitDoneResponse.dart';
 
 class SplitResult extends StatefulWidget {
-  const SplitResult({super.key});
+  final SplitDoneResponse splitResult;
+
+  const SplitResult({super.key, required this.splitResult});
 
   @override
   State<SplitResult> createState() => _SplitResultState();

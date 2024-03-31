@@ -4,12 +4,72 @@ import '../commons.dart';
 final api = ApiClient();
 
 //여정(스플릿)에서 내 여정(스플릿) 조회
-Future<Response> getMyGroupPayments(groupId) async {
+Future<Response> getYeojung(groupId) async {
   try {
     final res = await api.get('/groups/$groupId/payments/yeojung');
+    print(res);
     return res;
   } catch (err) {
     print(err);
     throw Exception('내 여정(스플릿) 조회 실패');
+  }
+}
+
+// 여정(스플릿) 세컨드 콜
+Future<int> putSecondCall(groupId) async {
+  try {
+    print(groupId);
+    final res = await api.put('/groups/$groupId/secondcall');
+    print(res);
+    print(res.data);
+    return res.data;
+  } catch (err) {
+    print(err);
+    throw Exception('세컨드 콜 갱신 실패.');
+  }
+}
+
+//여정(스플릿) 세컨드 콜한 사람 목록
+Future<Response> getSecondCallMember(groupId) async {
+  try {
+    final res = await api.get('/groups/$groupId/members/secondcall');
+    print(res);
+    return res;
+  } catch (err) {
+    print(err);
+    throw Exception('세컨드 콜 멤버 조회 실패');
+  }
+}
+// 여정(스플릿) 최종정산 - 세컨드 콜이 리턴값이 0이상인 사람이 호출
+Future<dynamic> postFinalRequest(groupId) async {
+  try {
+    final res = await api.post('/groups/$groupId/calculate');
+    print(res.data);
+    return res.data;
+  } catch (err) {
+    print(err);
+    throw (err);
+  }
+}
+//여정(스플릿) 결과
+Future<Response> getSplitResult(groupId) async {
+  try {
+    final res = await api.get('/groups/$groupId/result');
+    print(res);
+    return res;
+  } catch (err) {
+    print(err);
+    throw Exception('최종 결과 조회 실패');
+  }
+}
+//그룹에서 회원 정산 상태 조회
+Future<Response> getPersonalGroupStatus(groupId) async {
+  try {
+    final res = await api.get('/groups/$groupId/status');
+    print(res);
+    return res;
+  } catch (err) {
+    print(err);
+    throw Exception('회원 상태 조회 실패');
   }
 }

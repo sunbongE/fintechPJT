@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/const/colors/Colors.dart';
 
+import '../../entities/SplitDoingResponse.dart';
 import '../../providers/store.dart';
 
 class SplitMembers extends StatefulWidget {
   final groupId;
-  const SplitMembers({super.key, this.groupId});
+  final SplitDoingResponse member;
+  const SplitMembers({super.key, this.groupId, required this.member});
 
   @override
   State<SplitMembers> createState() => _SplitMembersState();
@@ -14,7 +16,6 @@ class SplitMembers extends StatefulWidget {
 
 class _SplitMembersState extends State<SplitMembers> {
   var userManager = UserManager();
-  bool isReady = true;
 
   @override
   Widget build(BuildContext context) {
@@ -25,15 +26,15 @@ class _SplitMembersState extends State<SplitMembers> {
         child: SizedBox(
           width: 60.w,
           height: 60.h,
-          child: Image.network('${userManager.thumbnailImageUrl}', fit: BoxFit.cover),
+          child: Image.network('${widget.member.thumbnailImage}', fit: BoxFit.cover),
         ),
       ),
       title: Text(
-        "${userManager.name}",
+        "${widget.member.name}",
         style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
       ),
-      subtitle: isReady ? Text("{2024-03-08} 정산완료") : Text("정산 미진행"),
-      trailing: isReady ? Icon(Icons.check_box, color: PRIMARY_COLOR) : Icon(Icons.check_box_outline_blank, color: PRIMARY_COLOR),
+      subtitle: widget.member.isReady ? Text("정산완료") : Text("정산 미진행"),
+      trailing: widget.member.isReady ? Icon(Icons.check_box, color: PRIMARY_COLOR) : Icon(Icons.check_box_outline_blank, color: PRIMARY_COLOR),
     );
   }
 }

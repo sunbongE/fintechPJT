@@ -1,5 +1,5 @@
 class SplitMemberResponse {
-  final int memberId;
+  final String memberId;
   final String name;
   final int receiveAmount;
   final int sendAmount;
@@ -14,7 +14,7 @@ class SplitMemberResponse {
 
   factory SplitMemberResponse.fromJson(Map<String, dynamic> json) {
     return SplitMemberResponse(
-      memberId: json['memberId'] as int,
+      memberId: json['memberId'] as String,
       name: json['name'] as String,
       receiveAmount: json['receiveAmount'] as int,
       sendAmount: json['sendAmount'] as int,
