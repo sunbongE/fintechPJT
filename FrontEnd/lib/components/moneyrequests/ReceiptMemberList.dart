@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -6,7 +8,7 @@ import 'package:front/components/moneyrequests/MoneyRequestDetailBottom.dart';
 import 'package:front/entities/RequestReceiptDetail.dart';
 import 'package:front/entities/RequestReceiptDetailMember.dart';
 import '../../models/button/SizedButton.dart';
-import '../../repository/api/ApiMoneyRequest.dart';
+import '../../repository/api/ApiReceipt.dart';
 import '../../utils/RequestModifyUtil.dart';
 import 'ReceiptMemberItem.dart';
 
@@ -60,6 +62,7 @@ class _ReceiptMemberListState extends State<ReceiptMemberList> {
         amountList =(List<int>.filled(amountList.length, 0));
       }
       updateAllSettled();
+      sendPutRequest();
     });
   }
   void updateAllSettled() {
@@ -113,7 +116,6 @@ class _ReceiptMemberListState extends State<ReceiptMemberList> {
                             requestReceiptDetailMember: newMemberList[index],
                             settleCallback: (bool value) {
                               isSettledStates[index] = value;
-                              sendPutRequest();
                               updateAllSettled();
                             },
                             PersonalSettle: isSettledStates[index],
@@ -123,8 +125,8 @@ class _ReceiptMemberListState extends State<ReceiptMemberList> {
                               amountList = reCalculateAmount(
                                   widget.requestReceiptDetail.count*widget.requestReceiptDetail.unitPrice, amountList,
                                   List<bool>.filled(amountList.length, false));
-                              sendPutRequest();
                               updateAllSettled();
+                              sendPutRequest();
                             },
                           );
                         },
@@ -148,6 +150,6 @@ class _ReceiptMemberListState extends State<ReceiptMemberList> {
       };
     });
 
-    putPaymentsReceiptDatil(widget.groupId,widget.paymentId,widget.requestReceiptDetail.receiptId,data);
+    putPaymentsReceiptDatil(widget.groupId,widget.paymentId,widget.requestReceiptDetail.receiptId,jsonEncode(data));
   }
 }
