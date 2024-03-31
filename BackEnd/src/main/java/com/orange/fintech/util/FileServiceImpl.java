@@ -16,7 +16,6 @@ import com.orange.fintech.member.repository.ProfileImageRepository;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -77,8 +76,10 @@ public class FileServiceImpl implements FileService {
             result = true;
         }
 
-        profileImage.setProfileImagePath("");
-        profileImage.setThumbnailImagePath("");
+        profileImage.setProfileImagePath(
+                "https://t1.kakaocdn.net/account_images/default_profile.jpeg.twg.thumb.R640x640");
+        profileImage.setThumbnailImagePath(
+                "https://t1.kakaocdn.net/account_images/default_profile.jpeg.twg.thumb.R110x110");
 
         return result;
     }
@@ -163,7 +164,7 @@ public class FileServiceImpl implements FileService {
         profileImageRepository.save(profileImage);
 
         // 4-3. member 테이블에 Amazon S3 기준 파일 경로 저장
-        member.setProfileImage(getProfileThumbnailImageUrl(member.getKakaoId()));
+        member.setProfileImage(getProfileImageUrl(member.getKakaoId()));
         member.setThumbnailImage(getProfileThumbnailImageUrl(member.getKakaoId()));
 
         memberRepository.save(member);
@@ -177,35 +178,67 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String getProfileImageUrl(String kakaoId) {
-        URL url =
-                amazonS3Client.getUrl(
-                        bucket,
-                        profileImageRepository.findByKakaoId(kakaoId).getProfileImagePath());
+        ProfileImage profileImage = profileImageRepository.findByKakaoId(kakaoId);
+        String profileImagePathURL = null;
 
-        return url.toString();
+        if (profileImage != null) { // Amazon S3에 파일이 있으면
+            profileImagePathURL =
+                    amazonS3Client
+                            .getUrl(
+                                    bucket,
+                                    profileImageRepository
+                                            .findByKakaoId(kakaoId)
+                                            .getProfileImagePath())
+                            .toString();
+        } else { // Amazon S3에 파일이 없으면
+            profileImagePathURL = memberRepository.findByKakaoId(kakaoId).getProfileImage();
+        }
+
+        return profileImagePathURL;
     }
 
     @Override
     public String getProfileThumbnailImageUrl(String kakaoId) {
-        URL url =
-                amazonS3Client.getUrl(
-                        bucket,
-                        profileImageRepository.findByKakaoId(kakaoId).getThumbnailImagePath());
+        ProfileImage profileImage = profileImageRepository.findByKakaoId(kakaoId);
+        String thumbnailImagePathURL = null;
 
-        return url.toString();
+        if (profileImage != null) { // Amazon S3에 파일이 있으면
+            thumbnailImagePathURL =
+                    amazonS3Client
+                            .getUrl(
+                                    bucket,
+                                    profileImageRepository
+                                            .findByKakaoId(kakaoId)
+                                            .getThumbnailImagePath())
+                            .toString();
+        } else { // Amazon S3에 파일이 없으면
+            thumbnailImagePathURL = memberRepository.findByKakaoId(kakaoId).getThumbnailImage();
+        }
+
+        return thumbnailImagePathURL;
     }
 
     @Override
     public String getProfileAndThumbnailImageUrl(String kakaoId) {
         ProfileImage profileImage = profileImageRepository.findByKakaoId(kakaoId);
-        URL profileImagePathURL = amazonS3Client.getUrl(bucket, profileImage.getProfileImagePath());
-        URL thumbnailImagePathURL =
-                amazonS3Client.getUrl(bucket, profileImage.getThumbnailImagePath());
+        String profileImagePathURL = null;
+        String thumbnailImagePathURL = null;
+        Member member = memberRepository.findByKakaoId(kakaoId);
+
+        if (profileImage != null) {
+            profileImagePathURL =
+                    amazonS3Client.getUrl(bucket, profileImage.getProfileImagePath()).toString();
+            thumbnailImagePathURL =
+                    amazonS3Client.getUrl(bucket, profileImage.getThumbnailImagePath()).toString();
+        } else {
+            profileImagePathURL = member.getProfileImage();
+            thumbnailImagePathURL = member.getThumbnailImage();
+        }
 
         Map<String, Object> profileAndThumbnailImageUrl = new HashMap<>();
 
-        profileAndThumbnailImageUrl.put("profileImagePath", profileImagePathURL.toString());
-        profileAndThumbnailImageUrl.put("thumbnailImagePathURL", thumbnailImagePathURL.toString());
+        profileAndThumbnailImageUrl.put("profileImagePath", profileImagePathURL);
+        profileAndThumbnailImageUrl.put("thumbnailImagePathURL", thumbnailImagePathURL);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
