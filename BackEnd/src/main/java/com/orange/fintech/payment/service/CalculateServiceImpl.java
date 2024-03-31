@@ -183,13 +183,10 @@ public class CalculateServiceImpl implements CalculateService {
             }
         }
         // 돈이 부족한 사람이 있으면 fcm호출하고 정산을 종료한다.
-        if(!noMoneysKakaoId.isEmpty()){
-            fcmService.noMoneyFcm(noMoneysKakaoId,groupId);
+        if (!noMoneysKakaoId.isEmpty()) {
+            fcmService.noMoneyFcm(noMoneysKakaoId, groupId);
             return null;
         }
-
-
-
 
         // 초기화
         minTransaction = new int[minus.size()];

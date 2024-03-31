@@ -109,7 +109,7 @@ public class PaymentServiceImpl implements PaymentService {
         log.info("saveTransactionDetail 끝");
     }
 
-    public void saveReceiptWithTransaction(Transaction transaction) {
+    public Receipt saveReceiptWithTransaction(Transaction transaction) {
         Receipt receipt = new Receipt();
         receipt.setTransaction(transaction);
         receipt.setApprovalAmount(transaction.getTransactionBalance());
@@ -122,7 +122,7 @@ public class PaymentServiceImpl implements PaymentService {
         //        receipt.setLocation();
         //        receipt.setSubName();
 
-        receiptRepository.save(receipt);
+        return receiptRepository.save(receipt);
     }
 
     public void saveReceiptWithReq(Transaction transaction, AddCashTransactionReq req) {
@@ -352,7 +352,7 @@ public class PaymentServiceImpl implements PaymentService {
                         transactionRepository.findById(transactionId).get());
         log.info("getGroupTransactionDetail - receipt: {}", receipt);
         if (receipt == null) {
-            saveReceiptWithTransaction(transaction);
+            receipt = saveReceiptWithTransaction(transaction);
         }
 
         TransactionDetail transactionDetail =
