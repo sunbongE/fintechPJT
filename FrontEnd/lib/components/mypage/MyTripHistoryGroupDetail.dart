@@ -16,8 +16,7 @@ class MyTripHistoryGroupDetail extends StatefulWidget {
   });
 
   @override
-  State<MyTripHistoryGroupDetail> createState() =>
-      _MyTripHistoryGroupDetailState();
+  State<MyTripHistoryGroupDetail> createState() => _MyTripHistoryGroupDetailState();
 }
 
 class _MyTripHistoryGroupDetailState extends State<MyTripHistoryGroupDetail> {
@@ -31,7 +30,7 @@ class _MyTripHistoryGroupDetailState extends State<MyTripHistoryGroupDetail> {
       child: Column(
         children: [
           Text(
-            '${widget.startDate} - ${widget.endDate}',
+            '${widget.startDate} ~ ${widget.endDate}',
             style: TextStyle(
               fontSize: 13.sp,
               color: Color(0xff6E6E6E),
