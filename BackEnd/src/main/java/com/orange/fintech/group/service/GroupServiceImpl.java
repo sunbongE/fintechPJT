@@ -137,6 +137,9 @@ public class GroupServiceImpl implements GroupService {
 
         GroupMember data = new GroupMember();
         data.setGroupMemberPK(groupMemberPK);
+        data.setFistCallDone(false);
+        data.setSecondCallDone(false);
+        data.setState(true);
 
         groupMemberRepository.save(data);
 
