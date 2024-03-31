@@ -83,7 +83,8 @@ class _ReceiptItemState extends State<ReceiptItem> {
                 children: <Widget>[
                   Text(
                     widget.requestReceiptSub.menu,
-                    style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 10),
@@ -99,7 +100,8 @@ class _ReceiptItemState extends State<ReceiptItem> {
                           ),
                         ),
                         TextSpan(
-                          text: '${NumberFormat('#,###').format(widget.requestReceiptSub.price)}원',
+                          text:
+                              '${NumberFormat('#,###').format(widget.requestReceiptSub.price)}원',
                           style: TextStyle(
                             fontSize: 20.sp,
                             color: Colors.black,
@@ -109,11 +111,18 @@ class _ReceiptItemState extends State<ReceiptItem> {
                       ],
                     ),
                   ),
-                  isLoaded ? ReceiptMemberList(
-                    groupId: widget.groupId,
-                    paymentId: widget.paymentId,
-                    requestReceiptDetail: requestReceiptDetail,
-                  ) : CircularProgressIndicator(),
+                  isLoaded
+                      ? ReceiptMemberList(
+                          groupId: widget.groupId,
+                          paymentId: widget.paymentId,
+                          requestReceiptDetail: requestReceiptDetail,
+                          modalCallback: (bool value) {
+                            setModalState(() {
+                            });
+
+                          },
+                        )
+                      : CircularProgressIndicator(),
                 ],
               ),
             );

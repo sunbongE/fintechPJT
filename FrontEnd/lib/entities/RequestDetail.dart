@@ -3,7 +3,7 @@ import 'package:front/entities/RequestMember.dart';
 class RequestDetail {
   final int receiptId;
   final String businessName;
-  final String location;
+  final String? location;
   final String transactionDate;
   final String transactionTime;
   final int totalPrice;

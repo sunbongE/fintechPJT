@@ -2,22 +2,26 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:front/components/moneyrequests/MoneyRequestDetailBottom.dart';
 import 'package:front/entities/RequestReceiptDetail.dart';
 import 'package:front/entities/RequestReceiptDetailMember.dart';
 import '../../models/button/SizedButton.dart';
+import '../../repository/api/ApiMoneyRequest.dart';
+import '../../utils/RequestModifyUtil.dart';
 import 'ReceiptMemberItem.dart';
-
 
 class ReceiptMemberList extends StatefulWidget {
   final int groupId;
   final int paymentId;
   final RequestReceiptDetail requestReceiptDetail;
+  final Function(bool) modalCallback;
 
   const ReceiptMemberList({
     Key? key,
     required this.groupId,
     required this.paymentId,
     required this.requestReceiptDetail,
+    required this.modalCallback,
   }) : super(key: key);
 
   @override
@@ -46,8 +50,23 @@ class _ReceiptMemberListState extends State<ReceiptMemberList> {
 
     isLoaded = true;
   }
-
-  void updateAllSettled() {}
+  void toggleAll(bool value) {
+    setState(() {
+      isSettledStates = List<bool>.filled(isSettledStates.length, value);
+      if(value == true){
+        amountList =(List<int>.filled(amountList.length, (widget.requestReceiptDetail.unitPrice*widget.requestReceiptDetail.count/amountList.length).toInt()));
+      }
+      else {
+        amountList =(List<int>.filled(amountList.length, 0));
+      }
+      updateAllSettled();
+    });
+  }
+  void updateAllSettled() {
+    settledMembersCount = isSettledStates.where((element) => element).length;
+    allSettled = isSettledStates.any((element) => element);
+    widget.modalCallback(true);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +91,7 @@ class _ReceiptMemberListState extends State<ReceiptMemberList> {
                       size: ButtonSize.s,
                       borderRadius: 10,
                       onPressed: () {
-                        //toggleAll(!allSettled);
+                        toggleAll(!allSettled);
                       },
                     ),
                   ],
@@ -82,28 +101,53 @@ class _ReceiptMemberListState extends State<ReceiptMemberList> {
               Container(
                 height: 270.h,
                 child: isSettledStates.isNotEmpty
-                      ? ListView.builder(
-                          itemCount: widget.requestReceiptDetail.memberList?.length,
-                          itemBuilder: (context, index) {
-                            return ReceiptMemberItem(
-                              groupId: widget.groupId,
-                              paymentId: widget.paymentId,
-                              receiptDetailId: widget.requestReceiptDetail.receiptId,
-                              requestReceiptDetailMember: newMemberList[index],
-                              settleCallback: (bool) {},
-                              PersonalSettle: isSettledStates[index],
-                              amount: amountList[index],
-                              amountCallback: (int) {},
-                            );
-                          },
-                        )
-                      : Center(
-                          child: Text('멤버가 없습니다.'),
-                        ),
+                    ? ListView.builder(
+                        itemCount:
+                            widget.requestReceiptDetail.memberList?.length,
+                        itemBuilder: (context, index) {
+                          return ReceiptMemberItem(
+                            groupId: widget.groupId,
+                            paymentId: widget.paymentId,
+                            receiptDetailId:
+                                widget.requestReceiptDetail.receiptId,
+                            requestReceiptDetailMember: newMemberList[index],
+                            settleCallback: (bool value) {
+                              isSettledStates[index] = value;
+                              sendPutRequest();
+                              updateAllSettled();
+                            },
+                            PersonalSettle: isSettledStates[index],
+                            amount: amountList[index],
+                            amountCallback: (int value) {
+                              amountList[index] = value;
+                              amountList = reCalculateAmount(
+                                  widget.requestReceiptDetail.count*widget.requestReceiptDetail.unitPrice, amountList,
+                                  List<bool>.filled(amountList.length, false));
+                              sendPutRequest();
+                              updateAllSettled();
+                            },
+                          );
+                        },
+                      )
+                    : Center(
+                        child: Text('멤버가 없습니다.'),
+                      ),
               ),
-
+              MoneyRequestDetailBottom(amount: reCalculateRemainder(
+                  widget.requestReceiptDetail.count*widget.requestReceiptDetail.unitPrice, amountList))
             ],
           )
         : CircularProgressIndicator();
+  }
+  void sendPutRequest() {
+    print('상세정산 수정 api 요청 가욧');
+    List<Map<String, dynamic>> data = List.generate(amountList.length, (index) {
+      return {
+        "memberId": widget.requestReceiptDetail.memberList?[index].memberId,
+        "amountDue": amountList[index],
+      };
+    });
+
+    putPaymentsReceiptDatil(widget.groupId,widget.paymentId,widget.requestReceiptDetail.receiptId,data);
   }
 }
