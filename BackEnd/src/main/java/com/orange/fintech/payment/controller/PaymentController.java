@@ -102,12 +102,20 @@ public class PaymentController {
             @RequestBody TransactionEditReq req,
             Principal principal) {
         log.info("editTransaction 시작");
-        if (!paymentService.isMyTransaction(principal.getName(), paymentId)) {
-            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "FORBIDDEN"));
-        }
 
         try {
+            if (!paymentService.isMyTransaction(principal.getName(), paymentId)
+            // || 그룹상태가 여정 영수증이 나온 상태가 아니면
+            ) {
+                return ResponseEntity.status(403).body(BaseResponseBody.of(403, "FORBIDDEN"));
+            }
+
             paymentService.editTransactionDetail(paymentId, req);
+
+            if (!paymentService.isMyTransaction(principal.getName(), paymentId)) {
+                // TODO: 태호 알림
+            }
+
         } catch (NoSuchElementException e) {
             e.printStackTrace();
             return ResponseEntity.status(404).body(BaseResponseBody.of(404, "NOT_FOUND"));
@@ -273,6 +281,10 @@ public class PaymentController {
 
         try {
             paymentService.setReceiptDetailMember(paymentId, receiptDetailId, memberList);
+
+            if (!paymentService.isMyTransaction(principal.getName(), paymentId)) {
+                // TODO: 태호 알림
+            }
 
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "OK"));
         } catch (Exception e) {
