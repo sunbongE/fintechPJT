@@ -390,13 +390,14 @@ public class GroupController {
         @ApiResponse(responseCode = "200", description = "성공"),
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    public ResponseEntity<?> checkMyStatus(@RequestBody @Valid int groupId, Principal principal) {
+    public ResponseEntity<?> checkMyStatus(
+            @PathVariable("groupId") int groupId, Principal principal) {
         String memberId = principal.getName();
         try {
 
             String myStatus = groupService.checkMyStatus(groupId, memberId);
 
-            return ResponseEntity.internalServerError().body(myStatus);
+            return ResponseEntity.ok().body(myStatus);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(BaseResponseBody.of(500, "서버 에러"));
