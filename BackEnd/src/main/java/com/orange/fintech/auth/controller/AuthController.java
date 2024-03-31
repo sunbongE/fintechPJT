@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -81,6 +80,6 @@ public class AuthController {
 
     @GetMapping("/test")
     public ResponseEntity<?> test() throws ParseException, IOException {
-                return ResponseEntity.ok(BaseResponseBody.of(200, "연결댐"));
+        return ResponseEntity.ok(BaseResponseBody.of(200, "연결댐"));
     }
 }

@@ -440,8 +440,11 @@ public class AccountServiceImpl implements AccountService {
                     LocalTime.parse(receiptRequestDto.getDate(), dateTimeFormatter);
 
             Transaction transaction =
-                    transactionRepository.findReceiptApostropheForeignkey(
-                            transactionDate, transactionTime, kakaoId);
+                    transactionRepository
+                            .findApproximateReceiptComparingBalanceApostropheForeignkey(
+                                    receiptRequestDto.getApprovalAmount(),
+                                    transactionDate,
+                                    kakaoId);
 
             // 2. 업로드한 영수증에 해당하는 결제 정보 (Record)를 Transaction 테이블에서 찾을 수 없는 경우 추가
             if (transaction == null) {
@@ -471,7 +474,6 @@ public class AccountServiceImpl implements AccountService {
                 requestBody.put("transactionSummary", transactionSummary);
 
                 // 2-1-4. SSAFY Bank API 호출
-                // TODO: 삭제
                 HttpStatusCode statusCode = null;
                 String responseBody = null;
                 try {

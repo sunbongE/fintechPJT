@@ -279,8 +279,9 @@ public class GroupController {
 
         try {
             List<CalculateResultDto> calRes = calculateService.finalCalculator(groupId, memberId);
-            if(calRes==null){
-                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(BaseResponseBody.of(406, "잔액이 부족해서 취소됨."));
+            if (calRes == null) {
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                        .body(BaseResponseBody.of(406, "잔액이 부족해서 취소됨."));
             }
             calculateService.transfer(calRes, groupId);
 
