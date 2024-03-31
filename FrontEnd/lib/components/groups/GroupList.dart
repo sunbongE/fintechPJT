@@ -39,33 +39,33 @@ class _GroupListState extends State<GroupList> {
       barrierDismissible: false, // 사용자가 다이얼로그 바깥을 탭해도 닫히지 않도록 설정
       builder: (BuildContext context) => const LoadingDialog(),
     );
-    String status = await fetchGroupStatus(group.groupId!);
+    String status = await fetchGroupMemberStatus(group.groupId!);
     Navigator.pop(context);
 
     var modifiedGroup;
     switch (status) {
-      case 'before':
+      case 'BEFORE':
         modifiedGroup = await Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
         );
         break;
-      case 'split':
+      case 'SPLIT':
         modifiedGroup = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
+          MaterialPageRoute(builder: (context) => SplitMain(groupId: group.groupId!)),
         );
         break;
-      case 'doing':
+      case 'DOING':
         modifiedGroup = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
+          MaterialPageRoute(builder: (context) => SplitDoing(groupId: group.groupId!)),
         );
         break;
-      case 'done':
+      case 'DONE':
         modifiedGroup = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
+          MaterialPageRoute(builder: (context) => SplitDone(groupId: group.groupId!)),
         );
         break;
       default:

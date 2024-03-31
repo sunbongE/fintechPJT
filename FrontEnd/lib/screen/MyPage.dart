@@ -37,22 +37,7 @@ class _MyPageState extends State<MyPage> with WidgetsBindingObserver {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           MyInfo(),
-          Button(
-            btnText: "자투리금액 페이지로 이동",
-            onPressed: () => buttonSlideAnimation(context, Jjatury()),
-          ),
-          Button(
-            btnText: "스플릿두잉 페이지로 이동",
-            onPressed: () => buttonSlideAnimation(context, SplitDoing()),
-          ),
-          Button(
-            btnText: "스플릿로딩 페이지로 이동",
-            onPressed: () => buttonSlideAnimation(context, SplitLoading()),
-          ),
-          Button(
-            btnText: "스플릿던 페이지로 이동",
-            onPressed: () => buttonSlideAnimation(context, SplitDone()),
-          ),
+          //감사합니다 잘썼습니다 -지연
           ProfileChangeBtn(
             buttonText: '프로필 수정',
             onPressed: () => buttonSlideAnimation(

@@ -8,11 +8,14 @@ import 'package:front/models/button/SizedButton.dart';
 import 'package:front/providers/store.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import '../components/calculate/Jjatury.dart';
 import '../components/split/SplitMainList.dart';
 import '../entities/SplitMemberResponse.dart';
 import '../models/Biometrics.dart';
 import '../models/PassWordCertification.dart';
 import '../models/button/ButtonSlideAnimation.dart';
+import '../repository/api/ApiMoneyRequest.dart';
+import '../repository/api/ApiSplit.dart';
 import 'MoneyRequest.dart';
 
 class SplitMain extends StatefulWidget {
@@ -24,21 +27,10 @@ class SplitMain extends StatefulWidget {
   _SplitMainState createState() => _SplitMainState();
 }
 
-List<Map<String, dynamic>> rawData = [
-  {'memberId': 11111, 'name': 'asdf', 'receiveAmount': 10000, 'sendAmount': 2000},
-  {'memberId': 11111, 'name': 'asdf', 'receiveAmount': 10000, 'sendAmount': 2000},
-  {'memberId': 11111, 'name': 'asdf', 'receiveAmount': 10000, 'sendAmount': 2000},
-  {'memberId': 11111, 'name': 'asdf', 'receiveAmount': 10000, 'sendAmount': 2000},
-  {'memberId': 11111, 'name': 'asdf', 'receiveAmount': 10000, 'sendAmount': 2000},
-  {'memberId': 11111, 'name': 'asdf', 'receiveAmount': 10000, 'sendAmount': 2000},
-  {'memberId': 11111, 'name': 'asdf', 'receiveAmount': 10000, 'sendAmount': 2000},
-  {'memberId': 11111, 'name': 'asdf', 'receiveAmount': 10000, 'sendAmount': 2000}
-];
-
 class _SplitMainState extends State<SplitMain> {
   final UserManager _userManager = UserManager();
   String? userInfo;
-  List<SplitMemberResponse> memberList = rawData.map((data) => SplitMemberResponse.fromJson(data)).toList();
+  List<SplitMemberResponse> memberList = [];
 
   @override
   void initState() {
@@ -65,7 +57,7 @@ class _SplitMainState extends State<SplitMain> {
     bool authenticated = await _authenticate();
     if (authenticated) {
       if (mounted) {
-        Navigator.of(context).push(MaterialPageRoute(builder: (_) => SplitDoing(groupId: widget.groupId)));
+        processPutAndNavigate();
       }
     } else {
       WidgetsBinding.instance.addPostFrameCallback(
@@ -76,7 +68,7 @@ class _SplitMainState extends State<SplitMain> {
                 builder: (_) => PassWordCertification(
                   onSuccess: () {
                     if (mounted) {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => SplitDoing(groupId: widget.groupId)));
+                      processPutAndNavigate();
                     }
                   },
                 ),
@@ -88,10 +80,33 @@ class _SplitMainState extends State<SplitMain> {
     }
   }
 
+  Future<void> processPutAndNavigate() async {
+    int remainder = await putSecondCall(widget.groupId);
+    if (remainder >= 0) {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) =>
+              Jjatury(groupId: widget.groupId, remainder: remainder)));
+    } else {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => SplitDoing(groupId: widget.groupId)));
+    }
+  }
+
   Future<void> _loadMemberData() async {
-    // setState(() {
-    //   memberList = rawData.map((data) => YJMemberResponse.fromJson(data)).toList();
-    // });
+    try {
+      final response = await getYeojung(widget.groupId);
+
+      final List<dynamic> responseData = response.data;
+      List<Map<String, dynamic>> data =
+          List<Map<String, dynamic>>.from(responseData);
+      setState(() {
+        memberList =
+            data.map((data) => SplitMemberResponse.fromJson(data)).toList();
+      });
+    } catch (err) {
+      // 데이터 로딩 중 에러가 발생한 경우 처리
+      print('멤버 데이터 로딩 실패: $err');
+    }
   }
 
   @override
@@ -133,7 +148,8 @@ class _SplitMainState extends State<SplitMain> {
                     SizedBox(height: 8.h),
                     memberList.isEmpty
                         ? Center(
-                            child: Lottie.asset('assets/lotties/orangewalking.json'),
+                            child: Lottie.asset(
+                                'assets/lotties/orangewalking.json'),
                           )
                         : SplitMainList(
                             memberList: memberList,
