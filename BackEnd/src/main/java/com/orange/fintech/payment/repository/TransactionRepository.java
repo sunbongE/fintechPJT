@@ -16,4 +16,11 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
             @Param("transactionDate") LocalDate transactionDate,
             @Param("transactionTime") LocalTime transactionTime,
             String kakaoId);
+
+    @Query(
+            "SELECT EXISTS(SELECT t FROM Transaction t WHERE t.member.kakaoId = :kakaoId AND t.transactionBalance = :balance AND t.transactionSummary = :transactionSummary)")
+    boolean doesDummyRecordAlreadyExists(
+            @Param("kakaoId") String kakaoId,
+            @Param("transactionSummary") String transactionSummary,
+            @Param("balance") Long balance);
 }

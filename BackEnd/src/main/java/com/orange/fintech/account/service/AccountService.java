@@ -54,4 +54,6 @@ public interface AccountService {
             throws ParseException;
 
     void transfer(String sendMemberId, String receiveMemberId, Long transactionBalance);
+
+    boolean deposit(String userKey, String accountNo, Long balance);
 }

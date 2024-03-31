@@ -75,6 +75,9 @@ public class AccountServiceImpl implements AccountService {
     @Value("${ssafy.bank.transfer}")
     private String transferUri;
 
+    @Value("${ssafy.bank.deposit}")
+    private String depositUrl;
+
     Random random = new Random();
 
     @Override
@@ -458,14 +461,14 @@ public class AccountServiceImpl implements AccountService {
                 // 2-1-3. Body에 "Header"를 제외한 다른 key-value 쌍 추가
                 Account primaryAccount = accountRepository.findPrimaryAccountByKakaoId(member);
                 random.setSeed(System.currentTimeMillis());
-                String transactionSummary = cardCompanyList[random.nextInt(3)] + "체크승인";
+                // String transactionSummary = cardCompanyList[random.nextInt(3)] + "체크승인";  //
+                // "신한", "하나", "국민" 중 1개 카드사 + "체크승인" (예: 신한체크승인)
+                String transactionSummary = receiptRequestDto.getBusinessName();
 
                 requestBody.put("bankCode", primaryAccount.getBankCode());
                 requestBody.put("accountNo", primaryAccount.getAccountNo());
                 requestBody.put("transactionBalance", receiptRequestDto.getApprovalAmount());
-                requestBody.put(
-                        "transactionSummary",
-                        transactionSummary); // "신한", "하나", "국민" 중 1개 카드사 + "체크승인" (예: 신한체크승인)
+                requestBody.put("transactionSummary", transactionSummary);
 
                 // 2-1-4. SSAFY Bank API 호출
                 // TODO: 삭제
@@ -604,5 +607,35 @@ public class AccountServiceImpl implements AccountService {
             }
 
         } while (flag);
+    }
+
+    // SSAFY Bank API 입금
+    @Override
+    public boolean deposit(String userKey, String accountNo, Long balance) {
+        // 1-1. SSAFY Bank API 호출을 위한 Body 객체 생성
+        Map<String, Object> requestBody = new HashMap<>();
+
+        // 1-2. 'Body에 넣을' Header value 객체 생성 및 추가
+        ReqHeader reqHeader = createHeader(userKey, depositUrl);
+        requestBody.put("Header", reqHeader);
+
+        // 1-3. Body에 "Header"를 제외한 다른 key-value 쌍 추가
+        requestBody.put("bankCode", "001");
+        requestBody.put("accountNo", accountNo);
+        requestBody.put("transactionBalance", balance);
+        requestBody.put("accountNo", accountNo);
+        requestBody.put("transactionSummary", "시작 금액");
+
+        // 2-1. SSAFY Bank API 호출
+        RestClient restClient = RestClient.create();
+        RestClient.ResponseSpec response =
+                restClient.post().uri(depositUrl).body(requestBody).retrieve();
+
+        // 2-2. 응답 코드 해석
+        ResponseEntity<?> responseEntity = response.toEntity(String.class);
+        String responseBody = responseEntity.getBody().toString();
+        HttpStatusCode statusCode = responseEntity.getStatusCode();
+
+        return statusCode.is2xxSuccessful();
     }
 }
