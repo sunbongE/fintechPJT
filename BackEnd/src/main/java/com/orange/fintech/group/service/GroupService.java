@@ -40,5 +40,4 @@ public interface GroupService {
     String checkMyStatus(int groupId, String memberId);
 
     GroupStatus getGroupStatus(int groupId);
-
 }
