@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -172,41 +173,31 @@ public class GroupServiceImpl implements GroupService {
     public GroupMembersListDto findGroupMembers(int groupId) {
         GroupMembersListDto result;
         // 1. 캐시에서 그룹원을 조회한다.
+        log.info("** Cache ===============");
         result = groupRedisService.getGroupMembersFromCache(groupId);
 
         if (result == null) {
-            log.info("** DB에서 호출 ===============");
+            log.info("** DB 조회 ===============");
             // 2. 캐시에 없으면 DB에서 가져온다.
             result = new GroupMembersListDto();
             result.setGroupMembersDtos(groupQueryRepository.findGroupMembers(groupId));
-            //            result.setGroupMembersDtos((List<GroupMembersDto>)
-            // groupQueryRepository.findGroupMembers(groupId));
 
             // 3. DB에 조회한 그룹원을 캐시에 저장한다.
             groupRedisService.saveDataExpire(groupId, result);
         }
 
-        //        List<GroupMembersDto> groupMembersDtos =
-        // groupQueryRepository.findGroupMembers(groupId);
-
-        //        result.setGroupMembersDtos(groupMembersDtos);
-
-        //        result = groupQueryRepository.findGroupMembers(groupId);
-        //        groupRedisService.deleteData(groupId); // 삭제
-        //        groupRedisService.saveDataExpire(groupId, result); // 저장
-        //        log.info("캐시된값 : {}",groupRedisService.getGroupMembersFromCache(groupId));
         return result;
     }
 
     @Override
-    public void firstcall(int groupId, String memberId) throws IOException {
+    public boolean firstcall(int groupId, String memberId) throws IOException {
         Group group = groupRepository.findById(groupId).get();
         Member member = new Member();
         member.setKakaoId(memberId);
 
         GroupMemberPK groupMemberPK = new GroupMemberPK(member, group);
         Optional<GroupMember> Optarget = groupMemberRepository.findById(groupMemberPK);
-        if (Optarget.isEmpty()) return;
+        if (Optarget.isEmpty()) return false;
 
         GroupMember targetGroupMember = Optarget.get();
 
@@ -214,8 +205,7 @@ public class GroupServiceImpl implements GroupService {
 
         groupMemberRepository.save(targetGroupMember);
         groupStatusChangeAndFcm(group);
-        //        throw new RuntimeException("일단 멈춰봐.");
-        //        return true;
+        return true;
     }
 
     @Override
@@ -241,6 +231,7 @@ public class GroupServiceImpl implements GroupService {
         int remainder = -1;
         if (countGroupMembers == countSecondcallGroupMembers) {
             // 마지막으로 누른 사람 -> 자투리 당첨
+
             remainder = transactionQueryRepository.sumOfRemainder(groupId);
         }
 
@@ -306,11 +297,42 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public String checkMyStatus(int groupId, String memberId) {
+        Group group = groupRepository.findById(groupId).get();
+        Member member = new Member();
+        member.setKakaoId(memberId);
+        GroupMemberPK groupMemberPK = new GroupMemberPK();
+        groupMemberPK.setMember(member);
+        groupMemberPK.setGroup(group);
+        GroupMember groupMember = groupMemberRepository.findById(groupMemberPK).get();
+        GroupStatus groupStatus = group.getGroupStatus();
+
+        String myStatus = "NULL";
+
+        // 그룹 상태가 BEFORE이면 BEFORE이다?
+        if (groupStatus.equals(GroupStatus.BEFORE)) {
+            myStatus = "BEFORE";
+        } else if (groupStatus.equals(GroupStatus.DONE)) {
+            myStatus = "DONE";
+        } else if (groupStatus.equals(GroupStatus.SPLIT)
+                && groupMember.getFistCallDone()
+                && !groupMember.getSecondCallDone()) {
+            myStatus = "SPLIT";
+        } else if (groupStatus.equals(GroupStatus.SPLIT)
+                && groupMember.getFistCallDone()
+                && groupMember.getSecondCallDone()) {
+            myStatus = "DOING";
+        }
+
+        return myStatus;
+    }
+
     public GroupStatus getGroupStatus(int groupId) {
         Group group = groupRepository.findById(groupId).get();
         return group.getGroupStatus();
     }
-
+    
+    @Async
     public void groupStatusChangeAndFcm(Group group) throws IOException {
         // Todo : 여행정산요청을 그룹에 포함된 모든 회원들에게 보낸다.(DATA : groupId)
         // A : 같은 그룹에 1차 정산 내역 요청을 누른 사람들
