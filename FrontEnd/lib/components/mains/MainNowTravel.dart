@@ -40,7 +40,8 @@ class _NowTravelListState extends State<NowTravelList> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.groups.length == 0) {
+    final ongoingGroups = widget.groups.where((group) => !group.isCalculateDone).toList();
+    if (ongoingGroups.isEmpty) {
       return Scaffold(
         body: Center(
             child: Column(
@@ -51,12 +52,12 @@ class _NowTravelListState extends State<NowTravelList> {
 
     return Scaffold(
       body: CarouselSlider.builder(
-        itemCount: widget.groups.length,
+        itemCount: ongoingGroups.length,
         itemBuilder: (context, index, realIndex) {
           return MainNowTravelCard(
-            group: widget.groups[index],
+            group: ongoingGroups[index],
             onTap: () {
-              navigateToGroupDetail(widget.groups[index]);
+              navigateToGroupDetail(ongoingGroups[index]);
             },
             isCenter: index == _currentPage,
           );

@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:front/components/mains/MainPastTravelCard.dart';
+import 'package:front/components/mypage/MyTripHistoryDetail.dart';
 import 'package:front/screen/groupscreens/GroupItem.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../../entities/Group.dart';
@@ -13,11 +14,12 @@ class PastTravelList extends StatefulWidget {
   State<PastTravelList> createState() => _PastTravelListState();
 }
 
+// 과거여행 보기
 class _PastTravelListState extends State<PastTravelList> {
   void navigateToGroupDetail(Group group) async {
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
+      MaterialPageRoute(builder: (context) => MyTripHistoryDetail(groupData: group)),
     );
   }
 
@@ -34,12 +36,12 @@ class _PastTravelListState extends State<PastTravelList> {
 
     return Scaffold(
       body: CarouselSlider.builder(
-        itemCount: widget.groups.length,
+        itemCount: filteredGroups.length,
         itemBuilder: (context, index, realIndex) {
           return MainPastTravelCard(
-            group: widget.groups[index],
+            group: filteredGroups[index],
             onTap: () {
-              navigateToGroupDetail(widget.groups[index]);
+              navigateToGroupDetail(filteredGroups[index]);
             },
           );
         },

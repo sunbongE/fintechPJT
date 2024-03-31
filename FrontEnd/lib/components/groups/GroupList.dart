@@ -86,14 +86,16 @@ class _GroupListState extends State<GroupList> {
 
   @override
   Widget build(BuildContext context) {
+    final ongoingGroups = widget.groups.where((group) => !group.isCalculateDone).toList();
+
     return Scaffold(
       body: ListView.builder(
-        itemCount: widget.groups.length,
+        itemCount: ongoingGroups.length,
         itemBuilder: (context, index) {
           return GroupCard(
-            group: widget.groups[index],
+            group: ongoingGroups[index],
             onTap: () {
-              navigateToGroupDetail(widget.groups[index]);
+              navigateToGroupDetail(ongoingGroups[index]);
             },
           );
         },
