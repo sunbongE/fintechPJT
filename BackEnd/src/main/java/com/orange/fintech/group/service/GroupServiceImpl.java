@@ -305,6 +305,12 @@ public class GroupServiceImpl implements GroupService {
         return true;
     }
 
+    @Override
+    public GroupStatus getGroupStatus(int groupId) {
+        Group group = groupRepository.findById(groupId).get();
+        return group.getGroupStatus();
+    }
+
     public void groupStatusChangeAndFcm(Group group) throws IOException {
         // Todo : 여행정산요청을 그룹에 포함된 모든 회원들에게 보낸다.(DATA : groupId)
         // A : 같은 그룹에 1차 정산 내역 요청을 누른 사람들

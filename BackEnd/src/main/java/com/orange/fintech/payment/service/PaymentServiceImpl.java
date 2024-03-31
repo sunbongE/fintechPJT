@@ -471,8 +471,11 @@ public class PaymentServiceImpl implements PaymentService {
                     LocalTime.parse(receiptRequestDto.getDate(), dateTimeFormatter);
 
             Transaction transaction =
-                    transactionRepository.findReceiptApostropheForeignkey(
-                            transactionDate, transactionTime, kakaoId);
+                    transactionRepository
+                            .findApproximateReceiptComparingBalanceApostropheForeignkey(
+                                    receiptRequestDto.getApprovalAmount(),
+                                    transactionDate,
+                                    kakaoId);
 
             // 2-1. 업로드한 영수증에 해당하는 결제 정보 (Record)를 Transaction 테이블에서 찾을 수 없는 경우 예외 발생
             if (transaction == null) {

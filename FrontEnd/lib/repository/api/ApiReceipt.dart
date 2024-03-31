@@ -74,3 +74,19 @@ Future<Response> getReceiptDetail(groupId, paymentId, receiptDetailId) async {
     throw Exception('영수증 상세 보기 실패');
   }
 }
+
+// 내 영수증에서 메뉴 참여인원 토글 on/off
+Future<Map<String, dynamic>> putPaymentsReceiptDatil(groupId, paymentId, receiptDetailId, data) async {
+  try {
+    print(groupId);
+    print(paymentId);
+    print(receiptDetailId);
+    print(data);
+    final res = await api.put('/groups/$groupId/payments/$paymentId/receipt/receipt-detail/$receiptDetailId', data: data);
+    print('putPaymentsReceiptDatil: ${res.data}');
+    return res.data;
+  } catch (err) {
+    print(err);
+    throw Exception('상세보기 데이터 갱신 실패.');
+  }
+}

@@ -10,8 +10,6 @@ import lombok.ToString;
 @Getter
 @ToString
 @RequiredArgsConstructor
-// FIXME: 아래 annotation 필요 없을지도
-// @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class) // Camel -> Snake case 변환
 public class UserKeyAccountPair {
     @Schema(description = "여정 DB Member 테이블 PK")
     private String kakaoId;

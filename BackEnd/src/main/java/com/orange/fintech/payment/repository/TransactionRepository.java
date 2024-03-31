@@ -10,12 +10,29 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
+    // 기존 영수증 로직 (초 단위까지 비교)
     @Query(
             "SELECT t FROM Transaction t WHERE t.transactionDate = :transactionDate AND t.transactionTime = :transactionTime AND t.member.kakaoId = :kakaoId")
-    Transaction findReceiptApostropheForeignkey(
+    Transaction findExactReceiptApostropheForeignkey(
             @Param("transactionDate") LocalDate transactionDate,
             @Param("transactionTime") LocalTime transactionTime,
             String kakaoId);
+
+    // 임시 영수증 로직 (시(hour) 단위까지 비교)
+    @Query(
+            "SELECT t FROM Transaction t WHERE t.transactionDate = :transactionDate AND TIME_FORMAT(t.transactionTime, '%H') = TIME_FORMAT(:transactionTime, '%H') AND t.member.kakaoId = :kakaoId")
+    Transaction findApproximateReceiptComparingHourApostropheForeignkey(
+            @Param("transactionDate") LocalDate transactionDate,
+            @Param("transactionTime") LocalTime transactionTime,
+            String kakaoId);
+
+    // 새로운 영수증 로직 (날짜와 금액 비교)
+    @Query(
+            "SELECT t FROM Transaction t WHERE t.transactionBalance = :transactionBalance AND t.transactionDate = :transactionDate AND t.member.kakaoId = :kakaoId")
+    Transaction findApproximateReceiptComparingBalanceApostropheForeignkey(
+            @Param("transactionBalance") Long transactionBalance,
+            @Param("transactionDate") LocalDate transactionDate,
+            @Param("kakaoId") String kakaoId);
 
     @Query(
             "SELECT EXISTS(SELECT t FROM Transaction t WHERE t.member.kakaoId = :kakaoId AND t.transactionBalance = :balance AND t.transactionSummary = :transactionSummary)")

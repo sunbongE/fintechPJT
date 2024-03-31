@@ -3,7 +3,7 @@ import 'package:front/entities/RequestMember.dart';
 class RequestDetail {
   final int receiptId;
   final String businessName;
-  final String location;
+  final String? location;
   final String transactionDate;
   final String transactionTime;
   final int totalPrice;
@@ -33,9 +33,7 @@ class RequestDetail {
 
   factory RequestDetail.fromJson(Map<String, dynamic> json) {
     var memberObjectsJson = json['memberList'] as List;
-    List<RequestMember> _members = memberObjectsJson
-        .map((memberJson) => RequestMember.fromJson(memberJson))
-        .toList();
+    List<RequestMember> _members = memberObjectsJson.map((memberJson) => RequestMember.fromJson(memberJson)).toList();
 
     return RequestDetail(
       receiptId: json['receiptId'],
@@ -88,6 +86,7 @@ class RequestDetail {
       'memberList': members.map((member) => member.toJson()).toList(),
     };
   }
+
   @override
   String toString() {
     return 'RequestDetail(receiptId: $receiptId, businessName: $businessName, location: $location, transactionDate: $transactionDate, transactionTime: $transactionTime, totalPrice: $totalPrice, approvalAmount: $approvalAmount, authNumber: $authNumber, visibility: $visibility, receiptExists: $receiptExists, remainder: $remainder, memo: $memo, members: ${members.toString()})';

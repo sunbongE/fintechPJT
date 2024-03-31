@@ -27,7 +27,7 @@ class Receipt {
       minute = json['images'][0]['receipt']['result']['paymentInfo']['time']['formatted']['minute'];
       second = json['images'][0]['receipt']['result']['paymentInfo']['time']['formatted']['second'];
     } catch (e) {
-      year = month = day = hour = minute = second = "인식오류";
+      year = month = day = hour = minute = second = "";
     }
     String formattedDate = "$year-$month-$day $hour:$minute:$second";
 
@@ -51,7 +51,7 @@ class Receipt {
               count = price = 0;
             }
             items.add({
-              'menu': name ?? 'Unknown',
+              'menu': name ?? '인식오류',
               'count': count,
               'price': price,
             });
@@ -79,11 +79,11 @@ class Receipt {
     try {
       subName = json['images'][0]['receipt']['result']['storeInfo']['subName']['text'] ?? '';
     } catch (e) {
-      subName = "인식오류";
+      subName = "";
     }
 
     return Receipt(
-      businessName: json['images'][0]['receipt']['result']['storeInfo']['name']['formatted']['value'] ?? "인식오류",
+      businessName: json['images'][0]['receipt']['result']['storeInfo']['name']['formatted']['value'] ?? "",
       subName: subName,
       location: addresses,
       date: formattedDate,
