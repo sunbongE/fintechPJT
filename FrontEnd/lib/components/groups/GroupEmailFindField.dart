@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:front/components/groups/GroupEmailFindInviteMemberCard.dart';
 import '../../entities/Member.dart';
 import 'package:front/repository/api/ApiGroup.dart';
 
@@ -110,57 +111,32 @@ class _GroupEmailFindFieldState extends State<GroupEmailFindField> {
           ),
         ),
         // 사용자 정보 리스트를 화면에 표시합니다.
-        if (userInfoList.isNotEmpty) ...[
+        if (userInfoList.isNotEmpty)
           Container(
-            height: 100.h, // 컨테이너 높이 설정
-            child: ListView.builder( // 가로 스크롤 가능한 리스트 뷰
-              scrollDirection: Axis.horizontal, // 리스트를 가로로 스크롤
-              itemCount: userInfoList.length, // 리스트 아이템 개수
+            width: 210.w,
+            height: 110.h,
+            child: ListView.builder(
+              shrinkWrap: true, // ListView가 자신의 내용에 맞게 크기를 조정하도록 설정
+              scrollDirection: Axis.horizontal,
+              itemCount: userInfoList.length, // 수정: userInfoList의 길이 사용
               itemBuilder: (context, index) {
-                var userInfo = userInfoList[index];
-                return Container( // 각 아이템을 위한 컨테이너
-                  width: 80.w, // 아이템 너비 설정
-                  child: Column( // 이미지와 텍스트를 세로로 배치
-                    children: [
-                      ClipOval( // 이미지를 동그라미 형태로 클립
-                        child: userInfo['thumbnailImage'] != null
-                            ? Image.network(
-                          userInfo['thumbnailImage'],
-                          width: 60.w, // 이미지 너비
-                          height: 60.h, // 이미지 높이
-                          fit: BoxFit.cover, // 이미지 채우기 방식
-                        )
-                            : Icon(
-                          Icons.account_circle,
-                          size: 60, // 아이콘 크기
-                        ),
-                      ),
-                      SizedBox(height: 8.h), // 이미지와 텍스트 사이 여백
-                      Text(
-                        userInfo['name'],
-                        style: TextStyle(fontSize: 16.sp),
-                        overflow: TextOverflow.ellipsis, // 텍스트가 넘치면 생략표시
-                      ),
-                    ],
-                  ),
-                  margin: EdgeInsets.symmetric(horizontal: 10), // 좌우 마진 설정
+                return Container(
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  width: MediaQuery.of(context).size.width * 0.15,
+                  margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0), // 좌우 마진 설정
+                  child: GroupEmailFindInviteMemberCard(member : userInfoList[index]),
+                  // 예시: memberInfo를 사용하여 사용자 정보를 표시하는 위젯을 여기에 구성
                 );
               },
             ),
           ),
-        ],
-
-
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0),
-          child: TextButton(
-            child: Text('초대하기'),
-            onPressed: () {
-              widget
-                  .onInvite(inviteMember);
-              Navigator.of(context).pop();
-            },
-          ),
+        TextButton(
+          child: Text('초대하기'),
+          onPressed: () {
+            widget
+                .onInvite(inviteMember);
+            Navigator.of(context).pop();
+          },
         ),
       ],
     );
