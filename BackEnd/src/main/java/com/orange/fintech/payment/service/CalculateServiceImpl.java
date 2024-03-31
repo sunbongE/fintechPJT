@@ -264,8 +264,18 @@ public class CalculateServiceImpl implements CalculateService {
                 transactionQueryRepository.getSumOfTotalAmountCondition(
                         groupId, memberId, "RECEIVE");
 
-        res -= transactionQueryRepository.sumOfTotalAmount(groupId, memberId, sendExpression);
-        res += transactionQueryRepository.sumOfTotalAmount(groupId, memberId, receiveExpression);
+        try {
+            res -= transactionQueryRepository.sumOfTotalAmount(groupId, memberId, sendExpression);
+        } catch (NullPointerException e) {
+            log.info("줄 금액 없음");
+        }
+        log.info("줄 금액: {}", -res);
+
+        try {
+            res += transactionQueryRepository.sumOfTotalAmount(groupId, memberId, receiveExpression);
+        } catch (NullPointerException e) {
+            log.info("받을 금액 없음");
+        }
 
         log.info("sumOfTotalAmount: {}", res);
 
