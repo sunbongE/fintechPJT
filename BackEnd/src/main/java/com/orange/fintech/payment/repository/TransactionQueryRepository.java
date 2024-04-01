@@ -178,25 +178,37 @@ public class TransactionQueryRepository {
                 : selectQuery;
     }
 
+    /**
+     * @param memberId
+     * @param receiptId
+     * @return
+     */
     public long getTransactionTotalAmount(String memberId, int receiptId) {
-        long res =
-                jpaQueryFactory
-                        .select(receiptDetailMember.amountDue.sum())
-                        .from(receipt)
-                        .join(receiptDetail)
-                        .on(receipt.eq(receiptDetail.receipt))
-                        .join(receiptDetailMember)
-                        .on(
-                                receiptDetail.eq(
-                                        receiptDetailMember.receiptDetailMemberPK.receiptDetail))
-                        .where(
-                                receiptDetailMember
-                                        .receiptDetailMemberPK
-                                        .member
-                                        .kakaoId
-                                        .eq(memberId)
-                                        .and(receipt.receiptId.eq(receiptId)))
-                        .fetchOne();
+        long res = 0;
+        try {
+            res =
+                    jpaQueryFactory
+                            .select(receiptDetailMember.amountDue.sum())
+                            .from(receipt)
+                            .join(receiptDetail)
+                            .on(receipt.eq(receiptDetail.receipt))
+                            .join(receiptDetailMember)
+                            .on(
+                                    receiptDetail.eq(
+                                            receiptDetailMember
+                                                    .receiptDetailMemberPK
+                                                    .receiptDetail))
+                            .where(
+                                    receiptDetailMember
+                                            .receiptDetailMemberPK
+                                            .member
+                                            .kakaoId
+                                            .eq(memberId)
+                                            .and(receipt.receiptId.eq(receiptId)))
+                            .fetchOne();
+        } catch (NullPointerException e) {
+            log.info("[ERROR] {}", e.getMessage());
+        }
 
         log.info("getTransactionTotalAmount({}, {}): {}", memberId, receiptId, res);
         return res;
