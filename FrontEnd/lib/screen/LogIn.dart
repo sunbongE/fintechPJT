@@ -122,6 +122,9 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    var userManager = UserManager();
+    userManager.loadUserInfo();
+
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -158,8 +161,21 @@ class _LoginState extends State<Login> {
                             (Route<dynamic> route) => false,
                           );
                         } else if (res.statusCode == 200) {
-                          print("힝 200이지?");
-                          _checkLoginStatus();
+                          if (userManager.selectedAccount != null &&
+                              userManager.selectedAccount!.isNotEmpty &&
+                              userManager.selectedBank != null &&
+                              userManager.selectedBank!.isNotEmpty &&
+                              userManager.selectBankCode != null &&
+                              userManager.selectBankCode!.isNotEmpty) {
+                            print("힝 200이지?");
+                            _checkLoginStatus();
+                          } else {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => ServiceIntro()),
+                              (Route<dynamic> route) => false,
+                            );
+                          }
                         }
                       } else {
                         print("힝 속았지?");
