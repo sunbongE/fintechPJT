@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import '../../const/colors/Colors.dart';
 import '../../entities/RequestMember.dart';
+import '../../models/FlutterToastMsg.dart';
 import 'AmountInputField.dart';
 
 class RequestModifyItem extends StatefulWidget {
@@ -11,6 +12,7 @@ class RequestModifyItem extends StatefulWidget {
   final bool isLocked;
   final Function(bool) onLockedChanged;
   final Function(int) onAmountChanged;
+  final int totalAmount;
 
   const RequestModifyItem({
     Key? key,
@@ -18,7 +20,7 @@ class RequestModifyItem extends StatefulWidget {
     required this.isLocked,
     required this.onLockedChanged,
     required this.onAmountChanged,
-    required this.amount,
+    required this.amount, required this.totalAmount,
   }) : super(key: key);
 
   @override
@@ -95,9 +97,22 @@ class _RequestModifyItemState extends State<RequestModifyItem> {
           amountController.text = value.isEmpty ? '0' : amountController.text;
           String removeCommaValue =
               (value.isEmpty ? '0' : value).replaceAll(',', '');
+          if(int.parse(removeCommaValue) > widget.totalAmount) {
+            removeCommaValue = widget.amount.toString();
+            amountController.text = widget.amount.toString();
+            FlutterToastMsg('${widget.totalAmount}원 보다 작거나 같은 값을 입력해주세요.');
+          }
           widget.onAmountChanged(int.parse(removeCommaValue));
-          isLocked = removeCommaValue == '0' ? false : true;
+          //isLocked = removeCommaValue == '0' ? false : true;
           print(isLocked);
+        },
+        onChanged:  (value) {
+          if (!isLocked) {
+            setState(() {
+              isLocked = true;
+            });
+            widget.onLockedChanged(true);
+          }
         },
       ),
       trailing: IconButton(

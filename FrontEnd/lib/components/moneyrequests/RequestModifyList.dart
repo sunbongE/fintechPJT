@@ -93,7 +93,7 @@ class _RequestModifyListState extends State<RequestModifyList> {
                     personalAmounts[index] = value;
                     widget.personalAmounts(personalAmounts);
                   });
-                },
+                }, totalAmount: widget.requestDetail.totalPrice,
               );
             },
           ),

@@ -152,7 +152,7 @@ class _SplitMainState extends State<SplitMain> {
                                 'assets/lotties/orangewalking.json'),
                           )
                         : SplitMainList(
-                            memberList: memberList,
+                            memberList: memberList, groupId: widget.groupId,
                           ),
                     SizedBox(height: 100.h),
                   ],

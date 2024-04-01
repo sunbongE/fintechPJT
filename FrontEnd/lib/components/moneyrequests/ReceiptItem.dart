@@ -4,6 +4,8 @@ import 'package:front/components/moneyrequests/ReceiptMemberList.dart';
 import 'package:front/components/moneyrequests/RequestMemberList.dart';
 import 'package:front/entities/RequestReceiptDetail.dart';
 import 'package:front/entities/RequestReceiptSub.dart';
+import 'package:front/models/FlutterToastMsg.dart';
+import 'package:front/repository/api/ApiMoneyRequest.dart';
 import 'package:intl/intl.dart';
 
 import '../../const/colors/Colors.dart';
@@ -16,12 +18,14 @@ class ReceiptItem extends StatefulWidget {
   final int groupId;
   final int paymentId;
   final RequestReceiptSub requestReceiptSub;
+  final bool isSplit;
 
   const ReceiptItem(
       {Key? key,
       required this.requestReceiptSub,
       required this.groupId,
-      required this.paymentId})
+      required this.paymentId,
+      this.isSplit = false})
       : super(key: key);
 
   @override
@@ -31,6 +35,13 @@ class ReceiptItem extends StatefulWidget {
 class _ReceiptItemState extends State<ReceiptItem> {
   late RequestReceiptDetail requestReceiptDetail;
   bool isLoaded = false;
+  bool isEditable = true;
+
+  @override
+  void initState() {
+    super.initState();
+    checkIfEditable();
+  }
 
   void fetchReceiptDetailData({required Function onSuccess}) async {
     final response = await getReceiptDetail(widget.groupId, widget.paymentId,
@@ -61,75 +72,89 @@ class _ReceiptItemState extends State<ReceiptItem> {
     onSuccess();
   }
 
-  void _showDetailsSheet() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setModalState) {
-            if (!isLoaded) {
-              fetchReceiptDetailData(onSuccess: () {
-                setModalState(() {
-                  isLoaded = true;
-                });
-              });
-            }
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              padding: EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    widget.requestReceiptSub.menu,
-                    style:
-                        TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 10),
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '가격 ',
-                          style: TextStyle(
-                            fontSize: 20.sp,
-                            color: Colors.black,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                        TextSpan(
-                          text:
-                              '${NumberFormat('#,###').format(widget.requestReceiptSub.price)}원',
-                          style: TextStyle(
-                            fontSize: 20.sp,
-                            color: Colors.black,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  isLoaded
-                      ? ReceiptMemberList(
-                          groupId: widget.groupId,
-                          paymentId: widget.paymentId,
-                          requestReceiptDetail: requestReceiptDetail,
-                          modalCallback: (bool value) {
-                            setModalState(() {
-                            });
+  void checkIfEditable() async {
+    bool canEdit =
+        await getMoneyRequestIsLock(widget.groupId, widget.paymentId);
+    setState(() {
+      isEditable = !canEdit;
+    });
+  }
 
-                          },
-                        )
-                      : CircularProgressIndicator(),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
+  void _showDetailsSheet() {
+    if (isEditable)
+      showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setModalState) {
+              if (!isLoaded) {
+                fetchReceiptDetailData(onSuccess: () {
+                  setModalState(() {
+                    isLoaded = true;
+                  });
+                });
+              }
+              return Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      widget.requestReceiptSub.menu,
+                      style: TextStyle(
+                          fontSize: 24.sp, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 10),
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '가격 ',
+                            style: TextStyle(
+                              fontSize: 20.sp,
+                              color: Colors.black,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                          TextSpan(
+                            text:
+                                '${NumberFormat('#,###').format(widget.requestReceiptSub.price)}원',
+                            style: TextStyle(
+                              fontSize: 20.sp,
+                              color: Colors.black,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    isLoaded
+                        ? ReceiptMemberList(
+                            groupId: widget.groupId,
+                            paymentId: widget.paymentId,
+                            requestReceiptDetail: requestReceiptDetail,
+                            modalCallback: (bool value) {
+                              fetchReceiptDetailData(onSuccess: () {
+                                setModalState(() {
+                                  isLoaded = true;
+                                });
+                              });
+                            },
+                      isSplit: widget.isSplit,
+                          )
+                        : CircularProgressIndicator(),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      );
+    else
+      FlutterToastMsg("상세항목 설정이 필요하시면 정산 수정하기에서 lock를 해제해주세요.");
   }
 
   @override

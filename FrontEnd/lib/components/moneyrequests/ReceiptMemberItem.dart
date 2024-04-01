@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/entities/RequestReceiptDetail.dart';
 import 'package:intl/intl.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 import '../../const/colors/Colors.dart';
 import '../../entities/RequestMember.dart';
 import '../../entities/RequestReceiptDetailMember.dart';
+import '../../providers/store.dart';
 
 class ReceiptMemberItem extends StatefulWidget {
   final int groupId;
@@ -15,13 +17,19 @@ class ReceiptMemberItem extends StatefulWidget {
   final Function(bool) settleCallback;
   final int amount;
   final Function(int) amountCallback;
+  final bool isSplit;
 
   const ReceiptMemberItem({
     Key? key,
     required this.groupId,
     required this.paymentId,
     required this.receiptDetailId,
-    required this.requestReceiptDetailMember, required this.settleCallback, required this.PersonalSettle, required this.amount, required this.amountCallback,
+    required this.requestReceiptDetailMember,
+    required this.settleCallback,
+    required this.PersonalSettle,
+    required this.amount,
+    required this.amountCallback,
+    this.isSplit = false,
   }) : super(key: key);
 
   @override
@@ -31,12 +39,26 @@ class ReceiptMemberItem extends StatefulWidget {
 class _ReceiptMemberItemState extends State<ReceiptMemberItem> {
   late bool isSettled;
   late int amount = 0;
+  final UserManager _userManager = UserManager();
+  String? userInfo;
 
+  Future<void> _loadUserInfo() async {
+    await _userManager.loadUserInfo();
+    String token = _userManager.jwtToken !;
+    String formattedToken = token.startsWith('Bearer ') ? token.substring(7) : token;
+    Map<String, dynamic> payload = Jwt.parseJwt(formattedToken);
+    String? kakaoId = payload['kakaoId'];
+    setState(() {
+      userInfo = kakaoId;
+      print(kakaoId);
+    });
+  }
   @override
   void initState() {
     super.initState();
-    isSettled = widget.requestReceiptDetailMember.amountDue > 0 ? true:false;
+    isSettled = widget.requestReceiptDetailMember.amountDue > 0 ? true : false;
     amount = widget.requestReceiptDetailMember.amountDue;
+    _loadUserInfo();
   }
 
   void toggleSettled(bool value) {
@@ -89,7 +111,7 @@ class _ReceiptMemberItemState extends State<ReceiptMemberItem> {
           fontSize: 18.sp,
         ),
       ),
-      trailing: Switch(
+      trailing: !widget.isSplit || userInfo == widget.requestReceiptDetailMember.memberId ?Switch(
         value: isSettled,
         activeColor: BUTTON_COLOR,
         inactiveTrackColor: Colors.black54,
@@ -97,7 +119,7 @@ class _ReceiptMemberItemState extends State<ReceiptMemberItem> {
         onChanged: (bool value) {
           toggleSettled(value);
         },
-      ),
+      ): SizedBox(),
     );
   }
 }

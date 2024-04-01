@@ -14,6 +14,7 @@ class RequestMemberList extends StatefulWidget {
   final List<int> amountList;
   final Function(List<int>) callbackAmountList;
   final Function(List<bool>) isLockList;
+  final bool isSplit;
 
   const RequestMemberList({
     Key? key,
@@ -21,7 +22,7 @@ class RequestMemberList extends StatefulWidget {
     required this.allSettledCallback,
     required this.callbackAmountList,
     required this.amountList,
-    required this.isLockList,
+    required this.isLockList, this.isSplit = false,
   }) : super(key: key);
 
   @override
@@ -83,7 +84,6 @@ class _RequestMemberListState extends State<RequestMemberList> {
 
       //전체해제할때 전부 lock풀기
       updateAllSettled();
-      print('111111111111111111111111111111111111111111111');
       if(widget.requestDetail is RequestCash) {
         print(widget.requestDetail.transactionBalance);
       }
@@ -122,6 +122,7 @@ class _RequestMemberListState extends State<RequestMemberList> {
               Text(' | '),
               Text('$settledMembersCount명'),
               Spacer(),
+              if(!widget.isSplit)
               SizedButton(
                 btnText: allSettled ? '전체 해제' : '전체 선택',
                 size: ButtonSize.s,
@@ -161,6 +162,7 @@ class _RequestMemberListState extends State<RequestMemberList> {
                   });
                 },
                 amount: amountList[index],
+                isSplit: widget.isSplit,
               );
             },
           )
