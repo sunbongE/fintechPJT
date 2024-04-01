@@ -55,9 +55,9 @@ public class PaymentController {
             summary = "그룹 내에서 내 결제 내역 조회",
             description = "<strong>그룹 아이디</strong>로 내 결제 내역을 조회한다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "403", description = "권한 없음"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "403", description = "권한 없음"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<? extends List<TransactionDto>> getMyTransactionList(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
@@ -82,10 +82,10 @@ public class PaymentController {
             summary = "정산 내역에 포함하기 / 제외하기",
             description = "<strong>paymentId</strong>로 정산 내역 포함 여부를 설정한다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "403", description = "권한 없음"),
-        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "403", description = "권한 없음"),
+            @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<? extends BaseResponseBody> modifyPaymentsList(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
@@ -111,10 +111,10 @@ public class PaymentController {
             summary = "결제 내역 수정",
             description = "<strong>paymentId</strong>로 메모, 참여 인원과 금액을 설정한다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "403", description = "권한 없음"),
-        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "403", description = "권한 없음"),
+            @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<? extends BaseResponseBody> editTransaction(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
@@ -163,10 +163,10 @@ public class PaymentController {
     @PostMapping("/cash")
     @Operation(summary = "현금 결제 내역 추가", description = "<strong>groupId</strong>로 현금 결제 내역을 추가한다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "403", description = "권한 없음"),
-        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "403", description = "권한 없음"),
+            @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<? extends BaseResponseBody> addCash(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
@@ -182,10 +182,10 @@ public class PaymentController {
     @GetMapping("/{paymentId}")
     @Operation(summary = "결제 내역 상세보기", description = "<strong>paymentId</strong>로 결제 내역 상세보기 한다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "403", description = "권한 없음"),
-        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "403", description = "권한 없음"),
+            @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<GroupTransactionDetailRes> getGroupTransactionDetail(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
@@ -211,10 +211,10 @@ public class PaymentController {
             summary = "그룹 결제내역 조회",
             description = "<strong>groupId</strong>로 그룹의 결제(정산) 내역을 조회한다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "403", description = "권한 없음"),
-        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "403", description = "권한 없음"),
+            @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<? extends List<TransactionDto>> getGroupPayments(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
@@ -238,10 +238,10 @@ public class PaymentController {
     @GetMapping("/{paymentId}/receipt/{receiptId}")
     @Operation(summary = "영수증 보기", description = "영수증을 불러온다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "403", description = "권한 없음"),
-        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "403", description = "권한 없음"),
+            @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<ReceiptDto> getGroupReceipt(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
@@ -267,16 +267,16 @@ public class PaymentController {
     @GetMapping("/{paymentId}/receipt/receipt-detail/{receiptDetailId}")
     @Operation(summary = "영수증 세부 항목 보기", description = "영수증 세부 항목 내용(밥, 인원A,B,C)을 불러온다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "403", description = "권한 없음"),
-        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "403", description = "권한 없음"),
+            @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<ReceiptDetailRes> getGroupReceiptDetail(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
             @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
             @PathVariable @Parameter(description = "영수증 세부항목 아이디", in = ParameterIn.PATH)
-                    int receiptDetailId,
+            int receiptDetailId,
             Principal principal) {
 
         if (!paymentService.isMyGroup(principal.getName(), groupId)
@@ -297,16 +297,16 @@ public class PaymentController {
     @PutMapping("/{paymentId}/receipt/receipt-detail/{receiptDetailId}")
     @Operation(summary = "영수증 세부 항목 참여 인원 설정", description = "영수증 세부 항목에 대한 참여 인원 설정을 한다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "403", description = "권한 없음"),
-        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "403", description = "권한 없음"),
+            @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<BaseResponseBody> setReceiptDetailMember(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
             @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
             @PathVariable @Parameter(description = "영수증 세부항목 아이디", in = ParameterIn.PATH)
-                    int receiptDetailId,
+            int receiptDetailId,
             @RequestBody List<ReceiptDetailMemberPutDto> memberList,
             Principal principal) {
 
@@ -343,10 +343,10 @@ public class PaymentController {
     @PostMapping("/receipt")
     @Operation(summary = "영수증 일괄 등록", description = "다수의 영수증을 <strong>(JSON)</strong> 등록한다.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "403", description = "권한 없음"),
-        @ApiResponse(responseCode = "404", description = "일치하는 결제 내역 없음"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "403", description = "권한 없음"),
+            @ApiResponse(responseCode = "404", description = "일치하는 결제 내역 없음"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> addMultipleReceipt(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -375,10 +375,10 @@ public class PaymentController {
     @GetMapping("/yeojung")
     @Operation(summary = "여정 페이지", description = "groupId로 이번 여정 불러오기")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "403", description = "권한 없음"),
-        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "403", description = "권한 없음"),
+            @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<List<YeojungDto>> getYeojung(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
@@ -403,10 +403,10 @@ public class PaymentController {
             summary = "여정 정산 내역 페이지",
             description = "<strong>groupId, otherMemberId, type</strong>으로 여정 정산내역 불러오기")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "403", description = "권한 없음"),
-        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "403", description = "권한 없음"),
+            @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<List<TransactionDto>> getYeojungDetail(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
@@ -433,14 +433,14 @@ public class PaymentController {
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "영수증 이미지 일괄 등록", description = "다수의 영수증을 <strong>(이미지)</strong> 등록한다.")
     @ApiResponses({
-        // TODO: 응답 이대로 가는지 확인
-        @ApiResponse(responseCode = "200", description = "정상 등록"),
-        @ApiResponse(responseCode = "400", description = "비어있는 파일"),
-        @ApiResponse(responseCode = "413", description = "20MB를 초과하는 파일"),
-        @ApiResponse(responseCode = "415", description = "지원하지 않는 확장자"),
-        @ApiResponse(responseCode = "500", description = "서버 오류"),
-    })
+            @ApiResponse(responseCode = "200", description = "정상 등록"),
+            @ApiResponse(responseCode = "400", description = "비어있는 파일"),
+            @ApiResponse(responseCode = "413", description = "20MB를 초과하는 파일"),
+            @ApiResponse(responseCode = "415", description = "지원하지 않는 확장자"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+            })
     public ResponseEntity<?> uploadReceiptImages(
+            @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
             @RequestPart(value = "file", required = true) MultipartFile[] receiptImageList) {
 
         try {
