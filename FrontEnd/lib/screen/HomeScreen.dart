@@ -38,7 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => GroupInvitedItem(groupId: groupId)),
-        // MaterialPageRoute(builder: (context) => GroupInvitedItem(groupId: groupId)),
       );
       await prefs.remove('groupId');
       await prefs.remove('type');
