@@ -248,4 +248,55 @@ public class FileServiceImpl implements FileService {
             throw new RuntimeException(e);
         }
     }
+
+    public void uploadReceiptImagesToAmazonS3(MultipartFile[] receiptImageList)
+            throws IOException, EmptyFileException, BigFileException, NotValidExtensionException {
+        for (MultipartFile singleReceiptImage : receiptImageList) {
+            // 1. 파일 유효성 검사
+            // 1-1. 업로드 한 파일이 비어있는지 확인
+            if (singleReceiptImage.isEmpty()) {
+                throw new EmptyFileException();
+            }
+
+            // 1-2. 클라이언트가 업로드한 파일의 확장자 추출 (이미지 확장자인지 검사)
+            String extension = FilenameUtils.getExtension(singleReceiptImage.getOriginalFilename());
+            if (!fileUtil.isValidImageExtension(extension)) {
+                throw new NotValidExtensionException();
+            }
+
+            // 1-3. 파일 용량 체크
+            if (fileUtil.isLargerThan20MB(singleReceiptImage)) {
+                throw new BigFileException();
+            }
+
+            // 2. File 객체 생성
+            File convertedFile = null;
+
+            // 2-1. 파일 명 결정
+            // application.properties 파일에 저장된 ${spring.servlet.multipart.location} 값 불러옴 (Amazon S3에
+            // 저장할
+            // 디렉토리 경로) 예: orange/upload/
+            Path root = Paths.get(uploadPath);
+
+            // "/receipt" + {파일 명}으로 결정 예: orange/upload/20240329_115014.jpg
+            String amazonReceiptImageFilePath =
+                    "receipt/" + singleReceiptImage.getOriginalFilename();
+
+            // 2-2. 파일 객체 생성 (MultipartFile -> File) (썸네일 생성 및 Amazon S3 업로드 위함)
+            convertedFile = fileUtil.multipartFile2File(singleReceiptImage);
+
+            // 3. Amazon S3 파일 업로드
+            try (InputStream inputStream = singleReceiptImage.getInputStream()) {
+                amazonS3Client.putObject(
+                        new PutObjectRequest(bucket, amazonReceiptImageFilePath, convertedFile)
+                                .withCannedAcl(CannedAccessControlList.PublicRead));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // 5. MultipartFile -> File로 변환하면서 로컬에 저장된 파일 삭제
+            fileUtil.removeFile(convertedFile);
+        }
+    }
 }

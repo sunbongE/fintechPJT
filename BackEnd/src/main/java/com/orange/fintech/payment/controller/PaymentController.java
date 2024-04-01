@@ -2,6 +2,9 @@ package com.orange.fintech.payment.controller;
 
 import com.orange.fintech.auth.dto.CustomUserDetails;
 import com.orange.fintech.common.BaseResponseBody;
+import com.orange.fintech.common.exception.BigFileException;
+import com.orange.fintech.common.exception.EmptyFileException;
+import com.orange.fintech.common.exception.NotValidExtensionException;
 import com.orange.fintech.common.exception.RelatedTransactionNotFoundException;
 import com.orange.fintech.group.entity.GroupStatus;
 import com.orange.fintech.group.repository.GroupQueryRepository;
@@ -12,6 +15,7 @@ import com.orange.fintech.notification.service.FcmService;
 import com.orange.fintech.payment.dto.*;
 import com.orange.fintech.payment.service.CalculateService;
 import com.orange.fintech.payment.service.PaymentService;
+import com.orange.fintech.util.FileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -26,9 +30,11 @@ import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Tag(name = "Payment", description = "그룹 정산 API")
@@ -42,6 +48,7 @@ public class PaymentController {
     private final CalculateService calculateService;
     private final FcmService fcmService;
     private final GroupQueryRepository groupQueryRepository;
+    private final FileService fileService;
 
     @GetMapping("/my")
     @Operation(
@@ -328,7 +335,7 @@ public class PaymentController {
     }
 
     @PostMapping("/receipt")
-    @Operation(summary = "영수증 일괄 등록", description = "<strong>groupId</strong>로 다수의 영수증을 등록한다.")
+    @Operation(summary = "영수증 일괄 등록", description = "다수의 영수증을 <strong>(JSON)</strong> 등록한다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "성공"),
         @ApiResponse(responseCode = "403", description = "권한 없음"),
@@ -412,6 +419,44 @@ public class PaymentController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(404).body(null);
+        }
+    }
+
+    @PostMapping(
+            value = "/receiptImage",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "영수증 이미지 일괄 등록", description = "다수의 영수증을 <strong>(이미지)</strong> 등록한다.")
+    @ApiResponses({
+        // TODO: 응답 이대로 가는지 확인
+        @ApiResponse(responseCode = "200", description = "정상 등록"),
+        @ApiResponse(responseCode = "400", description = "비어있는 파일"),
+        @ApiResponse(responseCode = "413", description = "20MB를 초과하는 파일"),
+        @ApiResponse(responseCode = "415", description = "지원하지 않는 확장자"),
+        @ApiResponse(responseCode = "500", description = "서버 오류"),
+    })
+    public ResponseEntity<?> uploadReceiptImages(
+            @RequestPart(value = "file", required = true) MultipartFile[] receiptImageList) {
+
+        try {
+            fileService.uploadReceiptImagesToAmazonS3(receiptImageList);
+
+            return ResponseEntity.status(HttpStatus.OK).body("영수증이 정상 저장되었습니다.");
+        } catch (EmptyFileException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(BaseResponseBody.of(400, "파일이 비어있습니다."));
+        } catch (BigFileException e) {
+            return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+                    .body(BaseResponseBody.of(413, "업로드한 파일의 용량이 20MB 이상입니다."));
+        } catch (NotValidExtensionException e) {
+            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                    .body(
+                            BaseResponseBody.of(
+                                    415, "지원하는 확장자가 아닙니다. 지원하는 이미지 형식: jpg, jpeg, pdf, tiff"));
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(BaseResponseBody.of(500, "서버 오류"));
         }
     }
 }
