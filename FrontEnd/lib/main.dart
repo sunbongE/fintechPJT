@@ -41,8 +41,8 @@ void initializeNotification() async {
   await flutterLocalNotificationsPlugin.initialize(
       const InitializationSettings(
         android: AndroidInitializationSettings("@ipmap/ic_launcher"),
-      ), onDidReceiveNotificationResponse: (details) {
-    print("1111메세지 받고싶다..: ${details}");
+      ), onDidReceiveNotificationResponse: (details) async {
+    print("1111메세지 받고싶다..: ${details.payload}");
   }, onDidReceiveBackgroundNotificationResponse: backgroundHandler);
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
 
@@ -86,7 +86,6 @@ Future<void> main() async {
   ]);
 
   print('키 해시: ${await KakaoSdk.origin}');
-  // LD8/P2w/Yz8/Pz8K
 
   runApp(
     ChangeNotifierProvider(

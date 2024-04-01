@@ -14,6 +14,7 @@ Future<Response> getYeojung(groupId) async {
     throw Exception('내 여정(스플릿) 조회 실패');
   }
 }
+
 // 여정(스플릿) 퍼스트 콜
 Future<bool> putFirstCall(groupId) async {
   try {
@@ -55,6 +56,7 @@ Future<Response> getSecondCallMember(groupId) async {
     throw Exception('세컨드 콜 멤버 조회 실패');
   }
 }
+
 // 여정(스플릿) 최종정산 - 세컨드 콜이 리턴값이 0이상인 사람이 호출
 Future<dynamic> postFinalRequest(groupId) async {
   print('최종정산 post요청');
@@ -67,6 +69,7 @@ Future<dynamic> postFinalRequest(groupId) async {
     throw (err);
   }
 }
+
 //여정(스플릿) 결과
 Future<Response> getSplitResult(groupId) async {
   try {
@@ -78,6 +81,7 @@ Future<Response> getSplitResult(groupId) async {
     throw Exception('최종 결과 조회 실패');
   }
 }
+
 //그룹에서 회원 정산 상태 조회
 Future<Response> getPersonalGroupStatus(groupId) async {
   try {

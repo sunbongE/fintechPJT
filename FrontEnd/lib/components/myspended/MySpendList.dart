@@ -149,7 +149,7 @@ class _MySpendListState extends State<MySpendList> {
               ),
             ),
             firstPageErrorIndicatorBuilder: (context) => Center(
-              child: Text('다시 시도해 주세요'),
+              child: Text('결제내역이 없습니다\n다른 계좌를 선택하세요'),
             ),
             noItemsFoundIndicatorBuilder: (context) => Center(
               child: Text('결제내역이 없습니다'),

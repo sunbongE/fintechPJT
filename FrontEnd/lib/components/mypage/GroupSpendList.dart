@@ -112,41 +112,21 @@ class _GroupSpendListState extends State<GroupSpendList> {
                           ],
                         ),
                         item['transactionType'] == "1"
-                            ? Column(
-                                children: [
-                                  Text(
-                                    '${NumberFormat('#,###').format(int.parse(item['transactionBalance'].toString()))}원',
-                                    style: TextStyle(
-                                      fontSize: 20.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: TEXT_COLOR,
-                                    ),
-                                  ),
-                                  Text(
-                                    '${NumberFormat('#,###').format(int.parse(item['transactionAfterBalance'].toString()))}원',
-                                    style: TextStyle(
-                                      color: RECEIPT_TEXT_COLOR,
-                                    ),
-                                  ),
-                                ],
+                            ? Text(
+                                '${NumberFormat('#,###').format(int.parse(item['transactionBalance'].toString()))}원',
+                                style: TextStyle(
+                                  fontSize: 20.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: TEXT_COLOR,
+                                ),
                               )
-                            : Column(
-                                children: [
-                                  Text(
-                                    '-${NumberFormat('#,###').format(int.parse(item['transactionBalance'].toString()))}원',
-                                    style: TextStyle(
-                                      fontSize: 20.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: RECEIPT_TEXT_COLOR,
-                                    ),
-                                  ),
-                                  Text(
-                                    '${NumberFormat('#,###').format(int.parse(item['transactionAfterBalance'].toString()))}원',
-                                    style: TextStyle(
-                                      color: RECEIPT_TEXT_COLOR,
-                                    ),
-                                  ),
-                                ],
+                            : Text(
+                                '-${NumberFormat('#,###').format(int.parse(item['transactionBalance'].toString()))}원',
+                                style: TextStyle(
+                                  fontSize: 20.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: RECEIPT_TEXT_COLOR,
+                                ),
                               ),
                       ],
                     ),
