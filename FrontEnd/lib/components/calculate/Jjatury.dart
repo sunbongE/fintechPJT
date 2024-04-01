@@ -7,6 +7,8 @@ import 'package:front/models/button/SizedButton.dart';
 import 'package:front/screen/HomeScreen.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../repository/api/ApiSplit.dart';
+
 class Jjatury extends StatefulWidget {
   final int groupId;
   final int remainder;
@@ -17,6 +19,11 @@ class Jjatury extends StatefulWidget {
 }
 
 class _JjaturyState extends State<Jjatury> {
+  @override
+  void initState() {
+    super.initState();
+    postFinalRequest(widget.groupId);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
