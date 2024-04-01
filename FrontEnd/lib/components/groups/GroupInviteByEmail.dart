@@ -33,7 +33,7 @@ void groupInviteByEmail(BuildContext context, Group group, List<GroupMember> mem
                 groupId: group.groupId,
                 members: members,onInvite: (List<String> inviteMembers) async {
                 final data = {
-                  "inviteMembers": inviteMembers,
+                  "targetMembers": inviteMembers,
                   "groupId": group.groupId,
                   "notificationType": "INVITE",
                 };

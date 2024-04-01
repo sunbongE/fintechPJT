@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/groups/GroupCalCheck.dart';
 import 'package:front/components/groups/GroupJoinMember.dart';
-
-import 'package:front/components/groups/GroupNoCal.dart';
-import 'package:front/models/button/Button.dart';
 import 'package:front/models/button/SizedButton.dart';
 import 'package:front/repository/api/ApiGroup.dart';
 import 'package:front/screen/groupscreens/GroupDetail.dart';

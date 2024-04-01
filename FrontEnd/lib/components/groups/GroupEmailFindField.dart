@@ -133,8 +133,10 @@ class _GroupEmailFindFieldState extends State<GroupEmailFindField> {
         TextButton(
           child: Text('초대하기'),
           onPressed: () {
-            widget
-                .onInvite(inviteMember);
+            widget.onInvite(inviteMember);
+            print(23232323);
+            print(inviteMember);
+            print(23232323);
             Navigator.of(context).pop();
           },
         ),
