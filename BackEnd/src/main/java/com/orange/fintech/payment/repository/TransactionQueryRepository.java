@@ -377,4 +377,64 @@ public class TransactionQueryRepository {
 
         return res;
     }
+
+    /**
+     * @param transactionId
+     * @return transaction에 참여하는 member 수
+     */
+    public int countTransactionMember(int transactionId) {
+        return jpaQueryFactory
+                .select(transactionMember)
+                .from(transactionMember)
+                .where(
+                        transactionMember
+                                .transactionMemberPK
+                                .transaction
+                                .transactionId
+                                .eq(transactionId)
+                                .and(transactionMember.totalAmount.gt(0)))
+                .fetch()
+                .size();
+    }
+
+    /**
+     * @param transactionId 영수증 id
+     * @return 영수증의 모든 세부 항목에 참여하는 사람
+     */
+    public int countReceiptDetailMember(int transactionId) {
+        return jpaQueryFactory
+                .select(transactionMember)
+                .from(receiptDetail)
+                .join(receiptDetailMember)
+                .on(receiptDetail.eq(receiptDetailMember.receiptDetailMemberPK.receiptDetail))
+                .where(
+                        receiptDetail
+                                .receipt
+                                .transaction
+                                .transactionId
+                                .eq(transactionId)
+                                .and(receiptDetailMember.amountDue.gt(0)))
+                .fetch()
+                .size();
+    }
+
+    public int countReceiptDetail(int transactionId) {
+        return jpaQueryFactory
+                .select(receiptDetail)
+                .from(receiptDetail)
+                .where(receiptDetail.receipt.transaction.transactionId.eq(transactionId))
+                .fetch()
+                .size();
+    }
+
+    public int countIsLockTransactionMember(int transactionId) {
+        return jpaQueryFactory
+                .select(transactionMember)
+                .from(transactionMember)
+                .join(transaction)
+                .on(transaction.eq(transactionMember.transactionMemberPK.transaction))
+                .where(transaction.transactionId.eq(transactionId).and(transactionMember.isLock))
+                .fetch()
+                .size();
+    }
 }

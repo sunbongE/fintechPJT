@@ -465,4 +465,51 @@ public class PaymentController {
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }
     }
+
+    @GetMapping("/{paymentId}/receipt/is-edit")
+    @Operation(summary = "영수증 세부 인원을 수정했는지 여부", description = "영수증 세부 인원이 수정된 상태인지 아닌지를 반환한다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "403", description = "권한 없음"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<Boolean> getIsEditedTransaction(
+            @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
+            @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
+            Principal principal) {
+
+        try {
+            boolean res = paymentService.getIsEditedReceiptDetailMember(paymentId);
+            return ResponseEntity.status(200).body(res);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("[ERROR]: {}", e.getMessage());
+        }
+
+        return ResponseEntity.status(400).body(null);
+    }
+
+    @GetMapping("/{paymentId}/receipt/is-lock")
+    @Operation(summary = "lock 확인", description = "금액이 lock 되어있는지 확인하는 api")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "403", description = "권한 없음"),
+        @ApiResponse(responseCode = "404", description = "잘못된 정보 요청"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<Boolean> getTransactionIsLock(
+            @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
+            @PathVariable @Parameter(description = "거래 아이디", in = ParameterIn.PATH) int paymentId,
+            Principal principal) {
+
+        try {
+            boolean res = paymentService.getTransactionIsLock(paymentId);
+            return ResponseEntity.status(200).body(res);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("[ERROR]: {}", e.getMessage());
+        }
+
+        return ResponseEntity.status(400).body(null);
+    }
 }

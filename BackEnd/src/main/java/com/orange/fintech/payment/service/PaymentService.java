@@ -45,4 +45,8 @@ public interface PaymentService {
 
     void addMultipleReceipt(String kakaoId, List<ReceiptRequestDto> receiptRequestDtoList)
             throws RelatedTransactionNotFoundException;
+
+    boolean getIsEditedReceiptDetailMember(int paymentId);
+
+    boolean getTransactionIsLock(int paymentId);
 }

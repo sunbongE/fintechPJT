@@ -635,4 +635,32 @@ public class PaymentServiceImpl implements PaymentService {
             }
         }
     }
+
+    /**
+     * 영수증 항목이 수정되었는지 확인하는 함수
+     *
+     * @param paymentId
+     * @return true: 수정됨 false: 수정 안됨
+     */
+    @Override
+    public boolean getIsEditedReceiptDetailMember(int paymentId) {
+        int receiptDetailMember = transactionQueryRepository.countReceiptDetailMember(paymentId);
+        int transactionDetailMember = transactionQueryRepository.countTransactionMember(paymentId);
+        int receiptItem = transactionQueryRepository.countReceiptDetail(paymentId);
+        // receiptDetailMember = transactionMember * 영수증 항목 수
+        if (receiptItem * transactionDetailMember == receiptDetailMember) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean getTransactionIsLock(int paymentId) {
+        if (transactionQueryRepository.countIsLockTransactionMember(paymentId) > 0) {
+            return true;
+        }
+
+        return false;
+    }
 }
