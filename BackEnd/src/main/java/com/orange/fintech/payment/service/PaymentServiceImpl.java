@@ -489,6 +489,22 @@ public class PaymentServiceImpl implements PaymentService {
         log.info("remainder: {} - {}", transaction.getTransactionBalance(), payAmount);
 
         transactionDetailRepository.save(transactionDetail);
+
+        // receiptDetailMember 수정하면 transactionMember totalAmount 를 다시 계산해야함
+
+        int receiptId = receipt.getReceiptId();
+        for (ReceiptDetailMemberPutDto receiptDetailMember : req) {
+            String memberId = receiptDetailMember.getMemberId();
+
+            TransactionMemberPK pk = new TransactionMemberPK();
+            pk.setTransaction(transaction);
+            pk.setMember(memberRepository.findByKakaoId(memberId));
+
+            TransactionMember tm = transactionMemberRepository.findById(pk).get();
+            tm.setTotalAmount(calculateTransactionMember(memberId, receiptId));
+
+            transactionMemberRepository.save(tm);
+        }
     }
 
     public long calculateTransactionMember(String memberId, int receiptId) {
