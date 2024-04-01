@@ -403,7 +403,7 @@ public class TransactionQueryRepository {
      */
     public int countReceiptDetailMember(int transactionId) {
         return jpaQueryFactory
-                .select(transactionMember)
+                .select(receiptDetailMember)
                 .from(receiptDetail)
                 .join(receiptDetailMember)
                 .on(receiptDetail.eq(receiptDetailMember.receiptDetailMemberPK.receiptDetail))
