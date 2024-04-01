@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:front/components/groups/GroupCalCheck.dart';
 import 'package:front/components/groups/GroupJoinMember.dart';
 import 'package:front/components/groups/GroupYesCal.dart';
 import 'package:front/components/groups/GroupNoCal.dart';
@@ -26,22 +27,27 @@ class _GroupItemState extends State<GroupItem> {
   // 정산하기 버튼을 눌렀을 때의 동작을 처리하는 함수
   void handleSettleButtonPressed() async {
     bool firstCallResult = await putFirstCall(widget.groupId);
-      String status = await fetchGroupMemberStatus(widget.groupId);
-      setState(() {
-        _isPollingActive =true;
-      });
-      while (_isPollingActive) {
-        await Future.delayed(Duration(seconds: 15));
-        status = await fetchGroupMemberStatus(widget.groupId);
-        print('--------------------현재 상태');
-        if(status == "SPLIT"){
-          break;}
+    String status = await fetchGroupMemberStatus(widget.groupId);
+    setState(() {
+      _isPollingActive = true;
+    });
+    while (_isPollingActive) {
+      await Future.delayed(Duration(seconds: 15));
+      status = await fetchGroupMemberStatus(widget.groupId);
+      print('--------------------현재 상태');
+      if (status == "SPLIT") {
+        break;
       }
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SplitMain(groupId: widget.groupId,)),
-      );
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => SplitMain(
+                groupId: widget.groupId,
+              )),
+    );
   }
+
   @override
   void dispose() {
     _isPollingActive = false;
@@ -97,8 +103,6 @@ class _GroupItemState extends State<GroupItem> {
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-
-
                     children: [
                       Container(
                         constraints: BoxConstraints(minHeight: 150.h),
@@ -117,13 +121,7 @@ class _GroupItemState extends State<GroupItem> {
                       ),
                       // 정산요청 내역이 있으면
                       // 정산 요청 내역
-                      GroupYesCal(
-                        groupId: group.groupId ?? 0,
-                      ),
-                      // 내가 포함된 내역 필터링 버튼
-                      // 정산 요청 추가하기 버튼
-                      //정산 요청 내역이 없으면
-                      GroupNoCal(
+                      GroupCalCheck(
                         groupId: group.groupId ?? 0,
                       ),
                     ],
