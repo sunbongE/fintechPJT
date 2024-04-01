@@ -45,7 +45,9 @@ class _GroupInvitedItemState extends State<GroupInvitedItem> {
     print('멤버받아옴');
     if (groupMembersJson != null) {
       setState(() {
-        members = (groupMembersJson.data['groupMembersDtos'] as List).map((item) => GroupMember.fromJson(item)).toList();
+        members = (groupMembersJson.data['groupMembersDtos'] as List)
+            .map((item) => GroupMember.fromJson(item))
+            .toList();
         isLoading = false;
         print('멤버리스트로받아옴');
       });
@@ -101,39 +103,47 @@ class _GroupInvitedItemState extends State<GroupInvitedItem> {
                     children: [
                       GroupJoinMemberCarousel(members: members),
                       Container(
-                        width: 200.w,
                         height: 190.h,
-                        child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Text(
-                                group.groupName,
-                                style: TextStyle(
-                                  fontSize: 35.sp,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    group.groupName,
+                                    style: TextStyle(
+                                      fontSize: 30.sp,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  Text(
+                                    '의',
+                                    style: TextStyle(
+                                      fontSize: 20.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              SizedBox(width: 10.w),
+                              SizedBox(height: 10.h),
                               Text(
-                                '의 여정에',
+                                '여정에',
                                 style: TextStyle(
                                   fontSize: 20.sp,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ],
-                          ),
-                          SizedBox(height: 20.h),
-                          Text(
-                            '입장하시겠습니까?',
-                            style: TextStyle(
-                              fontSize: 20.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ]),
+                              SizedBox(height: 5.h),
+                              Text(
+                                '입장하시겠습니까?',
+                                style: TextStyle(
+                                  fontSize: 20.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ]),
                       ),
                       SizedBox(height: 20.h),
                       Container(
@@ -146,7 +156,8 @@ class _GroupInvitedItemState extends State<GroupInvitedItem> {
                               size: ButtonSize.m,
                               btnText: '거절하기',
                               onPressed: () {
-                                buttonSlideAnimationPushAndRemoveUntil(context, 0);
+                                buttonSlideAnimationPushAndRemoveUntil(
+                                    context, 0);
                               },
                               enable: !_isPollingActive,
                             ),
@@ -155,7 +166,8 @@ class _GroupInvitedItemState extends State<GroupInvitedItem> {
                               btnText: '수락하기',
                               onPressed: () {
                                 inviteMemberToGroup(widget.groupId);
-                                buttonSlideAnimationPushAndRemoveUntil(context, 1);
+                                buttonSlideAnimationPushAndRemoveUntil(
+                                    context, 1);
                               },
                               enable: !_isPollingActive,
                             ),
