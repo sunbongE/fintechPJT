@@ -9,11 +9,12 @@ import 'NumberFormatInputFormatter.dart';
 class AmountInputField extends StatefulWidget {
   final TextEditingController controller;
   final Function(String) onSubmitted;
+  final Function(String) onChanged;
 
   const AmountInputField({
     Key? key,
     required this.controller,
-    required this.onSubmitted,
+    required this.onSubmitted, required this.onChanged,
   }) : super(key: key);
 
   @override
@@ -41,6 +42,7 @@ class _AmountInputFieldState extends State<AmountInputField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      onChanged: widget.onChanged,
       controller: widget.controller,
       keyboardType: TextInputType.number,
       inputFormatters: [

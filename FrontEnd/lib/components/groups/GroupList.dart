@@ -70,7 +70,10 @@ class _GroupListState extends State<GroupList> {
         );
         break;
       default:
-        // 예외 처리
+        modifiedGroup = await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => GroupItem(groupId: group.groupId!)),
+        );
         break;
     }
 

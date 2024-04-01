@@ -93,3 +93,19 @@ Future<Response> getPersonalGroupStatus(groupId) async {
     throw Exception('회원 상태 조회 실패');
   }
 }
+
+//여정(스플릿)에서 내 여정(스플릿) 상세조회
+Future<Response> getYeojungDetail(groupId, type, otherMemberId) async {
+  try {
+    print(groupId);
+    print(type);
+    print(otherMemberId);
+    final res = await api.get('/groups/$groupId/payments/yeojung/detail',
+        queryParameters: {'type': type, 'otherMemberId': otherMemberId});
+    print(res);
+    return res;
+  } catch (err) {
+    print(err);
+    throw Exception('내 여정(스플릿) 상세조회 실패');
+  }
+}

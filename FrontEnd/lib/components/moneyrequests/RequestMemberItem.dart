@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 import '../../const/colors/Colors.dart';
 import '../../entities/RequestMember.dart';
+import '../../providers/store.dart';
 
 class RequestMemberItem extends StatefulWidget {
   final RequestMember member;
@@ -11,6 +13,7 @@ class RequestMemberItem extends StatefulWidget {
   final Function(bool) onSettledChanged;
   final Function(int) callbackAmount;
   final Function(bool) onLockedChanged;
+  final bool isSplit;
 
   const RequestMemberItem({
     Key? key,
@@ -20,6 +23,7 @@ class RequestMemberItem extends StatefulWidget {
     required this.callbackAmount,
     required this.onLockedChanged,
     required this.amount,
+    this.isSplit = false,
   }) : super(key: key);
 
   @override
@@ -29,12 +33,26 @@ class RequestMemberItem extends StatefulWidget {
 class _RequestMemberItemState extends State<RequestMemberItem> {
   late bool isSettledState;
   late int amount = 0;
+  final UserManager _userManager = UserManager();
+  String? userInfo;
 
+  Future<void> _loadUserInfo() async {
+    await _userManager.loadUserInfo();
+    String token = _userManager.jwtToken !;
+    String formattedToken = token.startsWith('Bearer ') ? token.substring(7) : token;
+    Map<String, dynamic> payload = Jwt.parseJwt(formattedToken);
+    String? kakaoId = payload['kakaoId'];
+    setState(() {
+      userInfo = kakaoId;
+      print(kakaoId);
+    });
+  }
   @override
   void initState() {
     super.initState();
     isSettledState = widget.isSettledState;
     amount = widget.amount;
+    _loadUserInfo();
   }
 
   void toggleSettled(bool value) {
@@ -59,6 +77,12 @@ class _RequestMemberItemState extends State<RequestMemberItem> {
     if (oldWidget.amount != widget.amount) {
       setState(() {
         amount = widget.amount;
+        if (isSettledState == false && widget.amount > 0) {
+          isSettledState = true;
+        }
+        if (isSettledState == true && widget.amount == 0) {
+          isSettledState = false;
+        }
       });
     }
   }
@@ -87,7 +111,7 @@ class _RequestMemberItemState extends State<RequestMemberItem> {
           fontSize: 18.sp,
         ),
       ),
-      trailing: Switch(
+      trailing: !widget.isSplit || userInfo == widget.member.memberId ?Switch(
         value: isSettledState,
         activeColor: BUTTON_COLOR,
         inactiveTrackColor: Colors.black54,
@@ -95,7 +119,8 @@ class _RequestMemberItemState extends State<RequestMemberItem> {
         onChanged: (bool value) {
           toggleSettled(value);
         },
-      ),
+      )
+      : SizedBox(),
     );
   }
 }

@@ -7,7 +7,6 @@ import 'package:lottie/lottie.dart';
 
 import '../../components/addreceipt/AddReceipt.dart';
 import '../../components/moneyrequests/MoneyRequestDetailBottom.dart';
-import 'ReceiptView.dart';
 import '../../const/colors/Colors.dart';
 import '../../entities/RequestDetailModifyRequest.dart';
 import '../../entities/RequestMember.dart';
@@ -17,22 +16,26 @@ import '../../models/button/Toggle.dart';
 import '../../components/moneyrequests/RequestMemberList.dart';
 import '../../entities/RequestDetail.dart';
 import '../../repository/api/ApiMoneyRequest.dart';
+import '../../screen/MoneyRequests/ReceiptView.dart';
 import '../../utils/RequestModifyUtil.dart';
 
-class MoneyRequestDetail extends StatefulWidget {
+class SplitRequestDetail extends StatefulWidget {
   final Function onSuccess;
   final Expense expense;
   final int groupId;
 
-  const MoneyRequestDetail(
-      {Key? key, required this.expense, required this.onSuccess, required this.groupId})
+  const SplitRequestDetail(
+      {Key? key,
+      required this.expense,
+      required this.onSuccess,
+      required this.groupId})
       : super(key: key);
 
   @override
-  _MoneyRequestDetailState createState() => _MoneyRequestDetailState();
+  _SplitRequestDetailState createState() => _SplitRequestDetailState();
 }
 
-class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
+class _SplitRequestDetailState extends State<SplitRequestDetail> {
   late bool isSettledStates;
   late List<int> amounts;
   int remainderAmount = 0;
@@ -47,12 +50,15 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
     fetchMyGroupPaymentsDetail();
     checkIfEditable();
   }
+
   void checkIfEditable() async {
-    bool canEdit = await getMoneyRequestIsEdit(widget.groupId, widget.expense.transactionId);
+    bool canEdit = await getMoneyRequestIsEdit(
+        widget.groupId, widget.expense.transactionId);
     setState(() {
       isEditable = !canEdit;
     });
   }
+
   void fetchMyGroupPaymentsDetail() async {
     final MyGroupPaymentsDetailJson = await getMyGroupPaymentsDetail(
         widget.groupId, widget.expense.transactionId);
@@ -71,8 +77,6 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
     }
   }
 
-
-
   void updateIsSettledStates(bool newStates) {
     setState(() {
       isSettledStates = newStates;
@@ -86,18 +90,6 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
       appBar: AppBar(
         title: Text(widget.expense.transactionSummary),
         scrolledUnderElevation: 0,
-        actions: [
-          if (isEditable)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: SizedButton(
-                btnText: '수정',
-                size: ButtonSize.xs,
-                borderRadius: 10,
-                onPressed: () => navigateToMoneyRequestModify(),
-              ),
-            ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -106,7 +98,9 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
           children: <Widget>[
             MoneyRequestItem(
               expense: widget.expense,
-              isToggle: false, groupId: widget.groupId, clickable: false,
+              isToggle: false,
+              groupId: widget.groupId,
+              clickable: false,
             ),
             if (request.members.isNotEmpty) ...[
               SizedBox(
@@ -118,28 +112,26 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
                 ),
               ),
               Padding(padding: EdgeInsets.symmetric(vertical: 5.w)),
-              SizedButton(
-                btnText: widget.expense.receiptEnrolled ? '영수증 보기' : '영수증 등록',
-                size: ButtonSize.l,
+              widget.expense.receiptEnrolled? SizedButton(
+                  btnText: '상세항목 보기',
+                  size: ButtonSize.l,
                   onPressed: () async {
-                    if (widget.expense.receiptEnrolled) {
                       final result = await Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ReceiptView(expense: widget.expense, groupId: widget.groupId, expenseDetail: request)),
+                        MaterialPageRoute(
+                            builder: (context) => ReceiptView(
+                                expense: widget.expense,
+                                groupId: widget.groupId,
+                                expenseDetail: request,
+                                isSplit: true)),
                       );
                       if (result == true) {
                         fetchMyGroupPaymentsDetail();
                       }
-                    } else {
-                      final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AddReceipt(groupId: widget.groupId)),
-                      );
-                      if (result == true) {
-                        fetchMyGroupPaymentsDetail();
-                      }
-                    }
-                  }
+
+                  }):SizedBox(),
+              SizedBox(
+                height: 30.h,
               ),
               Expanded(
                 child: SizedBox(
@@ -149,11 +141,13 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
                     requestDetail: request,
                     amountList: amounts,
                     allSettledCallback: updateIsSettledStates,
-                    callbackAmountList: (List<int> value) { //amounts = value;
+                    callbackAmountList: (List<int> value) {
+                      //amounts = value;
                       setState(() {
                         amounts = value;
                         amounts = reCalculateAmount(
-                            widget.expense.transactionBalance, amounts,
+                            widget.expense.transactionBalance,
+                            amounts,
                             isLockedList);
                         remainderAmount = reCalculateRemainder(
                             widget.expense.transactionBalance, amounts);
@@ -163,6 +157,7 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
                     isLockList: (List<bool> value) {
                       isLockedList = value;
                     },
+                    isSplit: true,
                   ),
                 ),
               ),
@@ -170,14 +165,13 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
               MoneyRequestDetailBottom(
                 amount: remainderAmount,
               ),
-            ] else
-              ...[
-                Expanded(
-                  child: Center(
-                    child: Lottie.asset('assets/lotties/orangewalking.json'),
-                  ),
+            ] else ...[
+              Expanded(
+                child: Center(
+                  child: Lottie.asset('assets/lotties/orangewalking.json'),
                 ),
-              ],
+              ),
+            ],
             Padding(padding: EdgeInsets.symmetric(vertical: 10.w)),
           ],
         ),
@@ -186,8 +180,8 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
   }
 
   void sendPutRequest() {
-    List<RequestMember> newMembers = List<RequestMember>.generate(
-        request.members.length, (index) {
+    List<RequestMember> newMembers =
+        List<RequestMember>.generate(request.members.length, (index) {
       return RequestMember(
         memberId: request.members[index].memberId,
         profileUrl: request.members[index].profileUrl,
@@ -199,15 +193,19 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
     RequestDetailModifyRequest newRequestDetail = RequestDetailModifyRequest(
         memo: widget.expense.memo ?? '', memberList: newMembers);
 
-    putPaymentsMembers(widget.groupId,widget.expense.transactionId,newRequestDetail.toJson());
+    putPaymentsMembers(widget.groupId, widget.expense.transactionId,
+        newRequestDetail.toJson());
   }
 
   Future<void> navigateToMoneyRequestModify() async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => MoneyRequestModify(
-        expense: widget.expense, groupId: widget.groupId,
-      ),),
+      MaterialPageRoute(
+        builder: (context) => MoneyRequestModify(
+          expense: widget.expense,
+          groupId: widget.groupId,
+        ),
+      ),
     );
 
     if (result == true) {

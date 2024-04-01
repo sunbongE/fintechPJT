@@ -12,12 +12,14 @@ class ReceiptView extends StatefulWidget {
   final Expense expense;
   final int groupId;
   final RequestDetail expenseDetail;
+  final bool isSplit;
 
   ReceiptView(
       {Key? key,
       required this.expense,
       required this.groupId,
-      required this.expenseDetail})
+      required this.expenseDetail,
+      this.isSplit = false})
       : super(key: key);
 
   @override
@@ -38,14 +40,13 @@ class _ReceiptViewState extends State<ReceiptView> {
   }
 
   void fetchReceiptData() async {
-      final response = await getReceipt(widget.groupId,
-          widget.expense.transactionId, widget.expenseDetail.receiptId);
-      print(response.data);
-      setState(() {
-        newRequest = RequestReceipt.fromJson(response.data);
-        isLoaded = true;
-      });
-
+    final response = await getReceipt(widget.groupId,
+        widget.expense.transactionId, widget.expenseDetail.receiptId);
+    print(response.data);
+    setState(() {
+      newRequest = RequestReceipt.fromJson(response.data);
+      isLoaded = true;
+    });
   }
 
   @override
@@ -59,6 +60,12 @@ class _ReceiptViewState extends State<ReceiptView> {
       appBar: AppBar(
         scrolledUnderElevation: 0,
         title: Text('영수증 보기'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context, true);
+          },
+        ),
       ),
       body: Column(
         children: [
@@ -106,7 +113,10 @@ class _ReceiptViewState extends State<ReceiptView> {
                         itemCount: newRequest?.detailList.length,
                         itemBuilder: (context, index) {
                           return ReceiptItem(
-                            requestReceiptSub: newRequest!.detailList[index], groupId: widget.groupId, paymentId: widget.expense.transactionId,);
+                              requestReceiptSub: newRequest!.detailList[index],
+                              groupId: widget.groupId,
+                              paymentId: widget.expense.transactionId,
+                              isSplit: widget.isSplit);
                         },
                       ),
                   ],

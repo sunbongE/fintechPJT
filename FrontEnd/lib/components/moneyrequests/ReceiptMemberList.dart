@@ -17,6 +17,7 @@ class ReceiptMemberList extends StatefulWidget {
   final int paymentId;
   final RequestReceiptDetail requestReceiptDetail;
   final Function(bool) modalCallback;
+  final bool isSplit;
 
   const ReceiptMemberList({
     Key? key,
@@ -24,6 +25,7 @@ class ReceiptMemberList extends StatefulWidget {
     required this.paymentId,
     required this.requestReceiptDetail,
     required this.modalCallback,
+    this.isSplit = false,
   }) : super(key: key);
 
   @override
@@ -52,19 +54,25 @@ class _ReceiptMemberListState extends State<ReceiptMemberList> {
 
     isLoaded = true;
   }
+
   void toggleAll(bool value) {
     setState(() {
       isSettledStates = List<bool>.filled(isSettledStates.length, value);
-      if(value == true){
-        amountList =(List<int>.filled(amountList.length, (widget.requestReceiptDetail.unitPrice*widget.requestReceiptDetail.count/amountList.length).toInt()));
-      }
-      else {
-        amountList =(List<int>.filled(amountList.length, 0));
+      if (value == true) {
+        amountList = (List<int>.filled(
+            amountList.length,
+            (widget.requestReceiptDetail.unitPrice *
+                    widget.requestReceiptDetail.count /
+                    amountList.length)
+                .toInt()));
+      } else {
+        amountList = (List<int>.filled(amountList.length, 0));
       }
       updateAllSettled();
       sendPutRequest();
     });
   }
+
   void updateAllSettled() {
     settledMembersCount = isSettledStates.where((element) => element).length;
     allSettled = isSettledStates.any((element) => element);
@@ -89,6 +97,7 @@ class _ReceiptMemberListState extends State<ReceiptMemberList> {
                     Text(' | '),
                     Text('$settledMembersCount명'),
                     Spacer(),
+                    !widget.isSplit ?
                     SizedButton(
                       btnText: allSettled ? '전체 해제' : '전체 선택',
                       size: ButtonSize.s,
@@ -96,7 +105,7 @@ class _ReceiptMemberListState extends State<ReceiptMemberList> {
                       onPressed: () {
                         toggleAll(!allSettled);
                       },
-                    ),
+                    ):SizedBox(),
                   ],
                 ),
               ),
@@ -123,11 +132,14 @@ class _ReceiptMemberListState extends State<ReceiptMemberList> {
                             amountCallback: (int value) {
                               amountList[index] = value;
                               amountList = reCalculateAmount(
-                                  widget.requestReceiptDetail.count*widget.requestReceiptDetail.unitPrice, amountList,
+                                  widget.requestReceiptDetail.count *
+                                      widget.requestReceiptDetail.unitPrice,
+                                  amountList,
                                   List<bool>.filled(amountList.length, false));
                               updateAllSettled();
                               sendPutRequest();
                             },
+                            isSplit: widget.isSplit,
                           );
                         },
                       )
@@ -135,12 +147,16 @@ class _ReceiptMemberListState extends State<ReceiptMemberList> {
                         child: Text('멤버가 없습니다.'),
                       ),
               ),
-              MoneyRequestDetailBottom(amount: reCalculateRemainder(
-                  widget.requestReceiptDetail.count*widget.requestReceiptDetail.unitPrice, amountList))
+              MoneyRequestDetailBottom(
+                  amount: reCalculateRemainder(
+                      widget.requestReceiptDetail.count *
+                          widget.requestReceiptDetail.unitPrice,
+                      amountList))
             ],
           )
         : CircularProgressIndicator();
   }
+
   void sendPutRequest() {
     print('상세정산 수정 api 요청 가욧');
     List<Map<String, dynamic>> data = List.generate(amountList.length, (index) {
@@ -150,6 +166,7 @@ class _ReceiptMemberListState extends State<ReceiptMemberList> {
       };
     });
 
-    putPaymentsReceiptDatil(widget.groupId,widget.paymentId,widget.requestReceiptDetail.receiptId,jsonEncode(data));
+    putPaymentsReceiptDatil(widget.groupId, widget.paymentId,
+        widget.requestReceiptDetail.receiptId, jsonEncode(data));
   }
 }

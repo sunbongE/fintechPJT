@@ -33,6 +33,11 @@ List<int> reCalculateAmount(
     for (int i = 0; i < changeIndexList.length; i++) {
       newList[changeIndexList[i]] = newAmount;
     }
+    //자동 계산에 음수가 되지 않게 설정
+    bool newListHasNegative = newList.any((element) => element < 0);
+    if (newListHasNegative) {
+      return List<int>.filled(newList.length, 0);
+    }
   }
   //print(newList);
   return newList;
