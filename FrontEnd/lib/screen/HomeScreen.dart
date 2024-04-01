@@ -1,13 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:front/components/groups/GroupInvitedItem.dart';
 import 'package:front/screen/GroupMain.dart';
 import 'package:front/screen/MainPage.dart';
 import 'package:front/screen/MyPage.dart';
 import 'package:front/screen/MySpended.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'groupscreens/GroupItem.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,28 +21,118 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   int _index = 0;
   DateTime? lastPressed;
 
   @override
   void initState() {
     super.initState();
+    var initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
+    flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: (NotificationResponse details) async {
+      if (details.payload != null) {
+        final data = jsonDecode(details.payload!);
+        if (details.notificationResponseType == NotificationResponseType.selectedNotification) {
+          _navigateToSpecificPageWhenAppIsForeground(data);
+        }
+      }
+    });
     _index = widget.initialIndex;
-    _checkForGroupAndNavigate();
+    _listenToForegroundMessages();
+    _checkInitialMessage();
+    _listenToNotificationOpenedApp();
   }
 
-  Future<void> _checkForGroupAndNavigate() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? groupId = prefs.getInt('groupId');
-    String? type = prefs.getString('type');
-    if (groupId != null && type != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => GroupInvitedItem(groupId: groupId)),
-      );
-      await prefs.remove('groupId');
-      await prefs.remove('type');
+  // 백그라운드 상태에서 온 알림메세지 확인
+  void _checkInitialMessage() async {
+    RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+
+    if (initialMessage != null) {
+      _navigateToSpecificPage(initialMessage.data);
     }
+  }
+
+  // 앱이 백그라운드에서 포그라운드로 전환될 때 처리
+  void _listenToNotificationOpenedApp() {
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _navigateToSpecificPage(message.data);
+    });
+  }
+
+  // 앱이 포그라운드 상태일 때 알림 탭 처리
+  void _navigateToSpecificPageWhenAppIsForeground(Map<String, dynamic> data) {
+    final type = data['type'];
+    if (data['groupId'] is String) {
+      final groupId = int.parse(data['groupId']);
+      switch (type) {
+        case 'INVITE':
+        case 'SPLIT':
+        case 'TRANSFER':
+        case 'NO_MONEY':
+        case 'SPLIT_MODIFY':
+        case 'URGE':
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => GroupInvitedItem(groupId: groupId)),
+          );
+          break;
+      }
+    }
+  }
+
+  // 확인하고 바로 navigate
+  void _navigateToSpecificPage(Map<String, dynamic> data) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final type = data['type'];
+      if (data['groupId'] is String) {
+        final groupId = int.parse(data['groupId']);
+        switch (type) {
+          case 'INVITE':
+          case 'SPLIT':
+          case 'TRANSFER':
+          case 'NO_MONEY':
+          case 'SPLIT_MODIFY':
+          case 'URGE':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => GroupInvitedItem(groupId: groupId)),
+            );
+            break;
+        }
+      }
+    });
+  }
+
+  // 포그라운드 상태에서 온 알림메세지
+  void _listenToForegroundMessages() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print("포그라운드에서 메시지 수신: 데이터: ${message.data}");
+      _showNotificationWithDefaultSound(message);
+    });
+  }
+
+  // 알림창 보여줌
+  Future<void> _showNotificationWithDefaultSound(RemoteMessage message) async {
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'high_importance_channel',
+      'high_importance_notification',
+      importance: Importance.max,
+    );
+
+    var platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      message.notification?.title,
+      message.notification?.body,
+      platformChannelSpecifics,
+      payload: jsonEncode(message.data),
+    );
   }
 
   List<Widget> _pages = [
