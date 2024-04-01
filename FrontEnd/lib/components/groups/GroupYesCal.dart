@@ -22,59 +22,66 @@ class GroupYesCal extends StatelessWidget {
       children: [
         Container(
           constraints: BoxConstraints(maxWidth: 350.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
-              Text(
-                '정산 요청 내역',
-                style: TextStyle(
-                  fontSize: min(15.sp, 15.sp),
-                  fontWeight: FontWeight.w700,
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '정산 요청 내역',
+                  style: TextStyle(
+                    fontSize: min(26.sp, 26.sp),
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      // 내가 포함된 정산 버튼 클릭 시 동작할 코드
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: BUTTON_COLOR,
-                      minimumSize: Size(40.w, 30.h),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                  Flexible(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // 내가 포함된 정산 버튼 클릭 시 동작할 코드
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: BUTTON_COLOR,
+                        minimumSize: Size(40.w, 30.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      '내가 포함된 정산',
-                      style: TextStyle(
-                        fontSize: min(15.sp, 15.sp),
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                      child: Text(
+                        '내가 포함된 정산',
+                        style: TextStyle(
+                          fontSize: min(15.sp, 15.sp),
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                  SizedBox(width: 5.w),
-                  ElevatedButton(
-                    onPressed: () => buttonSlideAnimation(
-                        context,
-                        MoneyRequest(
-                          groupId: groupId,
-                        )),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: BUTTON_COLOR,
-                      minimumSize: Size(20.w, 30.h),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                  SizedBox(width: 10.w,),
+                  Flexible(
+                    child: ElevatedButton(
+                      onPressed: () => buttonSlideAnimation(
+                          context,
+                          MoneyRequest(
+                            groupId: groupId,
+                          )),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: BUTTON_COLOR,
+                        minimumSize: Size(40.w, 30.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      '+',
-                      style: TextStyle(
-                        fontSize: min(15.sp, 15.sp),
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                      child: Text(
+                        '정산 추가',
+                        style: TextStyle(
+                          fontSize: min(15.sp, 15.sp),
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),

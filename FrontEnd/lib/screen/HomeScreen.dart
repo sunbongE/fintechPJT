@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:front/components/groups/GroupInvitedItem.dart';
 import 'package:front/screen/GroupMain.dart';
 import 'package:front/screen/MainPage.dart';
 import 'package:front/screen/MyPage.dart';
@@ -36,7 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
     if (groupId != null && type != null) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => GroupItem(groupId: groupId)),
+        MaterialPageRoute(builder: (context) => GroupInvitedItem(groupId: groupId)),
+        // MaterialPageRoute(builder: (context) => GroupInvitedItem(groupId: groupId)),
       );
       await prefs.remove('groupId');
       await prefs.remove('type');

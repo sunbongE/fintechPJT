@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:front/components/groups/GroupInvitedItem.dart';
 import 'package:front/components/split/SplitDoing.dart';
 import 'package:front/screen/SplitMain.dart';
 import 'package:front/screen/groupscreens/GroupAdd.dart'; // Group 클래스를 import
