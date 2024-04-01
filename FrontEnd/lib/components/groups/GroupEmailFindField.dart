@@ -30,6 +30,16 @@ class _GroupEmailFindFieldState extends State<GroupEmailFindField> {
   List<String> inviteMember = [];
   List<Map<String, dynamic>> userInfoList = [];
 
+  void _removeMemberFromInviteList(String kakaoId) {
+    setState(() {
+      int index = inviteMember.indexOf(kakaoId);
+      if (index != -1) {
+        inviteMember.removeAt(index);
+        userInfoList.removeAt(index);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -64,6 +74,7 @@ class _GroupEmailFindFieldState extends State<GroupEmailFindField> {
                               userInfoList.add({
                                 'name': _searchResult!.name,
                                 'thumbnailImage': _searchResult!.thumbnailImage,
+                                'kakaoId': _searchResult!.kakaoId,
                               });
                               inviteMember.add(_searchResult!.kakaoId!);
                             } else {
@@ -100,6 +111,7 @@ class _GroupEmailFindFieldState extends State<GroupEmailFindField> {
                   }
                 },
               ),
+
             ),
             validator: (value) {
               if (value == null ||
@@ -117,18 +129,26 @@ class _GroupEmailFindFieldState extends State<GroupEmailFindField> {
             width: 210.w,
             height: 110.h,
             child: ListView.builder(
-              shrinkWrap: true, // ListView가 자신의 내용에 맞게 크기를 조정하도록 설정
+              shrinkWrap: true,
               scrollDirection: Axis.horizontal,
-              itemCount: userInfoList.length, // 수정: userInfoList의 길이 사용
+              itemCount: userInfoList.length,
               itemBuilder: (context, index) {
-                return Container(
-                  height: MediaQuery.of(context).size.height * 0.3,
-                  width: MediaQuery.of(context).size.width * 0.15,
-                  margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                  // 좌우 마진 설정
-                  child: GroupEmailFindInviteMemberCard(
-                      member: userInfoList[index]),
-                  // 예시: memberInfo를 사용하여 사용자 정보를 표시하는 위젯을 여기에 구성
+                return GestureDetector(
+                  onTap: () {
+                    final String? kakaoId = userInfoList[index]['kakaoId'];
+                    if (kakaoId != null) {
+                      _removeMemberFromInviteList(kakaoId);
+                    }
+                    print(userInfoList[index]);
+                  },
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    width: MediaQuery.of(context).size.width * 0.15,
+                    margin:
+                        EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                    child: GroupEmailFindInviteMemberCard(
+                        member: userInfoList[index]),
+                  ),
                 );
               },
             ),
@@ -140,9 +160,6 @@ class _GroupEmailFindFieldState extends State<GroupEmailFindField> {
           ),
           onPressed: () {
             widget.onInvite(inviteMember);
-            print(23232323);
-            print(inviteMember);
-            print(23232323);
             Navigator.of(context).pop();
           },
           style: TextButton.styleFrom(
