@@ -4,15 +4,49 @@ import 'package:front/components/groups/GroupJoinMember.dart';
 import 'package:front/components/groups/GroupYesCal.dart';
 import 'package:front/components/groups/GroupNoCal.dart';
 import 'package:front/models/button/Button.dart';
+import 'package:front/models/button/SizedButton.dart';
 import 'package:front/repository/api/ApiGroup.dart';
 import 'package:front/screen/groupscreens/GroupDetail.dart';
 import '../../entities/Group.dart';
+import '../../repository/api/ApiSplit.dart';
+import '../SplitMain.dart';
 
-class GroupItem extends StatelessWidget {
+class GroupItem extends StatefulWidget {
   final int groupId;
 
   GroupItem({required this.groupId});
 
+  @override
+  _GroupItemState createState() => _GroupItemState();
+}
+
+class _GroupItemState extends State<GroupItem> {
+  bool _isPollingActive = false;
+
+  // 정산하기 버튼을 눌렀을 때의 동작을 처리하는 함수
+  void handleSettleButtonPressed() async {
+    bool firstCallResult = await putFirstCall(widget.groupId);
+      String status = await fetchGroupMemberStatus(widget.groupId);
+      setState(() {
+        _isPollingActive =true;
+      });
+      while (_isPollingActive) {
+        await Future.delayed(Duration(seconds: 15));
+        status = await fetchGroupMemberStatus(widget.groupId);
+        print('--------------------현재 상태');
+        if(status == "SPLIT"){
+          break;}
+      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SplitMain(groupId: widget.groupId,)),
+      );
+  }
+  @override
+  void dispose() {
+    _isPollingActive = false;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +54,7 @@ class GroupItem extends StatelessWidget {
       appBar: AppBar(
         scrolledUnderElevation: 0,
         title: FutureBuilder<Group>(
-          future: getGroupDetail(groupId),
+          future: getGroupDetail(widget.groupId),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData) {
@@ -44,7 +78,7 @@ class GroupItem extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => GroupDetail(
-                    groupId: groupId,
+                    groupId: widget.groupId,
                   ),
                 ),
               );
@@ -53,7 +87,7 @@ class GroupItem extends StatelessWidget {
         ],
       ),
       body: FutureBuilder<Group>(
-        future: getGroupDetail(groupId),
+        future: getGroupDetail(widget.groupId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
@@ -73,9 +107,13 @@ class GroupItem extends StatelessWidget {
                         ),
                       ),
                       // 정산하기 버튼
-                      Button(
-                        btnText: '정산하기',
-                        onPressed: () {},
+                      SizedButton(
+                        size: ButtonSize.l,
+                        btnText: !_isPollingActive ? '정산하기' : '대기중',
+                        onPressed: () {
+                          handleSettleButtonPressed();
+                        },
+                        enable: !_isPollingActive,
                       ),
                       // 정산요청 내역이 있으면
                       // 정산 요청 내역

@@ -60,7 +60,7 @@ class _SplitDoingState extends State<SplitDoing> {
       print('폴링중~~~~');
       final res = await getPersonalGroupStatus(widget.groupId);
       print(res);
-      if (res == 'DONE') {
+      if (res.toString() == 'DONE') {
         _isPollingActive = false;
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SplitLoading(groupId: widget.groupId))); // SplitLoading 페이지로 이동
       } else {

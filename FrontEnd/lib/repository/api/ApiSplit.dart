@@ -14,6 +14,21 @@ Future<Response> getYeojung(groupId) async {
     throw Exception('내 여정(스플릿) 조회 실패');
   }
 }
+// 여정(스플릿) 퍼스트 콜
+Future<bool> putFirstCall(groupId) async {
+  try {
+    print(groupId);
+    final res = await api.put('/groups/$groupId/firstcall');
+    if (res.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (err) {
+    print(err);
+    throw Exception('퍼스트 콜 갱신 실패.');
+  }
+}
 
 // 여정(스플릿) 세컨드 콜
 Future<int> putSecondCall(groupId) async {
@@ -42,6 +57,7 @@ Future<Response> getSecondCallMember(groupId) async {
 }
 // 여정(스플릿) 최종정산 - 세컨드 콜이 리턴값이 0이상인 사람이 호출
 Future<dynamic> postFinalRequest(groupId) async {
+  print('최종정산 post요청');
   try {
     final res = await api.post('/groups/$groupId/calculate');
     print(res.data);
