@@ -42,36 +42,40 @@ class _NowTravelListState extends State<NowTravelList> {
   Widget build(BuildContext context) {
     final ongoingGroups = widget.groups.where((group) => !group.isCalculateDone).toList();
     if (ongoingGroups.isEmpty) {
-      return Scaffold(
-        body: Center(
-            child: Column(
-          children: [GroupAddButton(onPressed: navigateToGroupAdd)],
-        )),
+      return Expanded(
+        child: Scaffold(
+          body: Center(
+              child: Column(
+            children: [GroupAddButton(onPressed: navigateToGroupAdd)],
+          )),
+        ),
       );
     }
 
     return Scaffold(
-      body: CarouselSlider.builder(
-        itemCount: ongoingGroups.length,
-        itemBuilder: (context, index, realIndex) {
-          return MainNowTravelCard(
-            group: ongoingGroups[index],
-            onTap: () {
-              navigateToGroupDetail(ongoingGroups[index]);
-            },
-            isCenter: index == _currentPage,
-          );
-        },
-        options: CarouselOptions(
-            autoPlay: false,
-            aspectRatio: 3.0,
-            enlargeCenterPage: true,
-            viewportFraction: 0.5,
-            onPageChanged: (index, reason) {
-              setState(() {
-                _currentPage = index;
-              });
-            }),
+      body: Center(
+        child: CarouselSlider.builder(
+          itemCount: ongoingGroups.length,
+          itemBuilder: (context, index, realIndex) {
+            return MainNowTravelCard(
+              group: ongoingGroups[index],
+              onTap: () {
+                navigateToGroupDetail(ongoingGroups[index]);
+              },
+              isCenter: index == _currentPage,
+            );
+          },
+          options: CarouselOptions(
+              autoPlay: false,
+              aspectRatio: 3.0,
+              enlargeCenterPage: true,
+              viewportFraction: 0.5,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _currentPage = index;
+                });
+              }),
+        ),
       ),
     );
   }

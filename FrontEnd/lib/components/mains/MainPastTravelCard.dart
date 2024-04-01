@@ -49,10 +49,10 @@ class MainPastTravelCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                group.theme.length > 5 ? '${group.theme.substring(0, 4)}..' : group.groupName,
+                                group.theme.length > 4 ? '${group.theme.substring(0, 3)}..' : group.groupName,
                                 style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 30.sp,
+                                  fontSize: 25.sp,
                                 ),
                               ),
                               Row(

@@ -28,7 +28,8 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
   bool isOption = false;
   bool hasData = false;
   static const _pageSize = 10;
-  final PagingController<int, Map<String, dynamic>> _pagingController = PagingController(firstPageKey: 0);
+  final PagingController<int, Map<String, dynamic>> _pagingController =
+      PagingController(firstPageKey: 0);
 
   @override
   void initState() {
@@ -61,7 +62,9 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
       print("queryParameters: ${queryParameters}");
       Response res = await getGroupSpend(widget.groupId, queryParameters);
       if (res.data != null) {
-        List<Map<String, dynamic>> newData = List<Map<String, dynamic>>.from(res.data).cast<Map<String, dynamic>>();
+        List<Map<String, dynamic>> newData =
+            List<Map<String, dynamic>>.from(res.data)
+                .cast<Map<String, dynamic>>();
         final isLastPage = newData.length < _pageSize;
         print("isLastPage: ${isLastPage}");
         if (isLastPage) {
@@ -92,6 +95,9 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(
+                height: 10.h,
+              ),
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -103,9 +109,8 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
                 ),
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Flexible(
+                  Expanded(
                     child: ElevatedButton(
                       onPressed: () {
                         print(1);
@@ -121,7 +126,7 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
                       child: Text(
                         '내가 포함된 정산',
                         style: TextStyle(
-                          fontSize: min(15.sp, 15.sp),
+                          fontSize: min(15.sp, 20.sp),
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
@@ -131,13 +136,10 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
                   SizedBox(
                     width: 10.w,
                   ),
-                  Flexible(
+                  Expanded(
                     child: ElevatedButton(
                       onPressed: () => buttonSlideAnimation(
-                          context,
-                          MoneyRequest(
-                            groupId: widget.groupId,
-                          )),
+                          context, MoneyRequest(groupId: widget.groupId)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: BUTTON_COLOR,
                         minimumSize: Size(40.w, 30.h),
@@ -148,7 +150,7 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
                       child: Text(
                         '정산 추가',
                         style: TextStyle(
-                          fontSize: min(15.sp, 15.sp),
+                          fontSize: min(15.sp, 20.sp),
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
@@ -175,7 +177,8 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
                 child: Column(
                   children: [
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 20.h),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10.w, vertical: 20.h),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -211,7 +214,8 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
                   ],
                 ),
               ),
-              firstPageErrorIndicatorBuilder: (context) => Center(child: GroupNoCal(groupId: widget.groupId ?? 0)),
+              firstPageErrorIndicatorBuilder: (context) =>
+                  Center(child: GroupNoCal(groupId: widget.groupId ?? 0)),
               noItemsFoundIndicatorBuilder: (context) => Center(
                 child: GroupNoCal(groupId: widget.groupId ?? 0),
               ),

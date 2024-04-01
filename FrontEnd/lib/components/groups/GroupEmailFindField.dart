@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/groups/GroupEmailFindInviteMemberCard.dart';
+import 'package:front/const/colors/Colors.dart';
 import '../../entities/Member.dart';
 import 'package:front/repository/api/ApiGroup.dart';
 
@@ -80,7 +81,7 @@ class _GroupEmailFindFieldState extends State<GroupEmailFindField> {
                             widget.controller.clear();
                           }
                         });
-                      }  else {
+                      } else {
                         setState(() {
                           _searchResult = null;
                         });
@@ -123,15 +124,20 @@ class _GroupEmailFindFieldState extends State<GroupEmailFindField> {
                 return Container(
                   height: MediaQuery.of(context).size.height * 0.3,
                   width: MediaQuery.of(context).size.width * 0.15,
-                  margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0), // 좌우 마진 설정
-                  child: GroupEmailFindInviteMemberCard(member : userInfoList[index]),
+                  margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
+                  // 좌우 마진 설정
+                  child: GroupEmailFindInviteMemberCard(
+                      member: userInfoList[index]),
                   // 예시: memberInfo를 사용하여 사용자 정보를 표시하는 위젯을 여기에 구성
                 );
               },
             ),
           ),
         TextButton(
-          child: Text('초대하기'),
+          child: Text(
+            '초대하기',
+            style: TextStyle(color: Colors.white),
+          ),
           onPressed: () {
             widget.onInvite(inviteMember);
             print(23232323);
@@ -139,6 +145,12 @@ class _GroupEmailFindFieldState extends State<GroupEmailFindField> {
             print(23232323);
             Navigator.of(context).pop();
           },
+          style: TextButton.styleFrom(
+            backgroundColor: BUTTON_COLOR,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+          ),
         ),
       ],
     );
