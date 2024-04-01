@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/groups/GroupJoinMember.dart';
 import 'package:front/components/groups/GroupJoinMemberCarousel.dart';
-import 'package:front/components/groups/GroupYesCal.dart';
 import 'package:front/components/groups/GroupNoCal.dart';
 import 'package:front/const/colors/Colors.dart';
 import 'package:front/entities/GroupMember.dart';
@@ -43,9 +42,7 @@ class _GroupInvitedItemState extends State<GroupInvitedItem> {
     final groupMembersJson = await getGroupMemberList(widget.groupId);
     if (groupMembersJson != null) {
       setState(() {
-        members = (groupMembersJson.data['groupMembersDtos'] as List)
-            .map((item) => GroupMember.fromJson(item))
-            .toList();
+        members = (groupMembersJson.data['groupMembersDtos'] as List).map((item) => GroupMember.fromJson(item)).toList();
         isLoading = false;
       });
     } else {
@@ -102,39 +99,37 @@ class _GroupInvitedItemState extends State<GroupInvitedItem> {
                       Container(
                         width: 200.w,
                         height: 190.h,
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                        child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    group.groupName,
-                                    style: TextStyle(
-                                      fontSize: 35.sp,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10.w),
-                                  Text(
-                                    '의 여정에',
-                                    style: TextStyle(
-                                      fontSize: 20.sp,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 20.h),
                               Text(
-                                '입장하시겠습니까?',
+                                group.groupName,
+                                style: TextStyle(
+                                  fontSize: 35.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              SizedBox(width: 10.w),
+                              Text(
+                                '의 여정에',
                                 style: TextStyle(
                                   fontSize: 20.sp,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ]),
+                            ],
+                          ),
+                          SizedBox(height: 20.h),
+                          Text(
+                            '입장하시겠습니까?',
+                            style: TextStyle(
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ]),
                       ),
                       SizedBox(height: 20.h),
                       Container(
@@ -147,8 +142,7 @@ class _GroupInvitedItemState extends State<GroupInvitedItem> {
                               size: ButtonSize.m,
                               btnText: '거절하기',
                               onPressed: () {
-                                buttonSlideAnimationPushAndRemoveUntil(
-                                    context, 0);
+                                buttonSlideAnimationPushAndRemoveUntil(context, 0);
                               },
                               enable: !_isPollingActive,
                             ),
@@ -157,8 +151,7 @@ class _GroupInvitedItemState extends State<GroupInvitedItem> {
                               btnText: '수락하기',
                               onPressed: () {
                                 inviteMemberToGroup(widget.groupId);
-                                buttonSlideAnimationPushAndRemoveUntil(
-                                    context, 1);
+                                buttonSlideAnimationPushAndRemoveUntil(context, 1);
                               },
                               enable: !_isPollingActive,
                             ),
