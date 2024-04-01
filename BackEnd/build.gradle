@@ -41,6 +41,8 @@ clean {
 
 
 dependencies {
+// 테스트용
+	implementation 'org.springframework.boot:spring-boot-starter-mustache'
 
 	// FCM
 	// https://mvnrepository.com/artifact/com.google.firebase/firebase-admin
