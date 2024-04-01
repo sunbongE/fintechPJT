@@ -2,7 +2,6 @@ package com.orange.fintech.payment.service;
 
 import com.orange.fintech.common.exception.RelatedTransactionNotFoundException;
 import com.orange.fintech.group.dto.GroupMembersDto;
-import com.orange.fintech.group.dto.GroupMembersListDto;
 import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.group.entity.GroupMemberPK;
 import com.orange.fintech.group.repository.GroupMemberRepository;
@@ -525,7 +524,6 @@ public class PaymentServiceImpl implements PaymentService {
             // 4-2. ReceiptDetail 테이블에 레코드 추가
             List<ReceiptRequestDto.Item> items = receiptRequestDto.getDetailList();
 
-
             for (ReceiptRequestDto.Item item : items) {
                 ReceiptDetail receiptDetail = new ReceiptDetail();
                 receiptDetail.setReceipt(savedReceiptRecord);
@@ -537,15 +535,18 @@ public class PaymentServiceImpl implements PaymentService {
                 receiptDetailRepository.save(receiptDetail);
 
                 // receipt_detail_member transaction_member인 모든 멤버 추가
-                GroupMembersListDto groupMembers = groupService.findGroupMembers(transactionDetail.getGroup().getGroupId());
-                int memberCnt = groupMembers.getGroupMembersDtos().size();
+                List<TransactionMember> transactionMembers =
+                        transactionQueryRepository.getTransactionMember(
+                                transaction.getTransactionId());
+                int memberCnt = transactionMembers.size();
                 long amount = receipt.getApprovalAmount();
                 int remainder = (int) (amount - amount / memberCnt * memberCnt);
-                for (GroupMembersDto dto: groupMembers.getGroupMembersDtos()) {
+                for (TransactionMember dto : transactionMembers) {
                     ReceiptDetailMember receiptDetailMember = new ReceiptDetailMember();
                     ReceiptDetailMemberPK pk = new ReceiptDetailMemberPK();
                     pk.setReceiptDetail(receiptDetail);
-                    pk.setMember(memberRepository.findById(dto.getKakaoId()).get());
+
+                    pk.setMember(dto.getTransactionMemberPK().getMember());
                     receiptDetailMember.setReceiptDetailMemberPK(pk);
                     receiptDetailMember.setAmountDue(amount / memberCnt);
 
@@ -554,12 +555,7 @@ public class PaymentServiceImpl implements PaymentService {
 
                 transactionDetail.setRemainder(remainder);
                 transactionDetailRepository.save(transactionDetail);
-
             }
-
-
-
-
 
         } catch (DataIntegrityViolationException | UnexpectedRollbackException e) {
             e.printStackTrace();
