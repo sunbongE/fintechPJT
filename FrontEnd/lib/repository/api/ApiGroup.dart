@@ -58,7 +58,7 @@ Future<Response> getGroupMemberList(groupId) async {
 }
 
 //그룹 멤버 초대
-Future<void> inviteMemberToGroup(groupId) async {
+Future<void> inviteMemberToGroup(int groupId) async {
   try {
     final res = await api.post('/groups/$groupId/invite');
     return res.data;
