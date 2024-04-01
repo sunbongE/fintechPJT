@@ -61,6 +61,7 @@ public class ReceiptDetailRes {
                             member.getThumbnailImage(),
                             detailMember.getAmountDue()));
         }
+        res.setMemberList(tmp);
 
         return res;
     }

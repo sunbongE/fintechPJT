@@ -379,6 +379,8 @@ public class PaymentServiceImpl implements PaymentService {
                 receiptDetailMemberRepository.findByReceiptDetailMemberPKReceiptDetail(
                         receiptDetail);
 
+        log.info("detailMemberList: {}", detailMemberList);
+
         ReceiptDetailRes res = ReceiptDetailRes.of(receiptDetail, detailMemberList);
 
         return res;
@@ -394,6 +396,7 @@ public class PaymentServiceImpl implements PaymentService {
         Transaction transaction = transactionRepository.findById(paymentId).get();
         ReceiptDetail receiptDetail = receiptDetailRepository.findById(receiptDetailId).get();
         log.info("receiptDetail: {}", receiptDetail);
+        log.info("receiptDetail req: {}", req);
 
         Receipt receipt = receiptRepository.findByTransaction(transaction);
 
