@@ -11,6 +11,7 @@ import com.orange.fintech.group.entity.Group;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.payment.dto.TransactionDetailRes;
 import com.orange.fintech.payment.dto.TransactionDto;
+import com.orange.fintech.payment.entity.TransactionMember;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -26,12 +27,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class TransactionQueryRepository {
 
-    @Autowired private JPAQueryFactory jpaQueryFactory;
-
     OrderSpecifier<String> dateOrderSpecifier =
             Expressions.stringPath("transaction.transactionDate").desc();
     OrderSpecifier<String> timeOrderSpecifier =
             Expressions.stringPath("transaction.transactionTime").desc();
+    @Autowired private JPAQueryFactory jpaQueryFactory;
 
     public List<TransactionDto> getMyTransactionByMemberAndGroup(
             Member member, Group group, int page, int pageSize) {
@@ -102,6 +102,20 @@ public class TransactionQueryRepository {
                         .fetchOne();
 
         return res;
+    }
+
+    public List<TransactionMember> getTransactionMember(int transactionId) {
+        return jpaQueryFactory
+                .select(transactionMember)
+                .from(transactionMember)
+                .where(
+                        transactionMember
+                                .totalAmount
+                                .gt(0)
+                                .and(
+                                        transactionMember.transactionMemberPK.transaction
+                                                .transactionId.eq(transactionId)))
+                .fetch();
     }
 
     public List<TransactionDto> getGroupTransaction(
