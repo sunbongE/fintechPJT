@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+/application.properties
+
+# Ignore firebase service key JSON file
+/yeojung_firebase_service_key.json
