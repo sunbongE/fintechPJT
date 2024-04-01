@@ -7,8 +7,10 @@ import static com.orange.fintech.member.entity.QMember.*;
 
 import com.orange.fintech.group.dto.GroupMembersDto;
 import com.orange.fintech.group.entity.Group;
+import com.orange.fintech.group.entity.GroupMemberPK;
 import com.orange.fintech.group.entity.GroupStatus;
 import com.orange.fintech.member.entity.FcmToken;
+import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.notification.Dto.UrgeTargetDto;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
@@ -17,6 +19,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -262,5 +265,26 @@ public class GroupQueryRepository {
         }
 
         return result;
+    }
+
+    public boolean isSplit(int groupId, String memberId) {
+        Group tmpGroup = new Group();
+        tmpGroup.setGroupId(groupId);
+        Member tmpMember = new Member();
+        tmpMember.setKakaoId(memberId);
+
+        GroupMemberPK tmpGroupMemberPK = new GroupMemberPK();
+        tmpGroupMemberPK.setGroup(tmpGroup);
+        tmpGroupMemberPK.setMember(tmpMember);
+
+        return Objects.equals(
+                queryFactory
+                        .select(groupMember.fistCallDone)
+                        .from(groupMember)
+                        .leftJoin(group)
+                        .on(group.groupId.eq(groupMember.groupMemberPK.group.groupId))
+                        .where(groupMember.groupMemberPK.eq(tmpGroupMemberPK))
+                        .fetchOne(),
+                true);
     }
 }

@@ -296,6 +296,32 @@ public class GroupController {
                 .body(BaseResponseBody.of(400, "BAD_REQUEST"));
     }
 
+    @GetMapping("/{groupId}/members/isSplit")
+    @Operation(summary = "요청하는 회원이 정산 요청을 눌렀는지 확인.", description = "요청하는 회원이 정산 요청을 눌렀는지 확인.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> isSplit(@PathVariable("groupId") int groupId, Principal principal) {
+        String memberId = principal.getName();
+
+        try {
+            if (!groupService.isExistMember(memberId, groupId)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(BaseResponseBody.of(400, "그룹이 없거나 권한이 없습니다."));
+            }
+
+            boolean result = groupService.isSplit(groupId, memberId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+
+        } catch (Exception e) {
+            log.info("[ERROR] :{}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(BaseResponseBody.of(500, "서버 오류"));
+        }
+    }
+
     @GetMapping("/{groupId}/members/firstcall")
     @Operation(
             summary = "그룹에서 정산 요청 하기를 누른 사람 목록",
