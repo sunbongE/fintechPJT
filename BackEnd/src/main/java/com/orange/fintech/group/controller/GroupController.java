@@ -275,7 +275,8 @@ public class GroupController {
             log.info("정산 결과: {}", calRes);
             if (calRes == null) {
                 log.info("정산할 내역 없음");
-                return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "정산할 내역 없음"));
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(BaseResponseBody.of(200, "정산할 내역 없음"));
             }
 
             log.info("정산 송금 시작");

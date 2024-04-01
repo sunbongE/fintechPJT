@@ -136,9 +136,7 @@ public class CalculateServiceImpl implements CalculateService {
             long amount = sumOfTotalAmount(groupId, dto.getKakaoId());
             amount += transactionQueryRepository.sumOfMyRemainder(groupId, dto.getKakaoId());
 
-            log.info("amount: {}", amount);
             if (dto.getKakaoId().equals(lastMemberId)) {
-                log.info("remainder amount: {}", amount);
                 amount -= remainder;
             }
 
@@ -223,8 +221,6 @@ public class CalculateServiceImpl implements CalculateService {
         for (int i = 0; i < transaction.length; i++) {
             long receiveAmount = remains[plusIdx];
             long sendAmount = -minus.get(minTransaction[i]).amount;
-            //            log.info("receiveAmount: " + receiveAmount + "  sendAmount: " +
-            // sendAmount);
 
             while (sendAmount > 0) {
                 if (receiveAmount > sendAmount) {
@@ -239,16 +235,9 @@ public class CalculateServiceImpl implements CalculateService {
             }
         }
 
-        log.info("송금방법 선정 후: ");
-        log.info("transaction[i][j]: i -> j로 송금");
-        for (int i = 0; i < transaction.length; i++) {
-            log.info(Arrays.toString(transaction[i]));
-        }
-
         List<CalculateResultDto> results = new ArrayList<>();
 
         for (int i = 0; i < transaction.length; i++) {
-            log.info("transaction: {}", Arrays.toString(transaction[i]));
             for (int j = 0; j < transaction[0].length; j++) {
                 if (transaction[i][j] != 0) {
                     results.add(
@@ -277,20 +266,8 @@ public class CalculateServiceImpl implements CalculateService {
                 transactionQueryRepository.getSumOfTotalAmountCondition(
                         groupId, memberId, "RECEIVE");
 
-        try {
-            res -= transactionQueryRepository.sumOfTotalAmount(groupId, memberId, sendExpression);
-        } catch (NullPointerException e) {
-            log.info("줄 금액 없음");
-        }
-        log.info("줄 금액: {}", -res);
-
-        try {
-            res +=
-                    transactionQueryRepository.sumOfTotalAmount(
-                            groupId, memberId, receiveExpression);
-        } catch (NullPointerException e) {
-            log.info("받을 금액 없음");
-        }
+        res -= transactionQueryRepository.sumOfTotalAmount(groupId, memberId, sendExpression);
+        res += transactionQueryRepository.sumOfTotalAmount(groupId, memberId, receiveExpression);
 
         log.info("memberId: {} sumOfTotalAmount: {}", memberId, res);
 
@@ -309,15 +286,9 @@ public class CalculateServiceImpl implements CalculateService {
 
         long[][] transaction = new long[minus.size()][plus.size()];
 
-        log.info("송금 계산 전");
-        for (int i = 0; i < transaction.length; i++) {
-            log.info(Arrays.toString(transaction[i]));
-        }
-
         int transactionCnt = 0;
         int plusIdx = 0;
         for (int i = 0; i < minus.size(); i++) {
-            log.info("i: {}", i);
             long receiveAmount = remains[plusIdx];
             long sendAmount = -minus.get(np[i]).amount;
 
@@ -395,14 +366,12 @@ public class CalculateServiceImpl implements CalculateService {
     private boolean np(int[] p) {
         int N = p.length;
         int i = N - 1;
-        log.info("N:{}, i:{}", N, i);
         while (i > 0 && (p[i - 1] >= p[i])) i--;
 
         if (i == 0) {
             return false;
         }
         int j = N - 1;
-        log.info("i:{}, j:{}", i, j);
         while ((p[i - 1] >= p[j])) j--;
 
         swap(p, i - 1, j);
