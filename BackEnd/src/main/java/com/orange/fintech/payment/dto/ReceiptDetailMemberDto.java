@@ -26,5 +26,5 @@ public class ReceiptDetailMemberDto {
     String thumbnailImage;
 
     @Schema(description = "낼 금액")
-    int amountDue;
+    Long amountDue;
 }

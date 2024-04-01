@@ -164,8 +164,8 @@ public class TransactionQueryRepository {
                 : selectQuery;
     }
 
-    public int getTransactionTotalAmount(String memberId, int receiptId) {
-        int res =
+    public long getTransactionTotalAmount(String memberId, int receiptId) {
+        long res =
                 jpaQueryFactory
                         .select(receiptDetailMember.amountDue.sum())
                         .from(receipt)

@@ -14,5 +14,5 @@ public class ReceiptDetailMember {
 
     @EmbeddedId private ReceiptDetailMemberPK receiptDetailMemberPK;
 
-    private int amountDue;
+    private Long amountDue;
 }

@@ -18,5 +18,5 @@ public class ReceiptDetailMemberPutDto {
     private String memberId;
 
     @Schema(description = "낼 금액")
-    int amountDue;
+    long amountDue;
 }

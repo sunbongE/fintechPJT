@@ -22,7 +22,7 @@ public class QReceiptDetailMember extends EntityPathBase<ReceiptDetailMember> {
 
     public static final QReceiptDetailMember receiptDetailMember = new QReceiptDetailMember("receiptDetailMember");
 
-    public final NumberPath<Integer> amountDue = createNumber("amountDue", Integer.class);
+    public final NumberPath<Long> amountDue = createNumber("amountDue", Long.class);
 
     public final QReceiptDetailMemberPK receiptDetailMemberPK;
 
