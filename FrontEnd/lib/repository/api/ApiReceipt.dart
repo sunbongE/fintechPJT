@@ -3,8 +3,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:front/repository/commons.dart';
 
 import '../../entities/Receipt.dart';
+import 'ApiMyPage.dart';
 
 final api = ApiClient();
+final fileApi = ApiFileClient();
 
 Future<Response> postReceiptImage(FormData formData) async {
   var dio = Dio();
@@ -88,5 +90,16 @@ Future<Map<String, dynamic>> putPaymentsReceiptDatil(groupId, paymentId, receipt
   } catch (err) {
     print(err);
     throw Exception('상세보기 데이터 갱신 실패.');
+  }
+}
+
+// 회원의 영수증 이미지를 저장
+Future<Response> postReceiptImageToDB(groupId, formData) async {
+  try {
+    final res = await fileApi.post("/groups/${groupId}/payments/receiptImage", data: formData);
+    return res;
+  } catch (e) {
+    print(e);
+    throw Exception('틀렸다잉');
   }
 }

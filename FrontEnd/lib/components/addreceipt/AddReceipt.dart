@@ -123,7 +123,9 @@ class _AddReceiptState extends State<AddReceipt> {
             ),
             isLoading
                 ? Center(child: Lottie.asset('assets/lotties/orangewalking.json'))
-                : Expanded(child: ShowBeforeOcr(
+                : Expanded(
+                    child: ShowBeforeOcr(
+                    groupId: widget.groupId,
                     onReceiptsUpdated: (updatedReceipts) {
                       setState(() {
                         receiptData = updatedReceipts;
