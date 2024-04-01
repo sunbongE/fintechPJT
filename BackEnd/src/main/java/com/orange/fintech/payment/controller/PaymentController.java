@@ -107,7 +107,9 @@ public class PaymentController {
     }
 
     @PutMapping("/{paymentId}")
-    @Operation(summary = "결제 내역 수정", description = "<strong>paymentId</strong>로 정산 내역을 수정한다")
+    @Operation(
+            summary = "결제 내역 수정",
+            description = "<strong>paymentId</strong>로 메모, 참여 인원과 금액을 설정한다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "성공"),
         @ApiResponse(responseCode = "403", description = "권한 없음"),
@@ -122,10 +124,14 @@ public class PaymentController {
         log.info("editTransaction 시작");
 
         try {
-            if (!paymentService.isMyTransaction(principal.getName(), paymentId)
-                    || paymentService.isMyGroupTransaction(groupId, paymentId)
-                    || !groupService.getGroupStatus(groupId).equals(GroupStatus.SPLIT)) {
-                return ResponseEntity.status(403).body(BaseResponseBody.of(403, "FORBIDDEN"));
+            boolean myTransaction = paymentService.isMyGroupTransaction(groupId, paymentId);
+            boolean groupTransaction = paymentService.isMyGroupTransaction(groupId, paymentId);
+
+            if (!myTransaction) {
+                if (!groupTransaction
+                        || !groupService.getGroupStatus(groupId).equals(GroupStatus.SPLIT)) {
+                    return ResponseEntity.status(403).body(BaseResponseBody.of(403, "FORBIDDEN"));
+                }
             }
 
             paymentService.editTransactionDetail(paymentId, req);
