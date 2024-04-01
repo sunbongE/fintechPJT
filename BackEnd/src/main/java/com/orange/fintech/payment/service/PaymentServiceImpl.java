@@ -294,9 +294,10 @@ public class PaymentServiceImpl implements PaymentService {
                 transactionDetailRepository.findById(transactionId).get();
 
         transactionDetail.setMemo(req.getMemo());
-        transactionDetailRepository.save(transactionDetail);
 
         Transaction transaction = transactionDetail.getTransaction();
+
+        long payAmount = 0;
 
         for (TransactionMemberDto dto : req.getMemberList()) {
             Member member = memberRepository.findById(dto.getMemberId()).get();
@@ -308,7 +309,11 @@ public class PaymentServiceImpl implements PaymentService {
             TransactionMember tm = transactionMemberRepository.findById(pk).get();
             tm.setTotalAmount(dto.getTotalAmount());
             tm.setIsLock(dto.isLock());
+            payAmount += dto.getTotalAmount();
         }
+
+        transactionDetail.setRemainder((int) (transaction.getTransactionBalance() - payAmount));
+        transactionDetailRepository.save(transactionDetail);
     }
 
     @Override
