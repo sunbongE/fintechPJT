@@ -17,10 +17,12 @@ import 'ModifyReceipt.dart';
 
 class ShowBeforeOcr extends StatefulWidget {
   final Function(List<Receipt>) onReceiptsUpdated;
+  final int groupId;
 
   ShowBeforeOcr({
     Key? key,
     required this.onReceiptsUpdated,
+    required this.groupId,
   }) : super(key: key);
 
   @override
@@ -112,11 +114,14 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
         });
   }
 
-  // 카메라로 사진찍기
+// 카메라로 사진찍기
   void receiptFromCamera() async {
     final XFile? image = await picker.pickImage(source: ImageSource.camera);
     if (image != null) {
-      onImageSelected(image);
+      List<XFile> imageFiles = [image];
+      uploadImages(imageFiles);
+
+      await onImageSelected(image);
     }
   }
 
@@ -129,10 +134,26 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
         return;
       }
 
+      List<XFile> imageFiles = selectedImages.map((xFile) => XFile(xFile.path)).toList();
+      uploadImages(imageFiles);
+      //
       for (XFile image in selectedImages) {
         await onImageSelected(image);
       }
     }
+  }
+
+// 여러 이미지 업로드
+  Future<void> uploadImages(List<XFile> images) async {
+    FormData formData = FormData();
+    for (XFile image in images) {
+      String fileName = image.path.split('/').last;
+      formData.files.add(MapEntry(
+        "file",
+        await MultipartFile.fromFile(image.path, filename: fileName),
+      ));
+    }
+    await postReceiptImageToDB(widget.groupId, formData);
   }
 
   // 선택된 이미지를 네이버 클로바로 보내는 api 호출

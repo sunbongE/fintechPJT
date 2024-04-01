@@ -161,15 +161,19 @@ class _LoginState extends State<Login> {
                             (Route<dynamic> route) => false,
                           );
                         } else if (res.statusCode == 200) {
-                          if (userManager.selectedAccount != null &&
-                              userManager.selectedAccount!.isNotEmpty &&
-                              userManager.selectedBank != null &&
-                              userManager.selectedBank!.isNotEmpty &&
-                              userManager.selectBankCode != null &&
-                              userManager.selectBankCode!.isNotEmpty) {
-                            print("힝 200이지?");
-                            _checkLoginStatus();
-                          } else {
+                          try {
+                            Response res = await getMyPrimary();
+                            if (res.data != null) {
+                              print("힝 200이지?");
+                              _checkLoginStatus();
+                            } else {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(builder: (context) => ServiceIntro()),
+                                (Route<dynamic> route) => false,
+                              );
+                            }
+                          } catch (e) {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(builder: (context) => ServiceIntro()),
