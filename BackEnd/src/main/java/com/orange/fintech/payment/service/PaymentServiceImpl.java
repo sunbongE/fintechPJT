@@ -335,7 +335,11 @@ public class PaymentServiceImpl implements PaymentService {
                     memberPK.setReceiptDetail(receiptDetail);
 
                     receiptDetailMember.setReceiptDetailMemberPK(memberPK);
-                    receiptDetailMember.setAmountDue(receipt.getApprovalAmount() / headCount);
+                    receiptDetailMember.setAmountDue(
+                            (long)
+                                    (receiptDetail.getCount()
+                                            * receiptDetail.getUnitPrice()
+                                            / headCount));
 
                     receiptDetailMemberRepository.save(receiptDetailMember);
                 }
