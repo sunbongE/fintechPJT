@@ -20,12 +20,17 @@ class AdCarousel extends StatelessWidget {
         autoPlay: true,
         aspectRatio: 1430 / 320,
       ),
-      items: imgList.map((item) => Container(
-        width: screenWidth,
-        child: Center(
-            child: Image.asset(item, fit: BoxFit.cover)
-        ),
-      )).toList(),
+      items: imgList
+          .map((item) => Container(
+                width: screenWidth,
+                child: Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset(item, fit: BoxFit.cover),
+                  ),
+                ),
+              ))
+          .toList(),
     );
   }
 }

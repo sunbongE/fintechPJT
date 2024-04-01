@@ -19,8 +19,6 @@ class LoadingPage extends StatefulWidget {
 }
 
 class _LoadingPageState extends State<LoadingPage> {
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
   void getMyDeviceToken() async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     UserManager().saveUserInfo(newFcmToken: fcmToken);
@@ -30,40 +28,8 @@ class _LoadingPageState extends State<LoadingPage> {
   @override
   void initState() {
     super.initState();
-    var initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-    var initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-    );
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
     requestPermission();
     _checkLoginStatus();
-    _listenToForegroundMessages();
-  }
-
-  void _listenToForegroundMessages() {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print("포그라운드에서 메시지 수신: 데이터: ${message.data}");
-      _showNotificationWithDefaultSound(message);
-    });
-  }
-
-  Future<void> _showNotificationWithDefaultSound(RemoteMessage message) async {
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'high_importance_channel',
-      'high_importance_notification',
-      importance: Importance.max,
-    );
-
-    var platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-    );
-
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      message.notification?.title,
-      message.notification?.body,
-      platformChannelSpecifics,
-    );
   }
 
   void requestPermission() async {
@@ -131,11 +97,13 @@ class _LoadingPageState extends State<LoadingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [Image.asset("assets/images/logo.png"), Lottie.asset('assets/lotties/orangewalking.json')],
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [Image.asset("assets/images/logo.png"), Lottie.asset('assets/lotties/orangewalking.json')],
+          ),
         ),
       ),
     );

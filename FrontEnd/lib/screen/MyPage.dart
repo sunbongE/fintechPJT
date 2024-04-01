@@ -33,23 +33,25 @@ class _MyPageState extends State<MyPage> with WidgetsBindingObserver {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.sp),
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          MyInfo(),
-          //감사합니다 잘썼습니다 -지연
-          ProfileChangeBtn(
-            buttonText: '프로필 수정',
-            onPressed: () => buttonSlideAnimation(
-              context,
-              ProfileChange(
-                onUpdate: () => updateMyInfo(),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            MyInfo(),
+            //감사합니다 잘썼습니다 -지연
+            ProfileChangeBtn(
+              buttonText: '프로필 수정',
+              onPressed: () => buttonSlideAnimation(
+                context,
+                ProfileChange(
+                  onUpdate: () => updateMyInfo(),
+                ),
               ),
             ),
-          ),
-          MyAccount(),
-          MyTripHistory(),
-        ],
+            MyAccount(),
+            MyTripHistory(),
+          ],
+        ),
       ),
     );
   }

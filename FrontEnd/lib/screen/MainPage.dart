@@ -52,56 +52,55 @@ class _MainPageState extends State<MainPage> {
         appBar: AppBar(
           scrolledUnderElevation: 0,
         ),
-        body: Column(children: [
-          Container(
-            height: 100.h,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                MyInfoMain(),
-                IconButton(
-                  icon: Icon(Icons.notifications),
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (BuildContext context) {
-                        return Container(
-                          height: MediaQuery
-                              .of(context)
-                              .size
-                              .height * 0.8,
-                          child: AlertList(),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ],
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.w),
+          child: Column(children: [
+            Container(
+              height: 100.h,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MyInfoMain(),
+                  IconButton(
+                    icon: Icon(Icons.notifications),
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (BuildContext context) {
+                          return Container(
+                            height: MediaQuery.of(context).size.height * 0.8.h,
+                            child: AlertList(),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-          isLoading
-              ? Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 20.h),
-                Text("그룹을 불러오고 있습니다"),
-              ],
-            ),
-          )
-              :
-          Expanded(
-            child: NowTravelList(groups: groups),
-          ),
-          Expanded(
+            isLoading
+                ? Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 20.h),
+                        Text("그룹을 불러오고 있습니다"),
+                      ],
+                    ),
+                  )
+                : Expanded(
+                    child: NowTravelList(groups: groups),
+                  ),
+            Expanded(
               child: AdCarousel(),
-          ),
-          Expanded(
-            child: PastTravelList(groups: groups),
-          ),
-        ]));
+            ),
+            Expanded(
+              child: PastTravelList(groups: groups),
+            ),
+          ]),
+        ));
   }
 }
