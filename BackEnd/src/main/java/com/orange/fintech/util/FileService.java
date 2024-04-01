@@ -20,4 +20,7 @@ public interface FileService {
     String getProfileThumbnailImageUrl(String kakaoId);
 
     String getProfileAndThumbnailImageUrl(String kakaoId);
+
+    void uploadReceiptImagesToAmazonS3(MultipartFile[] receiptImageList)
+            throws IOException, EmptyFileException, BigFileException, NotValidExtensionException;
 }

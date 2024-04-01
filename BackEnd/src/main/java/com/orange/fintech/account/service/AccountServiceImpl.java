@@ -301,7 +301,7 @@ public class AccountServiceImpl implements AccountService {
         List<Transaction> saveDataList = new ArrayList<>();
 
         // 여기서 처음인지 아닌지에 따라서 값을 비교해서 가져오든 전부 가져오든 할듯.
-        if(jsonArray == null) {
+        if (jsonArray == null) {
             return;
         }
         for (Object element : jsonArray) {
