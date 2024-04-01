@@ -124,7 +124,7 @@ public class CalculateServiceImpl implements CalculateService {
      * @param lastMemberId
      */
     public List<CalculateResultDto> finalCalculator(int groupId, String lastMemberId)
-            throws ParseException, IOException {
+            throws ParseException, IOException, RuntimeException {
         GroupMembersListDto listDto = groupService.findGroupMembers(groupId);
 
         List<CalMember> plus = new ArrayList<>(); // 돈을 받아야하는 인원
@@ -142,12 +142,18 @@ public class CalculateServiceImpl implements CalculateService {
                 amount -= remainder;
             }
 
-            if (amount >= 0) {
+            // 주고받을 금액이 없는 사람?
+            if (amount > 0) {
                 plus.add(new CalMember(amount, dto.getKakaoId()));
-            } else {
+            } else if (amount < 0) {
                 minus.add(new CalMember(amount, dto.getKakaoId()));
             }
         }
+
+        if (plus.size() == 0 || minus.size() == 0) {
+            return null;
+        }
+
         // Todo 여기임!!!!!!!!! ==> 돈을 보내야하는 인원의 계좌를 확인 후 잔액이 부족한 회원 기록 후, 비동기로 알림을 보낸다. 테스트해봐야함!
 
         JSONParser parser = new JSONParser();
@@ -186,7 +192,9 @@ public class CalculateServiceImpl implements CalculateService {
         // 돈이 부족한 사람이 있으면 fcm호출하고 정산을 종료한다.
         if (!noMoneysKakaoId.isEmpty()) {
             fcmService.noMoneyFcm(noMoneysKakaoId, groupId);
-            return null;
+            throw new RuntimeException();
+            //            return null;
+
         }
 
         // 초기화
@@ -387,12 +395,14 @@ public class CalculateServiceImpl implements CalculateService {
     private boolean np(int[] p) {
         int N = p.length;
         int i = N - 1;
+        log.info("N:{}, i:{}", N, i);
         while (i > 0 && (p[i - 1] >= p[i])) i--;
 
         if (i == 0) {
             return false;
         }
         int j = N - 1;
+        log.info("i:{}, j:{}", i, j);
         while ((p[i - 1] >= p[j])) j--;
 
         swap(p, i - 1, j);

@@ -267,22 +267,25 @@ public class GroupController {
 
         try {
             if (groupService.getGroupStatus(groupId).equals(GroupStatus.DONE)) {
-                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(BaseResponseBody.of(400, "이미 정산된 내역"));
             }
 
             List<CalculateResultDto> calRes = calculateService.finalCalculator(groupId, memberId);
-            if (calRes == null) {
-                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                        .body(BaseResponseBody.of(406, "잔액이 부족해서 취소됨."));
-            }
             log.info("정산 결과: {}", calRes);
+            if (calRes == null) {
+                log.info("정산할 내역 없음");
+                return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "정산할 내역 없음"));
+            }
 
             log.info("정산 송금 시작");
             calculateService.transfer(calRes, groupId);
             log.info("정산 송금 끝");
 
             return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "OK"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                    .body(BaseResponseBody.of(406, "잔액이 부족해서 취소됨."));
         } catch (Exception e) {
             e.printStackTrace();
             log.info("[ERROR] :{}", e.getMessage());
