@@ -117,8 +117,8 @@ class _GroupAddState extends State<GroupAdd> {
                               children: <Widget>[
                                 Text(
                                   _rangeStart != null
-                                      ? '출발일: ${_rangeStart!.toString().split(' ')[0]}'
-                                      : '출발일을 선택해주세요',
+                                      ? '출발일:\n ${_rangeStart!.toString().split(' ')[0]}'
+                                      : '출발일을\n선택해주세요',
                                   style: TextStyle(
                                       fontSize: 16.0.sp, color: Colors.white),
                                   textAlign: TextAlign.center,
@@ -146,8 +146,8 @@ class _GroupAddState extends State<GroupAdd> {
                               children: <Widget>[
                                 Text(
                                   _rangeEnd != null
-                                      ? '도착일: ${_rangeEnd!.toString().split(' ')[0]}'
-                                      : '도착일을 선택해주세요',
+                                      ? '도착일:\n ${_rangeEnd!.toString().split(' ')[0]}'
+                                      : '도착일을\n선택해주세요',
                                   style: TextStyle(
                                       fontSize: 16.0.sp, color: Colors.white),
                                   textAlign: TextAlign.center,

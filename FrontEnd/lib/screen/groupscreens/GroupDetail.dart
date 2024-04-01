@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:front/components/mypage/ProfileChangeBtn.dart';
 import 'package:front/screen/groupscreens/GroupModify.dart';
 import '../../entities/Group.dart';
 import 'package:front/components/groups/GroupDescription.dart';
@@ -74,7 +75,6 @@ class GroupDetail extends StatelessWidget {
                           SizedBox(height: 16.0.h),
                           Divider(height: 16.0.h, color: Colors.grey),
                           SizedBox(height: 16.0.h),
-                          MyGroupRequest(requestDetails: '정보들'),
                         ],
                       ),
                     ),
@@ -83,12 +83,12 @@ class GroupDetail extends StatelessWidget {
                 Padding(
                   padding:
                       EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: ElevatedButton(
+                  child: ProfileChangeBtn(
                     onPressed: () => removeGroup(context, group),
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(double.infinity, 50.h),
-                    ),
-                    child: Text('그룹 삭제하기'),
+                    // style: ElevatedButton.styleFrom(
+                    //   minimumSize: Size(double.infinity, 50.h),
+                    // ),
+                    buttonText : '그룹 삭제하기',
                   ),
                 ),
               ],

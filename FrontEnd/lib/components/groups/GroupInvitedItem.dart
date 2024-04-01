@@ -39,11 +39,15 @@ class _GroupInvitedItemState extends State<GroupInvitedItem> {
     setState(() {
       isLoading = true;
     });
+    print('패치멤버실행');
     final groupMembersJson = await getGroupMemberList(widget.groupId);
+    print(groupMembersJson.data);
+    print('멤버받아옴');
     if (groupMembersJson != null) {
       setState(() {
         members = (groupMembersJson.data['groupMembersDtos'] as List).map((item) => GroupMember.fromJson(item)).toList();
         isLoading = false;
+        print('멤버리스트로받아옴');
       });
     } else {
       setState(() {

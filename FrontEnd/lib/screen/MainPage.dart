@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front/components/mains/AdCarousel.dart';
 import 'package:front/components/mains/AlertList.dart';
 import 'package:front/components/mains/MainInfo.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -68,7 +69,10 @@ class _MainPageState extends State<MainPage> {
                       isScrollControlled: true,
                       builder: (BuildContext context) {
                         return Container(
-                          height: MediaQuery.of(context).size.height * 0.8,
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .height * 0.8,
                           child: AlertList(),
                         );
                       },
@@ -80,21 +84,23 @@ class _MainPageState extends State<MainPage> {
           ),
           isLoading
               ? Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(),
-                      SizedBox(height: 20.h),
-                      Text("그룹을 불러오고 있습니다"),
-                    ],
-                  ),
-                )
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 20.h),
+                Text("그룹을 불러오고 있습니다"),
+              ],
+            ),
+          )
               :
-//groups[index]해서 해당 그룹의 isCalculateDone ==0이면 nowtravel 아니면 pasttravel
-              Expanded(
-                  child: NowTravelList(groups: groups),
-                ),
+          Expanded(
+            child: NowTravelList(groups: groups),
+          ),
+          Expanded(
+              child: AdCarousel(),
+          ),
           Expanded(
             child: PastTravelList(groups: groups),
           ),
