@@ -35,9 +35,7 @@ class _MainPageState extends State<MainPage> {
     final groupsJson = await getGroupList();
     if (groupsJson != null && groupsJson.data is List) {
       setState(() {
-        groups = (groupsJson.data as List)
-            .map((item) => Group.fromJson(item))
-            .toList();
+        groups = (groupsJson.data as List).map((item) => Group.fromJson(item)).toList();
         isLoading = false;
       });
     } else {

@@ -32,7 +32,9 @@ class _AlertListState extends State<AlertList> {
       setState(() {
         notifications = (notificationsJson.data as List)
             .map((item) => Notificate.fromJson(item))
-            .toList(); // 데이터 파싱
+            .toList() // 데이터 파싱
+            .reversed // 리스트를 역순으로 뒤집습니다.
+            .toList(); // 역순으로 된 리스트를 다시 리스트로 변환합니다.
         isLoading = false;
       });
     } else {
@@ -58,57 +60,57 @@ class _AlertListState extends State<AlertList> {
       ),
       body: isLoading
           ? Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Lottie.asset('assets/lotties/orangewalking.json'),
-            SizedBox(height: 20.h),
-            Text("알림을 불러오고 있습니다"),
-          ],
-        ),
-      )
-          : ListView.builder(
-        itemCount: notifications.length,
-        itemBuilder: (context, index) {
-          final notification = notifications[index];
-          Icon icon;
-          switch (notification.type) {
-            case 'INVITE':
-              icon = Icon(Icons.people);
-              break;
-            case 'URGE':
-              icon = Icon(Icons.priority_high);
-              break;
-            case 'SPLIT_MODIFY':
-              icon = Icon(Icons.edit);
-              break;
-            case 'TRANSFER':
-              icon = Icon(Icons.done_all);
-              break;
-            case 'NO_MONEY':
-              icon = Icon(Icons.credit_card_off);
-              break;
-            default:
-              icon = Icon(Icons.done);
-          }
-          return ListTile(
-            leading: icon,
-            title: Text(
-              notification.title,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20.sp,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Lottie.asset('assets/lotties/orangewalking.json'),
+                  SizedBox(height: 20.h),
+                  Text("알림을 불러오고 있습니다"),
+                ],
               ),
+            )
+          : ListView.builder(
+              itemCount: notifications.length,
+              itemBuilder: (context, index) {
+                final notification = notifications[index];
+                Icon icon;
+                switch (notification.type) {
+                  case 'INVITE':
+                    icon = Icon(Icons.people);
+                    break;
+                  case 'URGE':
+                    icon = Icon(Icons.priority_high);
+                    break;
+                  case 'SPLIT_MODIFY':
+                    icon = Icon(Icons.edit);
+                    break;
+                  case 'TRANSFER':
+                    icon = Icon(Icons.done_all);
+                    break;
+                  case 'NO_MONEY':
+                    icon = Icon(Icons.credit_card_off);
+                    break;
+                  default:
+                    icon = Icon(Icons.done);
+                }
+                return ListTile(
+                  leading: icon,
+                  title: Text(
+                    notification.title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.sp,
+                    ),
+                  ),
+                  subtitle: Column(
+                    children: [
+                      Text(notification.content),
+                    ],
+                  ),
+                );
+              },
             ),
-            subtitle: Column(
-              children: [
-                Text(notification.content),
-              ],
-            ),
-          );
-        },
-      ),
     );
   }
 }

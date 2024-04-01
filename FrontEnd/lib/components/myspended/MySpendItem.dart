@@ -72,7 +72,11 @@ class _MySpendItemState extends State<MySpendItem> {
                     ),
                     Text(
                       transactionAmount,
-                      style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold, color: TEXT_COLOR),
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
+                        color: widget.spend['transactionTypeName'] == '출금' ? RECEIPT_TEXT_COLOR : TEXT_COLOR,
+                      ),
                     ),
                   ],
                 ),
@@ -88,22 +92,6 @@ class _MySpendItemState extends State<MySpendItem> {
                     ),
                     Text(
                       '${NumberFormat('#,###').format(widget.spend['transactionAfterBalance'])}원',
-                      style: TextStyle(fontSize: 16.sp),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 30.h,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "결재자",
-                      style: TextStyle(fontSize: 16.sp),
-                    ),
-                    Text(
-                      '${userManager.name}',
                       style: TextStyle(fontSize: 16.sp),
                     ),
                   ],

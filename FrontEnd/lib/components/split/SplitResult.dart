@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:front/models/CustomDivider.dart';
+import 'package:intl/intl.dart';
 import '../../const/colors/Colors.dart';
 import '../../entities/SplitDoneResponse.dart';
+import '../../providers/store.dart';
 
 class SplitResult extends StatefulWidget {
   final SplitDoneResponse splitResult;
@@ -13,38 +16,92 @@ class SplitResult extends StatefulWidget {
 }
 
 class _SplitResultState extends State<SplitResult> {
-  bool isMinus = false;
+  var userManager = UserManager();
 
   @override
   Widget build(BuildContext context) {
+    userManager.loadUserInfo();
+    String amountText = '0원';
+    Color amountColor = Colors.black;
+    String titleText = '';
+    String subtitleText = '';
+    String imageUrl = '';
+
+    if (widget.splitResult.receiveName == userManager.name) {
+      amountText = '+${NumberFormat('#,###').format(widget.splitResult.amount)}원';
+      amountColor = Colors.green;
+      titleText = '${widget.splitResult.sendName}님께';
+      subtitleText = '받은 금액';
+      imageUrl = widget.splitResult.sendImage;
+    } else if (widget.splitResult.sendName == userManager.name) {
+      amountText = '-${NumberFormat('#,###').format(widget.splitResult.amount)}원';
+      amountColor = Color(0xffFF5252);
+      titleText = '${widget.splitResult.receiveName}님께';
+      subtitleText = '보낸 금액';
+      imageUrl = widget.splitResult.receiveImage;
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("{김신영}님께", style: TextStyle(fontSize: 20.sp)),
         Container(
           margin: EdgeInsets.only(top: 8.h, bottom: 8.h),
-          decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10.r)),
           child: Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(10.h),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: Row(
                     children: [
-                      Icon(Icons.check_circle, color: PRIMARY_COLOR, size: 40.w),
-                      SizedBox(width: 8.w),
-                      Text("보낸 금액", style: TextStyle(fontSize: 16.sp)),
+                      ClipOval(child: SizedBox(width: 60.w, height: 60.h, child: Image.network(imageUrl, fit: BoxFit.cover))),
+                      SizedBox(width: 25.w),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(titleText, style: TextStyle(fontSize: 20.sp)),
+                          Text(subtitleText, style: TextStyle(fontSize: 16.sp)),
+                        ],
+                      ),
                     ],
                   ),
                 ),
-                Text('{-30,800}원', style: TextStyle(fontSize: 18.sp, color: isMinus ? Colors.green : Colors.red)),
-                IconButton(onPressed: () {}, icon: Icon(Icons.info_outline, color: RECEIPT_TEXT_COLOR, size: 20.h)),
+                Text(amountText, style: TextStyle(fontSize: 18.sp, color: amountColor)),
               ],
             ),
           ),
         ),
+        CustomDivider(),
       ],
     );
+    // return ListTile(
+    //   leading: ClipOval(
+    //     child: SizedBox(
+    //       width: 60.w,
+    //       height: 60.h,
+    //       child: Image.network(imageUrl, fit: BoxFit.cover),
+    //     ),
+    //   ),
+    //   title: Text(
+    //     titleText,
+    //     style: TextStyle(
+    //       fontSize: 20.sp,
+    //       fontWeight: FontWeight.bold,
+    //     ),
+    //   ),
+    //   subtitle: Text(
+    //     subtitleText,
+    //     style: TextStyle(
+    //       fontSize: 16.sp,
+    //     ),
+    //   ),
+    //   trailing: Text(
+    //     amountText,
+    //     style: TextStyle(
+    //       color: amountColor,
+    //       fontSize: 18.sp,
+    //     ),
+    //   ),
+    // );
   }
 }
