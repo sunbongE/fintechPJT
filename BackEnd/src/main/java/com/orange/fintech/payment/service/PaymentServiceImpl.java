@@ -298,7 +298,15 @@ public class PaymentServiceImpl implements PaymentService {
         Transaction transaction = transactionDetail.getTransaction();
 
         long payAmount = 0;
+        int headCount = 0;
+        for (TransactionMemberDto dto : req.getMemberList()) {
+            if (dto.getTotalAmount() > 0) {
+                headCount++;
+            }
+        }
 
+        // transactionMember 설정
+        Receipt receipt = receiptRepository.findByTransaction(transaction);
         for (TransactionMemberDto dto : req.getMemberList()) {
             Member member = memberRepository.findById(dto.getMemberId()).get();
 
@@ -310,6 +318,28 @@ public class PaymentServiceImpl implements PaymentService {
             tm.setTotalAmount(dto.getTotalAmount());
             tm.setIsLock(dto.isLock());
             payAmount += dto.getTotalAmount();
+        }
+
+        // receiptDetail멤버를 transactionMember에 있는 멤버로 바꾸기
+        List<ReceiptDetail> receiptDetails = receiptDetailRepository.findByReceipt(receipt);
+
+        if (receiptDetails != null) {
+            for (ReceiptDetail receiptDetail : receiptDetails) {
+                // receiptDetail의 모든 receiptDetailMember 변경
+                for (TransactionMemberDto dto : req.getMemberList()) {
+                    // receiptDetail멤버에서 제외하기
+                    ReceiptDetailMember receiptDetailMember = new ReceiptDetailMember();
+
+                    ReceiptDetailMemberPK memberPK = new ReceiptDetailMemberPK();
+                    memberPK.setMember(memberRepository.findByKakaoId(dto.getMemberId()));
+                    memberPK.setReceiptDetail(receiptDetail);
+
+                    receiptDetailMember.setReceiptDetailMemberPK(memberPK);
+                    receiptDetailMember.setAmountDue(receipt.getApprovalAmount() / headCount);
+
+                    receiptDetailMemberRepository.save(receiptDetailMember);
+                }
+            }
         }
 
         transactionDetail.setRemainder((int) (transaction.getTransactionBalance() - payAmount));
