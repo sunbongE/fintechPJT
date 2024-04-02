@@ -21,36 +21,57 @@ class GroupItem extends StatefulWidget {
 class _GroupItemState extends State<GroupItem> {
   bool _isPollingActive = false;
 
-  // 정산하기 버튼을 눌렀을 때의 동작을 처리하는 함수
-  void handleSettleButtonPressed() async {
-    bool firstCallResult = await putFirstCall(widget.groupId);
-    String status = await fetchGroupMemberStatus(widget.groupId);
+  Future<bool> checkPersonalStatus() async {
+    final bool res = await getisSplit(widget.groupId);
     setState(() {
-      _isPollingActive = true;
+      _isPollingActive = res;
     });
-    while (_isPollingActive) {
-      await Future.delayed(Duration(seconds: 15));
-      status = await fetchGroupMemberStatus(widget.groupId);
-      print('--------------------현재 상태');
-      if (status == "SPLIT") {
-        break;
-      }
-    }
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => SplitMain(
-                groupId: widget.groupId,
-              )),
-    );
+    return true;
+  }
+ void pollingForGroupMemberStatus() async {
+    print('----들어와짐?');
+    print(_isPollingActive);
+   while (_isPollingActive) {
+     String status = await fetchGroupMemberStatus(widget.groupId);
+     print('--------------------폴링중');
+     if (status == "SPLIT") {
+       Navigator.push(
+         context,
+         MaterialPageRoute(
+             builder: (context) => SplitMain(
+               groupId: widget.groupId,
+             )),
+       );
+       break;
+     }
+     await Future.delayed(Duration(seconds: 15));
+   }
+  print('빠져나감');
+ }
+
+  void handleSettleButtonPressed() async {
+    await putFirstCall(widget.groupId);
+    setState(() {
+      _isPollingActive = !_isPollingActive;
+    });
+    pollingForGroupMemberStatus();
+  }
+  Future<void> initializeAsyncTasks() async {
+    await checkPersonalStatus();
+    pollingForGroupMemberStatus();
   }
 
   @override
+  void initState() {
+    initializeAsyncTasks();
+    super.initState();
+  }
+  @override
   void dispose() {
+    // 폴링 상태를 비활성화하여 폴링 루프를 중단
     _isPollingActive = false;
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -111,11 +132,10 @@ class _GroupItemState extends State<GroupItem> {
                       // 정산하기 버튼
                       SizedButton(
                         size: ButtonSize.l,
-                        btnText: !_isPollingActive ? '정산하기' : '대기중',
+                        btnText: !_isPollingActive ? '정산하기' : '취소하기',
                         onPressed: () {
                           handleSettleButtonPressed();
                         },
-                        enable: !_isPollingActive,
                       ),
                       // 정산요청 내역이 있으면
                       // 정산 요청 내역
