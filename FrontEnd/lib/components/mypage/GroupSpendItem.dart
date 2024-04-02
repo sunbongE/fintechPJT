@@ -31,13 +31,13 @@ class _GroupSpendItemState extends State<GroupSpendItem> {
   void initState() {
     super.initState();
     getGroupPaylist();
-    setState(() {
-      isLoading = true;
-    });
     userManager.loadUserInfo();
   }
 
   void getGroupPaylist() async {
+    setState(() {
+      isLoading = true;
+    });
     Response res = await getGroupPaymentlist(widget.groupId, widget.paymentId);
     print(res.data);
     setState(() {

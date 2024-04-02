@@ -53,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
     RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
+      _showNotificationWithDefaultSound(initialMessage);
       _navigateToSpecificPage(initialMessage.data);
     }
   }

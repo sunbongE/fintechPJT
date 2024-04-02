@@ -37,7 +37,6 @@ class _MyTripHistoryListState extends State<MyTripHistoryList> {
       isLoading = true;
     });
     var groupsJson = await getGroupList();
-    print(groupsJson);
     if (groupsJson != null && groupsJson.data is List) {
       setState(() {
         groups = (groupsJson.data as List).map((item) => Group.fromJson(item)).where((group) => group.isCalculateDone!).toList();

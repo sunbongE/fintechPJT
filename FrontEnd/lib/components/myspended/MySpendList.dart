@@ -43,7 +43,6 @@ class _MySpendListState extends State<MySpendList> {
         'page': pageKey,
         'size': _pageSize,
       };
-      print("queryParameters: ${queryParameters}");
       Response res = await getMyAccount(queryParameters);
       if (res.data != null) {
         List<Map<String, dynamic>> newData = List<Map<String, dynamic>>.from(res.data).cast<Map<String, dynamic>>();
@@ -51,12 +50,10 @@ class _MySpendListState extends State<MySpendList> {
         newData.sort((a, b) => b["transactionUniqueNo"].compareTo(a["transactionUniqueNo"]));
 
         final isLastPage = newData.length < _pageSize;
-        print("isLastPage: ${isLastPage}");
         if (isLastPage) {
           _pagingController.appendLastPage(newData);
         } else {
           final nextPageKey = pageKey + 1;
-          print("nextPageKey: ${nextPageKey}");
           _pagingController.appendPage(newData, nextPageKey);
         }
       } else {

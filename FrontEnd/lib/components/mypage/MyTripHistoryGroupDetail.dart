@@ -20,9 +20,6 @@ class MyTripHistoryGroupDetail extends StatefulWidget {
 }
 
 class _MyTripHistoryGroupDetailState extends State<MyTripHistoryGroupDetail> {
-  // 현재 잔액 불러오는 api
-  int myMoneyAmount = 32733;
-
   @override
   Widget build(BuildContext context) {
     return Padding(
