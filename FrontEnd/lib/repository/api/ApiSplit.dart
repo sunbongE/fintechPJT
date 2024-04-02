@@ -109,3 +109,14 @@ Future<Response> getYeojungDetail(groupId, type, otherMemberId) async {
     throw Exception('내 여정(스플릿) 상세조회 실패');
   }
 }
+// 개인이 여정(스플릿) 퍼스트 콜 여부
+Future<bool> getisSplit(groupId) async {
+  try {
+    print(groupId);
+    final res = await api.get('/groups/$groupId/members/isSplit');
+    return res.toString() == "true" ? true : false;
+  } catch (err) {
+    print(err);
+    throw Exception('퍼스트 콜 실패.');
+  }
+}
