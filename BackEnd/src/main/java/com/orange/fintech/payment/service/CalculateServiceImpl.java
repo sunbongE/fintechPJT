@@ -95,9 +95,9 @@ public class CalculateServiceImpl implements CalculateService {
     public List<TransactionDto> getRequest(
             int groupId, String type, String memberId, String otherMemberId) {
         if (type.equals("SEND")) {
-            return getSendRequest(groupId, memberId, otherMemberId);
-        } else {
             return getReceivedRequest(groupId, memberId, otherMemberId);
+        } else {
+            return getSendRequest(groupId, memberId, otherMemberId);
         }
     }
 

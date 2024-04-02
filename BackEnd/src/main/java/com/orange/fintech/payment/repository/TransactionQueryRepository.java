@@ -343,6 +343,14 @@ public class TransactionQueryRepository {
         return res;
     }
 
+    /**
+     * 다른 사람의 transaction의 멤버로 내가 포함되어있는지
+     *
+     * @param groupId 그룹 아이디
+     * @param memberId 내 아이디
+     * @param otherMemberId 다른 사람 아이디
+     * @return 내가 다른 사람에게 받은 요청
+     */
     public List<TransactionDto> getReceivedRequest(
             int groupId, String memberId, String otherMemberId) {
         List<TransactionDto> res =

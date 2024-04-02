@@ -410,7 +410,9 @@ public class PaymentController {
     })
     public ResponseEntity<List<TransactionDto>> getYeojungDetail(
             @PathVariable @Parameter(description = "그룹 아이디", in = ParameterIn.PATH) int groupId,
-            @Parameter(description = "SEND(보낼 금액) || RECEIVE(받을 금액)") @RequestParam String type,
+            @Parameter(description = "SEND(보낼 금액, 내가 받은 요청) || RECEIVE(받을 금액, 내가 보낸 요청)")
+                    @RequestParam
+                    String type,
             @Parameter(description = "상세보기할 멤버 아이디") @RequestParam String otherMemberId,
             Principal principal) {
 
