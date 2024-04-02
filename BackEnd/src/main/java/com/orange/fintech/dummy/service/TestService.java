@@ -181,6 +181,8 @@ public class TestService {
                     accountService.createHeader(
                             userKeyAccountPair.getUserKey(), drawingTransferUrl);
 
+            Member member = memberRepository.findByKakaoId(userKeyAccountPair.getKakaoId());
+            /*
             // 이전에 등록되어있던 주 계좌 해제
             Member member = memberRepository.findByKakaoId(userKeyAccountPair.getKakaoId());
             Account preAccount = accountRepository.findByMemberAndIsPrimaryAccountIsTrue(member);
@@ -189,6 +191,7 @@ public class TestService {
                 preAccount.setIsPrimaryAccount(false);
                 accountRepository.save(preAccount);
             }
+             */
 
             // 새로운 계좌 등록
             Account account = new Account();
