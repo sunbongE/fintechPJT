@@ -33,7 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class CalculateServiceImpl implements CalculateService {
 
@@ -56,6 +55,7 @@ public class CalculateServiceImpl implements CalculateService {
      * @param groupId
      * @param memberId 여정 페이지의 주인
      */
+    @Transactional
     public List<YeojungDto> yeojungCalculator(int groupId, String memberId) {
         GroupMembersListDto listDto = groupService.findGroupMembers(groupId);
         List<YeojungDto> yeojungList = new ArrayList<>();
@@ -94,6 +94,7 @@ public class CalculateServiceImpl implements CalculateService {
      * @param otherMemberId 요청을 보낸/준 MEMBER ID
      * @return
      */
+    @Transactional
     public List<TransactionDto> getRequest(
             int groupId, String type, String memberId, String otherMemberId) {
         if (type.equals("SEND")) {
@@ -103,6 +104,7 @@ public class CalculateServiceImpl implements CalculateService {
         }
     }
 
+    @Transactional
     private List<TransactionDto> getReceivedRequest(
             int groupId, String memberId, String otherMemberId) {
         List<TransactionDto> list =
@@ -111,6 +113,7 @@ public class CalculateServiceImpl implements CalculateService {
         return list;
     }
 
+    @Transactional
     private List<TransactionDto> getSendRequest(
             int groupId, String memberId, String otherMemberId) {
         List<TransactionDto> list =
@@ -131,6 +134,7 @@ public class CalculateServiceImpl implements CalculateService {
 
         List<CalMember> plus = new ArrayList<>(); // 돈을 받아야하는 인원
         List<CalMember> minus = new ArrayList<>(); // 돈을 줘야하는 인원
+        Group group = groupRepository.findById(groupId).get();
 
         int remainder = transactionQueryRepository.sumOfRemainder(groupId);
 
@@ -175,13 +179,11 @@ public class CalculateServiceImpl implements CalculateService {
 
             // 잔액이 부족한 놈 아이디 저장함.
             if (balance + member.amount < 0) {
-                log.info("CalculateServiceImpl 잔액 부족한 상태!!");
+//                log.info("CalculateServiceImpl 잔액 부족한 상태!!");
                 noMoneysKakaoId.add(member.kakaoId);
                 // 해당 그룹에서 회원의 2차 정산 상태를 변경한다.
-                Group group = new Group();
-                group.setGroupId(groupId);
-                Member noMoneyMember = new Member();
-                noMoneyMember.setKakaoId(member.kakaoId);
+
+                Member noMoneyMember = memberRepository.findByKakaoId(member.kakaoId);
 
                 GroupMemberPK groupMemberPK = new GroupMemberPK();
                 groupMemberPK.setGroup(group);
@@ -190,7 +192,7 @@ public class CalculateServiceImpl implements CalculateService {
                 GroupMember groupMember = groupMemberRepository.findById(groupMemberPK).get();
                 groupMember.setSecondCallDone(false);
                 groupMemberRepository.save(groupMember);
-                log.info("===============>>>>>>>>>>>>>>>group : {}", group);
+//                log.info("===============>>>>>>>>>>>>>>>groupMember : {}, {}", groupMember.getGroupMemberPK().getMember().getName(),groupMember.getSecondCallDone());
             }
         }
         // 돈이 부족한 사람이 있으면 fcm호출하고 정산을 종료한다.
@@ -263,6 +265,7 @@ public class CalculateServiceImpl implements CalculateService {
      * @param memberId
      * @return
      */
+    @Transactional
     public long sumOfTotalAmount(int groupId, String memberId) {
         long res = 0;
 
@@ -284,6 +287,7 @@ public class CalculateServiceImpl implements CalculateService {
     int minTransaction[];
 
     @Override
+    @Transactional
     public void transactionSimulation(int[] np, List<CalMember> plus, List<CalMember> minus) {
         long[] remains = new long[plus.size()];
         for (int i = 0; i < plus.size(); i++) {
@@ -328,6 +332,7 @@ public class CalculateServiceImpl implements CalculateService {
     }
 
     @Override
+    @Transactional
     public void transfer(List<CalculateResultDto> calResults, int groupId) throws IOException {
         // 회원 목록
         HashMap<String, String> getdistinctMemberId = new HashMap<>();
