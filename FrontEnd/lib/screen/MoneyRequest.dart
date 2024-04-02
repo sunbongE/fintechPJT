@@ -25,7 +25,8 @@ class _MoneyRequestState extends State<MoneyRequest> {
   }
 
   void fetchMyGroupPayments() async {
-    final MyGroupPaymentsJson = await getMyGroupPayments(widget.groupId, 0, 10); //받는 수 하드코딩함
+    print("MoneyRequest에서 그룹소비내역 받아오기----");
+    final MyGroupPaymentsJson = await getMyGroupPayments(widget.groupId, 0, 200); //받는 수 하드코딩함
     // print(MyGroupPaymentsJson.data);
     if (MyGroupPaymentsJson != null && MyGroupPaymentsJson.data is List) {
       setState(() {
@@ -42,6 +43,12 @@ class _MoneyRequestState extends State<MoneyRequest> {
     return Scaffold(
       appBar: AppBar(
         title: Text("내 정산 요청"),
+        leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () {
+          Navigator.pop(context, true);
+        },
+      ),
         scrolledUnderElevation: 0,
       ),
       body: Row(
@@ -71,7 +78,7 @@ class _MoneyRequestState extends State<MoneyRequest> {
                 child: SizedBox(
                   width: 400.w,
                   height: 594.h,
-                  child: MoneyRequestList(expenses: requests, groupId: widget.groupId),
+                  child: MoneyRequestList(expenses: requests, groupId: widget.groupId, onSuccess: (value){fetchMyGroupPayments();},),
                 ),
               ),
               Padding(padding: EdgeInsets.symmetric(vertical: 20.w)),

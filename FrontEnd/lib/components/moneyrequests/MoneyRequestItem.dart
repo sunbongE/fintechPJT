@@ -16,8 +16,9 @@ class MoneyRequestItem extends StatefulWidget {
   final bool isToggle;
   final bool clickable;
   final int groupId;
+  final Function(bool)? onSuccess;
 
-  MoneyRequestItem({Key? key, required this.expense, this.isToggle = true, required this.groupId, required this.clickable})
+  MoneyRequestItem({Key? key, required this.expense, this.isToggle = true, required this.groupId, required this.clickable, this.onSuccess})
       : super(key: key);
 
   @override
@@ -45,7 +46,9 @@ class _MoneyRequestItemState extends State<MoneyRequestItem> {
                   expense: widget.expense,
                   onSuccess: (bool newState) {
                     setState(() {
-                      isSettled = newState;
+                      //부모로 올려서 패치 다시하도록 하기
+                      print('라우터타고 머니리퀘스트아이템으로 돌아옴 아니야??? 콜백아?????');
+                      widget.onSuccess!(true);
                     });
                   },
                   groupId: widget.groupId,
