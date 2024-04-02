@@ -94,13 +94,19 @@ class _GroupAddState extends State<GroupAdd> {
               padding: EdgeInsets.all(16.0),
               child: ListView(
                 children: [
-                  GroupTextField(
+                  TextField(
                     controller: _titleController,
-                    labelText: '그룹 이름',
+                    decoration: InputDecoration(
+                      labelText: '그룹 이름',
+                      hintText: '그룹 이름을 입력하세요',
+                    ),
                   ),
-                  GroupTextField(
-                    controller: _descriptionController,
-                    labelText: '그룹 테마',
+                  TextField(
+                    controller: _titleController,
+                    decoration: InputDecoration(
+                      labelText: '테마',
+                      hintText: '테마를 입력하세요',
+                    ),
                   ),
                   SizedBox(height: 16.0.h),
                   Row(
