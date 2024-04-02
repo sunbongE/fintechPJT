@@ -62,6 +62,12 @@ class _SplitDetailState extends State<SplitDetail> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.type == 'RECEIVE' ? '받을 금액' : '보낼 금액'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context, true);
+          },
+        ),
       ),
       body: SafeArea(
         child: Padding(
@@ -109,15 +115,15 @@ class _SplitDetailState extends State<SplitDetail> {
                                 ),
                                 Icon(
                                   Icons.folder_open,
-                                  size: 100.w, // 아이콘 크기 조정
-                                  color: Colors.grey, // 아이콘 색상 조정
+                                  size: 100.w,
+                                  color: Colors.grey,
                                 ),
-                                SizedBox(height: 20.h), // 아이콘과 텍스트 사이의 간격 조정
+                                SizedBox(height: 20.h),
                                 Text(
                                   "내역이 없습니다",
                                   style: TextStyle(
                                     fontSize: 24.sp,
-                                    color: Colors.black, // 텍스트 색상 조정
+                                    color: Colors.black,
                                   ),
                                 ),
                               ],

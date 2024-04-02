@@ -62,12 +62,25 @@ Future<Map<String, dynamic>> postFinalRequest(groupId) async {
   print('최종정산 post요청');
   try {
     final res = await api.post('/groups/$groupId/calculate');
+    print(res);
+    print("---------------------------");
     String message = res.data['message'];
     int statusCode = res.data['statusCode'];
     return {'message': message, 'statusCode': statusCode};
   } catch (err) {
-    print(err);
-    throw (err);
+    if (err is DioException) {
+      final dioError = err as DioException;
+      final response = dioError.response;
+      if (response != null) {
+        String message = response.data['message'] ?? '에러 메시지 없음';
+        int? statusCode = response.statusCode;
+        return {'message': message, 'statusCode': statusCode};
+      } else {
+        return {'message': "네트워크 에러 또는 타임아웃", 'statusCode': 500};
+      }
+    } else {
+      return {'message': "알 수 없는 에러 발생", 'statusCode': 500};
+    }
   }
 }
 
