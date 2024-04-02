@@ -5,8 +5,6 @@ import 'package:front/components/mains/MainInfo.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/mains/MainPastTravel.dart';
 import 'package:front/components/mains/MainNowTravel.dart';
-import 'package:lottie/lottie.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../entities/Group.dart';
 import 'package:front/repository/api/ApiGroup.dart';
 

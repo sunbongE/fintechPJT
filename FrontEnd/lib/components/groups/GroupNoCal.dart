@@ -1,14 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:front/components/groups/GroupJoinMember.dart';
-import 'package:front/models/button/Button.dart';
-import 'package:front/screen/groupscreens/GroupDetail.dart';
 import 'package:front/const/colors/Colors.dart';
-import '../../entities/Group.dart';
-import 'package:email_validator/email_validator.dart';
-
-import 'package:flutter/material.dart';
-
 import '../../models/button/ButtonSlideAnimation.dart';
 import '../../screen/MoneyRequest.dart';
 

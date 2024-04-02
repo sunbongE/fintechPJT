@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../entities/Group.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:front/const/colors/Colors.dart';
 
 class MainNowTravelCard extends StatelessWidget {

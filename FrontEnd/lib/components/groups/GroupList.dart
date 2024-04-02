@@ -1,8 +1,7 @@
 import "package:flutter/material.dart";
-import 'package:front/components/groups/GroupInvitedItem.dart';
 import 'package:front/components/split/SplitDoing.dart';
 import 'package:front/screen/SplitMain.dart';
-import 'package:front/screen/groupscreens/GroupAdd.dart'; // Group 클래스를 import
+import 'package:front/screen/groupscreens/GroupAdd.dart';
 import 'package:front/screen/groupscreens/GroupItem.dart';
 import 'package:front/components/groups/GroupCard.dart';
 import 'package:front/const/colors/Colors.dart';
@@ -90,7 +89,7 @@ class _GroupListState extends State<GroupList> {
 
   @override
   Widget build(BuildContext context) {
-    final ongoingGroups = widget.groups.where((group) => !group.isCalculateDone).toList();
+    final ongoingGroups = widget.groups.where((group) => !group.isCalculateDone).toList().reversed.toList();
 
     return Scaffold(
       body: ListView.builder(

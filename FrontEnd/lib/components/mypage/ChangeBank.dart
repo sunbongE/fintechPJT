@@ -5,9 +5,7 @@ import 'package:front/components/mypage/ChangeAccount.dart';
 import 'package:front/const/colors/Colors.dart';
 import 'package:front/models/button/Button.dart';
 import 'package:front/models/button/ButtonSlideAnimation.dart';
-
 import '../selectbank/BankList.dart';
-import '../selectbank/selectAccount.dart';
 
 class ChangeBank extends StatefulWidget {
   const ChangeBank({super.key});

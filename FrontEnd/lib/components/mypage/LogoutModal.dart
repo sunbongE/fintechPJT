@@ -3,7 +3,6 @@ import 'package:front/components/login/SocialKakao.dart';
 import 'package:front/providers/store.dart';
 import 'package:front/repository/api/ApiLogin.dart';
 import '../../main.dart';
-import '../../repository/api/ApiMyPage.dart';
 
 void LogoutModal(BuildContext context) {
   showDialog(

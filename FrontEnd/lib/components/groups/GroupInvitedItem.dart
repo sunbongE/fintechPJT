@@ -1,19 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:front/components/groups/GroupJoinMember.dart';
 import 'package:front/components/groups/GroupJoinMemberCarousel.dart';
-import 'package:front/components/groups/GroupNoCal.dart';
-import 'package:front/const/colors/Colors.dart';
 import 'package:front/entities/GroupMember.dart';
-import 'package:front/models/button/Button.dart';
 import 'package:front/models/button/ButtonSlideAnimation.dart';
 import 'package:front/models/button/SizedButton.dart';
 import 'package:front/repository/api/ApiGroup.dart';
-import 'package:front/screen/SplitMain.dart';
-import 'package:front/screen/groupscreens/GroupDetail.dart';
 import '../../entities/Group.dart';
-import '../../repository/api/ApiSplit.dart';
 
 class GroupInvitedItem extends StatefulWidget {
   final int groupId;

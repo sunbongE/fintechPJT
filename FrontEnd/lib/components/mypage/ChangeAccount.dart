@@ -6,10 +6,7 @@ import 'package:front/models/button/Button.dart';
 import 'package:front/models/button/ButtonSlideAnimation.dart';
 import 'package:front/providers/store.dart';
 import 'package:front/repository/api/ApiLogin.dart';
-import 'package:front/screen/HomeScreen.dart';
-import 'package:front/screen/MyPage.dart';
 import 'package:lottie/lottie.dart';
-
 import '../../models/Biometrics.dart';
 import '../../models/FlutterToastMsg.dart';
 import '../../models/PassWordCertification.dart';

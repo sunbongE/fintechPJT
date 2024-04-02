@@ -1,14 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:front/components/groups/FirstInviteModal.dart';
 import 'package:front/components/groups/GroupCalendar.dart';
-import 'package:front/components/groups/GroupTextField.dart';
 import 'package:front/models/button/GroupAddButton2.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter/services.dart';
 import 'package:front/const/colors/Colors.dart';
-import '../../entities/Group.dart';
 import '../../models/button/ButtonSlideAnimation.dart';
 import 'package:front/repository/api/ApiGroup.dart';
 
@@ -62,13 +60,12 @@ class _GroupAddState extends State<GroupAdd> {
       final response = await postGroupInfo(groupData);
       if (response != null) {
         print("그룹이 성공적으로 생성되었습니다.");
-        print(response.toString());
-        var res = response;
+        // var res = response;
 
         buttonSlideAnimationPushAndRemoveUntil(context, 1);
         // Navigator.pop(context, newGroup);
 
-        FirstInviteModal.showInviteModal(context, res);
+        // FirstInviteModal.showInviteModal(context, res);
       } else {
         print("그룹 생성에 실패했습니다.");
       }
@@ -102,7 +99,7 @@ class _GroupAddState extends State<GroupAdd> {
                     ),
                   ),
                   TextField(
-                    controller: _titleController,
+                    controller: _descriptionController,
                     decoration: InputDecoration(
                       labelText: '테마',
                       hintText: '테마를 입력하세요',
@@ -165,10 +162,10 @@ class _GroupAddState extends State<GroupAdd> {
                       ),
                     ],
                   ),
-          
+
                   SizedBox(height: 16.0.h),
                   //달력
-                  Expanded(
+                  Container(
                     child: GroupCalendar(
                       focusedDay: _focusedDay,
                       selectedDay: _selectedDay,

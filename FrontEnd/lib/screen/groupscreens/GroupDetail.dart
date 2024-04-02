@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/mypage/ProfileChangeBtn.dart';
-import 'package:front/screen/groupscreens/GroupModify.dart';
 import '../../entities/Group.dart';
 import 'package:front/components/groups/GroupDescription.dart';
-import 'package:front/components/groups/MyGroupRequest.dart';
 import 'package:front/repository/api/ApiGroup.dart';
 
 import '../../models/button/ButtonSlideAnimation.dart';

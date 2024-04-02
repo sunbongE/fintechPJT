@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../const/colors/Colors.dart';
 
 class ShowReceiptBtn extends StatelessWidget {

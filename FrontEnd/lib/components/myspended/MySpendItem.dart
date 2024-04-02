@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:front/components/myspended/MySpendMap.dart';
-import 'package:front/components/myspended/ShowReceiptBtn.dart';
 import 'package:front/const/colors/Colors.dart';
 import 'package:front/providers/store.dart';
 import 'package:intl/intl.dart';
-import '../../models/CustomDivider.dart';
-import '../../screen/YjReceipt.dart';
 
 class MySpendItem extends StatefulWidget {
   final Map<String, dynamic> spend;

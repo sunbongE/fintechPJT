@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:front/screen/groupscreens/GroupModify.dart';
 import '../../entities/Group.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

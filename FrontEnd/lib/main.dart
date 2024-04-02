@@ -1,13 +1,7 @@
-import 'dart:developer';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:front/repository/api/ApiGroup.dart';
 import 'package:front/screen/LoadingPage.dart';
-import 'package:front/screen/MainPage.dart';
-import 'package:front/screen/groupscreens/GroupItem.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 import 'package:front/routes.dart';
@@ -16,8 +10,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("백그라운드에서 메시지 수신: ${message.data}");
@@ -72,6 +64,8 @@ class _MyAppState extends State<MyApp> {
         home: Scaffold(
           body: LoadingPage(),
         ),
+        theme: ThemeData(fontFamily: 'GowunDodum'),
+        themeMode: ThemeMode.system,
       ),
     );
   }

@@ -6,17 +6,13 @@ import 'package:front/components/split/SplitDoing.dart';
 import 'package:front/const/colors/Colors.dart';
 import 'package:front/models/button/SizedButton.dart';
 import 'package:front/providers/store.dart';
-import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import '../components/calculate/Jjatury.dart';
 import '../components/split/SplitMainList.dart';
 import '../entities/SplitMemberResponse.dart';
 import '../models/Biometrics.dart';
 import '../models/PassWordCertification.dart';
-import '../models/button/ButtonSlideAnimation.dart';
-import '../repository/api/ApiMoneyRequest.dart';
 import '../repository/api/ApiSplit.dart';
-import 'MoneyRequest.dart';
 
 class SplitMain extends StatefulWidget {
   final int groupId;

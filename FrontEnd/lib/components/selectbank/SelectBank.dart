@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:easy_rich_text/easy_rich_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/groups/StateContainer.dart';
 import 'package:front/components/groups/isDoneContainer.dart';
-import 'package:front/const/colors/Colors.dart';
 import '../../entities/Group.dart';
 
 class GroupCard extends StatelessWidget {
