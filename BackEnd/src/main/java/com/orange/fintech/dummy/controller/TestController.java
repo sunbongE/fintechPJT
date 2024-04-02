@@ -7,14 +7,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import java.nio.file.Paths;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Test", description = "테스트 API")
 @Slf4j
@@ -24,6 +23,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     private final TestService testService;
 
+    @GetMapping("/path")
+    @Operation(
+            summary =
+                    "현재 경로 반환",
+            description =
+                    "현재 경로 반환")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> path() {
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, Paths.get("").toAbsolutePath().toString()));
+    }
+
     @PostMapping("/postdummytranaction")
     @Operation(
             summary =
@@ -31,8 +44,8 @@ public class TestController {
             description =
                     "<strong>SSAFY Bank API</strong>를 이용해 더미 데이터 결제 내역을 추가한다.<br>(Docker 실행이 중지되지 않을 때 또는 localhost에서 실행해야 함!)")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> postDummyTranaction(
             @RequestBody List<UserKeyAccountPair> userKeyAccountPairList) {
