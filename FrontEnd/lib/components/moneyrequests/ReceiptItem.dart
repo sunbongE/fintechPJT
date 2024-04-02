@@ -44,26 +44,27 @@ class _ReceiptItemState extends State<ReceiptItem> {
   }
 
   void fetchReceiptDetailData({required Function onSuccess}) async {
+    print('requestReceiptDetail 받아오기----');
     final response = await getReceiptDetail(widget.groupId, widget.paymentId,
         widget.requestReceiptSub.receiptDetailId);
     print(response.data);
     var tempRequestReceiptDetail = RequestReceiptDetail.fromJson(response.data);
 
-    if (tempRequestReceiptDetail.memberList == null ||
-        tempRequestReceiptDetail.memberList!.isEmpty) {
-      final groupMemberResponse = await getGroupMemberList(widget.groupId);
-      final groupMembers =
-          groupMemberResponse.data['groupMembersDtos'] as List<dynamic>;
-      final memberList = groupMembers
-          .map((memberJson) => RequestReceiptDetailMember(
-              receiptDetailId: widget.requestReceiptSub.receiptDetailId,
-              memberId: memberJson['kakaoId'] as String,
-              name: memberJson['name'] as String,
-              thumbnailImage: memberJson['thumbnailImage'] as String,
-              amountDue: 0))
-          .toList();
-      tempRequestReceiptDetail.memberList = memberList;
-    }
+    // if (tempRequestReceiptDetail.memberList == null ||
+    //     tempRequestReceiptDetail.memberList!.isEmpty) {
+    //   final groupMemberResponse = await getGroupMemberList(widget.groupId);
+    //   final groupMembers =
+    //       groupMemberResponse.data['groupMembersDtos'] as List<dynamic>;
+    //   final memberList = groupMembers
+    //       .map((memberJson) => RequestReceiptDetailMember(
+    //           receiptDetailId: widget.requestReceiptSub.receiptDetailId,
+    //           memberId: memberJson['kakaoId'] as String,
+    //           name: memberJson['name'] as String,
+    //           thumbnailImage: memberJson['thumbnailImage'] as String,
+    //           amountDue: 0))
+    //       .toList();
+    //   tempRequestReceiptDetail.memberList = memberList;
+    // }
 
     setState(() {
       requestReceiptDetail = tempRequestReceiptDetail;

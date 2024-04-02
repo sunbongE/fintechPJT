@@ -55,6 +55,7 @@ Future<void> putPaymentsInclude(groupId, paymentId) async {
 // 내 결제 상세보기에서 참여인원 토글 on/off or 수기입력 수정
 Future<Map<String, dynamic>> putPaymentsMembers(groupId, paymentId, data) async {
   try {
+    print('-------참여인원 토글------------');
     print(groupId);
     print(paymentId);
     print(jsonEncode(data));
