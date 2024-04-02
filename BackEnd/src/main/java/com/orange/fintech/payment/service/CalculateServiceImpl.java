@@ -178,16 +178,19 @@ public class CalculateServiceImpl implements CalculateService {
                 log.info("CalculateServiceImpl 잔액 부족한 상태!!");
                 noMoneysKakaoId.add(member.kakaoId);
                 // 해당 그룹에서 회원의 2차 정산 상태를 변경한다.
-                GroupMemberPK groupMemberPK = new GroupMemberPK();
                 Group group = new Group();
                 group.setGroupId(groupId);
                 Member noMoneyMember = new Member();
                 noMoneyMember.setKakaoId(member.kakaoId);
+
+                GroupMemberPK groupMemberPK = new GroupMemberPK();
                 groupMemberPK.setGroup(group);
                 groupMemberPK.setMember(noMoneyMember);
+
                 GroupMember groupMember = groupMemberRepository.findById(groupMemberPK).get();
                 groupMember.setSecondCallDone(false);
                 groupMemberRepository.save(groupMember);
+                log.info("===============>>>>>>>>>>>>>>>group : {}", group);
             }
         }
         // 돈이 부족한 사람이 있으면 fcm호출하고 정산을 종료한다.
