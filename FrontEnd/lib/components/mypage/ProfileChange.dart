@@ -47,7 +47,7 @@ class _ProfileChangeState extends State<ProfileChange> {
     String thumbnailImagePathURL = responseData['thumbnailImagePathURL'];
 
     UserManager userManager = UserManager();
-    await userManager.saveUserInfo(
+    userManager.saveUserInfo(
       newThumbnailImageUrl: thumbnailImagePathURL,
       newProfileImageUrl: profileImagePath,
     );

@@ -116,17 +116,26 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
 
 // 카메라로 사진찍기
   void receiptFromCamera() async {
+    setState(() {
+      isLoading = true;
+    });
     final XFile? image = await picker.pickImage(source: ImageSource.camera);
     if (image != null) {
       List<XFile> imageFiles = [image];
       uploadImages(imageFiles);
 
       await onImageSelected(image);
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
   // 갤러리에서 사진 가져오기
   void receiptFromGallery() async {
+    setState(() {
+      isLoading = true;
+    });
     final List<XFile>? selectedImages = await picker.pickMultiImage();
     if (selectedImages != null && selectedImages.isNotEmpty) {
       if (selectedImages.length > 10) {
@@ -136,10 +145,13 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
 
       List<XFile> imageFiles = selectedImages.map((xFile) => XFile(xFile.path)).toList();
       uploadImages(imageFiles);
-      //
+
       for (XFile image in selectedImages) {
         await onImageSelected(image);
       }
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -158,10 +170,6 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
 
   // 선택된 이미지를 네이버 클로바로 보내는 api 호출
   Future<void> onImageSelected(XFile image) async {
-    setState(() {
-      isLoading = true;
-    });
-
     String fileName = image.name;
     String requestId = DateTime.now().millisecondsSinceEpoch.toString();
     FormData formData = FormData.fromMap({
