@@ -58,12 +58,13 @@ Future<Response> getSecondCallMember(groupId) async {
 }
 
 // 여정(스플릿) 최종정산 - 세컨드 콜이 리턴값이 0이상인 사람이 호출
-Future<dynamic> postFinalRequest(groupId) async {
+Future<Map<String, dynamic>> postFinalRequest(groupId) async {
   print('최종정산 post요청');
   try {
     final res = await api.post('/groups/$groupId/calculate');
-    print(res.data);
-    return res.data;
+    String message = res.data['message'];
+    int statusCode = res.data['statusCode'];
+    return {'message': message, 'statusCode': statusCode};
   } catch (err) {
     print(err);
     throw (err);

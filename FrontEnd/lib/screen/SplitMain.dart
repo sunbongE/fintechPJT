@@ -107,64 +107,69 @@ class _SplitMainState extends State<SplitMain> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(30.w, 50.h, 30.w, 0.h),
-          child: Stack(
-            children: [
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: userInfo ?? '',
-                              style: TextStyle(
-                                fontSize: 50.sp,
-                                fontWeight: FontWeight.bold,
-                                color: TEXT_COLOR,
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(30.w, 50.h, 30.w, 0.h),
+            child: Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: userInfo ?? '',
+                                style: TextStyle(
+                                  fontSize: 50.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: TEXT_COLOR,
+                                ),
                               ),
-                            ),
-                            TextSpan(
-                              text: userInfo != null ? '님의 이번 여정' : '',
-                              style: TextStyle(
-                                fontSize: 24.sp,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                              TextSpan(
+                                text: userInfo != null ? '님의 이번 여정' : '',
+                                style: TextStyle(
+                                  fontSize: 24.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 8.h),
-                    memberList.isEmpty
-                        ? Center(
-                            child: Lottie.asset(
-                                'assets/lotties/orangewalking.json'),
-                          )
-                        : SplitMainList(
-                            memberList: memberList, groupId: widget.groupId,
-                          ),
-                    SizedBox(height: 100.h),
-                  ],
+                      SizedBox(height: 8.h),
+                      memberList.isEmpty
+                          ? Center(
+                              child: Lottie.asset(
+                                  'assets/lotties/orangewalking.json'),
+                            )
+                          : SplitMainList(
+                              memberList: memberList, groupId: widget.groupId,
+                            ),
+                      SizedBox(height: 100.h),
+                    ],
+                  ),
                 ),
-              ),
-              Positioned(
-                bottom: 30.h,
-                left: 50.w,
-                right: 50.w,
-                child: SizedButton(
-                  btnText: '정산하기',
-                  size: ButtonSize.l,
-                  onPressed: () => IdentityVerification(),
+                Positioned(
+                  bottom: 30.h,
+                  left: 50.w,
+                  right: 50.w,
+                  child: SizedButton(
+                    btnText: '정산하기',
+                    size: ButtonSize.l,
+                    onPressed: () => IdentityVerification(),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
