@@ -631,7 +631,7 @@ public class AccountServiceImpl implements AccountService {
         requestBody.put("accountNo", accountNo);
         requestBody.put("transactionBalance", balance);
         requestBody.put("accountNo", accountNo);
-        requestBody.put("transactionSummary", "시작 금액");
+        requestBody.put("transactionSummary", "삼성SSAFY");
 
         // 2-1. SSAFY Bank API 호출
         RestClient restClient = RestClient.create();

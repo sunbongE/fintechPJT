@@ -8,7 +8,11 @@ import com.orange.fintech.account.service.AccountService;
 import com.orange.fintech.dummy.dto.UserKeyAccountPair;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
+import com.orange.fintech.payment.entity.Receipt;
+import com.orange.fintech.payment.entity.ReceiptDetail;
 import com.orange.fintech.payment.entity.Transaction;
+import com.orange.fintech.payment.repository.ReceiptDetailRepository;
+import com.orange.fintech.payment.repository.ReceiptRepository;
 import com.orange.fintech.payment.repository.TransactionRepository;
 import com.orange.fintech.util.AccountDateTimeUtil;
 import jakarta.transaction.Transactional;
@@ -41,6 +45,10 @@ public class TestService {
 
     @Autowired AccountRepository accountRepository;
 
+    @Autowired ReceiptRepository receiptRepository;
+
+    @Autowired ReceiptDetailRepository receiptDetailRepository;
+
     @Value("${ssafy.bank.drawing.transfer}")
     private String drawingTransferUrl;
 
@@ -48,6 +56,12 @@ public class TestService {
     private String transactionHistoryUrl;
 
     private List<Map<String, Object>> dummyRecords = new ArrayList<>();
+
+    int groupMemberCount = 7;
+    String bankCode = "001";
+    String startDate = "20240101";
+    String endDate = "20241231";
+    LocalDate startDateValue = AccountDateTimeUtil.StringToLocalDate(startDate);
 
     private void loadData(String filename) throws FileNotFoundException {
         String filePath = "resources/" + filename + ".csv";
@@ -65,17 +79,37 @@ public class TestService {
         try (BufferedReader br =
                 new BufferedReader(new InputStreamReader(new FileInputStream(filePath)))) {
             // 한 줄 (제목 행) 버리기
+            Map<String, Object> map = new HashMap<>();
+            Map<String, Object> menuMap = new HashMap<>();
+            List<Map<String, Object>> menuList = new ArrayList<>();
             line = br.readLine();
 
             while ((line = br.readLine()) != null) {
-                Map<String, Object> map = new HashMap<>();
                 String[] tokens = line.split(",");
 
-                map.put("payer", tokens[0]);
-                map.put("storeName", tokens[1]);
-                map.put("approvalAmount", tokens[2]);
+                if (tokens.length == 0) {
+                    dummyRecords.add(map);
+                    map.put("menuList", menuList);
 
-                dummyRecords.add(map);
+                    map = new HashMap<>();
+                    menuList = new ArrayList<>();
+                } else if (tokens.length == 9) {
+                    // 7: 주소, 8: 금액
+                    map.put("payer", tokens[1]);
+                    map.put("storeName", tokens[2]);
+                    map.put("location", tokens[7]);
+                    map.put("approvalAmount", tokens[8]);
+                } else if (tokens.length == 7) {
+                    // 3: 메뉴, 4: 단가, 5: 수량, 6: 소계
+                    menuMap = new HashMap<>();
+
+                    menuMap.put("menu", tokens[3]);
+                    menuMap.put("unitPrice", tokens[4]);
+                    menuMap.put("count", tokens[5]);
+                    menuMap.put("subTotal", tokens[6]);
+
+                    menuList.add(menuMap);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,22 +127,12 @@ public class TestService {
         return sb.toString();
     }
 
-    public void postDummyTranaction(List<UserKeyAccountPair> userKeyAccountPairList)
+    // 그룹원의 거래 내역 갱신 (SSAFY Bank API를 호출하여 서비스 서버의 Transaction 테이블 갱신)
+    public void refreshTransactionUsingSSAFYAPI(List<UserKeyAccountPair> userKeyAccountPairList)
             throws Exception {
-        int groupMemberCount = 7;
         ReqHeader[][] reqHeaderList = new ReqHeader[2][groupMemberCount];
         UserKeyAccountPair userKeyAccountPair = null;
-        String bankCode = "001";
-        String startDate = "20240101";
-        String endDate = "20241231";
-        LocalDate startDateValue = AccountDateTimeUtil.StringToLocalDate(startDate);
 
-        if (userKeyAccountPairList.size() != groupMemberCount) {
-
-            throw new Exception();
-        }
-
-        // 1. 그룹원의 거래 내역 갱신 (SSAFY Bank API를 호출하여 서비스 서버의 Transaction 테이블 갱신)
         for (int i = 0; i < groupMemberCount; i++) {
             userKeyAccountPair = userKeyAccountPairList.get(i);
             LocalTime transactionTime = null;
@@ -149,7 +173,7 @@ public class TestService {
             RestClient restClient = RestClient.create();
             RestClient.ResponseSpec response =
                     restClient.post().uri(transactionHistoryUrl).body(req).retrieve();
-            // Thread.sleep(100);
+            Thread.sleep(1000);
             String responseBody = response.body(String.class);
 
             JSONParser parser = new JSONParser();
@@ -188,6 +212,20 @@ public class TestService {
                 }
             }
         }
+    }
+
+    public void postDummyTranaction(List<UserKeyAccountPair> userKeyAccountPairList)
+            throws Exception {
+        ReqHeader[][] reqHeaderList = new ReqHeader[2][groupMemberCount];
+        UserKeyAccountPair userKeyAccountPair = null;
+
+        if (userKeyAccountPairList.size() != groupMemberCount) {
+
+            throw new Exception();
+        }
+
+        // 1. 그룹원의 거래 내역 갱신 (SSAFY Bank API를 호출하여 서비스 서버의 Transaction 테이블 갱신)
+        refreshTransactionUsingSSAFYAPI(userKeyAccountPairList);
 
         // 2. 잔액 충전
         for (int i = 0; i < groupMemberCount; i++) {
@@ -237,7 +275,7 @@ public class TestService {
                     RestClient restClient = RestClient.create();
                     RestClient.ResponseSpec response =
                             restClient.post().uri(drawingTransferUrl).body(requestBody).retrieve();
-                    // Thread.sleep(100);
+                    Thread.sleep(1000);
 
                     // 4-5. 응답 코드 해석
                     ResponseEntity<?> responseEntity = response.toEntity(String.class);
@@ -249,6 +287,71 @@ public class TestService {
 
                     now = System.currentTimeMillis();
                 } while ((now - start) / 1000 <= 1.5 && !statusCode.is2xxSuccessful());
+            }
+        }
+
+        // 5. 그룹원의 거래 내역 갱신 (SSAFY Bank API를 호출하여 서비스 서버의 Transaction 테이블 갱신)
+        refreshTransactionUsingSSAFYAPI(userKeyAccountPairList);
+
+        // 6. receipt와 receipt_detail 테이블에 레코드 추가
+        while (!dummyRecords.isEmpty()) {
+            for (Map<String, Object> record : dummyRecords) {
+                // 테이블에 레코드 추가 후 삭제
+                String storeName = (String) record.get("storeName");
+                String location = (String) record.get("location");
+                int payer = Integer.parseInt((String) record.get("payer")) - 1; // 1부터 시작이므로 -1
+                Long transactionBalance = Long.parseLong((String) record.get("approvalAmount"));
+                LocalDate transactionDate = LocalDate.now();
+
+                // 일치하는 레코드 발견
+                Transaction transaction =
+                        transactionRepository.findDummyTargetReceipt(
+                                transactionBalance, transactionDate);
+
+                if (transaction != null) {
+                    Receipt receipt = new Receipt();
+
+                    receipt.setTransaction(transaction);
+                    receipt.setBusinessName(storeName);
+                    // receipt.setSubName();   //null
+                    receipt.setLocation(location);
+                    receipt.setTransactionDate(transaction.getTransactionDate());
+                    receipt.setTransactionTime(transaction.getTransactionTime());
+                    receipt.setTotalPrice(transaction.getTransactionBalance());
+                    receipt.setApprovalAmount(transaction.getTransactionBalance());
+                    // receipt.setAuthNumber();    //null
+
+                    receipt = receiptRepository.save(receipt);
+
+                    if (transactionRepository.doesDummyRecordAlreadyExists(
+                            userKeyAccountPair.getKakaoId(), location, transactionBalance)) {
+                        List<Map<String, Object>> menuList =
+                                (List<Map<String, Object>>) record.get("menuList");
+
+                        for (Map<String, Object> menu : menuList) {
+                            ReceiptDetail receiptDetail = new ReceiptDetail();
+
+                            // receipt 레코드 FK 설정
+                            receiptDetail.setReceipt(receipt);
+                            receiptDetail.setMenu((String) menu.get("menu"));
+                            receiptDetail.setCount(Integer.parseInt((String) menu.get("count")));
+                            receiptDetail.setUnitPrice(
+                                    Integer.parseInt((String) menu.get("unitPrice")));
+
+                            receiptDetailRepository.save(receiptDetail);
+
+                            // 테이블에 레코드 추가 후 삭제
+                            // menuList.remove(menu);
+                        }
+                    }
+
+                    // while문 탈출 조건
+                    dummyRecords.remove(record);
+                } else {
+                    log.info("transaction 테이블에 관련 레코드 없음!");
+
+                    throw new Exception();
+                }
             }
         }
     }
