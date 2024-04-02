@@ -12,6 +12,8 @@ import 'package:front/screen/MyPage.dart';
 import 'package:front/screen/MySpended.dart';
 import 'package:front/screen/SplitMain.dart';
 
+import 'groupscreens/GroupItem.dart';
+
 class HomeScreen extends StatefulWidget {
   final int initialIndex;
 
@@ -71,6 +73,10 @@ class _HomeScreenState extends State<HomeScreen> {
       final groupId = int.parse(data['groupId']);
       switch (type) {
         case 'INVITE':
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => GroupInvitedItem(groupId: groupId)),
+          );
           break;
         case 'SPLIT':
         Navigator.push(
@@ -99,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
         case 'URGE':
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => GroupInvitedItem(groupId: groupId)),
+            MaterialPageRoute(builder: (context) => SplitMain(groupId: groupId)),
           );
           break;
       }
@@ -114,6 +120,10 @@ class _HomeScreenState extends State<HomeScreen> {
         final groupId = int.parse(data['groupId']);
         switch (type) {
           case 'INVITE':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => GroupInvitedItem(groupId: groupId)),
+            );
             break;
           case 'SPLIT':
             Navigator.push(
@@ -142,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
           case 'URGE':
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => GroupInvitedItem(groupId: groupId)),
+              MaterialPageRoute(builder: (context) => SplitMain(groupId: groupId)),
             );
             break;
         }
