@@ -34,6 +34,13 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
             @Param("transactionDate") LocalDate transactionDate,
             @Param("kakaoId") String kakaoId);
 
+    // 새로운 영수증 로직 (날짜와 금액 비교)
+    @Query(
+            "SELECT t FROM Transaction t WHERE t.transactionBalance = :transactionBalance AND t.transactionDate = :transactionDate")
+    Transaction findDummyTargetReceipt(
+            @Param("transactionBalance") Long transactionBalance,
+            @Param("transactionDate") LocalDate transactionDate);
+
     @Query(
             "SELECT EXISTS(SELECT t FROM Transaction t WHERE t.member.kakaoId = :kakaoId AND t.transactionBalance = :balance AND t.transactionSummary = :transactionSummary)")
     boolean doesDummyRecordAlreadyExists(
