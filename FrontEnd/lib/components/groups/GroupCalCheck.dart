@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:front/entities/Expense.dart';
 import 'package:front/repository/api/ApiMyPage.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +11,7 @@ import '../../const/colors/Colors.dart';
 import '../../models/CustomDivider.dart';
 import '../../models/button/ButtonSlideAnimation.dart';
 import '../../screen/MoneyRequest.dart';
+import '../split/SplitRequestDetail.dart';
 import 'GroupNoCal.dart';
 
 class GroupCalCheck extends StatefulWidget {
@@ -172,7 +174,19 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
             builderDelegate: PagedChildBuilderDelegate<Map<String, dynamic>>(
               itemBuilder: (context, item, index) => InkWell(
                 onTap: () {
-                  print("전승혜 메롱");
+                  Expense expense = Expense.fromJson(item);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SplitRequestDetail(
+                            expense: expense,
+                            onSuccess: (bool newState) {
+                              setState(() {
+                                //스클릿 리퀘스트 디테일 바뀌었을 때 콜백 함수
+                              });
+                            },
+                            groupId: widget.groupId,
+                          )));
                 },
                 child: Column(
                   children: [
