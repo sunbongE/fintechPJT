@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/addreceipt/AddReceipt.dart';
 import 'package:front/models/button/SizedButton.dart';
 import 'package:front/screen/MoneyRequests/AddCashRequest.dart';
+import 'package:front/screen/groupscreens/GroupItem.dart';
 import '../components/moneyrequests/MoneyRequestList.dart';
 import '../entities/Expense.dart';
 import '../models/button/ButtonSlideAnimation.dart';
@@ -44,11 +45,30 @@ class _MoneyRequestState extends State<MoneyRequest> {
       appBar: AppBar(
         title: Text("내 정산 요청"),
         leading: IconButton(
-        icon: Icon(Icons.arrow_back),
-        onPressed: () {
-          Navigator.pop(context, true);
-        },
-      ),
+          icon: Icon(Icons.arrow_back),
+          onPressed: () async {
+            Navigator.pop(context);
+            await Future.delayed(Duration.zero);
+            Navigator.pushReplacement(
+              context,
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) => GroupItem(groupId: widget.groupId),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  var begin = Offset(-1.0, 0.0);
+                  var end = Offset.zero;
+                  var curve = Curves.ease;
+                  var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                  var offsetAnimation = animation.drive(tween);
+                  return SlideTransition(
+                    position: offsetAnimation,
+                    child: child,
+                  );
+                },
+                transitionDuration: Duration(milliseconds: 300),
+              ),
+            );
+          },
+        ),
         scrolledUnderElevation: 0,
       ),
       body: Row(
@@ -78,7 +98,13 @@ class _MoneyRequestState extends State<MoneyRequest> {
                 child: SizedBox(
                   width: 400.w,
                   height: 594.h,
-                  child: MoneyRequestList(expenses: requests, groupId: widget.groupId, onSuccess: (value){fetchMyGroupPayments();},),
+                  child: MoneyRequestList(
+                    expenses: requests,
+                    groupId: widget.groupId,
+                    onSuccess: (value) {
+                      fetchMyGroupPayments();
+                    },
+                  ),
                 ),
               ),
               Padding(padding: EdgeInsets.symmetric(vertical: 20.w)),

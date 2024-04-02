@@ -85,7 +85,6 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
 
   // 하단 모달
   void showModal() {
-    print(receiptData);
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
@@ -113,17 +112,22 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
         });
   }
 
-// 카메라로 사진찍기
+  // 카메라로 사진찍기
   void receiptFromCamera() async {
-    setState(() {
-      isLoading = true;
-    });
-    final XFile? image = await picker.pickImage(source: ImageSource.camera);
-    if (image != null) {
-      List<XFile> imageFiles = [image];
-      uploadImages(imageFiles);
-
-      await onImageSelected(image);
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      final XFile? image = await picker.pickImage(source: ImageSource.camera);
+      if (image != null) {
+        List<XFile> imageFiles = [image];
+        await uploadImages(imageFiles);
+        await onImageSelected(image);
+      }
+    } catch (e) {
+      // 에러 처리
+      print(e.toString());
+    } finally {
       setState(() {
         isLoading = false;
       });
@@ -139,19 +143,21 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
     if (selectedImages != null && selectedImages.isNotEmpty) {
       if (selectedImages.length > 10) {
         FlutterToastMsg('한 번에 최대 10장까지만 선택할 수 있습니다.');
+        setState(() {
+          isLoading = false;
+        });
         return;
       }
-
       List<XFile> imageFiles = selectedImages.map((xFile) => XFile(xFile.path)).toList();
       uploadImages(imageFiles);
 
       for (XFile image in selectedImages) {
         await onImageSelected(image);
       }
-      setState(() {
-        isLoading = false;
-      });
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
 // 여러 이미지 업로드
@@ -169,6 +175,10 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
 
   // 선택된 이미지를 네이버 클로바로 보내는 api 호출
   Future<void> onImageSelected(XFile image) async {
+    setState(() {
+      isLoading = true;
+    });
+
     String fileName = image.name;
     String requestId = DateTime.now().millisecondsSinceEpoch.toString();
     FormData formData = FormData.fromMap({
@@ -189,13 +199,6 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
     // API 호출 및 응답 처리
     final res = await postReceiptImage(formData);
     Receipt receipt = Receipt.fromJson(res.data);
-    debugPrint("2222222222 data: ${receipt.businessName}");
-    debugPrint("3333333333 data: ${receipt.subName}");
-    debugPrint("4444444444 data: ${receipt.location}");
-    debugPrint("5555555555 data: ${receipt.date}");
-    debugPrint("6666666666 data: ${receipt.detailList}");
-    debugPrint("7777777777 data: ${receipt.totalPrice}");
-    debugPrint("7777777777 data: ${receipt.approvalAmount}");
     setState(() {
       receiptData.add(receipt);
       receiptSavedStates.add(false);
@@ -247,63 +250,63 @@ class _ShowBeforeOcrState extends State<ShowBeforeOcr> {
             ),
           Expanded(
             child: Center(
-              child: receiptData.isEmpty
-                  ? _buildAddReceiptPage()
-                  : PageView.builder(
-                      controller: _pageController,
-                      itemCount: receiptData.length + 1,
-                      onPageChanged: (int index) {
-                        setState(() {
-                          _currentPageIndex = index;
-                          _progressValue = (index + 1) / (receiptData.length + 1);
-                        });
-                      },
-                      itemBuilder: (context, index) {
-                        if (isLoading) {
-                          return Center(child: Lottie.asset('assets/lotties/orangewalking.json'));
-                        } else if (index >= receiptData.length) {
-                          return _buildAddReceiptPage();
-                        } else {
-                          return SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                YjReceipt(spend: receiptData[index]),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              child: isLoading
+                  ? Center(child: Lottie.asset('assets/lotties/orangewalking.json'))
+                  : receiptData.isEmpty
+                      ? _buildAddReceiptPage()
+                      : PageView.builder(
+                          controller: _pageController,
+                          itemCount: receiptData.length + 1,
+                          onPageChanged: (int index) {
+                            setState(() {
+                              _currentPageIndex = index;
+                              _progressValue = (index + 1) / (receiptData.length + 1);
+                            });
+                          },
+                          itemBuilder: (context, index) {
+                            if (index >= receiptData.length) {
+                              return _buildAddReceiptPage();
+                            } else {
+                              return SingleChildScrollView(
+                                child: Column(
                                   children: [
-                                    Column(
+                                    YjReceipt(spend: receiptData[index]),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        Text(
-                                          receiptSavedStates[index] ? "다시 수정하려면?" : "수정이 완료되었다면?",
-                                          style: TextStyle(fontSize: 14.sp, color: RECEIPT_TEXT_COLOR),
+                                        Column(
+                                          children: [
+                                            Text(
+                                              receiptSavedStates[index] ? "다시 수정하려면?" : "수정이 완료되었다면?",
+                                              style: TextStyle(fontSize: 14.sp, color: RECEIPT_TEXT_COLOR),
+                                            ),
+                                            SizedButton(
+                                              btnText: receiptSavedStates[index] ? "취소" : "확인",
+                                              onPressed: () => countCheckedReceipt(index),
+                                            )
+                                          ],
                                         ),
-                                        SizedButton(
-                                          btnText: receiptSavedStates[index] ? "취소" : "확인",
-                                          onPressed: () => countCheckedReceipt(index),
-                                        )
-                                      ],
-                                    ),
-                                    if (!receiptSavedStates[index])
-                                      Column(
-                                        children: [
-                                          Text(
-                                            "수정이 필요하다면?",
-                                            style: TextStyle(fontSize: 14.sp, color: RECEIPT_TEXT_COLOR),
+                                        if (!receiptSavedStates[index])
+                                          Column(
+                                            children: [
+                                              Text(
+                                                "수정이 필요하다면?",
+                                                style: TextStyle(fontSize: 14.sp, color: RECEIPT_TEXT_COLOR),
+                                              ),
+                                              SizedButton(
+                                                btnText: "영수증 수정",
+                                                onPressed: () => _navigateAndEditReceipt(context, index),
+                                              )
+                                            ],
                                           ),
-                                          SizedButton(
-                                            btnText: "영수증 수정",
-                                            onPressed: () => _navigateAndEditReceipt(context, index),
-                                          )
-                                        ],
-                                      ),
+                                      ],
+                                    )
                                   ],
-                                )
-                              ],
-                            ),
-                          );
-                        }
-                      },
-                    ),
+                                ),
+                              );
+                            }
+                          },
+                        ),
             ),
           ),
         ],
