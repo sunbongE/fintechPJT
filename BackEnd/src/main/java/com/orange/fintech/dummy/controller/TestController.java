@@ -68,7 +68,7 @@ public class TestController {
     })
     public ResponseEntity<?> postDummyTranaction(
             @RequestPart(value = "file", required = true) MultipartFile csvFile,
-            @RequestBody List<UserKeyAccountPair> userKeyAccountPairList) {
+            List<UserKeyAccountPair> userKeyAccountPairList) {
         log.info("userKeyAccountPairList");
         log.info(userKeyAccountPairList.toString());
 
