@@ -64,7 +64,7 @@ class _MyAppState extends State<MyApp> {
         home: Scaffold(
           body: LoadingPage(),
         ),
-        theme: ThemeData(fontFamily: 'GowunDodum'),
+        theme: ThemeData(fontFamily: 'IBMPlexSansKR'),
         themeMode: ThemeMode.system,
       ),
     );
