@@ -12,53 +12,6 @@ class GroupNoCal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          height: 135.h,
-          width: 300.w,
-          child: Card(
-            color: BUTTON_COLOR,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '여행이 끝나지 않아도',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  '정산요청을 할 수 있어요',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () => buttonSlideAnimation(context, MoneyRequest(groupId: groupId,)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: STATE_COLOR,
-                    textStyle: TextStyle(
-                      fontSize: 20.sp,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  child: Text(
-                    '요청하기',
-                    style: TextStyle(
-                      fontSize: 20.sp,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
         SizedBox(height: 16.0.h),
         Image.asset(
           'assets/images/empty.png',

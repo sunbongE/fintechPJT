@@ -96,19 +96,20 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 10.h,
-              ),
+              SizedBox(height: 20.0.h),
+              Divider(height: 10.h,),
+              SizedBox(height: 15.0.h),
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   '정산 요청 내역',
                   style: TextStyle(
-                    fontSize: min(26.sp, 26.sp),
-                    fontWeight: FontWeight.w700,
+                    fontSize: min(27.sp, 27.sp),
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
+              SizedBox(height: 14.0.h),
               Row(
                 children: [
                   Expanded(
@@ -117,15 +118,17 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
                         print(1);
                         changeOption();
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: BUTTON_COLOR,
-                        minimumSize: Size(40.w, 30.h),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: BUTTON_COLOR.withOpacity(0.8),
+                        surfaceTintColor: BUTTON_COLOR.withOpacity(0.6),
+                        foregroundColor: Colors.white,
+                        minimumSize: Size(40.w, 40.h),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
                       child: Text(
-                        isOption ? '내가 포함된 정산' : '모든 정산',
+                        isOption ? '해야할 정산' : '모든 정산',
                         style: TextStyle(
                           fontSize: min(20.sp, 25.sp),
                           color: Colors.white,
@@ -142,8 +145,10 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
                       onPressed: () => buttonSlideAnimation(
                           context, MoneyRequest(groupId: widget.groupId)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: BUTTON_COLOR,
-                        minimumSize: Size(40.w, 30.h),
+                        backgroundColor: BUTTON_COLOR.withOpacity(0.8),
+                        surfaceTintColor: BUTTON_COLOR.withOpacity(0.6),
+                        foregroundColor: Colors.white,
+                        minimumSize: Size(40.w, 40.h),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),

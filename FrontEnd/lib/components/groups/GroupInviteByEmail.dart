@@ -12,10 +12,11 @@ void groupInviteByEmail(BuildContext context, Group group, List<GroupMember> mem
 
 
       return AlertDialog(
+        backgroundColor: Colors.white,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('인원 추가'),
+            Text('인원 추가',),
 
             IconButton(
               icon: Icon(Icons.close),
