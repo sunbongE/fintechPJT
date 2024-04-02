@@ -23,8 +23,22 @@ import org.springframework.web.bind.annotation.*;
 public class TestController {
     private final TestService testService;
 
+<<<<<<< Updated upstream
     @GetMapping()
     public ResponseEntity<?> auth() {
+=======
+    @GetMapping("/path")
+    @Operation(
+            summary =
+                    "현재 경로 반환",
+            description =
+                    "현재 경로 반환")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    public ResponseEntity<?> path() {
+>>>>>>> Stashed changes
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, Paths.get("").toAbsolutePath().toString()));
     }
 
@@ -35,8 +49,8 @@ public class TestController {
             description =
                     "<strong>SSAFY Bank API</strong>를 이용해 더미 데이터 결제 내역을 추가한다.<br>(Docker 실행이 중지되지 않을 때 또는 localhost에서 실행해야 함!)")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "성공"),
-        @ApiResponse(responseCode = "500", description = "서버 오류")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> postDummyTranaction(
             @RequestBody List<UserKeyAccountPair> userKeyAccountPairList) {
