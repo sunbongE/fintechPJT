@@ -16,12 +16,18 @@ class PastTravelList extends StatefulWidget {
 
 // 과거여행 보기
 class _PastTravelListState extends State<PastTravelList> {
-  void navigateToGroupDetail(Group group) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MyTripHistoryDetail(groupData: group)),
-    );
-  }
+  final List<String> imageNames = [
+    'assets/images/mainpast/m1.jpg',
+    'assets/images/mainpast/m3.jpg',
+    'assets/images/mainpast/m4.jpg',
+    'assets/images/mainpast/m5.jpg',
+    'assets/images/mainpast/m6.jpg',
+    'assets/images/mainpast/m7.jpg',
+    'assets/images/mainpast/m8.jpg',
+    'assets/images/mainpast/m9.jpg',
+    'assets/images/mainpast/m10.jpg',
+    'assets/images/mainpast/m11.jpg',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +44,10 @@ class _PastTravelListState extends State<PastTravelList> {
       body: CarouselSlider.builder(
         itemCount: filteredGroups.length,
         itemBuilder: (context, index, realIndex) {
+          final imagePath = imageNames[index % imageNames.length];
           return MainPastTravelCard(
             group: filteredGroups[index],
-            onTap: () {
-              navigateToGroupDetail(filteredGroups[index]);
-            },
+            imagePath: imagePath,
           );
         },
         options: CarouselOptions(
