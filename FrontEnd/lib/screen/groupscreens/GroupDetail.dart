@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/mypage/ProfileChangeBtn.dart';
@@ -6,11 +7,25 @@ import 'package:front/components/groups/GroupDescription.dart';
 import 'package:front/repository/api/ApiGroup.dart';
 
 import '../../models/button/ButtonSlideAnimation.dart';
+import '../../repository/api/ApiMyPage.dart';
 
-class GroupDetail extends StatelessWidget {
+class GroupDetail extends StatefulWidget {
   final int groupId;
 
   GroupDetail({required this.groupId});
+
+  @override
+  State<GroupDetail> createState() => _GroupDetailState();
+}
+
+class _GroupDetailState extends State<GroupDetail> {
+  bool iCanOut = false;
+
+  @override
+  void initState() {
+    checkIsRequest();
+    super.initState();
+  }
 
   void removeGroup(BuildContext context, Group group) {
     showDialog(
@@ -39,17 +54,27 @@ class GroupDetail extends StatelessWidget {
     );
   }
 
+  Future<void> checkIsRequest() async {
+    Map<String, dynamic> queryParameters = {
+      'page': 0,
+      'size': 1,
+      'option': 'all',
+    };
+    Response res = await getGroupSpend(widget.groupId, queryParameters);
+    setState(() {
+      iCanOut = res.data.isNotEmpty;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Group>(
-      future: getGroupDetail(groupId),
+      future: getGroupDetail(widget.groupId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
-              body: Center(child: CircularProgressIndicator()));
+          return Scaffold(body: Center(child: CircularProgressIndicator()));
         } else if (snapshot.hasError) {
-          return Scaffold(
-              body: Center(child: Text('데이터를 불러오는데 실패했습니다.')));
+          return Scaffold(body: Center(child: Text('데이터를 불러오는데 실패했습니다.')));
         } else if (snapshot.hasData) {
           Group group = snapshot.data!;
           return Scaffold(
@@ -78,23 +103,19 @@ class GroupDetail extends StatelessWidget {
                     ),
                   ),
                 ),
-                Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: ProfileChangeBtn(
-                    onPressed: () => removeGroup(context, group),
-                    // style: ElevatedButton.styleFrom(
-                    //   minimumSize: Size(double.infinity, 50.h),
-                    // ),
-                    buttonText : '그룹 삭제하기',
+                if (!iCanOut)
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    child: ProfileChangeBtn(
+                      onPressed: () => removeGroup(context, group),
+                      buttonText: '그룹 삭제하기',
+                    ),
                   ),
-                ),
               ],
             ),
           );
         } else {
-          return Scaffold(
-              body: Center(child: Text('데이터가 없습니다.'))); // 데이터가 없을 경우 메시지 표시
+          return Scaffold(body: Center(child: Text('데이터가 없습니다.'))); // 데이터가 없을 경우 메시지 표시
         }
       },
     );
