@@ -39,34 +39,39 @@ class _SplitDoneState extends State<SplitDone> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(30.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("정산 완료", style: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.bold, color: TEXT_COLOR)),
-              Text("여정이 정산을 정리했어요", style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold)),
-              SizedBox(
-                height: 40.h,
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: splitResult.length,
-                  itemBuilder: (context, index) {
-                    return SplitResult(splitResult: splitResult[index]);
-                  },
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(30.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("정산 완료", style: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.bold, color: TEXT_COLOR)),
+                Text("여정이 정산을 정리했어요", style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold)),
+                SizedBox(
+                  height: 40.h,
                 ),
-              ),
-              Center(
-                child: SizedButton(
-                  btnText: "확인",
-                  size: ButtonSize.m,
-                  onPressed: () => buttonSlideAnimationPushAndRemoveUntil(context, 0),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: splitResult.length,
+                    itemBuilder: (context, index) {
+                      return SplitResult(splitResult: splitResult[index]);
+                    },
+                  ),
                 ),
-              )
-            ],
+                Center(
+                  child: SizedButton(
+                    btnText: "확인",
+                    size: ButtonSize.m,
+                    onPressed: () => buttonSlideAnimationPushAndRemoveUntil(context, 0),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
