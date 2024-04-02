@@ -1,5 +1,6 @@
 package com.orange.fintech.dummy.service;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.orange.fintech.account.dto.ReqHeader;
 import com.orange.fintech.account.entity.Account;
 import com.orange.fintech.account.repository.AccountQueryRepository;
@@ -15,6 +16,8 @@ import com.orange.fintech.payment.repository.ReceiptDetailRepository;
 import com.orange.fintech.payment.repository.ReceiptRepository;
 import com.orange.fintech.payment.repository.TransactionRepository;
 import com.orange.fintech.util.AccountDateTimeUtil;
+import com.orange.fintech.util.FileService;
+import com.orange.fintech.util.FileUtil;
 import jakarta.transaction.Transactional;
 import java.io.*;
 import java.time.LocalDate;
@@ -30,12 +33,15 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
 @Transactional
 public class TestService {
     @Autowired AccountService accountService;
+
+    @Autowired FileService fileService;
 
     @Autowired MemberRepository memberRepository;
 
@@ -48,6 +54,8 @@ public class TestService {
     @Autowired ReceiptRepository receiptRepository;
 
     @Autowired ReceiptDetailRepository receiptDetailRepository;
+
+    @Autowired FileUtil fileUtil;
 
     @Value("${ssafy.bank.drawing.transfer}")
     private String drawingTransferUrl;
@@ -63,13 +71,26 @@ public class TestService {
     String endDate = "20241231";
     LocalDate startDateValue = AccountDateTimeUtil.StringToLocalDate(startDate);
 
-    private void loadData(String filename) throws FileNotFoundException {
-        String filePath = "resources/" + filename + ".csv";
+    @Autowired AmazonS3 amazonS3Client;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
+    public void loadData(MultipartFile csvFile) throws Exception {
+        //        String filePath =
+        // "https://s3.ap-northeast-2.amazonaws.com/how.long.has.it.been.since.i.ate.an.orange/dummy/dummyRecords.csv";
+        //        String filePath = "resources/" + filename + ".csv";
         String line;
 
+        // 1. 업로드 한 파일이 비어있는지 확인
+        if (csvFile.isEmpty()) {
+            throw new Exception("Empty file -TestServiceImpl.java");
+        }
+
+        File convertedFile = fileUtil.multipartFile2File(csvFile);
+
         // File이 없으면 예외 발생
-        File file = new File(filePath);
-        if (!file.exists()) {
+        if (!convertedFile.exists()) {
             throw new FileNotFoundException();
         }
 
@@ -77,15 +98,17 @@ public class TestService {
         dummyRecords.clear();
 
         try (BufferedReader br =
-                new BufferedReader(new InputStreamReader(new FileInputStream(filePath)))) {
+                new BufferedReader(new InputStreamReader(new FileInputStream(convertedFile)))) {
             // 한 줄 (제목 행) 버리기
             Map<String, Object> map = new HashMap<>();
             Map<String, Object> menuMap = new HashMap<>();
             List<Map<String, Object>> menuList = new ArrayList<>();
             line = br.readLine();
+            log.info("line: {}", line);
 
             while ((line = br.readLine()) != null) {
                 String[] tokens = line.split(",");
+                log.info("line: {}", line);
 
                 if (tokens.length == 0) {
                     dummyRecords.add(map);
@@ -113,6 +136,19 @@ public class TestService {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        // MultipartFile -> File로 변환하면서 로컬에 저장된 파일 삭제
+        removeFile(convertedFile);
+    }
+
+    public void removeFile(File targetFile) { // 로컬파일 삭제
+        if (targetFile.exists()) {
+            if (targetFile.delete()) {
+                // System.out.println("파일이 삭제되었습니다.");
+            } else {
+                // System.out.println("파일이 삭제되지 못했습니다.");
+            }
         }
     }
 
@@ -145,6 +181,8 @@ public class TestService {
                     accountService.createHeader(
                             userKeyAccountPair.getUserKey(), drawingTransferUrl);
 
+            Member member = memberRepository.findByKakaoId(userKeyAccountPair.getKakaoId());
+            /*
             // 이전에 등록되어있던 주 계좌 해제
             Member member = memberRepository.findByKakaoId(userKeyAccountPair.getKakaoId());
             Account preAccount = accountRepository.findByMemberAndIsPrimaryAccountIsTrue(member);
@@ -153,6 +191,7 @@ public class TestService {
                 preAccount.setIsPrimaryAccount(false);
                 accountRepository.save(preAccount);
             }
+             */
 
             // 새로운 계좌 등록
             Account account = new Account();
@@ -214,7 +253,8 @@ public class TestService {
         }
     }
 
-    public void postDummyTranaction(List<UserKeyAccountPair> userKeyAccountPairList)
+    public void postDummyTranaction(
+            MultipartFile csvFile, List<UserKeyAccountPair> userKeyAccountPairList)
             throws Exception {
         ReqHeader[][] reqHeaderList = new ReqHeader[2][groupMemberCount];
         UserKeyAccountPair userKeyAccountPair = null;
@@ -237,7 +277,8 @@ public class TestService {
         }
 
         // 3. 더미 레코드가 저장된 CSV 파일 로드
-        loadData("dummyRecords");
+        //        loadData("dummyRecords");
+        loadData(csvFile);
 
         // 4. SSAFY Bank API를 호출
         for (int i = 0; i < dummyRecords.size(); i++) {
