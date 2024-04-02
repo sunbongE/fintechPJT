@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:front/components/groups/GroupEmailFindInviteMemberCard.dart';
 import 'package:front/const/colors/Colors.dart';
 import '../../entities/Member.dart';
@@ -123,7 +124,6 @@ class _GroupEmailFindFieldState extends State<GroupEmailFindField> {
             },
           ),
         ),
-        // 사용자 정보 리스트를 화면에 표시합니다.
         if (userInfoList.isNotEmpty)
           Container(
             width: 210.w,
@@ -153,22 +153,36 @@ class _GroupEmailFindFieldState extends State<GroupEmailFindField> {
               },
             ),
           ),
+        SizedBox(height: 10.h,),
         TextButton(
           child: Text(
             '초대하기',
             style: TextStyle(color: Colors.white),
           ),
           onPressed: () {
-            widget.onInvite(inviteMember);
-            Navigator.of(context).pop();
+            if (userInfoList.length > 0) {
+              widget.onInvite(inviteMember);
+              Navigator.of(context).pop();
+            } else {
+              Fluttertoast.showToast(
+                msg: "이메일을 추가해주세요",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.white,
+                textColor: Colors.red,
+                fontSize: 16.0,
+              );
+            }
           },
           style: TextButton.styleFrom(
-            backgroundColor: BUTTON_COLOR,
+            backgroundColor: userInfoList.length > 0 ? BUTTON_COLOR : Colors.grey,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
             ),
           ),
         ),
+
       ],
     );
   }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/groups/GroupCalCheck.dart';
 import 'package:front/components/groups/GroupJoinMember.dart';
+import 'package:front/entities/GroupMember.dart';
+import 'package:front/models/button/GroupAddButton2.dart';
 import 'package:front/models/button/SizedButton.dart';
 import 'package:front/repository/api/ApiGroup.dart';
 import 'package:front/screen/groupscreens/GroupDetail.dart';
@@ -19,6 +21,7 @@ class GroupItem extends StatefulWidget {
 }
 
 class _GroupItemState extends State<GroupItem> {
+  List<GroupMember> members = [];
   bool _isPollingActive = false;
 
   Future<bool> checkPersonalStatus() async {
@@ -65,12 +68,28 @@ class _GroupItemState extends State<GroupItem> {
   void initState() {
     initializeAsyncTasks();
     super.initState();
+    fetchMembers();
   }
   @override
   void dispose() {
     // 폴링 상태를 비활성화하여 폴링 루프를 중단
     _isPollingActive = false;
     super.dispose();
+  }
+
+  void fetchMembers() async {
+    final groupMembersJson = await getGroupMemberList(widget.groupId);
+    if (groupMembersJson != null) {
+      setState(() {
+        members = (groupMembersJson.data['groupMembersDtos'] as List)
+            .map((item) => GroupMember.fromJson(item))
+            .toList();
+      });
+    } else {
+      setState(() {
+      });
+      print("그룹 데이터를 불러오는 데 실패했습니다.");
+    }
   }
 
   @override
@@ -130,13 +149,13 @@ class _GroupItemState extends State<GroupItem> {
                         ),
                       ),
                       // 정산하기 버튼
-                      SizedButton(
-                        size: ButtonSize.l,
+                      members.length > 1 ? GroupAddButton2(
                         btnText: !_isPollingActive ? '정산하기' : '취소하기',
                         onPressed: () {
                           handleSettleButtonPressed();
                         },
-                      ),
+                      ) : Container(), // members.length가 1 이하일 경우 아무것도 표시하지 않음
+
                       // 정산요청 내역이 있으면
                       // 정산 요청 내역
                       GroupCalCheck(

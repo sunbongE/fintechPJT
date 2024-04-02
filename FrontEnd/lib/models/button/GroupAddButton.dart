@@ -34,7 +34,7 @@ class _ButtonState extends State<GroupAddButton> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    '여행 그룹 만들기',
+                    '여행 그룹\n만들기',
                     style: TextStyle(
                       fontSize: 20.sp,
                       color: Colors.black,
@@ -45,7 +45,7 @@ class _ButtonState extends State<GroupAddButton> {
                   ElevatedButton(
                     onPressed: widget.onPressed,
                     style: ElevatedButton.styleFrom(
-      
+
                       backgroundColor: ADDBUTTON,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10), // 버튼의 모서리를 둥글게
@@ -53,13 +53,13 @@ class _ButtonState extends State<GroupAddButton> {
                       fixedSize: Size(50.w, 50.h),
                     ),
                     child: Text(
-                        '+',
+                      '+',
                       style: TextStyle(
-                      fontSize: 40.sp,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),),
-      
+                        fontSize: 40.sp,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),),
+
                   ),
                 ],
               ),
