@@ -353,6 +353,7 @@ public class CalculateServiceImpl implements CalculateService {
         }
 
         group.setGroupStatus(GroupStatus.DONE);
+        groupRepository.save(group);
 
         // 정산했던 회원들 아이디 추출
         Collection<String> distinctMemberId = getdistinctMemberId.values();
