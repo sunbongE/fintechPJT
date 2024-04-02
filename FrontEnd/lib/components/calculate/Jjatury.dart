@@ -11,6 +11,7 @@ import '../../models/FlutterToastMsg.dart';
 import '../../repository/api/ApiGroup.dart';
 import '../../repository/api/ApiSplit.dart';
 import '../../screen/SplitMain.dart';
+import '../groups/GroupList.dart';
 import '../split/SplitDoing.dart';
 import '../split/SplitDone.dart';
 
@@ -25,8 +26,8 @@ class Jjatury extends StatefulWidget {
 }
 
 class _JjaturyState extends State<Jjatury> {
-  late int statusCode;
-  late String message;
+  int statusCode = 0;
+  String message = '';
 
   @override
   void initState() {
@@ -70,31 +71,38 @@ class _JjaturyState extends State<Jjatury> {
             SizedButton(
                 btnText: "확인",
                 size: ButtonSize.s,
-                onPressed: () {
-                  if (statusCode == 406) {
-                    FlutterToastMsg("금액 부족한 사람이 있어서 정산이 진행되지 않았습니다.");
-                    navigateToSplit();
-                  } else if (message == "OK") {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                SplitLoading(groupId: widget.groupId)));
-                  } else if (message == "정산할 내역 없음") {
-                    //이거 백에서 풀어주나요?
-                    //어떻게 처리하지?
-                    FlutterToastMsg("정산할 내역이 없습니다. 다시 확인해주세요");
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                GroupItem(groupId: widget.groupId)));
-                  }
-                }),
+                onPressed: statusCode != 0 && message.isNotEmpty
+                    ? () {
+                  sendForStatus();
+                      }
+                    : null),
           ],
         ),
       ),
     );
+  }
+
+  void sendForStatus() {
+    if (statusCode == 406) {
+      FlutterToastMsg("금액 부족한 사람이 있어서 정산이 진행되지 않았습니다.");
+      navigateToSplit();
+    } else if (message == "OK") {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => SplitLoading(groupId: widget.groupId)));
+    } else if (message == "정산할 내역 없음") {
+      //이거 백에서 풀어주나요?
+      //어떻게 처리하지?
+      FlutterToastMsg("정산할 내역이 없습니다. 다시 확인해주세요");
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => GroupItem(groupId: widget.groupId)));
+    } else {
+      FlutterToastMsg("오류가 발생하였습니다. 다시 시도해주세요");
+      buttonSlideAnimationPushAndRemoveUntil(context, 1);
+    }
   }
 
   void navigateToSplit() async {
@@ -106,31 +114,36 @@ class _JjaturyState extends State<Jjatury> {
       case 'BEFORE':
         modifiedGroup = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => GroupItem(groupId: widget.groupId!)),
+          MaterialPageRoute(
+              builder: (context) => GroupItem(groupId: widget.groupId!)),
         );
         break;
       case 'SPLIT':
         modifiedGroup = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SplitMain(groupId: widget.groupId!)),
+          MaterialPageRoute(
+              builder: (context) => SplitMain(groupId: widget.groupId!)),
         );
         break;
       case 'DOING':
         modifiedGroup = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SplitDoing(groupId: widget.groupId!)),
+          MaterialPageRoute(
+              builder: (context) => SplitDoing(groupId: widget.groupId!)),
         );
         break;
       case 'DONE':
         modifiedGroup = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SplitDone(groupId: widget.groupId!)),
+          MaterialPageRoute(
+              builder: (context) => SplitDone(groupId: widget.groupId!)),
         );
         break;
       default:
         modifiedGroup = await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => GroupItem(groupId: widget.groupId!)),
+          MaterialPageRoute(
+              builder: (context) => GroupItem(groupId: widget.groupId!)),
         );
         break;
     }
