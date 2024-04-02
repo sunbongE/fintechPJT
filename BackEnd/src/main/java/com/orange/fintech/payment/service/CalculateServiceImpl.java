@@ -179,7 +179,7 @@ public class CalculateServiceImpl implements CalculateService {
 
             // 잔액이 부족한 놈 아이디 저장함.
             if (balance + member.amount < 0) {
-//                log.info("CalculateServiceImpl 잔액 부족한 상태!!");
+                //                log.info("CalculateServiceImpl 잔액 부족한 상태!!");
                 noMoneysKakaoId.add(member.kakaoId);
                 // 해당 그룹에서 회원의 2차 정산 상태를 변경한다.
 
@@ -192,7 +192,8 @@ public class CalculateServiceImpl implements CalculateService {
                 GroupMember groupMember = groupMemberRepository.findById(groupMemberPK).get();
                 groupMember.setSecondCallDone(false);
                 groupMemberRepository.save(groupMember);
-//                log.info("===============>>>>>>>>>>>>>>>groupMember : {}, {}", groupMember.getGroupMemberPK().getMember().getName(),groupMember.getSecondCallDone());
+                //                log.info("===============>>>>>>>>>>>>>>>groupMember : {}, {}",
+                // groupMember.getGroupMemberPK().getMember().getName(),groupMember.getSecondCallDone());
             }
         }
         // 돈이 부족한 사람이 있으면 fcm호출하고 정산을 종료한다.
