@@ -23,10 +23,6 @@ import org.springframework.web.bind.annotation.*;
 public class TestController {
     private final TestService testService;
 
-<<<<<<< Updated upstream
-    @GetMapping()
-    public ResponseEntity<?> auth() {
-=======
     @GetMapping("/path")
     @Operation(
             summary =
@@ -38,7 +34,6 @@ public class TestController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> path() {
->>>>>>> Stashed changes
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, Paths.get("").toAbsolutePath().toString()));
     }
 
