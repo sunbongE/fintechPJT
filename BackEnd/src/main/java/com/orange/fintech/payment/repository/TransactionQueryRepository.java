@@ -318,7 +318,7 @@ public class TransactionQueryRepository {
      * @param otherId 다른 사람의 아이디
      * @return 받아야할 금액
      */
-    public long getReceiveAmount(String myId, String otherId) {
+    public long getReceiveAmount(String myId, String otherId, int groupId) {
         long res = 0;
         try {
             res =
@@ -327,19 +327,23 @@ public class TransactionQueryRepository {
                             .from(transaction)
                             .join(transactionMember)
                             .on(transaction.eq(transactionMember.transactionMemberPK.transaction))
+                            .join(transactionDetail)
+                            .on(transaction.eq(transactionDetail.transaction))
                             .where(
                                     transactionMember
                                             .transactionMemberPK
                                             .member
                                             .kakaoId
                                             .eq(otherId)
-                                            .and(transaction.member.kakaoId.eq(myId)))
+                                            .and(transaction.member.kakaoId.eq(myId))
+                                            .and(transactionDetail.group.groupId.eq(groupId)))
                             .fetchOne();
 
         } catch (NullPointerException e) {
             log.info("받을 금액 계산 불가");
         }
 
+        log.info("{}에게 받을 금액 {}", otherId, res);
         return res;
     }
 

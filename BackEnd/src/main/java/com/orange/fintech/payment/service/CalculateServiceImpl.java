@@ -71,11 +71,13 @@ public class CalculateServiceImpl implements CalculateService {
 
             // 받을 금액 계산
             yeojungDto.setReceiveAmount(
-                    transactionQueryRepository.getReceiveAmount(memberId, dto.getKakaoId()));
+                    transactionQueryRepository.getReceiveAmount(
+                            memberId, dto.getKakaoId(), groupId));
 
             // 보낼 금액 계산
             yeojungDto.setSendAmount(
-                    transactionQueryRepository.getReceiveAmount(dto.getKakaoId(), memberId));
+                    transactionQueryRepository.getReceiveAmount(
+                            dto.getKakaoId(), memberId, groupId));
 
             yeojungList.add(yeojungDto);
         }
