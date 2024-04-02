@@ -9,17 +9,37 @@ import 'SplitDetail.dart';
 class SplitMainList extends StatefulWidget {
   final List<SplitMemberResponse> memberList;
   final int groupId;
+  final Function (bool) backSpaceCallback;
 
   const SplitMainList({
     Key? key,
-    required this.memberList, required this.groupId,
+    required this.memberList, required this.groupId, required this.backSpaceCallback,
   }) : super(key: key);
 
   @override
   _SplitMainListState createState() => _SplitMainListState();
 }
 
+
 class _SplitMainListState extends State<SplitMainList> {
+
+  Future<void> _navigateAndRefresh(int groupId, String type, String memberId, String memberName, BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SplitDetail(
+          groupId: groupId,
+          type: type,
+          memberId: memberId,
+          memberName: memberName,
+        ),
+      ),
+    );
+    if (result != null) {
+      widget.backSpaceCallback(true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -42,14 +62,7 @@ class _SplitMainListState extends State<SplitMainList> {
               SizedBox(height: 8.h),
               InkWell(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) =>
-                        SplitDetail(groupId: widget.groupId,
-                          type: 'RECEIVE',
-                          memberId: member.memberId,
-                          memberName: member.name,)),
-                  );
+                  _navigateAndRefresh(widget.groupId, 'RECEIVE', member.memberId, member.name, context);
                 },
                 child: Row(
                   children: [
@@ -69,19 +82,17 @@ class _SplitMainListState extends State<SplitMainList> {
                       style: TextStyle(
                           fontSize: 18.sp, color: RECIVE_ICON_COLOR),
                     ),
+                    Icon(
+                      Icons.chevron_right,
+                      color: Colors.grey,
+                      size: 24.w,
+                    ),
                   ],
                 ),),
               SizedBox(height: 8.h),
             InkWell(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) =>
-                      SplitDetail(groupId: widget.groupId,
-                        type: 'SEND',
-                        memberId: member.memberId,
-                        memberName: member.name,)),
-                );
+                _navigateAndRefresh(widget.groupId, 'SEND', member.memberId, member.name, context);
               },
               child:
               Row(
@@ -100,6 +111,11 @@ class _SplitMainListState extends State<SplitMainList> {
               Text(
                 "-${NumberFormat('#,###').format(member.sendAmount)}원",
                 style: TextStyle(fontSize: 18.sp, color: SEND_ICON_COLOR),
+              ),
+              Icon(
+                Icons.chevron_right,
+                color: Colors.grey,
+                size: 24.w,
               ),
             ],
           ),

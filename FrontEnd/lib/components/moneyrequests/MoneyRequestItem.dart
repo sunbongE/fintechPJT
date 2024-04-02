@@ -31,9 +31,17 @@ class _MoneyRequestItemState extends State<MoneyRequestItem> {
   @override
   void initState() {
     super.initState();
-    isSettled = widget.expense.isSettled;
+      isSettled = widget.expense.isSettled;
   }
-
+  @override
+  void didUpdateWidget(MoneyRequestItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.expense.isSettled != oldWidget.expense.isSettled) {
+      setState(() {
+        isSettled = widget.expense.isSettled;
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return InkWell(

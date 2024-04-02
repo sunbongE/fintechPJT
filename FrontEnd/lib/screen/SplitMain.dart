@@ -12,6 +12,7 @@ import '../components/split/SplitMainList.dart';
 import '../entities/SplitMemberResponse.dart';
 import '../models/Biometrics.dart';
 import '../models/PassWordCertification.dart';
+import '../models/button/ButtonSlideAnimation.dart';
 import '../repository/api/ApiSplit.dart';
 
 class SplitMain extends StatefulWidget {
@@ -115,57 +116,69 @@ class _SplitMainState extends State<SplitMain> {
         body: SafeArea(
           child: Padding(
             padding: EdgeInsets.fromLTRB(30.w, 50.h, 30.w, 0.h),
-            child: Stack(
+            child: Column(
               children: [
-                SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: userInfo ?? '',
-                                style: TextStyle(
-                                  fontSize: 50.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: TEXT_COLOR,
+                Expanded(
+                  child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: userInfo ?? '',
+                                      style: TextStyle(
+                                        fontSize: 50.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: TEXT_COLOR,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: userInfo != null ? '님의 이번 여정' : '',
+                                      style: TextStyle(
+                                        fontSize: 24.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              TextSpan(
-                                text: userInfo != null ? '님의 이번 여정' : '',
-                                style: TextStyle(
-                                  fontSize: 24.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                            SizedBox(height: 8.h),
+                            memberList.isEmpty
+                                ? Center(
+                                    child: Lottie.asset(
+                                        'assets/lotties/orangewalking.json'),
+                                  )
+                                : SplitMainList(
+                                    memberList: memberList, groupId: widget.groupId, backSpaceCallback: (value) {_loadMemberData(); },
+                                  ),
+                            SizedBox(height: 100.h),
+                          ],
                         ),
                       ),
-                      SizedBox(height: 8.h),
-                      memberList.isEmpty
-                          ? Center(
-                              child: Lottie.asset(
-                                  'assets/lotties/orangewalking.json'),
-                            )
-                          : SplitMainList(
-                              memberList: memberList, groupId: widget.groupId,
-                            ),
-                      SizedBox(height: 100.h),
-                    ],
-                  ),
                 ),
-                Positioned(
-                  bottom: 30.h,
-                  left: 50.w,
-                  right: 50.w,
-                  child: SizedButton(
-                    btnText: '정산하기',
-                    size: ButtonSize.l,
-                    onPressed: () => IdentityVerification(),
+                Padding(
+                  padding:  EdgeInsets.only(top: 10.h,bottom: 40.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [SizedButton(
+                      btnText: "목록으로",
+                      size: ButtonSize.m,
+                      onPressed: () =>
+                          buttonSlideAnimationPushAndRemoveUntil(context, 1),
+                    ),
+                      Padding(padding: EdgeInsetsDirectional.symmetric(horizontal: 10.w,)),
+                      SizedButton(
+                        btnText: '정산하기',
+                        size: ButtonSize.m,
+                        onPressed: () => IdentityVerification(),
+                      ),
+
+                    ],
                   ),
                 ),
               ],
