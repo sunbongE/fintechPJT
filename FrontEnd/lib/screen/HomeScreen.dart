@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:front/components/groups/GroupInvitedItem.dart';
+import 'package:front/components/split/SplitDone.dart';
 import 'package:front/screen/GroupMain.dart';
 import 'package:front/screen/MainPage.dart';
 import 'package:front/screen/MyPage.dart';
 import 'package:front/screen/MySpended.dart';
+import 'package:front/screen/SplitMain.dart';
 import 'groupscreens/GroupItem.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -69,10 +71,31 @@ class _HomeScreenState extends State<HomeScreen> {
       final groupId = int.parse(data['groupId']);
       switch (type) {
         case 'INVITE':
+          break;
         case 'SPLIT':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SplitMain(groupId: groupId)),
+        );
+        break;
         case 'TRANSFER':
+          Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SplitDone(groupId: groupId)),
+        );
+        break;
         case 'NO_MONEY':
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SplitMain(groupId: groupId)),
+          );
+          break;
         case 'SPLIT_MODIFY':
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SplitMain(groupId: groupId)),
+          );
+          break;
         case 'URGE':
           Navigator.push(
             context,
@@ -91,10 +114,31 @@ class _HomeScreenState extends State<HomeScreen> {
         final groupId = int.parse(data['groupId']);
         switch (type) {
           case 'INVITE':
+            break;
           case 'SPLIT':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SplitMain(groupId: groupId)),
+            );
+            break;
           case 'TRANSFER':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SplitDone(groupId: groupId)),
+            );
+            break;
           case 'NO_MONEY':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SplitMain(groupId: groupId)),
+            );
+            break;
           case 'SPLIT_MODIFY':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SplitMain(groupId: groupId)),
+            );
+            break;
           case 'URGE':
             Navigator.push(
               context,
