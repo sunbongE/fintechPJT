@@ -61,7 +61,6 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
         'size': _pageSize,
         'option': isOption ? 'my' : 'all',
       };
-      print("queryParameters: ${queryParameters}");
       Response res = await getGroupSpend(widget.groupId, queryParameters);
       if (res.data != null) {
         List<Map<String, dynamic>> newData =
@@ -126,9 +125,9 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
                         ),
                       ),
                       child: Text(
-                        '내가 포함된 정산',
+                        isOption ? '내가 포함된 정산' : '모든 정산',
                         style: TextStyle(
-                          fontSize: min(15.sp, 20.sp),
+                          fontSize: min(20.sp, 25.sp),
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
@@ -152,7 +151,7 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
                       child: Text(
                         '정산 추가',
                         style: TextStyle(
-                          fontSize: min(15.sp, 20.sp),
+                          fontSize: min(20.sp, 25.sp),
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),

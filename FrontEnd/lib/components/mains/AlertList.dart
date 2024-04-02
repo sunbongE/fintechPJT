@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:front/models/button/ButtonSlideAnimation.dart';
 import 'package:front/entities/Notification.dart';
 import 'package:lottie/lottie.dart';
 import '../../repository/api/ApiFcm.dart';

@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/mypage/MyInfo.dart';
-import 'package:front/components/split/SplitDoing.dart';
-import 'package:front/components/split/SplitDone.dart';
-import 'package:front/components/split/SplitLoading.dart';
-import '../components/calculate/Jjatury.dart';
 import '../components/mypage/MyAccount.dart';
 import '../components/mypage/MyTripHistory.dart';
 import '../components/mypage/ProfileChange.dart';
 import '../components/mypage/ProfileChangeBtn.dart';
-import '../models/button/Button.dart';
 import '../models/button/ButtonSlideAnimation.dart';
 
 class MyPage extends StatefulWidget {

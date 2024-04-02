@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/models/CustomDivider.dart';
 import 'package:front/models/FlutterToastMsg.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 import '../../const/colors/Colors.dart';
 import '../../entities/Receipt.dart';

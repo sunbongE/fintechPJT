@@ -1,6 +1,4 @@
-import 'package:flutter/services.dart';
 import 'package:front/providers/store.dart';
-import 'package:front/repository/api/ApiLogin.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 Future<User?> SocialKakao() async {

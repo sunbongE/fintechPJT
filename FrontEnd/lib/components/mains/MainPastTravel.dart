@@ -1,7 +1,5 @@
 import "package:flutter/material.dart";
 import 'package:front/components/mains/MainPastTravelCard.dart';
-import 'package:front/components/mypage/MyTripHistoryDetail.dart';
-import 'package:front/screen/groupscreens/GroupItem.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../../entities/Group.dart';
 

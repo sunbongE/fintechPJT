@@ -4,7 +4,6 @@ import 'package:front/components/split/SplitLoading.dart';
 import 'package:front/const/colors/Colors.dart';
 import 'package:front/models/button/ButtonSlideAnimation.dart';
 import 'package:front/models/button/SizedButton.dart';
-import 'package:front/screen/HomeScreen.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../repository/api/ApiSplit.dart';

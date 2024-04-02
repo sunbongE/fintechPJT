@@ -1,12 +1,9 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/intros/CreatePwPage.dart';
 import 'package:front/components/intros/IntroBox.dart';
 import 'package:front/screen/HomeScreen.dart';
-
 import '../../providers/store.dart';
 import '../../repository/api/ApiLogin.dart';
 

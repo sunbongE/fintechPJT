@@ -1,13 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:front/components/groups/GroupJoinMemberCarousel.dart';
-import 'package:front/const/colors/Colors.dart';
 import 'package:lottie/lottie.dart';
 import '../../entities/Group.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:front/entities/GroupMember.dart';
 import 'package:front/repository/api/ApiGroup.dart';
 import 'package:front/components/groups/GroupInviteByEmail.dart';

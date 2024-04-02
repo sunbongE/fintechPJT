@@ -11,7 +11,6 @@ import 'package:front/screen/MainPage.dart';
 import 'package:front/screen/MyPage.dart';
 import 'package:front/screen/MySpended.dart';
 import 'package:front/screen/SplitMain.dart';
-import 'groupscreens/GroupItem.dart';
 
 class HomeScreen extends StatefulWidget {
   final int initialIndex;

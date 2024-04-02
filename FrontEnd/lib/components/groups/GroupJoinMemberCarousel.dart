@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:front/components/groups/GroupJoinMemberCard.dart';
 import 'package:front/entities/GroupMember.dart';
