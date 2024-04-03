@@ -110,14 +110,13 @@ class _MoneyRequestDetailState extends State<MoneyRequestDetail> {
             ),
             if (request.members.isNotEmpty) ...[
               SizedBox(
-                width: 343.w,
-                child: Row(
-                  children: [
-                    Text('${request.memo}'),
-                  ],
+                width: 300.w,
+                child: Text(
+                  '${request.memo}',
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Padding(padding: EdgeInsets.symmetric(vertical: 5.w)),
+              Padding(padding: EdgeInsets.symmetric(vertical: 7.w)),
               SizedButton(
                 btnText: widget.expense.receiptEnrolled ? '영수증 보기' : '영수증 등록',
                 size: ButtonSize.l,
