@@ -598,7 +598,7 @@ public class PaymentServiceImpl implements PaymentService {
                         transactionQueryRepository.getTransactionMember(
                                 transaction.getTransactionId());
                 int memberCnt = transactionMembers.size();
-                long amount = receipt.getApprovalAmount();
+                long amount = receiptDetail.getCount() * receiptDetail.getUnitPrice();
                 int remainder = (int) (amount - amount / memberCnt * memberCnt);
                 if (transactionMembers.size() > 0) {
                     for (TransactionMember dto : transactionMembers) {
