@@ -347,8 +347,13 @@ public class PaymentServiceImpl implements PaymentService {
             }
         }
 
-        transactionDetail.setRemainder((int) (transaction.getTransactionBalance() - payAmount));
-        transactionDetailRepository.save(transactionDetail);
+        // 0원으로 보내면 정산에서 제외시키기
+        if (payAmount == 0) {
+            changeContainStatus(transactionId, transactionDetail.getGroup().getGroupId());
+        } else {
+            transactionDetail.setRemainder((int) (transaction.getTransactionBalance() - payAmount));
+            transactionDetailRepository.save(transactionDetail);
+        }
     }
 
     @Override
