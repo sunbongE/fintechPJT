@@ -99,6 +99,7 @@ class _MySpendListState extends State<MySpendList> {
                               constraints: BoxConstraints(maxWidth: 150.w),
                               child: Text(
                                 item['transactionSummary'],
+                                overflow: TextOverflow.ellipsis,
                                 style: TextStyle(fontSize: 20.sp),
                               ),
                             ),

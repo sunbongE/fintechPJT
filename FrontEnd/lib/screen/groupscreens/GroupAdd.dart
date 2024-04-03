@@ -95,15 +95,19 @@ class _GroupAddState extends State<GroupAdd> {
                     controller: _titleController,
                     decoration: InputDecoration(
                       labelText: '그룹 이름',
-                      hintText: '그룹 이름을 입력하세요',
+                      hintText: '그룹 이름을 입력하세요 (최대 10자)',
+                      counterText: '',
                     ),
+                    maxLength: 10,
                   ),
                   TextField(
                     controller: _descriptionController,
                     decoration: InputDecoration(
                       labelText: '테마',
-                      hintText: '테마를 입력하세요',
+                      hintText: '테마를 입력하세요 (최대 5자)',
+                      counterText: '',
                     ),
+                    maxLength: 5,
                   ),
                   SizedBox(height: 16.0.h),
                   Row(
