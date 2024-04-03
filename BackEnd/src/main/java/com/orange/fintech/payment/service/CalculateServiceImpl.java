@@ -345,6 +345,7 @@ public class CalculateServiceImpl implements CalculateService {
                     calResult.getAmount());
             getdistinctMemberId.put(calResult.getReceiveMemberId(), calResult.getReceiveMemberId());
             getdistinctMemberId.put(calResult.getSendMemberId(), calResult.getSendMemberId());
+            log.info("transfer: {} -> {}", calResult.getSendMemberId(), calResult.getReceiveMemberId());
         }
 
         Group group = groupRepository.findById(groupId).get();
