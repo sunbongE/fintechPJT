@@ -30,7 +30,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 
     // 새로운 영수증 로직 (날짜와 금액 비교)
     @Query(
-            "SELECT t FROM Transaction t WHERE t.transactionBalance = :transactionBalance AND t.transactionDate = :transactionDate AND t.member.kakaoId = :kakaoId")
+            "SELECT t FROM Transaction t WHERE t.transactionBalance = :transactionBalance AND t.transactionDate = :transactionDate AND t.member.kakaoId = :kakaoId ORDER BY t.transactionDate DESC, t.transactionTime DESC")
     //    Transaction findApproximateReceiptComparingBalanceApostropheForeignkey(
     List<Transaction> findApproximateReceiptComparingBalanceApostropheForeignkey(
             @Param("transactionBalance") Long transactionBalance,

@@ -113,6 +113,7 @@ public class TestService {
 
             while ((line = br.readLine()) != null) {
                 String[] tokens = line.split(",");
+                log.info("line: {}", line);
 
                 if (tokens.length == 0) {
                     dummyRecords.add(map);
@@ -123,9 +124,13 @@ public class TestService {
                 } else if (tokens.length == 9) {
                     // 7: 주소, 8: 금액
                     map.put("payer", tokens[1]);
+                    log.info("payer: {}", tokens[1]);
                     map.put("storeName", tokens[2]);
+                    log.info("storeName: {}", tokens[2]);
                     map.put("location", tokens[7]);
+                    log.info("location: {}", tokens[7]);
                     map.put("approvalAmount", tokens[8]);
+                    log.info("approvalAmount: {}", tokens[8]);
                 } else if (tokens.length == 7) {
                     // 3: 메뉴, 4: 단가, 5: 수량, 6: 소계
                     menuMap = new HashMap<>();
