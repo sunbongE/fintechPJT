@@ -173,7 +173,7 @@ class _ReceiptItemState extends State<ReceiptItem> {
                     widget.requestReceiptSub.menu,
                     style: TextStyle(
                         color: Color(0xff201F22),
-                        fontSize: 20.sp,
+                        // fontSize: 20.sp,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -182,7 +182,7 @@ class _ReceiptItemState extends State<ReceiptItem> {
                     widget.requestReceiptSub.count.toString(),
                     style: TextStyle(
                         color: Color(0xff201F22),
-                        fontSize: 20.sp,
+                        // fontSize: 20.sp,
                         fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
@@ -191,7 +191,7 @@ class _ReceiptItemState extends State<ReceiptItem> {
                   child: Text(
                     '${NumberFormat('#,###').format(widget.requestReceiptSub.price)}원',
                     style:
-                        TextStyle(fontSize: 20.sp, color: RECEIPT_TEXT_COLOR),
+                        TextStyle(color: RECEIPT_TEXT_COLOR),
                     textAlign: TextAlign.right,
                   ),
                 ),

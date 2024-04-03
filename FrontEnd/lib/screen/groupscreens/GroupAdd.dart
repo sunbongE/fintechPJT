@@ -26,11 +26,20 @@ class _GroupAddState extends State<GroupAdd> {
   String? _endDateText;
   bool groupState = false;
 
+
+  bool _isFormValid() {
+    return _titleController.text.isNotEmpty &&
+        _descriptionController.text.isNotEmpty &&
+        _rangeStart != null &&
+        _rangeEnd != null;
+  }
+
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
       setState(() {
         _selectedDay = selectedDay;
         _focusedDay = focusedDay;
+        _isFormValid();
       });
     }
   }
@@ -41,8 +50,10 @@ class _GroupAddState extends State<GroupAdd> {
       _focusedDay = start ?? _focusedDay; // 범위의 시작 날짜를 focusedDay로 설정
       _rangeStart = start;
       _rangeEnd = end;
+      _isFormValid();
     });
   }
+
 
   void _saveGroup() async {
     String startDateText = _rangeStart?.toString().split(' ')[0] ?? '';
@@ -181,7 +192,7 @@ class _GroupAddState extends State<GroupAdd> {
                   ),
                   SizedBox(height: 16.0.h),
                   GroupAddButton2(
-                    onPressed: _saveGroup,
+                    onPressed: _isFormValid() ? _saveGroup : null,  // 조건부 활성화
                     btnText: '저장하기',
                   ),
                 ],

@@ -7,6 +7,7 @@ import 'package:front/repository/api/ApiFcm.dart';
 void groupInviteByEmail(BuildContext context, Group group, List<GroupMember> members) {
   showDialog(
     context: context,
+    barrierDismissible: false,
     builder: (BuildContext context) {
       final _emailController = TextEditingController();
 
