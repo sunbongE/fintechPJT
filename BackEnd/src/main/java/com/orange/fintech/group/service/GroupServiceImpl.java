@@ -13,12 +13,8 @@ import com.orange.fintech.notification.FcmSender;
 import com.orange.fintech.notification.entity.NotificationType;
 import com.orange.fintech.notification.repository.NotificationQueryRepository;
 import com.orange.fintech.notification.service.FcmService;
-import com.orange.fintech.payment.entity.TransactionDetail;
-import com.orange.fintech.payment.entity.TransactionMember;
-import com.orange.fintech.payment.entity.TransactionMemberPK;
-import com.orange.fintech.payment.repository.TransactionDetailRepository;
-import com.orange.fintech.payment.repository.TransactionMemberRepository;
-import com.orange.fintech.payment.repository.TransactionQueryRepository;
+import com.orange.fintech.payment.entity.*;
+import com.orange.fintech.payment.repository.*;
 import com.orange.fintech.redis.service.GroupRedisService;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,6 +43,9 @@ public class GroupServiceImpl implements GroupService {
     private final TransactionMemberRepository transactionMemberRepository;
     private final NotificationQueryRepository notificationQueryRepository;
     private final TransactionQueryRepository transactionQueryRepository;
+    private final ReceiptRepository receiptRepository;
+    private final ReceiptDetailRepository receiptDetailRepository;
+    private final ReceiptDetailMemberRepository receiptDetailMemberRepository;
 
     @Override
     public int createGroup(GroupCreateDto dto, String memberId) {
@@ -166,6 +165,26 @@ public class GroupServiceImpl implements GroupService {
             transactionMember.setTotalAmount(0L);
 
             transactionMemberRepository.save(transactionMember);
+
+            // transaction에 receipt가 등록되어있다면
+            // receiptDetailMember에 새로운 멤버 추가해주기 0원으로
+            if (transactionDetail.getReceiptEnrolled()) {
+                Receipt receipt =
+                        receiptRepository.findByTransaction(transactionDetail.getTransaction());
+                List<ReceiptDetail> receiptDetails = receiptDetailRepository.findByReceipt(receipt);
+                if (receiptDetails.size() > 0) {
+                    for (ReceiptDetail receiptDetail : receiptDetails) {
+                        ReceiptDetailMember receiptDetailMember = new ReceiptDetailMember();
+                        ReceiptDetailMemberPK memberPK = new ReceiptDetailMemberPK();
+
+                        memberPK.setReceiptDetail(receiptDetail);
+                        memberPK.setMember(member);
+
+                        receiptDetailMember.setAmountDue(0L);
+                        receiptDetailMemberRepository.save(receiptDetailMember);
+                    }
+                }
+            }
         }
     }
 
