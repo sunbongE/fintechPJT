@@ -178,6 +178,7 @@ public class GroupController {
 
         } catch (Exception e) {
             log.info("[ERROR] :{}", e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(BaseResponseBody.of(500, "서버 오류"));
         }

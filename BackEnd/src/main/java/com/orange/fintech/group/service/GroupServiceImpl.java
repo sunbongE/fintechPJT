@@ -168,7 +168,8 @@ public class GroupServiceImpl implements GroupService {
 
             // transaction에 receipt가 등록되어있다면
             // receiptDetailMember에 새로운 멤버 추가해주기 0원으로
-            if (transactionDetail.getReceiptEnrolled()) {
+            if (transactionDetail.getReceiptEnrolled() != null
+                    && transactionDetail.getReceiptEnrolled()) {
                 Receipt receipt =
                         receiptRepository.findByTransaction(transactionDetail.getTransaction());
                 List<ReceiptDetail> receiptDetails = receiptDetailRepository.findByReceipt(receipt);
@@ -179,6 +180,7 @@ public class GroupServiceImpl implements GroupService {
 
                         memberPK.setReceiptDetail(receiptDetail);
                         memberPK.setMember(member);
+                        receiptDetailMember.setReceiptDetailMemberPK(memberPK);
 
                         receiptDetailMember.setAmountDue(0L);
                         receiptDetailMemberRepository.save(receiptDetailMember);
