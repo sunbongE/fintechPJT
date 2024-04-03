@@ -95,9 +95,12 @@ class _MySpendListState extends State<MySpendList> {
                               style: TextStyle(fontSize: 13.sp),
                             ),
                             SizedBox(width: 25.w),
-                            Text(
-                              item['transactionSummary'],
-                              style: TextStyle(fontSize: 20.sp),
+                            Container(
+                              constraints: BoxConstraints(maxWidth: 150.w),
+                              child: Text(
+                                item['transactionSummary'],
+                                style: TextStyle(fontSize: 20.sp),
+                              ),
                             ),
                           ],
                         ),
