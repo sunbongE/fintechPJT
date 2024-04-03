@@ -593,6 +593,24 @@ public class PaymentServiceImpl implements PaymentService {
 
                 receiptDetailRepository.save(receiptDetail);
 
+                // receipt_detail_member에 그룹의 모든 멤버 추가
+                List<GroupMembersDto> groupMembers =
+                        groupService
+                                .findGroupMembers(transactionDetail.getGroup().getGroupId())
+                                .getGroupMembersDtos();
+                if (groupMembers.size() > 0) {
+                    for (GroupMembersDto groupMember : groupMembers) {
+                        ReceiptDetailMember receiptDetailMember = new ReceiptDetailMember();
+                        ReceiptDetailMemberPK pk = new ReceiptDetailMemberPK();
+                        pk.setReceiptDetail(receiptDetail);
+                        pk.setMember(memberRepository.findByKakaoId(groupMember.getKakaoId()));
+                        receiptDetailMember.setReceiptDetailMemberPK(pk);
+                        receiptDetailMember.setAmountDue(0L);
+
+                        receiptDetailMemberRepository.save(receiptDetailMember);
+                    }
+                }
+
                 // receipt_detail_member transaction_member인 모든 멤버 추가
                 List<TransactionMember> transactionMembers =
                         transactionQueryRepository.getTransactionMember(
@@ -605,8 +623,8 @@ public class PaymentServiceImpl implements PaymentService {
                         ReceiptDetailMember receiptDetailMember = new ReceiptDetailMember();
                         ReceiptDetailMemberPK pk = new ReceiptDetailMemberPK();
                         pk.setReceiptDetail(receiptDetail);
-
                         pk.setMember(dto.getTransactionMemberPK().getMember());
+
                         receiptDetailMember.setReceiptDetailMemberPK(pk);
                         receiptDetailMember.setAmountDue(amount / memberCnt);
 
