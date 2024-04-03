@@ -29,7 +29,7 @@ class _MoneyRequestState extends State<MoneyRequest> {
 
   void fetchMyGroupPayments() async {
     print("MoneyRequest에서 그룹소비내역 받아오기----");
-    final MyGroupPaymentsJson = await getMyGroupPayments(widget.groupId, 0, 200); //받는 수 하드코딩함
+    final MyGroupPaymentsJson = await getMyGroupPayments(widget.groupId, 0, 50); //받는 수 하드코딩함
     // print(MyGroupPaymentsJson.data);
     if (MyGroupPaymentsJson != null && MyGroupPaymentsJson.data is List) {
       setState(() {
