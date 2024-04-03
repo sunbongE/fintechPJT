@@ -47,7 +47,7 @@ class _GroupItemState extends State<GroupItem> {
        );
        break;
      }
-     await Future.delayed(Duration(seconds: 15));
+     await Future.delayed(Duration(seconds: 3));
    }
   print('빠져나감');
  }
