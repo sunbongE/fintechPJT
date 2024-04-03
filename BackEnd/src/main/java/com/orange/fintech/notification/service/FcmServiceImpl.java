@@ -109,7 +109,7 @@ public class FcmServiceImpl implements FcmService {
             dataSet.put("groupId", String.valueOf(dto.getGroupId()));
             dataSet.put("type", "SPLIT");
         } else if (dto.getNotificationType().equals(NotificationType.TRANSFER)) {
-            title = sendGroup + NotificationResponseTitle.TRANSFER;
+            title = (sendGroup + NotificationResponseTitle.TRANSFER);
             content = (sendGroup + NotificationResponseDescription.TRANSFER);
             dataSet.put("groupId", String.valueOf(dto.getGroupId()));
             dataSet.put("type", "TRANSFER");

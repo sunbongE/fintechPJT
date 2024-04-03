@@ -37,7 +37,7 @@ public class Notification {
     private Group group;
 
     @NotNull
-    @Column(length = 15)
+    @Column(length = 30)
     private String title;
 
     @NotNull

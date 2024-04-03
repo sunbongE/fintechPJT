@@ -345,7 +345,10 @@ public class CalculateServiceImpl implements CalculateService {
                     calResult.getAmount());
             getdistinctMemberId.put(calResult.getReceiveMemberId(), calResult.getReceiveMemberId());
             getdistinctMemberId.put(calResult.getSendMemberId(), calResult.getSendMemberId());
-            log.info("transfer: {} -> {}", calResult.getSendMemberId(), calResult.getReceiveMemberId());
+            log.info(
+                    "transfer: {} -> {}",
+                    calResult.getSendMemberId(),
+                    calResult.getReceiveMemberId());
         }
 
         Group group = groupRepository.findById(groupId).get();
@@ -369,11 +372,15 @@ public class CalculateServiceImpl implements CalculateService {
         // 정산했던 회원들 아이디 추출
         Collection<String> distinctMemberId = getdistinctMemberId.values();
         List<String> calculateMembers = new ArrayList<>(distinctMemberId);
-
+        log.info(
+                "*******************************************************************{}",
+                distinctMemberId);
         MessageListDataReqDto messageListDataReqDto = new MessageListDataReqDto();
         messageListDataReqDto.setTargetMembers(calculateMembers);
         messageListDataReqDto.setGroupId(groupId);
         messageListDataReqDto.setNotificationType(NotificationType.TRANSFER);
+        log.info(
+                "*****************************FFFFFFFFFFFFFFFFCM**************************************");
         fcmService.pushListDataMSG(messageListDataReqDto);
     }
 
