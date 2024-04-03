@@ -24,7 +24,7 @@ class _MoneyRequestDetailBottomState extends State<MoneyRequestDetailBottom> {
         Padding(padding: EdgeInsets.symmetric(horizontal: 10.h)),
         Tooltip(
           message: '자투리 금액은 \n최종 정산을 늦게한 분이 \n정산하게 됩니다',
-          waitDuration: Duration(milliseconds: 1),
+          waitDuration: Duration.zero,
           textAlign: TextAlign.center,
           child: Row(
             children: [

@@ -31,7 +31,7 @@ class RequestMemberList extends StatefulWidget {
 
 class _RequestMemberListState extends State<RequestMemberList> {
   List<bool> isSettledStates = [];
-  bool allSettled = false;
+  bool allSettled = true;
   int settledMembersCount = 0;
   late List<int> amountList;
   late List<bool> isLockList;
@@ -50,6 +50,7 @@ class _RequestMemberListState extends State<RequestMemberList> {
       isLockList = tmp.members.map((m) => m.lock).toList();
       amountList = widget
           .amountList;
+      allSettled = isSettledStates.every((e)=> e == true);
     }
     else if(widget.requestDetail is RequestCash) {
       isSettledStates =
@@ -63,7 +64,7 @@ class _RequestMemberListState extends State<RequestMemberList> {
 
   void updateAllSettled() {
     settledMembersCount = isSettledStates.where((element) => element).length;
-    allSettled = isSettledStates.any((element) => element);
+    allSettled = isSettledStates.every((element) => element);
     widget.allSettledCallback(allSettled);
   }
 
@@ -72,7 +73,7 @@ class _RequestMemberListState extends State<RequestMemberList> {
     setState(() {
       isSettledStates = List<bool>.filled(isSettledStates.length, value);
       print('isSettledStates: $isSettledStates');
-      widget.isLockList(List<bool>.filled(isLockList.length, value));
+     // widget.isLockList(List<bool>.filled(isLockList.length, value));
       if(value == true){
       if(widget.requestDetail is RequestDetail)
         widget.callbackAmountList(List<int>.filled(amountList.length, (widget.requestDetail.totalPrice/amountList.length).toInt()));
