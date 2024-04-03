@@ -24,17 +24,7 @@ class MyAccountItem extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: BG_COLOR.withOpacity(0.5),
-        border: Border.all(
-          color: Color(0xffD5D5D5),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            spreadRadius: 2,
-            blurRadius: 7,
-            offset: Offset(0, 5),
-          ),
-        ],
+        border: Border.all(color: BG_COLOR, width: 2.w),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

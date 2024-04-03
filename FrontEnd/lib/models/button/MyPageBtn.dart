@@ -17,7 +17,6 @@ class MyPageBtn extends StatefulWidget {
 }
 
 class _MyPageBtnState extends State<MyPageBtn> {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,14 +29,15 @@ class _MyPageBtnState extends State<MyPageBtn> {
             width: 50.w,
             height: 30.h,
             decoration: BoxDecoration(
-              color: MY_PAGE_BTN.withOpacity(0.4),
-              borderRadius: BorderRadius.circular(5),
+              // color: MY_PAGE_BTN.withOpacity(0.4),
+              color: Colors.yellow.shade800,
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Center(
               child: Text(
                 widget.btnText,
                 style: TextStyle(
-                  color: Colors.black.withOpacity(0.8),
+                  color: Colors.white,
                   fontSize: 13.sp,
                 ),
               ),

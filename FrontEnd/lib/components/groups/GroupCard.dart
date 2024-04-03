@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:front/components/groups/StateContainer.dart';
 import 'package:front/components/groups/isDoneContainer.dart';
+import '../../const/colors/Colors.dart';
 import '../../entities/Group.dart';
 
 class GroupCard extends StatelessWidget {
   final Group group;
   final VoidCallback onTap;
 
-  const GroupCard({Key? key, required this.group, required this.onTap})
-      : super(key: key);
+  const GroupCard({Key? key, required this.group, required this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +18,14 @@ class GroupCard extends StatelessWidget {
     bool groupNow = today.isAfter(endDateParsed);
 
     return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
+      padding: EdgeInsets.symmetric(vertical: 10.h),
+      child: Container(
+        decoration: BoxDecoration(
+          color: BG_COLOR.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: BG_COLOR, width: 2.w),
         ),
-        color: groupNow
-            ? Color(0xffFF3D00).withOpacity(0.5)
-            : Color(0xffFF9E44).withOpacity(0.8),
+        // height: 100.h,
         child: ListTile(
           onTap: onTap,
           title: Row(
@@ -33,7 +33,7 @@ class GroupCard extends StatelessWidget {
               Text(
                 group.startDate,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black54,
                   fontSize: 8.sp,
                 ),
               ),
@@ -43,7 +43,7 @@ class GroupCard extends StatelessWidget {
               Text(
                 '~',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black54,
                   fontSize: 8.sp,
                 ),
               ),
@@ -53,7 +53,7 @@ class GroupCard extends StatelessWidget {
               Text(
                 group.endDate,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black54,
                   fontSize: 8.sp,
                 ),
               ),
@@ -65,16 +65,13 @@ class GroupCard extends StatelessWidget {
               Text(
                 group.groupName,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black,
                   fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          trailing: group.isCalculateDone
-            ? isDoneContainer(groupState: groupNow)
-          : StateContainer(groupState: groupNow),
+          trailing: group.isCalculateDone ? isDoneContainer(groupState: groupNow) : StateContainer(groupState: groupNow),
         ),
       ),
     );

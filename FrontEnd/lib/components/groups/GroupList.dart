@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:front/components/split/SplitDoing.dart';
+import 'package:front/models/CustomDivider.dart';
 import 'package:front/screen/SplitMain.dart';
 import 'package:front/screen/groupscreens/GroupAdd.dart';
 import 'package:front/screen/groupscreens/GroupItem.dart';

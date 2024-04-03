@@ -64,7 +64,7 @@ class _MyAppState extends State<MyApp> {
         home: Scaffold(
           body: LoadingPage(),
         ),
-        theme: ThemeData(fontFamily: 'Poppins'),
+        theme: ThemeData(fontFamily: 'Poppins', scaffoldBackgroundColor: Colors.white, appBarTheme: AppBarTheme(color: Colors.white)),
         themeMode: ThemeMode.system,
       ),
     );

@@ -24,55 +24,51 @@ class _MyInfoState extends State<MyInfoMain> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(30.w, 10.h, 30.w, 10.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(100.w),
+            child: Image.network(
+              "${userManager.thumbnailImageUrl}",
+              width: 75.w,
+              height: 75.h,
+              fit: BoxFit.cover,
+            ),
+          ),
+          SizedBox(
+            width: 21.w,
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: Image.network(
-                  "${userManager.thumbnailImageUrl}",
-                  width: 75.w,
-                  height: 75.h,
-                  fit: BoxFit.cover,
+              Text(
+                "${userManager.name}",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.sp,
+                  letterSpacing: 3,
                 ),
               ),
-              SizedBox(
-                width: 21.w,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "${userManager.name}",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.sp,
-                      letterSpacing: 3,
-                    ),
+              GestureDetector(
+                onTap: () {
+                  if (userManager.email != null) {
+                    Clipboard.setData(ClipboardData(text: userManager.email!));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('클립보드에 복사되었습니다')),
+                    );
+                  }
+                },
+                child: Text(
+                  "${userManager.email}",
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    color: Color(0xff6E6E6E),
+                    decoration: TextDecoration.underline,
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      if (userManager.email != null) {
-                        Clipboard.setData(ClipboardData(text: userManager.email!));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('클립보드에 복사되었습니다')),
-                        );
-                      }
-                    },
-                    child: Text(
-                      "${userManager.email}",
-                      style: TextStyle(
-                        fontSize: 15.sp,
-                        color: Color(0xff6E6E6E),
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
