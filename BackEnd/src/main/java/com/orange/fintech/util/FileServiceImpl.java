@@ -96,7 +96,7 @@ public class FileServiceImpl implements FileService {
         // 1-2. 클라이언트가 업로드한 파일의 확장자 추출 (이미지 확장자인지 검사)
         String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
         if (!fileUtil.isValidImageExtension(extension) || extension.equals("pdf")) {
-            if(!extension.equals("gif")) {
+            if (!extension.equals("gif")) {
                 throw new NotValidExtensionException();
             }
         }
