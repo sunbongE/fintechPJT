@@ -242,7 +242,9 @@ public class CalculateServiceImpl implements CalculateService {
                     transaction[i][plusIdx] += receiveAmount;
                     sendAmount -= receiveAmount;
                     remains[plusIdx++] = 0;
-                    receiveAmount = remains[plusIdx]; // FIXME
+                    if (plusIdx < remains.length) {
+                        receiveAmount = remains[plusIdx]; // FIXME
+                    }
                 }
             }
         }
@@ -330,7 +332,9 @@ public class CalculateServiceImpl implements CalculateService {
                     transaction[minusIdx][plusIdx] += receiveAmount;
                     sendAmount -= receiveAmount;
                     remains[plusIdx++] = 0;
-                    receiveAmount = remains[plusIdx]; // FIXME
+                    if (plusIdx < remains.length) {
+                        receiveAmount = remains[plusIdx]; // FIXME
+                    }
                 }
                 transactionCnt++;
             }
