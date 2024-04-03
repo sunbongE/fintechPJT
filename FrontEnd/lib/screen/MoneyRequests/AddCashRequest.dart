@@ -172,6 +172,7 @@ class _AddCashRequestState extends State<AddCashRequest> {
                       suffixIcon: IconButton(
                         icon: Icon(Icons.map),
                         onPressed: () async {
+                          FocusScope.of(context).unfocus();
                           final result = await Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => SelectLocation(),
