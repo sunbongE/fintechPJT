@@ -308,13 +308,8 @@ public class CalculateServiceImpl implements CalculateService {
 
         long[][] transaction = new long[minus.size()][plus.size()];
 
-        log.info("send:{}", minus);
-        log.info("receive:{}", plus);
-        log.info("minus: {}, plus:{}", minus.toString(), plus.toString());
-
         int transactionCnt = 0;
         int plusIdx = 0;
-        log.info("np: {}", Arrays.toString(np));
         for (int minusIdx = 0; minusIdx < minus.size(); minusIdx++) {
             if (plusIdx >= remains.length) {
                 break;
