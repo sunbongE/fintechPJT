@@ -179,6 +179,7 @@ public class CalculateServiceImpl implements CalculateService {
 
             // 잔액이 부족한 놈 아이디 저장함.
             if (balance + member.amount < 0) {
+                log.info("누구여 :{}, 잔액 => {}, 낼금액 => {}",member.kakaoId, balance, member.amount);
                 //                log.info("CalculateServiceImpl 잔액 부족한 상태!!");
                 noMoneysKakaoId.add(member.kakaoId);
                 // 해당 그룹에서 회원의 2차 정산 상태를 변경한다.
