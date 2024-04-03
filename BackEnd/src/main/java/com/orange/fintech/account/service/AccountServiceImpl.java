@@ -31,6 +31,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -188,9 +189,11 @@ public class AccountServiceImpl implements AccountService {
 
         Account account = new Account();
         account.setAccountNo(REC.get("accountNo").toString());
-        account.setBankCode(REC.get("bankCode").toString());
-        account.setBalance(Long.parseLong(REC.get("accountBalance").toString()));
         account.setMember(member);
+        account.setBalance(Long.parseLong(REC.get("accountBalance").toString()));
+        account.setIsPrimaryAccount(false);
+        account.setBankCode("001");
+        account.setBankCode(REC.get("bankCode").toString());
 
         Account saveData = accountRepository.save(account);
 
@@ -444,12 +447,15 @@ public class AccountServiceImpl implements AccountService {
             LocalTime transactionTime =
                     LocalTime.parse(receiptRequestDto.getDate(), dateTimeFormatter);
 
-            Transaction transaction =
+            List<Transaction> TransactionList =
                     transactionRepository
                             .findApproximateReceiptComparingBalanceApostropheForeignkey(
                                     receiptRequestDto.getApprovalAmount(),
                                     transactionDate,
-                                    kakaoId);
+                                    kakaoId,
+                                    PageRequest.of(0, 1));
+
+            Transaction transaction = TransactionList.get(0);
 
             // 2. 업로드한 영수증에 해당하는 결제 정보 (Record)를 Transaction 테이블에서 찾을 수 없는 경우 추가
             if (transaction == null) {
