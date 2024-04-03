@@ -600,16 +600,18 @@ public class PaymentServiceImpl implements PaymentService {
                 int memberCnt = transactionMembers.size();
                 long amount = receipt.getApprovalAmount();
                 int remainder = (int) (amount - amount / memberCnt * memberCnt);
-                for (TransactionMember dto : transactionMembers) {
-                    ReceiptDetailMember receiptDetailMember = new ReceiptDetailMember();
-                    ReceiptDetailMemberPK pk = new ReceiptDetailMemberPK();
-                    pk.setReceiptDetail(receiptDetail);
+                if (transactionMembers.size() > 0) {
+                    for (TransactionMember dto : transactionMembers) {
+                        ReceiptDetailMember receiptDetailMember = new ReceiptDetailMember();
+                        ReceiptDetailMemberPK pk = new ReceiptDetailMemberPK();
+                        pk.setReceiptDetail(receiptDetail);
 
-                    pk.setMember(dto.getTransactionMemberPK().getMember());
-                    receiptDetailMember.setReceiptDetailMemberPK(pk);
-                    receiptDetailMember.setAmountDue(amount / memberCnt);
+                        pk.setMember(dto.getTransactionMemberPK().getMember());
+                        receiptDetailMember.setReceiptDetailMemberPK(pk);
+                        receiptDetailMember.setAmountDue(amount / memberCnt);
 
-                    receiptDetailMemberRepository.save(receiptDetailMember);
+                        receiptDetailMemberRepository.save(receiptDetailMember);
+                    }
                 }
 
                 transactionDetail.setRemainder(remainder);
