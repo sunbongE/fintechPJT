@@ -57,7 +57,7 @@ class MainPastTravelCard extends StatelessWidget {
                                   : group.groupName,
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 25.sp,
+                                fontSize: 20.sp,
                               ),
                             ),
                             Row(

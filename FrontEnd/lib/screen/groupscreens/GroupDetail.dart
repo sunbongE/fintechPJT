@@ -79,7 +79,10 @@ class _GroupDetailState extends State<GroupDetail> {
           Group group = snapshot.data!;
           return Scaffold(
             appBar: AppBar(
-              title: Text(group.groupName),
+              title: Text(group.groupName,
+              style: TextStyle(
+                fontSize: 20.sp,
+              ),),
             ),
             body: Column(
               children: [

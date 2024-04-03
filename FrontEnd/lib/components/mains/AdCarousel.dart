@@ -11,7 +11,6 @@ class AdCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 화면 너비를 가져옵니다.
     var screenWidth = MediaQuery.of(context).size.width;
 
     return CarouselSlider(
@@ -23,7 +22,8 @@ class AdCarousel extends StatelessWidget {
       items: imgList
           .map((item) => Container(
                 width: screenWidth,
-                child: Center(
+                child: Align(
+                  alignment: Alignment.topCenter,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.asset(item, fit: BoxFit.cover),

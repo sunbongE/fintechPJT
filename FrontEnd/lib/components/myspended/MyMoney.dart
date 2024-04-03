@@ -71,7 +71,7 @@ class _MyMoneyState extends State<MyMoney> {
                       '${NumberFormat('#,###').format(int.tryParse(bankInfo[0]['accountBalance'].toString()) ?? 0)}원',
                       style: TextStyle(
                         color: TEXT_COLOR,
-                        fontSize: 36.sp,
+                        fontSize: 30.sp,
                         fontWeight: FontWeight.w500,
                       ),
                     )

@@ -103,7 +103,7 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
                 child: Text(
                   '정산 요청 내역',
                   style: TextStyle(
-                    fontSize: min(27.sp, 27.sp),
+                    fontSize: min(22.sp, 22.sp),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -129,9 +129,9 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
                       child: Text(
                         isOption ? '해야할 정산' : '모든 정산',
                         style: TextStyle(
-                          fontSize: min(20.sp, 25.sp),
+                          fontSize: min(16.sp, 21.sp),
                           color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),
@@ -154,9 +154,9 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
                       child: Text(
                         '정산 추가',
                         style: TextStyle(
-                          fontSize: min(20.sp, 25.sp),
+                          fontSize: min(16.sp, 21.sp),
                           color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),
@@ -207,11 +207,11 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
                                 ),
                                 SizedBox(width: 25.w),
                                 Container(
-                                  constraints: BoxConstraints(maxWidth: 150.w),
+                                  constraints: BoxConstraints(maxWidth: 120.w),
                                   child: Text(
                                     item['transactionSummary'],
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(fontSize: 20.sp),
+                                    style: TextStyle(fontSize: 15.sp),
                                   ),
                                 ),
                               ],
@@ -221,7 +221,7 @@ class _GroupCalCheckState extends State<GroupCalCheck> {
                                 Text(
                                   '-${NumberFormat('#,###').format(int.parse(item['transactionBalance'].toString()))}원',
                                   style: TextStyle(
-                                    fontSize: 20.sp,
+                                    fontSize: 15.sp,
                                     color: RECEIPT_TEXT_COLOR,
                                   ),
                                 ),

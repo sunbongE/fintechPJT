@@ -25,13 +25,13 @@ class _GroupDescriptionState extends State<GroupDescription> {
             children: [
               Text(
                 widget.group.theme,
-                style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
               ),
               SizedBox(height: 16.0.h),
               Text(
                 '${widget.group.startDate} ~ ${widget.group.endDate}',
-                style: TextStyle(fontSize: 20.sp),
+                style: TextStyle(fontSize: 15.sp),
               ),
             ],
           ),

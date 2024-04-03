@@ -64,7 +64,7 @@ class MyAccountItem extends StatelessWidget {
                     Text(
                       '${selectedAccount}',
                       style: TextStyle(
-                        fontSize: 20.sp,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
