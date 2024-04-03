@@ -363,8 +363,10 @@ public class TestService {
                     // Do nothing
                 }
 
-                startDate = AccountDateTimeUtil.localDateToString(transaction.getTransactionDate());
-                startTime = transaction.getTransactionTime();
+                if(transaction != null) {
+                    startDate = AccountDateTimeUtil.localDateToString(transaction.getTransactionDate());
+                    startTime = transaction.getTransactionTime();
+                }
             }
 
             LocalDate startDate_LocalDate = AccountDateTimeUtil.StringToLocalDate(startDate);
