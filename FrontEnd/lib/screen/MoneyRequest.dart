@@ -11,6 +11,7 @@ import '../repository/api/ApiMoneyRequest.dart';
 
 class MoneyRequest extends StatefulWidget {
   final groupId;
+
   const MoneyRequest({super.key, this.groupId});
 
   @override
@@ -19,6 +20,7 @@ class MoneyRequest extends StatefulWidget {
 
 class _MoneyRequestState extends State<MoneyRequest> {
   late List<Expense> requests = [];
+
   @override
   void initState() {
     super.initState();
@@ -41,76 +43,101 @@ class _MoneyRequestState extends State<MoneyRequest> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("내 정산 요청"),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () async {
-            Navigator.pop(context);
-            await Future.delayed(Duration.zero);
-            Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) => GroupItem(groupId: widget.groupId),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  var begin = Offset(-1.0, 0.0);
-                  var end = Offset.zero;
-                  var curve = Curves.ease;
-                  var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                  var offsetAnimation = animation.drive(tween);
-                  return SlideTransition(
-                    position: offsetAnimation,
-                    child: child,
-                  );
-                },
-                transitionDuration: Duration(milliseconds: 300),
-              ),
-            );
-          },
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context);
+        await Future.delayed(Duration.zero);
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => GroupItem(groupId: widget.groupId),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              var begin = Offset(-1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              var offsetAnimation = animation.drive(tween);
+              return SlideTransition(
+                position: offsetAnimation,
+                child: child,
+              );
+            },
+            transitionDuration: Duration(milliseconds: 300),
+          ),
+        );
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("내 정산 요청"),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () async {
+              Navigator.pop(context);
+              await Future.delayed(Duration.zero);
+              Navigator.pushReplacement(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) => GroupItem(groupId: widget.groupId),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    var begin = Offset(-1.0, 0.0);
+                    var end = Offset.zero;
+                    var curve = Curves.ease;
+                    var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                    var offsetAnimation = animation.drive(tween);
+                    return SlideTransition(
+                      position: offsetAnimation,
+                      child: child,
+                    );
+                  },
+                  transitionDuration: Duration(milliseconds: 300),
+                ),
+              );
+            },
+          ),
+          scrolledUnderElevation: 0,
         ),
-        scrolledUnderElevation: 0,
-      ),
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Column(
-            children: [
-              Padding(padding: EdgeInsets.symmetric(vertical: 2.w)),
-              Text('정산할 항목들을 선택해주세요'),
-              Padding(padding: EdgeInsets.symmetric(vertical: 5.w)),
-              Row(
-                children: [
-                  SizedButton(
-                    btnText: '영수증 일괄 등록',
-                    onPressed: () => buttonSlideAnimation(context, AddReceipt(groupId: widget.groupId)),
-                  ),
-                  Padding(padding: EdgeInsets.symmetric(horizontal: 5.w)),
-                  SizedButton(
-                    btnText: '현금 계산 추가',
-                    onPressed: () => navigateToAddCashPage(),
-                  ),
-                ],
-              ),
-              Padding(padding: EdgeInsets.symmetric(vertical: 5.w)),
-              Expanded(
-                // ListView를 Expanded로 감싸기
-                child: SizedBox(
-                  width: 400.w,
-                  height: 594.h,
-                  child: MoneyRequestList(
-                    expenses: requests,
-                    groupId: widget.groupId,
-                    onSuccess: (value) {
-                      fetchMyGroupPayments();
-                    },
+        body: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                Padding(padding: EdgeInsets.symmetric(vertical: 2.w)),
+                Text('정산할 항목들을 선택해주세요'),
+                Padding(padding: EdgeInsets.symmetric(vertical: 5.w)),
+                Row(
+                  children: [
+                    SizedButton(
+                      btnText: '영수증 일괄 등록',
+                      onPressed: () => buttonSlideAnimation(context, AddReceipt(groupId: widget.groupId)),
+                    ),
+                    Padding(padding: EdgeInsets.symmetric(horizontal: 5.w)),
+                    SizedButton(
+                      btnText: '현금 계산 추가',
+                      onPressed: () => navigateToAddCashPage(),
+                    ),
+                  ],
+                ),
+                Padding(padding: EdgeInsets.symmetric(vertical: 5.w)),
+                Expanded(
+                  // ListView를 Expanded로 감싸기
+                  child: SizedBox(
+                    width: 400.w,
+                    height: 594.h,
+                    child: MoneyRequestList(
+                      expenses: requests,
+                      groupId: widget.groupId,
+                      onSuccess: (value) {
+                        fetchMyGroupPayments();
+                      },
+                    ),
                   ),
                 ),
-              ),
-              Padding(padding: EdgeInsets.symmetric(vertical: 20.w)),
-            ],
-          ),
-        ],
+                Padding(padding: EdgeInsets.symmetric(vertical: 20.w)),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
