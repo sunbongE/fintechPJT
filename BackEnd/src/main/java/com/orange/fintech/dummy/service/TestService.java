@@ -7,17 +7,14 @@ import com.orange.fintech.account.repository.AccountQueryRepository;
 import com.orange.fintech.account.repository.AccountRepository;
 import com.orange.fintech.account.service.AccountService;
 import com.orange.fintech.dummy.dto.UserKeyAccountPair;
+import com.orange.fintech.group.dto.GroupMembersDto;
+import com.orange.fintech.group.repository.GroupQueryRepository;
 import com.orange.fintech.group.repository.GroupRepository;
+import com.orange.fintech.group.service.GroupService;
 import com.orange.fintech.member.entity.Member;
 import com.orange.fintech.member.repository.MemberRepository;
-import com.orange.fintech.payment.entity.Receipt;
-import com.orange.fintech.payment.entity.ReceiptDetail;
-import com.orange.fintech.payment.entity.Transaction;
-import com.orange.fintech.payment.entity.TransactionDetail;
-import com.orange.fintech.payment.repository.ReceiptDetailRepository;
-import com.orange.fintech.payment.repository.ReceiptRepository;
-import com.orange.fintech.payment.repository.TransactionDetailRepository;
-import com.orange.fintech.payment.repository.TransactionRepository;
+import com.orange.fintech.payment.entity.*;
+import com.orange.fintech.payment.repository.*;
 import com.orange.fintech.util.AccountDateTimeUtil;
 import com.orange.fintech.util.FileService;
 import com.orange.fintech.util.FileUtil;
@@ -48,6 +45,8 @@ public class TestService {
 
     @Autowired FileService fileService;
 
+    @Autowired GroupService groupService;
+
     @Autowired MemberRepository memberRepository;
 
     @Autowired TransactionRepository transactionRepository;
@@ -64,6 +63,14 @@ public class TestService {
 
     @Autowired GroupRepository groupRepository;
 
+    @Autowired ReceiptDetailMemberRepository receiptDetailMemberRepository;
+
+    @Autowired TransactionQueryRepository transactionQueryRepository;
+
+    @Autowired TransactionMemberRepository transactionMemberRepository;
+
+    @Autowired GroupQueryRepository groupQueryRepository;
+
     @Autowired FileUtil fileUtil;
 
     @Value("${ssafy.bank.drawing.transfer}")
@@ -74,7 +81,7 @@ public class TestService {
 
     private List<Map<String, Object>> dummyRecords = new ArrayList<>();
 
-    int groupMemberCount = 7;
+    int groupMemberCount = 6;
     String bankCode = "001";
     String startDate = "20240101";
     String endDate = "20241231";
@@ -113,7 +120,6 @@ public class TestService {
 
             while ((line = br.readLine()) != null) {
                 String[] tokens = line.split(",");
-                log.info("line: {}", line);
 
                 if (tokens.length == 0) {
                     dummyRecords.add(map);
@@ -124,13 +130,9 @@ public class TestService {
                 } else if (tokens.length == 9) {
                     // 7: 주소, 8: 금액
                     map.put("payer", tokens[1]);
-                    log.info("payer: {}", tokens[1]);
                     map.put("storeName", tokens[2]);
-                    log.info("storeName: {}", tokens[2]);
                     map.put("location", tokens[7]);
-                    log.info("location: {}", tokens[7]);
                     map.put("approvalAmount", tokens[8]);
-                    log.info("approvalAmount: {}", tokens[8]);
                 } else if (tokens.length == 7) {
                     // 3: 메뉴, 4: 단가, 5: 수량, 6: 소계
                     menuMap = new HashMap<>();
@@ -200,10 +202,7 @@ public class TestService {
                 account.setBalance(0L);
                 account.setIsPrimaryAccount(false);
                 account.setBankCode("001");
-                log.info(
-                        "userKeyAccountPair.getAccountNo(): {}", userKeyAccountPair.getAccountNo());
                 account.setAccountNo(userKeyAccountPair.getAccountNo());
-                log.info("저장할 account 객체: {}", account.toString());
 
                 accountRepository.save(account);
                 // FIXME
@@ -227,12 +226,15 @@ public class TestService {
 
                     transactionDate = transaction.getTransactionDate();
                     transactionTime = transaction.getTransactionTime();
-                } else {
-                    // Do nothing
-                }
 
-                startDate = AccountDateTimeUtil.localDateToString(transaction.getTransactionDate());
-                startTime = transaction.getTransactionTime();
+                    startDate =
+                            AccountDateTimeUtil.localDateToString(transaction.getTransactionDate());
+                    startTime = transaction.getTransactionTime();
+                } else {
+                    LocalDate date = LocalDate.of(2024, 1, 1);
+                    startDate = "20240101";
+                    startTime = LocalTime.of(0, 0);
+                }
             }
 
             LocalDate startDate_LocalDate = AccountDateTimeUtil.StringToLocalDate(startDate);
@@ -294,6 +296,7 @@ public class TestService {
             // 저장할 데이터가 있으면 저장.
             if (!saveDataList.isEmpty()) {
                 List<Transaction> savedAll = transactionRepository.saveAll(saveDataList);
+                transactionRepository.flush();
 
                 // 디테일 생성.
                 List<TransactionDetail> transactionDetailList = new ArrayList<>();
@@ -423,14 +426,19 @@ public class TestService {
             // 저장할 데이터가 있으면 저장.
             if (!saveDataList.isEmpty()) {
                 List<Transaction> savedAll = transactionRepository.saveAll(saveDataList);
+                // FIXME
+                transactionRepository.flush();
 
                 // 디테일 생성.
                 List<TransactionDetail> transactionDetailList = new ArrayList<>();
                 for (Transaction data : savedAll) {
                     TransactionDetail detail = new TransactionDetail();
-                    // TODO: 그룹 번호 지정
 
                     // 그룹 번호 지정
+                    detail.setReceiptEnrolled(true);
+                    detail.setRemainder(
+                            Long.valueOf(data.getTransactionBalance() % groupMemberCount)
+                                    .intValue()); // Long -> Int 안전하게 캐스팅
                     detail.setGroup(groupRepository.findById(groupId).get());
                     detail.setTransactionId(data.getTransactionId());
                     transactionDetailList.add(detail);
@@ -514,7 +522,6 @@ public class TestService {
 
                 now = System.currentTimeMillis();
             } while ((now - start) / 1000 <= 1.5 && !statusCode.is2xxSuccessful());
-            //            }
         }
 
         // 5. 그룹원의 거래 내역 갱신 (SSAFY Bank API를 호출하여 서비스 서버의 Transaction 테이블 갱신)
@@ -541,6 +548,8 @@ public class TestService {
 
                 if (receipt == null) {
                     receipt = new Receipt();
+                } else {
+                    // Do nothing
                 }
 
                 receipt.setTransaction(transaction);
@@ -570,7 +579,68 @@ public class TestService {
                     receiptDetail.setCount(Integer.parseInt((String) menu.get("count")));
                     receiptDetail.setUnitPrice(Integer.parseInt((String) menu.get("unitPrice")));
 
+                    List<GroupMembersDto> groupMembersDtos =
+                            groupQueryRepository.findGroupMembers(groupId);
+
+                    for (GroupMembersDto groupMembersDto : groupMembersDtos) {
+                        TransactionMember transactionMember = new TransactionMember();
+                        TransactionMemberPK transactionMemberPK = new TransactionMemberPK();
+                        transactionMemberPK.setMember(
+                                memberRepository.findByKakaoId(groupMembersDto.getKakaoId()));
+                        transactionMemberPK.setTransaction(transaction);
+
+                        transactionMember.setIsLock(false);
+                        transactionMember.setTransactionMemberPK(transactionMemberPK);
+                        transactionMember.setTotalAmount(
+                                transaction.getTransactionBalance()
+                                        / groupQueryRepository.findGroupMembers(groupId).size());
+
+                        transactionMemberRepository.save(transactionMember);
+                    }
+
                     receiptDetailRepository.save(receiptDetail);
+                    receiptDetailRepository.flush();
+
+                    // receipt_detail_member에 그룹의 모든 멤버 추가
+                    List<GroupMembersDto> groupMembers =
+                            groupService.findGroupMembers(groupId).getGroupMembersDtos();
+                    if (groupMembers.size() > 0) {
+                        for (GroupMembersDto groupMember : groupMembers) {
+                            ReceiptDetailMember receiptDetailMember = new ReceiptDetailMember();
+                            ReceiptDetailMemberPK pk = new ReceiptDetailMemberPK();
+                            pk.setReceiptDetail(receiptDetail);
+                            pk.setMember(memberRepository.findByKakaoId(groupMember.getKakaoId()));
+                            receiptDetailMember.setReceiptDetailMemberPK(pk);
+                            receiptDetailMember.setAmountDue(0L);
+
+                            receiptDetailMemberRepository.save(receiptDetailMember);
+                        }
+                        // FIXME
+                        receiptDetailMemberRepository.flush();
+                    }
+
+                    // receipt_detail_member transaction_member인 모든 멤버 추가
+                    List<TransactionMember> transactionMembers =
+                            transactionQueryRepository.getTransactionMember(
+                                    transaction.getTransactionId());
+                    int memberCnt = transactionMembers.size();
+                    long amount = receiptDetail.getCount() * receiptDetail.getUnitPrice();
+                    int remainder = (int) (amount - amount / memberCnt * memberCnt);
+                    if (transactionMembers.size() > 0) {
+                        for (TransactionMember dto : transactionMembers) {
+                            ReceiptDetailMember receiptDetailMember = new ReceiptDetailMember();
+                            ReceiptDetailMemberPK pk = new ReceiptDetailMemberPK();
+                            pk.setReceiptDetail(receiptDetail);
+                            pk.setMember(dto.getTransactionMemberPK().getMember());
+
+                            receiptDetailMember.setReceiptDetailMemberPK(pk);
+                            receiptDetailMember.setAmountDue(amount / memberCnt);
+
+                            receiptDetailMemberRepository.save(receiptDetailMember);
+                        }
+                        // FIXME
+                        receiptDetailMemberRepository.flush();
+                    }
                 }
             }
         }
