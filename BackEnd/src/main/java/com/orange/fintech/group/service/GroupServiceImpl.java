@@ -231,18 +231,12 @@ public class GroupServiceImpl implements GroupService {
         int remainder = -1;
         if (countGroupMembers == countSecondcallGroupMembers) {
             // 마지막으로 누른 사람 -> 자투리 당첨
-
             remainder = transactionQueryRepository.sumOfRemainder(groupId);
         }
 
         groupMemberRepository.save(targetGroupMember);
 
         return remainder;
-    }
-
-    @Override
-    public void finalCalculate(int groupId, String memberId) {
-        // 송금하기
     }
 
     @Override
