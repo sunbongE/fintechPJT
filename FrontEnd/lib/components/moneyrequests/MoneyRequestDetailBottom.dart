@@ -16,32 +16,40 @@ class MoneyRequestDetailBottom extends StatefulWidget {
 
 class _MoneyRequestDetailBottomState extends State<MoneyRequestDetailBottom> {
   late bool isSettledStates;
+  final GlobalKey _tooltipKey = GlobalKey();
 
+  void _showTooltip() {
+    final dynamic tooltip = _tooltipKey.currentState;
+    tooltip?.ensureTooltipVisible();
+  }
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Padding(padding: EdgeInsets.symmetric(horizontal: 10.h)),
-        Tooltip(
-          message: '자투리 금액은 \n최종 정산을 늦게한 분이 \n정산하게 됩니다',
-          waitDuration: Duration.zero,
-          textAlign: TextAlign.center,
-          child: Row(
-            children: [
-              Icon(Icons.info_outline),
-              Padding(padding: EdgeInsets.symmetric(horizontal: 3.h)),
-              Text(
-                '자투리 금액',
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
-              ),
-            ],
+        GestureDetector(
+          onTap: _showTooltip,
+          child: Tooltip(
+            key: _tooltipKey,
+            message: '자투리 금액은 \n최종 정산을 늦게한 분이 \n정산하게 됩니다',
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.black26, width: 1.0),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            textStyle: TextStyle(color: Colors.black87),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.info_outline),
+                Padding(padding: EdgeInsets.symmetric(horizontal: 3.0)),
+                Text(
+                  '자투리 금액',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
           ),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          textStyle: TextStyle(color: Colors.black),
         ),
         Padding(padding: EdgeInsets.symmetric(horizontal: 3.h)),
         Text('|'),

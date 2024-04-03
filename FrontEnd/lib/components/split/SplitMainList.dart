@@ -50,6 +50,7 @@ class _SplitMainListState extends State<SplitMainList> {
         var member = widget.memberList[index];
         return Card(
           elevation: 0,
+          color: Colors.white,
           child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(

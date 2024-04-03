@@ -68,6 +68,7 @@ class _MoneyRequestItemState extends State<MoneyRequestItem> {
         height: 80.h,
         child: Card(
           elevation: 0,
+          color: Colors.white,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
