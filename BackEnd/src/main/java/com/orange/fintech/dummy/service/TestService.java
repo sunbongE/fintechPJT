@@ -641,6 +641,12 @@ public class TestService {
                         // FIXME
                         receiptDetailMemberRepository.flush();
                     }
+                    TransactionDetail transactionDetail =
+                            transactionDetailRepository
+                                    .findById(transaction.getTransactionId())
+                                    .get();
+                    transactionDetail.setRemainder(remainder);
+                    transactionDetailRepository.save(transactionDetail);
                 }
             }
         }

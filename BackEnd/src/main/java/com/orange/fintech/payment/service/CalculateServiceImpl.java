@@ -179,7 +179,7 @@ public class CalculateServiceImpl implements CalculateService {
 
             // 잔액이 부족한 놈 아이디 저장함.
             if (balance + member.amount < 0) {
-                log.info("누구여 :{}, 잔액 => {}, 낼금액 => {}",member.kakaoId, balance, member.amount);
+                log.info("누구여 :{}, 잔액 => {}, 낼금액 => {}", member.kakaoId, balance, member.amount);
                 //                log.info("CalculateServiceImpl 잔액 부족한 상태!!");
                 noMoneysKakaoId.add(member.kakaoId);
                 // 해당 그룹에서 회원의 2차 정산 상태를 변경한다.
@@ -199,7 +199,7 @@ public class CalculateServiceImpl implements CalculateService {
         }
         // 돈이 부족한 사람이 있으면 fcm호출하고 정산을 종료한다.
         if (!noMoneysKakaoId.isEmpty()) {
-            log.info("size :{}, val => {}",noMoneysKakaoId.size(),noMoneysKakaoId);
+            log.info("size :{}, val => {}", noMoneysKakaoId.size(), noMoneysKakaoId);
             fcmService.noMoneyFcm(noMoneysKakaoId, groupId);
             throw new RuntimeException();
             //            return null;
@@ -216,7 +216,7 @@ public class CalculateServiceImpl implements CalculateService {
         }
 
         do {
-//            System.out.println(Arrays.toString(p));
+            //            System.out.println(Arrays.toString(p));
             transactionSimulation(p, plus, minus);
         } while (np(p));
 
@@ -312,7 +312,12 @@ public class CalculateServiceImpl implements CalculateService {
             long sendAmount = -minus.get(np[minusIdx]).amount;
 
             while (sendAmount > 0) {
-                log.info("i:{}, plusIdx:{}, sendAmount:{}, receiveAmount:{}", minusIdx, plusIdx, sendAmount, receiveAmount);
+                log.info(
+                        "i:{}, plusIdx:{}, sendAmount:{}, receiveAmount:{}",
+                        minusIdx,
+                        plusIdx,
+                        sendAmount,
+                        receiveAmount);
                 log.info("remains[]: {}", Arrays.toString(remains));
                 log.info("sendAmount:{}, remains[plusIdx]:{}, ", sendAmount, remains[plusIdx]);
                 if (receiveAmount > sendAmount) {
