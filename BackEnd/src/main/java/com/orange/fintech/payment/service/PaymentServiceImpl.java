@@ -391,6 +391,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public GroupTransactionDetailRes getGroupTransactionDetail(int transactionId) {
+        log.info("transactionId: {}", transactionId);
         Transaction transaction = transactionRepository.findById(transactionId).get();
         log.info("getGroupTransactionDetail - transaction: {}", transaction);
 
