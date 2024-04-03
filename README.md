@@ -78,6 +78,7 @@
 >은행에서 계좌 목록을 불러와 주계좌를 설정할 수 있다. </br>계좌마다 거래내역, 잔액 정보등을 확인할 수 있습니다.
 
 ![주계좌](./READMEGIF/주계좌수정.gif){: width="200px"} &nbsp; &nbsp;
+---
  ![주계좌변경1](./READMEGIF/accountChange1.png){: width="200px"} &nbsp; &nbsp;
  ![주계좌변경2](./READMEGIF/accountChange2.png){: width="200px"} 
 
@@ -86,20 +87,23 @@
 
 > 여행 그룹 생성 항목 : 그룹이름, 여행 테마, 여행기간 등을 설정할 수 있습니다.
 </br>
-![그룹생성](./READMEGIF/그룹생성.gif){: width="200px"} &nbsp; &nbsp;</br>
-![그룹생성](./READMEGIF/groupList.gif){: width="200px"} &nbsp; &nbsp;![그룹생성](./READMEGIF/groupList.gif){: width="200px"} &nbsp; &nbsp;
-
-----
 > 이메일로 회원을 조회 후 초대
+---
 </br>
 
-![그룹생성](./READMEGIF/회원초대.gif)
+![그룹생성](./READMEGIF/그룹생성.gif){: width="200px"} &nbsp; &nbsp; ![그룹생성](./READMEGIF/회원초대.gif){: width="200px"} 
+---
+</br>
+![그룹생성](./READMEGIF/groupList.png){: width="200px"} &nbsp; &nbsp;![그룹생성](./READMEGIF/invite.png){: width="200px"} &nbsp; &nbsp;
+</br>
+
+
 
 ### 정산 요청
 
 >영수증 등록 
 
-
+![그룹생성](./READMEGIF/groupList.png){: width="200px"} &nbsp; &nbsp;
 
 ### 정산하기
 
