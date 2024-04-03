@@ -102,7 +102,10 @@ class _GroupItemState extends State<GroupItem> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData) {
-                return Text(snapshot.data!.groupName);
+                return Text(snapshot.data!.groupName,
+                style: TextStyle(
+                  fontSize: 18.sp,
+                ),);
               } else if (snapshot.hasError) {
                 return Text('그룹 정보 조회 실패');
               }

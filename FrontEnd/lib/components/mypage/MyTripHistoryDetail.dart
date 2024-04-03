@@ -33,7 +33,7 @@ class _MyTripHistoryDetailState extends State<MyTripHistoryDetail> {
         children: <Widget>[
           Container(
             width: 430.w,
-            height: 200.h,
+            // height: 200.h,
             decoration: BoxDecoration(
               color: BG_COLOR,
             ),
@@ -45,7 +45,7 @@ class _MyTripHistoryDetailState extends State<MyTripHistoryDetail> {
                   description: widget.groupData.theme,
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  padding: EdgeInsets.all(10.w),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [

@@ -23,7 +23,7 @@ class _MyTripHistoryGroupDetailState extends State<MyTripHistoryGroupDetail> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(30.w),
+      padding: EdgeInsets.all(20.w),
       child: Column(
         children: [
           Text(
@@ -37,7 +37,7 @@ class _MyTripHistoryGroupDetailState extends State<MyTripHistoryGroupDetail> {
             '${widget.description}',
             style: TextStyle(
               color: TEXT_COLOR,
-              fontSize: 36.sp,
+              fontSize: 30.sp,
               fontWeight: FontWeight.bold,
             ),
           )

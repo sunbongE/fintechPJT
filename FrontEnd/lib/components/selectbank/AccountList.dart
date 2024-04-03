@@ -84,14 +84,14 @@ class _AccountListState extends State<AccountList> {
                       Text(
                         "${widget.selectedBank['name']}",
                         style: TextStyle(
-                          fontSize: 20.sp,
+                          fontSize: 15.sp,
                         ),
                       ),
                       Text(
                         widget.accountList?[index]['accountNo'],
                         style: TextStyle(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],

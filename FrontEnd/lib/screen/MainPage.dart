@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:front/components/mains/AdCarousel.dart';
 import 'package:front/components/mains/AlertList.dart';
@@ -47,8 +48,22 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+        appBar:AppBar(
           scrolledUnderElevation: 0,
+          toolbarHeight: 60.0,
+          title: Padding(
+            padding: EdgeInsets.only(left: 16.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 60.0,
+                  child: Image.asset('assets/images/orange_logo2.png', fit: BoxFit.contain),
+                ),
+              ],
+            ),
+          ),
+          // AppBar의 다른 속성들...
         ),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.w),
@@ -92,13 +107,16 @@ class _MainPageState extends State<MainPage> {
                 : Expanded(
                     child: NowTravelList(groups: groups),
                   ),
-            Expanded(
-              child: AdCarousel(),
-            ),
-            Expanded(
-              child: PastTravelList(groups: groups),
-            ),
-          ]),
+                  Container(
+                    height: 170.h,
+                    child: AdCarousel(),
+                  ),
+                  SizedBox(height: 30.h,),
+                  Expanded(
+                    child: PastTravelList(groups: groups),
+                  ),
+          ]
+          ),
         ));
   }
 }

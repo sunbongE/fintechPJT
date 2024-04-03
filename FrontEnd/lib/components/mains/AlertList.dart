@@ -98,7 +98,7 @@ class _AlertListState extends State<AlertList> {
                     notification.title,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 20.sp,
+                      fontSize: 16.sp,
                     ),
                   ),
                   subtitle: Column(
