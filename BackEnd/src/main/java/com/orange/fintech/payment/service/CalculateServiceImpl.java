@@ -203,7 +203,6 @@ public class CalculateServiceImpl implements CalculateService {
             fcmService.noMoneyFcm(noMoneysKakaoId, groupId);
             throw new RuntimeException();
             //            return null;
-
         }
 
         // 초기화
@@ -322,6 +321,9 @@ public class CalculateServiceImpl implements CalculateService {
             long sendAmount = -minus.get(np[minusIdx]).amount;
 
             while (sendAmount > 0) {
+                if (plusIdx >= remains.length) {
+                    break;
+                }
                 if (receiveAmount > sendAmount) {
                     // 받아야하는 금액보다 줄 수 있는 금액이 많으면 다 주면 됨
                     transaction[minusIdx][plusIdx] += sendAmount;
