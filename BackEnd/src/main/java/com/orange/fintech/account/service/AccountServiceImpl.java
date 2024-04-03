@@ -103,8 +103,10 @@ public class AccountServiceImpl implements AccountService {
 
         // 1. 기존 주 거래 계좌의 is_primary_account 값 false로 업데이트
         Account currentPrimaryAccount = accountRepository.findPrimaryAccountByKakaoId(member);
-        currentPrimaryAccount.setIsPrimaryAccount(false);
-        accountRepository.save(currentPrimaryAccount);
+        if(currentPrimaryAccount != null) {
+            currentPrimaryAccount.setIsPrimaryAccount(false);
+            accountRepository.save(currentPrimaryAccount);
+        }
 
         // 2. 전달받은 계좌 번호의 is_primary_account 값 true로 업데이트
         Account newPrimaryAccount = accountRepository.findByAccountNo(accountNo);
