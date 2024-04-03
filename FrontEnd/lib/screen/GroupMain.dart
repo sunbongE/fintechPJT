@@ -33,9 +33,7 @@ class _GroupMainState extends State<GroupMain> {
     final groupsJson = await getGroupList();
     if (groupsJson != null && groupsJson.data is List) {
       setState(() {
-        groups = (groupsJson.data as List)
-            .map((item) => Group.fromJson(item))
-            .toList();
+        groups = (groupsJson.data as List).map((item) => Group.fromJson(item)).toList();
         isLoading = false;
       });
     } else {
@@ -115,7 +113,10 @@ class _GroupMainState extends State<GroupMain> {
                     )
                   ],
                 ))
-              : GroupList(groups: groups),
+              : Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: GroupList(groups: groups),
+                ),
     );
   }
 }

@@ -15,14 +15,14 @@ class isDoneContainer extends StatelessWidget {
         vertical: 5,
       ),
       decoration: BoxDecoration(
-        color: TRAVELING,
+        color: Colors.yellow.shade800,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
         '정산완료',
         style: TextStyle(
           color: Colors.white,
-          fontSize: 17.sp,
+          fontSize: 12.sp,
         ),
       ),
     );

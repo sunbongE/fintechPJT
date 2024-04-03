@@ -15,7 +15,7 @@ class StateContainer extends StatelessWidget {
         vertical: 5,
       ),
       decoration: BoxDecoration(
-        color: TRAVELING,
+        color: groupState ? TRAVELING : Colors.yellow.shade700,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(

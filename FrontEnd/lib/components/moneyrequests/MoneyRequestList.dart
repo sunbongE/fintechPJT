@@ -7,8 +7,7 @@ class MoneyRequestList extends StatefulWidget {
   final int groupId;
   final Function(bool)? onSuccess;
 
-  MoneyRequestList({Key? key, required this.expenses, required this.groupId, this.onSuccess})
-      : super(key: key);
+  MoneyRequestList({Key? key, required this.expenses, required this.groupId, this.onSuccess}) : super(key: key);
 
   @override
   _MoneyRequestListState createState() => _MoneyRequestListState();
@@ -31,7 +30,10 @@ class _MoneyRequestListState extends State<MoneyRequestList> {
               expense: widget.expenses[index],
               groupId: widget.groupId,
               clickable: true,
-              onSuccess: (value){print('머니리퀘스트리스트 불러와야하는거 아니야??? 콜백아?????');widget.onSuccess!(true);},
+              onSuccess: (value) {
+                print('머니리퀘스트리스트 불러와야하는거 아니야??? 콜백아?????');
+                widget.onSuccess!(true);
+              },
             ),
             Container(
               height: 1.0,

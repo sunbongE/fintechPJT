@@ -79,17 +79,17 @@ class _HomeScreenState extends State<HomeScreen> {
           );
           break;
         case 'SPLIT':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => SplitMain(groupId: groupId)),
-        );
-        break;
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SplitMain(groupId: groupId)),
+          );
+          break;
         case 'TRANSFER':
           Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => SplitDone(groupId: groupId)),
-        );
-        break;
+            context,
+            MaterialPageRoute(builder: (context) => SplitDone(groupId: groupId)),
+          );
+          break;
         case 'NO_MONEY':
           Navigator.push(
             context,
@@ -223,9 +223,9 @@ class _HomeScreenState extends State<HomeScreen> {
         body: _pages[_index],
         bottomNavigationBar: Theme(
           data: ThemeData(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-          ),
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: Colors.white)),
           child: BottomNavigationBar(
             items: [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: '나의 여행'),

@@ -17,52 +17,48 @@ class GroupAddButton extends StatefulWidget {
 class _ButtonState extends State<GroupAddButton> {
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: SizedBox(
-          width: 170.w,
-          height: 140.h,
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    '여행 그룹\n만들기',
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Container(
+        width: 300.w,
+        height: 200.h,
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  '여행 그룹 만들기',
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                ElevatedButton(
+                  onPressed: widget.onPressed,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: ADDBUTTON,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10), // 버튼의 모서리를 둥글게
+                    ),
+                  ),
+                  child: Text(
+                    '+',
                     style: TextStyle(
-                      fontSize: 20.sp,
-                      color: Colors.black,
+                      fontSize: 40.sp,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 10.h),
-                  ElevatedButton(
-                    onPressed: widget.onPressed,
-                    style: ElevatedButton.styleFrom(
-
-                      backgroundColor: ADDBUTTON,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10), // 버튼의 모서리를 둥글게
-                      ),
-                      fixedSize: Size(50.w, 50.h),
-                    ),
-                    child: Text(
-                      '+',
-                      style: TextStyle(
-                        fontSize: 40.sp,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),),
-
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

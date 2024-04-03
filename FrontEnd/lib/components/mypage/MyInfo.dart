@@ -31,11 +31,11 @@ class _MyInfoState extends State<MyInfo> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(100),
+                borderRadius: BorderRadius.circular(100000.w),
                 child: Image.network(
                   "${userManager.thumbnailImageUrl}",
                   width: 75.w,
-                  height: 75.h,
+                  height: 75.w,
                   fit: BoxFit.cover,
                 ),
               ),

@@ -48,16 +48,17 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar:AppBar(
+        appBar: AppBar(
           scrolledUnderElevation: 0,
-          toolbarHeight: 60.0,
+          toolbarHeight: 60.0.h,
           title: Padding(
-            padding: EdgeInsets.only(left: 16.0),
+            padding: EdgeInsets.only(left: 16.0.w),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 60.0,
+                  width: 60.0.w,
+                  height: 60.0.h,
                   child: Image.asset('assets/images/orange_logo2.png', fit: BoxFit.contain),
                 ),
               ],
@@ -107,16 +108,17 @@ class _MainPageState extends State<MainPage> {
                 : Expanded(
                     child: NowTravelList(groups: groups),
                   ),
-                  Container(
-                    height: 170.h,
-                    child: AdCarousel(),
-                  ),
-                  SizedBox(height: 30.h,),
-                  Expanded(
-                    child: PastTravelList(groups: groups),
-                  ),
-          ]
-          ),
+            Container(
+              height: 170.h,
+              child: AdCarousel(),
+            ),
+            SizedBox(
+              height: 30.h,
+            ),
+            Expanded(
+              child: PastTravelList(groups: groups),
+            ),
+          ]),
         ));
   }
 }

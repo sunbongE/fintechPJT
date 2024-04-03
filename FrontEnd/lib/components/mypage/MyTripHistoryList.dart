@@ -37,15 +37,15 @@ class _MyTripHistoryListState extends State<MyTripHistoryList> {
       isLoading = true;
     });
     var groupsJson = await getGroupList();
+    setState(() {
+      isLoading = false;
+    });
     if (groupsJson != null && groupsJson.data is List) {
       setState(() {
         groups = (groupsJson.data as List).map((item) => Group.fromJson(item)).where((group) => group.isCalculateDone!).toList();
-        isLoading = false;
+        groups.sort((a, b) => b.endDate.compareTo(a.endDate));
       });
     } else {
-      setState(() {
-        isLoading = false;
-      });
       print("그룹 데이터를 불러오는 데 실패했습니다.");
     }
   }
@@ -64,17 +64,19 @@ class _MyTripHistoryListState extends State<MyTripHistoryList> {
         padding: EdgeInsets.all(10.w),
         child: isLoading
             ? Center(child: Lottie.asset('assets/lotties/orangewalking.json'))
-            : ListView.builder(
-                itemCount: groups.length,
-                itemBuilder: (context, index) {
-                  return GroupCard(
-                    group: groups[index],
-                    onTap: () {
-                      navigateToGroupDetail(groups[index]);
+            : groups.isEmpty
+                ? Center(child: Text('여정 기록이 없습니다.', style: TextStyle(fontSize: 18.sp)))
+                : ListView.builder(
+                    itemCount: groups.length,
+                    itemBuilder: (context, index) {
+                      return GroupCard(
+                        group: groups[index],
+                        onTap: () {
+                          navigateToGroupDetail(groups[index]);
+                        },
+                      );
                     },
-                  );
-                },
-              ),
+                  ),
       ),
     );
   }
