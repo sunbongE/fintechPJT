@@ -55,6 +55,25 @@ class _SplitDoneState extends State<SplitDone> {
                 SizedBox(
                   height: 40.h,
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('보낸사람'),
+                      Row(
+                        children: [
+                          Icon(Icons.arrow_right),
+                          Icon(Icons.arrow_right),
+                          Icon(Icons.arrow_right),
+                          Icon(Icons.arrow_right),
+                          Icon(Icons.arrow_right),
+                        ],
+                      ),
+                      Text('받은사람'),
+                    ],
+                  ),
+                ),
                 Expanded(
                   child: ListView.builder(
                     itemCount: splitResult.length,
