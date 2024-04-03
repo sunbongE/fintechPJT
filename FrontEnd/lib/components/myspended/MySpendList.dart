@@ -112,7 +112,6 @@ class _MySpendListState extends State<MySpendList> {
                                     '${NumberFormat('#,###').format(int.parse(item['transactionBalance'].toString()))}원',
                                     style: TextStyle(
                                       fontSize: 20.sp,
-                                      fontWeight: FontWeight.bold,
                                       color: TEXT_COLOR,
                                     ),
                                   ),
@@ -130,7 +129,6 @@ class _MySpendListState extends State<MySpendList> {
                                     '-${NumberFormat('#,###').format(int.parse(item['transactionBalance'].toString()))}원',
                                     style: TextStyle(
                                       fontSize: 20.sp,
-                                      fontWeight: FontWeight.bold,
                                       color: RECEIPT_TEXT_COLOR,
                                     ),
                                   ),

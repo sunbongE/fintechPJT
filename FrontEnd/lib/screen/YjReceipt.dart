@@ -18,6 +18,7 @@ class CustomTextStyle {
   static TextStyle receiptTextStyle(BuildContext context, {bool includeLetterSpacing = true}) {
     return TextStyle(
       fontSize: 16.sp,
+      fontFamily: 'IBMPlexSansKR',
       letterSpacing: includeLetterSpacing ? 10.w : null,
       color: RECEIPT_TEXT_COLOR,
     );
@@ -28,6 +29,7 @@ class CustomMenuStyle {
   static TextStyle receiptTextStyle(BuildContext context, {bool includeLetterSpacing = true}) {
     return TextStyle(
       fontSize: 16.sp,
+      fontFamily: 'IBMPlexSansKR',
       color: Colors.black,
     );
   }
@@ -35,7 +37,12 @@ class CustomMenuStyle {
 
 class CustomResultStyle {
   static TextStyle receiptTextStyle(BuildContext context) {
-    return TextStyle(fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.bold);
+    return TextStyle(
+      fontSize: 16.sp,
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+      fontFamily: 'IBMPlexSansKR',
+    );
   }
 }
 
@@ -80,11 +87,12 @@ class _YjReceiptState extends State<YjReceipt> {
         padding: EdgeInsets.all(10.0),
         child: Column(
           children: [
-            Text("YnJ",
+            Text("RECEIPT",
                 style: TextStyle(
                   fontSize: 40.sp,
+                  fontFamily: 'IBMPlexSansKR',
                 )),
-            SizedBox(height: 30.h),
+            SizedBox(height: 20.h),
             // 상호명, 위치, 일정
             Table(
               columnWidths: const {

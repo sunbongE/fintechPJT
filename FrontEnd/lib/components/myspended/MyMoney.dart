@@ -72,7 +72,7 @@ class _MyMoneyState extends State<MyMoney> {
                       style: TextStyle(
                         color: TEXT_COLOR,
                         fontSize: 36.sp,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w500,
                       ),
                     )
                   : Text('데이터를 불러오는데 실패했습니다.'),
