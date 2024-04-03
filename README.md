@@ -1,5 +1,7 @@
 # 여행을 정산하다, 여정
 > 개발 기간 : 2024년 02월 19일 ~ 04월 05일 ( 7주 )
+---
+
 ## 산출물
 - [요구사항 정의서](https://psychedelic-headphones-066.notion.site/2a319260d7ff4405bed5520d7a5d54d6?pvs=4)
 - [기능명세서](https://psychedelic-headphones-066.notion.site/fe2f4ff4dbd341638fb4e504cd629d96?pvs=4)
@@ -9,10 +11,12 @@
 - [피그마](https://www.figma.com/file/No2M749xUEprmC5XbUSJfD/Orange?type=design&node-id=1%3A2&mode=dev&t=AA0BAFL045q1F2cW-1https://www.figma.com/file/No2M749xUEprmC5XbUSJfD/Orange?type=design&node-id=1%3A2&mode=dev&t=AA0BAFL045q1F2cW-1)
 - [포팅 매뉴얼](./exec/여정_포팅_매뉴얼.docx)
 - [발표자료]()
+---
 
 ## 목차
 
 
+---
 
 ## Role
 
@@ -26,6 +30,7 @@
 | 전승혜 | **프론트엔드** |
 
 
+---
 ## 기술 스택
 
 ### BackEnd
@@ -54,6 +59,7 @@
 - Amazon S3
 - Firebase FCM
 - Kakao Login
+---
 
 ## 주요 기능
 > 소셜로그인, 주계좌등록, 여행 그룹에 결제 금액 정산요청,</br> OCR 영수증 등록, 영수증 일괄 등록, FCM알림
@@ -72,6 +78,7 @@
 </br>
 
 ![회원가입](./READMEGIF/회원가입.gif){: width="200px"}
+---
 
 ### 주계좌 등록 및 수정
 
@@ -82,6 +89,13 @@
  ![주계좌변경1](./READMEGIF/accountChange1.png){: width="200px"} &nbsp; &nbsp;
  ![주계좌변경2](./READMEGIF/accountChange2.png){: width="200px"} 
 
+---
+
+### 메인 화면
+ ![주계좌변경1](./READMEGIF/mainpage.png){: width="200px"} &nbsp; &nbsp;
+ ![주계좌변경2](./READMEGIF/mainnotification.png){: width="200px"} 
+
+---
 
 ### 여행 그룹 생성 및 초대
 
@@ -98,12 +112,14 @@
 </br>
 
 
+---
 
 ### 정산 요청
 
 >영수증 등록 
 
 ![그룹생성](./READMEGIF/groupList.png){: width="200px"} &nbsp; &nbsp;
+---
 
 ### 정산하기
 
@@ -111,10 +127,12 @@
 
 - 정산 진행
 
+---
 
 ### 여행 지도
 
 - 
 
 - 
+---
 
