@@ -93,13 +93,14 @@ class _MoneyRequestItemState extends State<MoneyRequestItem> {
                       children: [
                         Text(formatDateString(widget.expense.transactionDate),
                             style: TextStyle(
-                              fontSize: 12.sp,
+                              fontSize: 11.sp,
                               letterSpacing: -0.5,
                             )),
                         Text(' '),
                         Text(formatTimeString(widget.expense.transactionTime),
                             style: TextStyle(
-                              fontSize: 12.sp,
+                              fontSize: 11.sp,
+                              letterSpacing: -0.2,
                             )),
                       ],
                     ),
