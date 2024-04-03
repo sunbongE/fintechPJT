@@ -199,6 +199,7 @@ public class CalculateServiceImpl implements CalculateService {
         }
         // 돈이 부족한 사람이 있으면 fcm호출하고 정산을 종료한다.
         if (!noMoneysKakaoId.isEmpty()) {
+            log.info("size :{}, val => {}",noMoneysKakaoId.size(),noMoneysKakaoId);
             fcmService.noMoneyFcm(noMoneysKakaoId, groupId);
             throw new RuntimeException();
             //            return null;
@@ -215,7 +216,7 @@ public class CalculateServiceImpl implements CalculateService {
         }
 
         do {
-            System.out.println(Arrays.toString(p));
+//            System.out.println(Arrays.toString(p));
             transactionSimulation(p, plus, minus);
         } while (np(p));
 
@@ -298,13 +299,20 @@ public class CalculateServiceImpl implements CalculateService {
 
         long[][] transaction = new long[minus.size()][plus.size()];
 
+        log.info("send:{}", minus);
+        log.info("receive:{}", plus);
+
         int transactionCnt = 0;
         int plusIdx = 0;
         for (int i = 0; i < minus.size(); i++) {
             long receiveAmount = remains[plusIdx];
             long sendAmount = -minus.get(np[i]).amount;
 
+            log.info("minus: {}, plus:{}", minus.toString(), plus.toString());
             while (sendAmount > 0) {
+                log.info("i:{}, plusIdx:{}, sendAmount:{}", i, plusIdx, sendAmount);
+                log.info("remains[]: {}", Arrays.toString(remains));
+                log.info("sendAmount:{}, remains[plusIdx]:{}, ", sendAmount, remains[plusIdx]);
                 if (receiveAmount > sendAmount) {
                     // 받아야하는 금액보다 줄 수 있는 금액이 많으면 다 주면 됨
                     transaction[i][plusIdx] += sendAmount;

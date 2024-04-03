@@ -286,6 +286,7 @@ public class GroupController {
 
             return ResponseEntity.status(HttpStatus.OK).body(BaseResponseBody.of(200, "OK"));
         } catch (RuntimeException e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
                     .body(BaseResponseBody.of(406, "잔액이 부족해서 취소됨."));
         } catch (Exception e) {
