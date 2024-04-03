@@ -77,15 +77,15 @@
 
 >은행에서 계좌 목록을 불러와 주계좌를 설정할 수 있다. </br>계좌마다 거래내역, 잔액 정보등을 확인할 수 있습니다.
 
-![주계좌](./READMEGIF/주계좌수정.gif){: width="200px"}
+![주계좌](./READMEGIF/주계좌수정.gif){: width="200px"} &nbsp; &nbsp;
+ ![주계좌변경1](./READMEGIF/accountChange1.png){: width="200px"} &nbsp; &nbsp;
+ ![주계좌변경2](./READMEGIF/accountChange2.png){: width="200px"} 
 
-</br>
 
-![주계좌변경1](./READMEGIF/accountChange1.png){: width="200px"}
 
-</br>
 
-![주계좌변경2](./READMEGIF/accountChange2.png){: width="200px"} 
+
+
 
 
 ### 여행 그룹 생성 및 초대
