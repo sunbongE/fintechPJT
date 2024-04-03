@@ -230,6 +230,10 @@ public class CalculateServiceImpl implements CalculateService {
 
         int plusIdx = 0;
         for (int i = 0; i < transaction.length; i++) {
+            if (plusIdx >= remains.length) {
+                break;
+            }
+
             long receiveAmount = remains[plusIdx];
             long sendAmount = -minus.get(minTransaction[i]).amount;
 
@@ -310,6 +314,10 @@ public class CalculateServiceImpl implements CalculateService {
         int plusIdx = 0;
         log.info("np: {}", Arrays.toString(np));
         for (int minusIdx = 0; minusIdx < minus.size(); minusIdx++) {
+            if (plusIdx >= remains.length) {
+                break;
+            }
+
             long receiveAmount = remains[plusIdx];
             long sendAmount = -minus.get(np[minusIdx]).amount;
 
