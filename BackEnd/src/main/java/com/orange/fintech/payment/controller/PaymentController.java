@@ -144,6 +144,7 @@ public class PaymentController {
 
                 List<String> groupMembersKakaoId =
                         groupQueryRepository.findGroupMembersKakaoId(groupId);
+                groupMembersKakaoId.remove(principal.getName());
 
                 messageListDataReqDto.setTargetMembers(groupMembersKakaoId);
 
