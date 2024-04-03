@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../providers/store.dart';
 
@@ -42,13 +43,36 @@ class _MyInfoState extends State<MyInfoMain> {
               SizedBox(
                 width: 21.w,
               ),
-              Text(
-                "${userManager.name}",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.sp,
-                  letterSpacing: 3,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "${userManager.name}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.sp,
+                      letterSpacing: 3,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      if (userManager.email != null) {
+                        Clipboard.setData(ClipboardData(text: userManager.email!));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('클립보드에 복사되었습니다')),
+                        );
+                      }
+                    },
+                    child: Text(
+                      "${userManager.email}",
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        color: Color(0xff6E6E6E),
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
