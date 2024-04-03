@@ -85,14 +85,15 @@ public class MemberController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails, String accountNo) {
         String kakaoId = customUserDetails.getUsername();
 
-        accountService.updatePrimaryAccount(kakaoId, accountNo);
+        try {
+            accountService.updatePrimaryAccount(kakaoId, accountNo);
 
-        //        if(accountService.insertAccount(kakaoId, account)) {
-        return ResponseEntity.ok(BaseResponseBody.of(200, "계좌 정보 추가 성공"));
-        //        }
+            return ResponseEntity.ok(BaseResponseBody.of(200, "계좌 정보 추가 성공"));
+        } catch (Exception e) {
+            e.printStackTrace();
 
-        //        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        //                .body(BaseResponseBody.of(500, "Pin 번호 수정 중 오류 발생"));
+            return ResponseEntity.internalServerError().body(BaseResponseBody.of(500, "서버 에러"));
+        }
     }
 
     @GetMapping("/account/primary")

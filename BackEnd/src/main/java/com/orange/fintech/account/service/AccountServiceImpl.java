@@ -103,13 +103,15 @@ public class AccountServiceImpl implements AccountService {
 
         // 1. 기존 주 거래 계좌의 is_primary_account 값 false로 업데이트
         Account currentPrimaryAccount = accountRepository.findPrimaryAccountByKakaoId(member);
-        if(currentPrimaryAccount != null) {
+        if (currentPrimaryAccount != null) {
+            log.info("currentPrimaryAccount: {}", currentPrimaryAccount);
             currentPrimaryAccount.setIsPrimaryAccount(false);
             accountRepository.save(currentPrimaryAccount);
         }
 
         // 2. 전달받은 계좌 번호의 is_primary_account 값 true로 업데이트
         Account newPrimaryAccount = accountRepository.findByAccountNo(accountNo);
+        log.info("newPrimaryAccount: {}", newPrimaryAccount);
         newPrimaryAccount.setIsPrimaryAccount(true);
         accountRepository.save(newPrimaryAccount);
     }
@@ -193,7 +195,7 @@ public class AccountServiceImpl implements AccountService {
         account.setAccountNo(REC.get("accountNo").toString());
         account.setMember(member);
         account.setBalance(Long.parseLong(REC.get("accountBalance").toString()));
-        account.setIsPrimaryAccount(false);
+        account.setIsPrimaryAccount(true);
         account.setBankCode("001");
         account.setBankCode(REC.get("bankCode").toString());
 
