@@ -329,6 +329,7 @@ public class PaymentController {
                 for (ReceiptDetailMemberPutDto receiptDetailMemberPutDto : memberList) {
                     groupMembersKakaoId.add(receiptDetailMemberPutDto.getMemberId());
                 }
+                groupMembersKakaoId.remove(principal.getName());
                 messageListDataReqDto.setTargetMembers(groupMembersKakaoId);
 
                 fcmService.pushListDataMSG(messageListDataReqDto);
