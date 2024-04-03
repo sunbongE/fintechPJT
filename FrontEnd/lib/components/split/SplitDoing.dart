@@ -88,7 +88,7 @@ class _SplitDoingState extends State<SplitDoing> {
                 builder: (context) => SplitLoading(groupId: widget.groupId)));
       } else {
         fetchSecondCallMembersAndUpdateReadyStatus();
-        await Future.delayed(Duration(seconds: 30));
+        await Future.delayed(Duration(seconds: 3));
       }
     }
   }
