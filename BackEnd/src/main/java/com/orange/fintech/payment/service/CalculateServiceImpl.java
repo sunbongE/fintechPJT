@@ -237,6 +237,9 @@ public class CalculateServiceImpl implements CalculateService {
             long sendAmount = -minus.get(minTransaction[i]).amount;
 
             while (sendAmount > 0) {
+                if (plusIdx >= remains.length) {
+                    break;
+                }
                 if (receiveAmount > sendAmount) {
                     transaction[i][plusIdx] += sendAmount;
                     remains[plusIdx] -= sendAmount;
