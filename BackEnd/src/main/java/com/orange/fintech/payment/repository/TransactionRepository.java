@@ -3,6 +3,8 @@ package com.orange.fintech.payment.repository;
 import com.orange.fintech.payment.entity.Transaction;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,17 +31,20 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
     // 새로운 영수증 로직 (날짜와 금액 비교)
     @Query(
             "SELECT t FROM Transaction t WHERE t.transactionBalance = :transactionBalance AND t.transactionDate = :transactionDate AND t.member.kakaoId = :kakaoId")
-    Transaction findApproximateReceiptComparingBalanceApostropheForeignkey(
+    //    Transaction findApproximateReceiptComparingBalanceApostropheForeignkey(
+    List<Transaction> findApproximateReceiptComparingBalanceApostropheForeignkey(
             @Param("transactionBalance") Long transactionBalance,
             @Param("transactionDate") LocalDate transactionDate,
-            @Param("kakaoId") String kakaoId);
+            @Param("kakaoId") String kakaoId,
+            Pageable pagable);
 
     // 새로운 영수증 로직 (날짜와 금액 비교)
     @Query(
             "SELECT t FROM Transaction t WHERE t.transactionBalance = :transactionBalance AND t.transactionDate = :transactionDate")
-    Transaction findDummyTargetReceipt(
+    List<Transaction> findDummyTargetReceipt(
             @Param("transactionBalance") Long transactionBalance,
-            @Param("transactionDate") LocalDate transactionDate);
+            @Param("transactionDate") LocalDate transactionDate,
+            Pageable pagable);
 
     @Query(
             "SELECT EXISTS(SELECT t FROM Transaction t WHERE t.member.kakaoId = :kakaoId AND t.transactionBalance = :balance AND t.transactionSummary = :transactionSummary)")
@@ -47,4 +52,12 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
             @Param("kakaoId") String kakaoId,
             @Param("transactionSummary") String transactionSummary,
             @Param("balance") Long balance);
+
+    // JPQL LIMIT 사용 불가 -> Pageable pagable 사용
+    @Query(
+            "SELECT t FROM Transaction t WHERE t.account.accountNo = :accountId AND t.member.kakaoId = :kakaoId ORDER BY t.transactionDate DESC, t.transactionTime DESC")
+    List<Transaction> findAccountByAccountNoAndKakaoId(
+            @Param("accountId") String accountId,
+            @Param("kakaoId") String kakaoId,
+            Pageable pagable);
 }

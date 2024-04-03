@@ -67,13 +67,14 @@ public class TestController {
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<?> postDummyTranaction(
+            int groupId,
             @RequestPart(value = "file", required = true) MultipartFile csvFile,
-            List<UserKeyAccountPair> userKeyAccountPairList) {
+            @RequestPart List<UserKeyAccountPair> userKeyAccountPairList) {
         log.info("userKeyAccountPairList");
         log.info(userKeyAccountPairList.toString());
 
         try {
-            testService.postDummyTranaction(csvFile, userKeyAccountPairList);
+            testService.postDummyTranaction(groupId, csvFile, userKeyAccountPairList);
 
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "더미 데이터가 정상 추가되었습니다."));
         } catch (Exception e) {
