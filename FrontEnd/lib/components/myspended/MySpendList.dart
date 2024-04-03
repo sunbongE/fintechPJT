@@ -100,7 +100,7 @@ class _MySpendListState extends State<MySpendList> {
                               child: Text(
                                 item['transactionSummary'],
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 20.sp),
+                                style: TextStyle(fontSize: 17.sp),
                               ),
                             ),
                           ],
@@ -128,13 +128,14 @@ class _MySpendListState extends State<MySpendList> {
                                   Text(
                                     '-${NumberFormat('#,###').format(int.parse(item['transactionBalance'].toString()))}원',
                                     style: TextStyle(
-                                      fontSize: 20.sp,
+                                      fontSize: 18.sp,
                                       color: RECEIPT_TEXT_COLOR,
                                     ),
                                   ),
                                   Text(
                                     '${NumberFormat('#,###').format(int.parse(item['transactionAfterBalance'].toString()))}원',
                                     style: TextStyle(
+                                      fontSize: 12.sp,
                                       color: RECEIPT_TEXT_COLOR,
                                     ),
                                   ),

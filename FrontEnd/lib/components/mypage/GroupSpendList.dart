@@ -109,7 +109,7 @@ class _GroupSpendListState extends State<GroupSpendList> {
                               child: Text(
                                 item['transactionSummary'],
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 20.sp),
+                                style: TextStyle(fontSize: 17.sp),
                               ),
                             ),
                           ],
@@ -125,7 +125,7 @@ class _GroupSpendListState extends State<GroupSpendList> {
                             : Text(
                                 '-${NumberFormat('#,###').format(int.parse(item['transactionBalance'].toString()))}원',
                                 style: TextStyle(
-                                  fontSize: 20.sp,
+                                  // fontSize: 12.sp,
                                   color: RECEIPT_TEXT_COLOR,
                                 ),
                               ),

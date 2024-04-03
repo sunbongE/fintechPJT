@@ -22,7 +22,7 @@ class StateContainer extends StatelessWidget {
         groupState ? '정산중' : '여행중',
         style: TextStyle(
           color: Colors.white,
-          fontSize: 17.sp,
+          fontSize: 12.sp,
         ),
       ),
     );

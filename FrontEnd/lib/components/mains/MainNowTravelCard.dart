@@ -17,9 +17,9 @@ class MainNowTravelCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double fontSize = isCenter ? 20.sp : 15.sp;
-    double themeSize = isCenter ? 30.sp : 25.sp;
-    double subFontSize = isCenter ? 12.sp : 8.sp;
+    double fontSize = isCenter ? 15.sp : 10.sp;
+    double themeSize = isCenter ? 20.sp : 15.sp;
+    double subFontSize = isCenter ? 10.sp : 6.sp;
     return GestureDetector(
       onTap: onTap,
       child: Card(
@@ -31,82 +31,71 @@ class MainNowTravelCard extends StatelessWidget {
           width: 230.w,
           height: 130.h,
           child: Padding(
-            // Padding 위젯을 사용하여 Column에 패딩 적용
-            padding: EdgeInsets.all(16), // 원하는 패딩 크기로 조절 가능
-            child: Column(
-              children: [
-                Container(
-                  child: Row(
+            padding: EdgeInsets.all(10), // 원하는 패딩 크기로 조절 가능
+            child: Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.arrow_circle_right_rounded,
+                          color: BUTTON_COLOR,
+                        ),
+                        Text(
+                          group.groupName.length > 5
+                              ? '${group.groupName.substring(0, 4)}..'
+                              : group.groupName,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            fontSize: fontSize,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      group.theme.length > 4
+                          ? '${group.theme.substring(0, 4)}..'
+                          : group.theme,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                        fontSize: themeSize,
+                      ),
+                    ),
+                  ),
+                  Row(
                     children: [
-                      Icon(
-                        Icons.arrow_circle_right_rounded,
-                        color: BUTTON_COLOR,
-                      ),
-                      SizedBox(
-                        width: 6.w,
-                      ),
                       Text(
-                        group.groupName.length > 5
-                            ? '${group.groupName.substring(0, 4)}..'
-                            : group.groupName,
+                        group.startDate,
                         style: TextStyle(
                           color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                          fontSize: fontSize,
+                          fontSize: subFontSize,
+                        ),
+                      ),
+                      Text(
+                        '~',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: subFontSize,
+                        ),
+                      ),
+                      Text(
+                        group.endDate,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: subFontSize,
                         ),
                       ),
                     ],
                   ),
-                ),
-                Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 6.h,
-                      ),
-                      Text(
-                        group.theme.length > 4
-                            ? '${group.theme.substring(0, 4)}..'
-                            : group.theme,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                          fontSize: themeSize,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10.h,
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            group.startDate,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: subFontSize,
-                            ),
-                          ),
-                          Text(
-                            '~',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: subFontSize,
-                            ),
-                          ),
-                          Text(
-                            group.endDate,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: subFontSize,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

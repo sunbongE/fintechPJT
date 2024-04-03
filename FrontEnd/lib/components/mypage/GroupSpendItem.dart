@@ -86,7 +86,7 @@ class _GroupSpendItemState extends State<GroupSpendItem> {
                       ),
                       Text(
                         '-${NumberFormat('#,###').format(resData['totalPrice'])}원',
-                        style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold, color: TEXT_COLOR),
+                        style: TextStyle(fontSize: 20.sp, color: TEXT_COLOR),
                       ),
                     ],
                   ),

@@ -36,7 +36,7 @@ class _GroupAddButton2State extends State<GroupAddButton2> {
       child: Text(widget.btnText,
         style: TextStyle(
           color: Colors.white,
-          fontSize: 20.sp,
+          fontSize: 16.sp,
         ),
       ),
     );
