@@ -204,6 +204,7 @@ public class TestService {
                 account.setBankCode("001");
                 account.setAccountNo(userKeyAccountPair.getAccountNo());
 
+                accountRepository.flush();
                 accountRepository.save(account);
                 // FIXME
                 accountRepository.flush();
@@ -295,6 +296,7 @@ public class TestService {
 
             // 저장할 데이터가 있으면 저장.
             if (!saveDataList.isEmpty()) {
+                transactionRepository.flush();
                 List<Transaction> savedAll = transactionRepository.saveAll(saveDataList);
                 transactionRepository.flush();
 
@@ -306,7 +308,9 @@ public class TestService {
                     detail.setTransactionId(data.getTransactionId());
                     transactionDetailList.add(detail);
                 }
+                transactionDetailRepository.flush();
                 transactionDetailRepository.saveAll(transactionDetailList);
+                transactionDetailRepository.flush();
             }
         }
     }
@@ -318,7 +322,7 @@ public class TestService {
         for (int i = 0; i < userKeyAccountPairList.size(); i++) {
             UserKeyAccountPair userKeyAccountPair = userKeyAccountPairList.get(i);
             Member member = memberRepository.findByKakaoId(userKeyAccountPair.getKakaoId());
-            String startDate = "";
+            String startDate = "20240101";
             String endDate = "20241231";
 
             ReqHeader reqHeader =
@@ -339,7 +343,9 @@ public class TestService {
                 account.setMember(memberRepository.findByKakaoId(userKeyAccountPair.getKakaoId()));
                 account.setBalance(0L);
 
+                accountRepository.flush();
                 accountRepository.save(account);
+                accountRepository.flush();
 
                 startDate = "20240101";
             } else {
@@ -363,8 +369,9 @@ public class TestService {
                     // Do nothing
                 }
 
-                if(transaction != null) {
-                    startDate = AccountDateTimeUtil.localDateToString(transaction.getTransactionDate());
+                if (transaction != null) {
+                    startDate =
+                            AccountDateTimeUtil.localDateToString(transaction.getTransactionDate());
                     startTime = transaction.getTransactionTime();
                 }
             }
@@ -427,7 +434,9 @@ public class TestService {
 
             // 저장할 데이터가 있으면 저장.
             if (!saveDataList.isEmpty()) {
+                transactionRepository.flush();
                 List<Transaction> savedAll = transactionRepository.saveAll(saveDataList);
+                transactionRepository.flush();
                 // FIXME
                 transactionRepository.flush();
 
@@ -435,9 +444,8 @@ public class TestService {
                 List<TransactionDetail> transactionDetailList = new ArrayList<>();
                 for (Transaction data : savedAll) {
                     TransactionDetail detail = new TransactionDetail();
-
-                    // 그룹 번호 지정
                     detail.setReceiptEnrolled(true);
+
                     detail.setRemainder(
                             Long.valueOf(data.getTransactionBalance() % groupMemberCount)
                                     .intValue()); // Long -> Int 안전하게 캐스팅
@@ -445,7 +453,11 @@ public class TestService {
                     detail.setTransactionId(data.getTransactionId());
                     transactionDetailList.add(detail);
                 }
+                // FIXME
+                transactionRepository.flush();
                 transactionDetailRepository.saveAll(transactionDetailList);
+                // FIXME
+                transactionRepository.flush();
             }
         }
     }
@@ -512,7 +524,7 @@ public class TestService {
                 RestClient restClient = RestClient.create();
                 RestClient.ResponseSpec response =
                         restClient.post().uri(drawingTransferUrl).body(requestBody).retrieve();
-                Thread.sleep(1000);
+                Thread.sleep(500);
 
                 // 4-5. 응답 코드 해석
                 ResponseEntity<?> responseEntity = response.toEntity(String.class);
@@ -638,7 +650,9 @@ public class TestService {
                             receiptDetailMember.setReceiptDetailMemberPK(pk);
                             receiptDetailMember.setAmountDue(amount / memberCnt);
 
+                            receiptDetailMemberRepository.flush();
                             receiptDetailMemberRepository.save(receiptDetailMember);
+                            receiptDetailMemberRepository.flush();
                         }
                         // FIXME
                         receiptDetailMemberRepository.flush();
