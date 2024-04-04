@@ -203,7 +203,6 @@ public class CalculateServiceImpl implements CalculateService {
             fcmService.noMoneyFcm(noMoneysKakaoId, groupId);
             throw new RuntimeException();
             //            return null;
-
         }
 
         // 초기화
@@ -230,10 +229,17 @@ public class CalculateServiceImpl implements CalculateService {
 
         int plusIdx = 0;
         for (int i = 0; i < transaction.length; i++) {
+            if (plusIdx >= remains.length) {
+                break;
+            }
+
             long receiveAmount = remains[plusIdx];
             long sendAmount = -minus.get(minTransaction[i]).amount;
 
             while (sendAmount > 0) {
+                if (plusIdx >= remains.length) {
+                    break;
+                }
                 if (receiveAmount > sendAmount) {
                     transaction[i][plusIdx] += sendAmount;
                     remains[plusIdx] -= sendAmount;
@@ -242,7 +248,9 @@ public class CalculateServiceImpl implements CalculateService {
                     transaction[i][plusIdx] += receiveAmount;
                     sendAmount -= receiveAmount;
                     remains[plusIdx++] = 0;
-                    receiveAmount = remains[plusIdx]; // FIXME
+                    if (plusIdx < remains.length) {
+                        receiveAmount = remains[plusIdx]; // FIXME
+                    }
                 }
             }
         }
@@ -300,26 +308,20 @@ public class CalculateServiceImpl implements CalculateService {
 
         long[][] transaction = new long[minus.size()][plus.size()];
 
-        log.info("send:{}", minus);
-        log.info("receive:{}", plus);
-        log.info("minus: {}, plus:{}", minus.toString(), plus.toString());
-
         int transactionCnt = 0;
         int plusIdx = 0;
-        log.info("np: {}", Arrays.toString(np));
         for (int minusIdx = 0; minusIdx < minus.size(); minusIdx++) {
+            if (plusIdx >= remains.length) {
+                break;
+            }
+
             long receiveAmount = remains[plusIdx];
             long sendAmount = -minus.get(np[minusIdx]).amount;
 
             while (sendAmount > 0) {
-                log.info(
-                        "i:{}, plusIdx:{}, sendAmount:{}, receiveAmount:{}",
-                        minusIdx,
-                        plusIdx,
-                        sendAmount,
-                        receiveAmount);
-                log.info("remains[]: {}", Arrays.toString(remains));
-                log.info("sendAmount:{}, remains[plusIdx]:{}, ", sendAmount, remains[plusIdx]);
+                if (plusIdx >= remains.length) {
+                    break;
+                }
                 if (receiveAmount > sendAmount) {
                     // 받아야하는 금액보다 줄 수 있는 금액이 많으면 다 주면 됨
                     transaction[minusIdx][plusIdx] += sendAmount;
@@ -330,7 +332,9 @@ public class CalculateServiceImpl implements CalculateService {
                     transaction[minusIdx][plusIdx] += receiveAmount;
                     sendAmount -= receiveAmount;
                     remains[plusIdx++] = 0;
-                    receiveAmount = remains[plusIdx]; // FIXME
+                    if (plusIdx < remains.length) {
+                        receiveAmount = remains[plusIdx]; // FIXME
+                    }
                 }
                 transactionCnt++;
             }
