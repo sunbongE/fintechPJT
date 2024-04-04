@@ -128,16 +128,14 @@
 ![정산중](./READMEGIF/doing.png){: width="200px"} &nbsp; &nbsp;
 
 ### 정산하기
-
-- 마지막 인원 자투리 금액 당첨
-
-- 정산 진행
+> 마지막 인원 자투리 금액 당첨, 정산 진행
 <br/>
 
 ![정산하기](./READMEGIF/정산하기.gif){: width="200px"} &nbsp; &nbsp;
 <br/>
 ---
 > **요청받은 정산 내역 수정**
+
 <br/>
 ![정산수정1](./READMEGIF/split.png){: width="200px"} &nbsp; &nbsp;
 ![정산수정2](./READMEGIF/splitModify1.png){: width="200px"} &nbsp; &nbsp;
@@ -145,7 +143,8 @@
 
 
 ---
-> **진행 과정** <br/>
+> **진행 과정** 
+<br/>
 ![자투리금액](./READMEGIF/자투리금액.png){: width="200px"} &nbsp; &nbsp;
 ![정산중](./READMEGIF/정산중.png){: width="200px"} &nbsp; &nbsp;
 ![그룹생성](./READMEGIF/done.png){: width="200px"} &nbsp; &nbsp;
