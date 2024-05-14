@@ -7,7 +7,6 @@
 - [기능명세서](https://psychedelic-headphones-066.notion.site/fe2f4ff4dbd341638fb4e504cd629d96?pvs=4)
 - [화면정의서](https://psychedelic-headphones-066.notion.site/Figma-b6e2078c864b4f788cbec37770cb9e44?pvs=4)
 - [API 명세서](https://psychedelic-headphones-066.notion.site/API-ca771c37ee3f4729a13f479eac4142ee?pvs=4)
-- [시스템 아키텍처](https://psychedelic-headphones-066.notion.site/3f69bd5724004c2db414758a12db53c0?pvs=4)
 - [피그마](https://www.figma.com/file/No2M749xUEprmC5XbUSJfD/Orange?type=design&node-id=1%3A2&mode=dev&t=AA0BAFL045q1F2cW-1https://www.figma.com/file/No2M749xUEprmC5XbUSJfD/Orange?type=design&node-id=1%3A2&mode=dev&t=AA0BAFL045q1F2cW-1)
 - [포팅 매뉴얼](./exec/여정_포팅_매뉴얼.docx)
 - [발표자료](./exec/C203_여정_발표자료.pptx)
@@ -24,7 +23,10 @@
    - [정산하기](#정산하기)
    - [여행 지도](#여행-지도)
 ---
-
+## 시스템아키텍처
+![Web App Reference Architecture (1)](https://github.com/sunbongE/fintechPJT/assets/108655043/12de845f-d54a-4edd-9a3e-7f271644dc90)
+</br>
+---
 ## Role
 
 | 이름   | 역할                                                         |
