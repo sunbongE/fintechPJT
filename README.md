@@ -28,7 +28,7 @@
 </br>
 ---
 ## ERD
-<img src="./READMEGIF/특화.png" width="1200" height="600"/>&nbsp; &nbsp;
+<img src="./READMEGIF/특화.png" width="1000" height="400"/>&nbsp; &nbsp;
 ---
 ## Role
 
