@@ -27,6 +27,9 @@
 ![Web App Reference Architecture (1)](https://github.com/sunbongE/fintechPJT/assets/108655043/12de845f-d54a-4edd-9a3e-7f271644dc90)
 </br>
 ---
+## ERD
+<img src="./READMEGIF/특화.png" width="1200" height="600"/>&nbsp; &nbsp;
+---
 ## Role
 
 | 이름   | 역할                                                         |
